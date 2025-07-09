@@ -1,4 +1,4 @@
-name: 🐛 バグ報告
+name: バグ報告（bug）
 description: バグを報告する
 labels: ["bug"]
 body:
