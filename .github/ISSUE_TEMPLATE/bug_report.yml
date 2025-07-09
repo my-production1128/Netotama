@@ -1,6 +1,6 @@
 name: バグ報告
 description: 不具合や想定外の動作について報告します
-title: "[バグ]: "
+title: ""
 labels: ["bug", "triage"]
 assignees:
   - your-username
