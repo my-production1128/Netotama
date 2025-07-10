@@ -8,15 +8,20 @@
 import SwiftUI
 
 struct GroupchatView: View {
-    let dialogues: [Dialogue]
+//    @Binding var groupchatDialogues: [Dialogue]
     @State private var currentIndex = 0
     @State private var isShowingLog = false
     @State private var goChoiceView = false
-    
+
+    @Binding var path: NavigationPath
+    @Binding var groupchatDialogues: [Dialogue]
+//    @Binding var netomoScene: NetomoBranching
+//    @Binding var netomoBranchings: [NetomoBranching]
+
     var body: some View {
         Group {
-            if currentIndex < dialogues.count {
-                sceneView(for: dialogues[currentIndex])
+            if currentIndex < groupchatDialogues.count {
+                sceneView(for: groupchatDialogues[currentIndex])
             } else {
                 // 終了画面やChoiceViewへの遷移
                 ZStack {
@@ -26,7 +31,8 @@ struct GroupchatView: View {
                         .ignoresSafeArea()
 
                     Button(action: {
-                        goChoiceView = true
+//                        goChoiceView = true
+                        path.removeLast()
                     }) {
                         Image("story_back")
                             .resizable()
@@ -36,9 +42,11 @@ struct GroupchatView: View {
                     }
                     .offset(x: 400, y: 300)
                 }
-                .navigationDestination(isPresented: $goChoiceView) {
-                    ChoiceView()
-                }
+//                .navigationDestination(isPresented: $goChoiceView) {
+//                    ChoiceView(path: $path,
+//                               netomoScene: $netomoScene,
+//                               netomoBranchings: $netomoBranchings)
+//                }
             }
         }
     }
@@ -160,9 +168,9 @@ struct GroupchatView: View {
                         ScrollView {
                             VStack(spacing: 12) {
                                 ForEach(0...currentIndex, id: \.self) { index in
-                                    let dialogue = dialogues[index]
+                                    let dialogue = groupchatDialogues[index]
                                     let isRight = dialogue.characterName == "セシル"
-                                    
+
                                     HStack(alignment: .bottom) {
                                         if isRight { Spacer() }
                                         
@@ -354,9 +362,9 @@ struct GroupchatView: View {
                         ScrollView {
                             VStack(spacing: 12) {
                                 ForEach(0...currentIndex, id: \.self) { index in
-                                    let dialogue = dialogues[index]
+                                    let dialogue = groupchatDialogues[index]
                                     let isRight = dialogue.characterName == "セシル"
-                                    
+
                                     HStack(alignment: .bottom) {
                                         if isRight { Spacer() }
                                         
@@ -544,9 +552,9 @@ struct GroupchatView: View {
                         ScrollView {
                             VStack(spacing: 12) {
                                 ForEach(0...currentIndex, id: \.self) { index in
-                                    let dialogue = dialogues[index]
+                                    let dialogue = groupchatDialogues[index]
                                     let isRight = dialogue.characterName == "セシル"
-                                    
+
                                     HStack(alignment: .bottom) {
                                         if isRight { Spacer() }
 
@@ -632,7 +640,7 @@ struct GroupchatView: View {
                 
             }
             .onTapGesture {
-                if currentIndex < dialogues.count - 1 {
+                if currentIndex < groupchatDialogues.count - 1 {
                     currentIndex += 1
                 }
             }

@@ -6,23 +6,8 @@
 	objectVersion = 77;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		8A7AD33C2E1F6AD600BF4664 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 8A7AD33B2E1F6AD600BF4664 /* Lottie */; };
-/* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		8A7AD2F02E1E929500BF4664 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0661A0452DDB941700016B1C /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 0661A04C2DDB941700016B1C;
-			remoteInfo = Dezitama;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXFileReference section */
 		0661A04D2DDB941700016B1C /* Dezitama.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dezitama.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8A7AD2EA2E1E929400BF4664 /* DezitamaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DezitamaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -31,23 +16,10 @@
 			path = Dezitama;
 			sourceTree = "<group>";
 		};
-		8A7AD2EB2E1E929400BF4664 /* DezitamaUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = DezitamaUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		0661A04A2DDB941700016B1C /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8A7AD33C2E1F6AD600BF4664 /* Lottie in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8A7AD2E72E1E929400BF4664 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -61,7 +33,6 @@
 			isa = PBXGroup;
 			children = (
 				0661A04F2DDB941700016B1C /* Dezitama */,
-				8A7AD2EB2E1E929400BF4664 /* DezitamaUITests */,
 				0661A04E2DDB941700016B1C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -70,7 +41,6 @@
 			isa = PBXGroup;
 			children = (
 				0661A04D2DDB941700016B1C /* Dezitama.app */,
-				8A7AD2EA2E1E929400BF4664 /* DezitamaUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -95,34 +65,10 @@
 			);
 			name = Dezitama;
 			packageProductDependencies = (
-				8A7AD33B2E1F6AD600BF4664 /* Lottie */,
 			);
 			productName = Dezitama;
 			productReference = 0661A04D2DDB941700016B1C /* Dezitama.app */;
 			productType = "com.apple.product-type.application";
-		};
-		8A7AD2E92E1E929400BF4664 /* DezitamaUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 8A7AD2F22E1E929500BF4664 /* Build configuration list for PBXNativeTarget "DezitamaUITests" */;
-			buildPhases = (
-				8A7AD2E62E1E929400BF4664 /* Sources */,
-				8A7AD2E72E1E929400BF4664 /* Frameworks */,
-				8A7AD2E82E1E929400BF4664 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				8A7AD2F12E1E929500BF4664 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				8A7AD2EB2E1E929400BF4664 /* DezitamaUITests */,
-			);
-			name = DezitamaUITests;
-			packageProductDependencies = (
-			);
-			productName = DezitamaUITests;
-			productReference = 8A7AD2EA2E1E929400BF4664 /* DezitamaUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -131,15 +77,11 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1640;
+				LastSwiftUpdateCheck = 1630;
 				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					0661A04C2DDB941700016B1C = {
 						CreatedOnToolsVersion = 16.3;
-					};
-					8A7AD2E92E1E929400BF4664 = {
-						CreatedOnToolsVersion = 16.4;
-						TestTargetID = 0661A04C2DDB941700016B1C;
 					};
 				};
 			};
@@ -152,29 +94,18 @@
 			);
 			mainGroup = 0661A0442DDB941700016B1C;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-				8A7AD33A2E1F6AD600BF4664 /* XCRemoteSwiftPackageReference "lottie-spm" */,
-			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0661A04E2DDB941700016B1C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				0661A04C2DDB941700016B1C /* Dezitama */,
-				8A7AD2E92E1E929400BF4664 /* DezitamaUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		0661A04B2DDB941700016B1C /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8A7AD2E82E1E929400BF4664 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -191,22 +122,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8A7AD2E62E1E929400BF4664 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		8A7AD2F12E1E929500BF4664 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 0661A04C2DDB941700016B1C /* Dezitama */;
-			targetProxy = 8A7AD2F02E1E929500BF4664 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		0661A0562DDB941800016B1C /* Debug */ = {
@@ -388,42 +304,6 @@
 			};
 			name = Release;
 		};
-		8A7AD2F32E1E929500BF4664 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UX4Y5TQ52G;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hamamatsu.DezitamaUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Dezitama;
-			};
-			name = Debug;
-		};
-		8A7AD2F42E1E929500BF4664 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = UX4Y5TQ52G;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hamamatsu.DezitamaUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = Dezitama;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -445,35 +325,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8A7AD2F22E1E929500BF4664 /* Build configuration list for PBXNativeTarget "DezitamaUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				8A7AD2F32E1E929500BF4664 /* Debug */,
-				8A7AD2F42E1E929500BF4664 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		8A7AD33A2E1F6AD600BF4664 /* XCRemoteSwiftPackageReference "lottie-spm" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/airbnb/lottie-spm";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.5.2;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		8A7AD33B2E1F6AD600BF4664 /* Lottie */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8A7AD33A2E1F6AD600BF4664 /* XCRemoteSwiftPackageReference "lottie-spm" */;
-			productName = Lottie;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 0661A0452DDB941700016B1C /* Project object */;
 }

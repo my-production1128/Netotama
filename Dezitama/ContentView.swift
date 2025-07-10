@@ -1,0 +1,102 @@
+//
+//  ContentView.swift
+//  Dezitama
+//
+//  Created by 末廣月渚 on 2025/05/20.
+//
+
+import SwiftUI
+
+struct ContentView: View {
+    // こいつ
+    @State var netomoDialogues: [Dialogue] = []
+    @State var groupchatDialogues: [Dialogue] = []
+    @State private var kakusanDialogues: [Dialogue] = []
+
+    // LottieViewの表示管理
+    @State var isLottieViewVisible: Bool = true
+
+
+
+
+    @State private var path = NavigationPath()
+    @State private var isTextVisible: Bool = false// テキストの点滅
+    @State var netomoBranchings: [NetomoBranching] = []
+    @State var netomoScene: NetomoBranching = NetomoBranching(
+        storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
+        background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
+        choiceText1: "", choiceText2: ""
+    )
+
+
+    var body: some View {
+        NavigationStack(path: $path) {
+                ZStack{
+                    Color(red: 0.68, green: 0.93, blue: 0.93)
+                        .ignoresSafeArea()
+                VStack {
+                    Spacer()
+//                    Image("デジたまアイコン仮")
+//                        .resizable()
+//                        .frame(width: 500, height: 500)
+//                        .padding(50)
+                    if isLottieViewVisible{
+                        LottieView(filename: "egg_start_ver2")
+                            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+                            .background(Color.clear)
+                            .edgesIgnoringSafeArea(.all)
+                    }
+
+//                    NavigationLink(destination: ChoiceView()) {
+//                        Text("tap to start")
+//                    }
+                    Button {
+                        path.append(selectedPath.ChoiceView)
+                    } label: {
+                        Text("Tap to Start")
+                    }
+
+                    Spacer()
+                }
+            }
+            .onAppear {
+                netomoDialogues = loadCSV(fileName: "netomo_var8_0")
+                groupchatDialogues = loadCSV(fileName: "groupchat_var5_0")
+                kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
+                netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver11")//ネトモの分岐ありのストーリー
+
+            }
+            .navigationDestination(for: selectedPath.self) { viewID in
+                switch viewID {
+                case .ContentView:
+                    ContentView()
+
+                case .ChoiceView:
+                    ChoiceView(path: $path,
+                               netomoScene: $netomoScene,
+                               netomoBranchings: $netomoBranchings)
+
+                case .NetomoBranchingView:
+                    NetomoBranchingView(path: $path,
+                                             netomoScene: $netomoScene,
+                                             netomoBranchings: $netomoBranchings)
+                    .navigationBarBackButtonHidden(true)
+
+                case .GroupchatView:
+                    GroupchatView(path: $path, groupchatDialogues: $groupchatDialogues)
+
+                case .kakusanView:
+                    KakusanView(dialogues: kakusanDialogues, path: $path)
+
+                case .NetomoView:
+                    NetomoView(netomoDialogues: $netomoDialogues, path: $path)
+
+                }
+            }
+        }
+    }
+}
+
+#Preview {
+    ContentView()
+}

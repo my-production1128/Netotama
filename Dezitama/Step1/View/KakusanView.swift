@@ -9,13 +9,18 @@ import SwiftUI
 
 struct KakusanView: View {
     let dialogues: [Dialogue]
+//    @State var dialogues: [Dialogue] = []
     @State private var currentIndex = 0
     @State private var isShowingLog = false
     @State private var goChoiceView = false
-    
+
+    @Binding var path: NavigationPath
+//    let dialogues: [Dialogue]
+
     var body: some View {
         let current = dialogues[currentIndex]
-        
+//        let current = dialogues
+
         //導入
         if current.background == "Introduction" {
             ZStack{
@@ -556,9 +561,9 @@ struct KakusanView: View {
                     currentIndex += 1
                 }
             }
-            .navigationDestination(isPresented: $goChoiceView) {
-                ChoiceView()
-            }
+//            .navigationDestination(isPresented: $goChoiceView) {
+//                ChoiceView()
+//            }
         }
     }
 }

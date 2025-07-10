@@ -8,16 +8,21 @@
 import SwiftUI
 
 struct NetomoView: View {
-    let dialogues: [Dialogue]
+    // ContentViewでロードしたCSVファイルをバインド
+    @Binding var netomoDialogues: [Dialogue]
     @State private var currentIndex = 0
     @State private var isShowingLog = false
     @State private var goChoiceView = false
-    
+
+    @Binding var path: NavigationPath
+
     var body: some View {
         Group {
-            if currentIndex < dialogues.count {
-                sceneView(for: dialogues[currentIndex])
+            if currentIndex < netomoDialogues.count {
+                let _ = print(netomoDialogues.count)
+                sceneView(for: netomoDialogues[currentIndex])
             } else {
+                let _ = print(netomoDialogues.count)
                 // 終了画面やChoiceViewへの遷移
                 ZStack {
                     Image("sky")
@@ -25,20 +30,26 @@ struct NetomoView: View {
                         .scaledToFill()
                         .ignoresSafeArea()
 
-                    Button(action: {
-                        goChoiceView = true
-                    }) {
-                        Image("story_back")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 300, height: 300)
-                            .padding()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            //                        goChoiceView = true
+                            path.removeLast()
+                        }) {
+                            Image("story_back")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 300, height: 300)
+//                                .padding()
+                        }
+//                        .offset(x: 400)
                     }
-                    .offset(x: 400, y: 300)
                 }
-                .navigationDestination(isPresented: $goChoiceView) {
-                    ChoiceView()
-                }
+//                .navigationDestination(isPresented: $goChoiceView) {
+//                    ChoiceView(path: $path,
+//                               netomoScene: $netomoScene,
+//                               netomoBranchings: $netomoBranchings)
+//                }
             }
         }
     }
@@ -73,7 +84,7 @@ struct NetomoView: View {
                         ScrollView {
                             VStack(spacing: 12) {
                                 ForEach(0...currentIndex, id: \.self) { index in
-                                    let dialogue = dialogues[index]
+                                    let dialogue = netomoDialogues[index]
                                     let isRight = dialogue.characterName == "カール"
                                     
                                     HStack(alignment: .bottom) {
@@ -219,7 +230,7 @@ struct NetomoView: View {
                         ScrollView {
                             VStack(spacing: 12) {
                                 ForEach(0...currentIndex, id: \.self) { index in
-                                    let dialogue = dialogues[index]
+                                    let dialogue = netomoDialogues[index]
                                     let isRight = dialogue.characterName == "サンドラ"
                                     
                                     HStack(alignment: .bottom) {
@@ -284,7 +295,7 @@ struct NetomoView: View {
                         ScrollView {
                             VStack(spacing: 12) {
                                 ForEach(0...currentIndex, id: \.self) { index in
-                                    let dialogue = dialogues[index]
+                                    let dialogue = netomoDialogues[index]
                                     let isRight = dialogue.characterName == "サンドラ"
                                     
                                     HStack(alignment: .bottom) {
@@ -406,7 +417,7 @@ struct NetomoView: View {
                     .padding()
                     .contentShape(Rectangle())
                 
-                if currentIndex >= dialogues.count - 1 {
+                if currentIndex >= netomoDialogues.count - 1 {
                     Button(action: {
                         goChoiceView = true
                     }) {
@@ -420,13 +431,13 @@ struct NetomoView: View {
                 }
             }
             .onTapGesture {
-                if currentIndex < dialogues.count - 1 {
+                if currentIndex < netomoDialogues.count - 1 {
                     currentIndex += 1
                 }
             }
-            .navigationDestination(isPresented: $goChoiceView) {
-                ChoiceView()
-            }
+//            .navigationDestination(isPresented: $goChoiceView) {
+//                ChoiceView()
+//            }
         }
     }
 }
