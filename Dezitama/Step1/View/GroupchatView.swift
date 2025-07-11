@@ -31,7 +31,6 @@ struct GroupchatView: View {
                         .ignoresSafeArea()
 
                     Button(action: {
-//                        goChoiceView = true
                         path.removeLast()
                     }) {
                         Image("story_back")
@@ -42,11 +41,6 @@ struct GroupchatView: View {
                     }
                     .offset(x: 400, y: 300)
                 }
-//                .navigationDestination(isPresented: $goChoiceView) {
-//                    ChoiceView(path: $path,
-//                               netomoScene: $netomoScene,
-//                               netomoBranchings: $netomoBranchings)
-//                }
             }
         }
     }
