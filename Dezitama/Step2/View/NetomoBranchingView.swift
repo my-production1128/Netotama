@@ -196,7 +196,7 @@ struct NetomoBranchingView: View {
                         Button {
                             path.removeLast()
                         }label: {
-                            Image("home_button")
+                            Image("home")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
@@ -230,23 +230,6 @@ struct NetomoBranchingView: View {
         }
     }
 
-
-//    func startTyping(fullText: String) {
-//        displayedText = ""
-//        currentCharIndex = 0
-//        timer?.invalidate()
-//
-//        timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { t in
-//            if currentCharIndex < fullText.count {
-//                let index = fullText.index(fullText.startIndex, offsetBy: currentCharIndex)
-//                displayedText.append(fullText[index])
-//                currentCharIndex += 1
-//            } else {
-//                t.invalidate()
-//                timer = nil
-//            }
-//        }
-//    }
     func startTyping(fullText: String) {
         displayedText = ""
         currentCharIndex = 0

@@ -40,12 +40,12 @@ struct ContentView: View {
 //                        .resizable()
 //                        .frame(width: 500, height: 500)
 //                        .padding(50)
-                    if isLottieViewVisible{
-                        LottieView(filename: "egg_start_ver2")
-                            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-                            .background(Color.clear)
-                            .edgesIgnoringSafeArea(.all)
-                    }
+//                    if isLottieViewVisible{
+//                        LottieView(filename: "egg_start_ver2")
+//                            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+//                            .background(Color.clear)
+//                            .edgesIgnoringSafeArea(.all)
+//                    }
 
 //                    NavigationLink(destination: ChoiceView()) {
 //                        Text("tap to start")
@@ -86,7 +86,7 @@ struct ContentView: View {
                     GroupchatView(path: $path, groupchatDialogues: $groupchatDialogues)
 
                 case .kakusanView:
-                    KakusanView(dialogues: kakusanDialogues, path: $path)
+                    KakusanView(path: $path, kakusanDialogues: $kakusanDialogues)
 
                 case .NetomoView:
                     NetomoView(netomoDialogues: $netomoDialogues, path: $path)

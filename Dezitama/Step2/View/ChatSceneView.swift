@@ -76,6 +76,12 @@ struct ChatSceneView: View {
 
                     VStack{
                         Spacer()
+                        Button {
+                            skipAllChatScenes()
+                        }label: {
+                            Text("飛ばす")
+                                .font(.system(size: 20, weight: .bold, design: .default))
+                        }
                         HStack {
                             Spacer()
                             Image("next_button")
@@ -310,5 +316,17 @@ struct ChatSceneView: View {
         }
         .padding(.horizontal)
         .id(message.id) // スクロールIDとして使用
+    }
+
+
+    private func skipAllChatScenes() {
+        guard let last = chatMessage.last else { return }
+        var nextId = last.scene.nextSceneId
+
+        while let next = branchingMap[nextId], next.sceneType == "chat" {
+            nextId = next.nextSceneId
+        }
+
+        onNextScene(nextId)  // 最初の非チャットシーンに移動
     }
 }
