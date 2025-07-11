@@ -21,7 +21,6 @@ struct isChoiceView: View {
     
     @Binding var isPopupVisible: Bool
     @Binding var netomoscene: NetomoBranching
-//    @Binding var nextChat: Bool
     var onCorrectChoice: () -> Void
 
 
@@ -74,7 +73,7 @@ struct isChoiceView: View {
                 }
 //                丸を出す関数
                 if showCorrectMark {
-                    Image("まる")
+                    Image("circle")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 150, height: 150)

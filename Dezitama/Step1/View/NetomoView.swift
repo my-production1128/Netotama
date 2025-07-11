@@ -33,23 +33,15 @@ struct NetomoView: View {
                     HStack {
                         Spacer()
                         Button(action: {
-                            //                        goChoiceView = true
                             path.removeLast()
                         }) {
                             Image("story_back")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 300, height: 300)
-//                                .padding()
                         }
-//                        .offset(x: 400)
                     }
                 }
-//                .navigationDestination(isPresented: $goChoiceView) {
-//                    ChoiceView(path: $path,
-//                               netomoScene: $netomoScene,
-//                               netomoBranchings: $netomoBranchings)
-//                }
             }
         }
     }
@@ -435,9 +427,6 @@ struct NetomoView: View {
                     currentIndex += 1
                 }
             }
-//            .navigationDestination(isPresented: $goChoiceView) {
-//                ChoiceView()
-//            }
         }
     }
 }

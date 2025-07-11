@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct KakusanView: View {
-    let dialogues: [Dialogue]
+//    let dialogues: [Dialogue]
 //    @State var dialogues: [Dialogue] = []
     @State private var currentIndex = 0
     @State private var isShowingLog = false
     @State private var goChoiceView = false
 
     @Binding var path: NavigationPath
-//    let dialogues: [Dialogue]
+    @Binding var kakusanDialogues: [Dialogue]
 
     var body: some View {
-        let current = dialogues[currentIndex]
+        let current = kakusanDialogues[currentIndex]
 //        let current = dialogues
 
         //導入
@@ -125,7 +125,7 @@ struct KakusanView: View {
                         ScrollView {
                             VStack(spacing: 12) {
                                 ForEach(0...currentIndex, id: \.self) { index in
-                                    let dialogue = dialogues[index]
+                                    let dialogue = kakusanDialogues[index]
                                     let isRight = dialogue.characterName == "サンドラ"
                                     
                                     HStack(alignment: .bottom) {
@@ -207,7 +207,7 @@ struct KakusanView: View {
                         ScrollView {
                             VStack(spacing: 12) {
                                 ForEach(0...currentIndex, id: \.self) { index in
-                                    let dialogue = dialogues[index]
+                                    let dialogue = kakusanDialogues[index]
                                     let isRight = dialogue.characterName == "サンドラ"
                                     
                                     HStack(alignment: .bottom) {
@@ -543,7 +543,7 @@ struct KakusanView: View {
                     .padding()
                     .contentShape(Rectangle())
                 
-                if currentIndex >= dialogues.count - 1 {
+                if currentIndex >= kakusanDialogues.count - 1 {
                     Button(action: {
                         goChoiceView = true
                     }) {
@@ -557,13 +557,10 @@ struct KakusanView: View {
                 }
             }
             .onTapGesture {
-                if currentIndex < dialogues.count - 1 {
+                if currentIndex < kakusanDialogues.count - 1 {
                     currentIndex += 1
                 }
             }
-//            .navigationDestination(isPresented: $goChoiceView) {
-//                ChoiceView()
-//            }
         }
     }
 }
