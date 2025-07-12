@@ -9,14 +9,14 @@ import Lottie
 
 struct LottieView: UIViewRepresentable {
     var filename: String
-    var contentView = ContentView()
+    var contentView = SplashScreenView()
     var animationView = LottieAnimationView()
 
     func makeUIView(context: UIViewRepresentableContext<LottieView>) -> UIView {
         let view = UIView(frame: .zero)
         let animationView = LottieAnimationView()
         animationView.animation = LottieAnimation.named(filename)
-        animationView.contentMode = .scaleAspectFit
+        animationView.contentMode = .scaleAspectFill
         animationView.play()
 //        animationView.loopMode = .loop
 
@@ -34,7 +34,6 @@ struct LottieView: UIViewRepresentable {
     func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<LottieView>) {
         if contentView.isLottieViewVisible {
             animationView.play{ finished in
-                print("aaaa")
                 contentView.isLottieViewVisible = false
             }
         }

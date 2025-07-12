@@ -545,7 +545,8 @@ struct KakusanView: View {
                 
                 if currentIndex >= kakusanDialogues.count - 1 {
                     Button(action: {
-                        goChoiceView = true
+//                        goChoiceView = true
+                        path.removeLast()
                     }) {
                         Image("story_back")
                             .resizable()

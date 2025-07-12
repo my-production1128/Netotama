@@ -13,9 +13,6 @@ struct ContentView: View {
     @State var groupchatDialogues: [Dialogue] = []
     @State private var kakusanDialogues: [Dialogue] = []
 
-    // LottieViewの表示管理
-    @State var isLottieViewVisible: Bool = true
-
 
 
 
@@ -40,18 +37,10 @@ struct ContentView: View {
 //                        .resizable()
 //                        .frame(width: 500, height: 500)
 //                        .padding(50)
-//                    if isLottieViewVisible{
-//                        LottieView(filename: "egg_start_ver2")
-//                            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-//                            .background(Color.clear)
-//                            .edgesIgnoringSafeArea(.all)
-//                    }
 
-//                    NavigationLink(destination: ChoiceView()) {
-//                        Text("tap to start")
-//                    }
+
                     Button {
-                        path.append(selectedPath.ChoiceView)
+                        path.append(ViewBuilderPath.ChoiceView)
                     } label: {
                         Text("Tap to Start")
                     }
@@ -59,14 +48,15 @@ struct ContentView: View {
                     Spacer()
                 }
             }
+//            csvファイルの読み込み
             .onAppear {
                 netomoDialogues = loadCSV(fileName: "netomo_var8_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_var5_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
-                netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver11")//ネトモの分岐ありのストーリー
+                netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver13")//ネトモの分岐ありのストーリー
 
             }
-            .navigationDestination(for: selectedPath.self) { viewID in
+            .navigationDestination(for: ViewBuilderPath.self) { viewID in
                 switch viewID {
                 case .ContentView:
                     ContentView()

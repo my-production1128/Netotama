@@ -408,10 +408,13 @@ struct NetomoView: View {
                     .cornerRadius(12)
                     .padding()
                     .contentShape(Rectangle())
-                
+
+
+//                選択画面に戻る
                 if currentIndex >= netomoDialogues.count - 1 {
                     Button(action: {
-                        goChoiceView = true
+//                        goChoiceView = true
+                        path.removeLast()
                     }) {
                         Image("story_back")
                             .resizable()

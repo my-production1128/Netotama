@@ -22,7 +22,7 @@ struct ChatSceneView: View {
 
     @State var isTyping = false
     @State var pendingMessage: NetomoBranching? = nil
-    // アニメーションの表示
+//     アニメーションの表示
     @State var animationTrigger = true
     @State var chatMessage: [ChatMessage] = []
     @State private var triangleAnimationTrigger = false
@@ -48,7 +48,7 @@ struct ChatSceneView: View {
             GeometryReader { geometry in
                 ZStack {
                     VStack {
-                        //                チャットの画面のスクロール部分
+//                                        チャットの画面のスクロール部分
                         ScrollViewReader { proxy in
                             ScrollView {
                                 VStack(spacing: 12) {
@@ -94,30 +94,30 @@ struct ChatSceneView: View {
                                     startLoopingAnimation()
                                 }
                                 .onTapGesture {
-                                    //  タイピング中または選択肢表示中なら何もしない
+//                                  タイピング中または選択肢表示中なら何もしない
                                     if isTyping || isPopupVisible {
-                                        //                                    print(" タイピング中または選択肢表示中なのでスキップ")
+//                                    print(" タイピング中または選択肢表示中なのでスキップ")
                                         return
                                     }
 
-                                    // 最後のメッセージが存在するか確認
+//                                     最後のメッセージが存在するか確認
                                     guard let last = chatMessage.last else {
-                                        //                                    print(" 最後のメッセージが見つかりません")
+//                                    print(" 最後のメッセージが見つかりません")
                                         return
                                     }
 
                                     let nextId = last.scene.nextSceneId
 
-                                    // 次のシーンが branchingMap に存在するか確認
+//                                     次のシーンが branchingMap に存在するか確認
                                     guard let next = branchingMap[nextId] else {
                                         print(" 次のシーンが見つかりません: \(nextId)")
                                         onNextScene(nextId) // 必要なら外部ハンドラーを呼ぶ
                                         return
                                     }
-                                    // chat のシーンの場合
+//                                     chat のシーンの場合
                                     if next.sceneType == "chat" {
-                                        if next.characterName != "カール" {
-                                            // 相手のセリフ（アニメーションあり）
+                                        if next.characterName != next.rightCharacter/*ネトモ：カール*/ {
+//                                             相手のセリフ（アニメーションあり）
                                             isTyping = true
                                             pendingMessage = next
                                             DispatchQueue.main.asyncAfter(deadline: .now()) {
@@ -130,7 +130,7 @@ struct ChatSceneView: View {
                                                 isTyping = false
                                             }
                                         } else {
-                                            // 自分のセリフ（即時表示）
+//                                             自分のセリフ（即時表示）
                                             let newMsg = ChatMessage(scene: next, isAnimating: false, showText: true)
                                             netomoScene = next //  最新のシーンを更新
 
@@ -143,7 +143,7 @@ struct ChatSceneView: View {
                                             }
                                         }
                                     } else {
-                                        // chat 以外のシーンなら外のハンドラに任せる
+//                                         chat 以外のシーンなら外のハンドラに任せる
                                         onNextScene(nextId)
                                     }
                                 }
@@ -151,7 +151,7 @@ struct ChatSceneView: View {
                         }
                     }
 
-                    // 選択肢の問題を出す
+//                     選択肢の問題を出す
                     if isPopupVisible, let choiceScene = currentChoiceScene {
                         isChoiceView(
                             isPopupVisible: $isPopupVisible,
@@ -165,7 +165,7 @@ struct ChatSceneView: View {
                     }
                 }
                 .onAppear {
-                    //                最初のメッセージを表示させておく
+//                                    最初のメッセージを表示させておく
                     if let first = branchingMap[initialSceneId] {
                         //                    messageStack = [first]
                         chatMessage = [ChatMessage(scene: first)]
@@ -215,21 +215,19 @@ struct ChatSceneView: View {
     }
     
     
-    /// 与えられたチャットメッセージに応じて、
-    /// ユーザー発言 or 相手発言の表示ビューを構築する。
-    ///
-    /// - ユーザーの発言：右寄せで即時表示（青背景）
-    /// - 相手の発言：左寄せでドットアニメーションのあとにテキスト表示（緑背景）
-    ///
-    /// アニメーションが必要な場合は `typingAnimationView()` を表示し、
-    /// 指定時間後にテキストへ切り替える。
+//与えられたチャットメッセージに応じて、
+//ユーザー発言 or 相手発言の表示ビューを構築する。
+//ユーザーの発言：右寄せで即時表示（青背景）
+//相手の発言：左寄せでドットアニメーションのあとにテキスト表示（緑背景）
+//アニメーションが必要な場合は `typingAnimationView()` を表示し、
+//指定時間後にテキストへ切り替える。
     @ViewBuilder
     func messageRow(for message: ChatMessage) -> some View {
         let scene = message.scene
         HStack {
-            if scene.characterName == "カール" { Spacer() }
+            if scene.characterName == scene.rightCharacter { Spacer() }
 
-            if scene.characterName != "カール" {
+            if scene.characterName != scene.rightCharacter {
                 VStack {
                     HStack(alignment: .top) {
                         Image(scene.icon)
@@ -237,7 +235,7 @@ struct ChatSceneView: View {
                             .frame(width: 48, height: 48)
 
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(scene.characterName)
+                            Text(CharacterName(rawValue: scene.characterName)?.displayName ?? scene.characterName)
                                 .font(.system(size: 18))
                                 .foregroundColor(Color.gray)
 
@@ -246,18 +244,18 @@ struct ChatSceneView: View {
                                     .padding(22)
                                     .font(.system(size: 22))
                                     .background(Color.white.opacity(1.0))
-                                //                                .frame(alignment: .leading)
+//                                                                .frame(alignment: .leading)
                                     .cornerRadius(16)
                                     .onAppear {
-                                        // 最初のアニメーション
+//                                         最初のアニメーション
                                         animationTrigger.toggle()
 
-                                        // 1回目のアニメーション時間（2.5秒）後に再トリガー
+//                                         1回目のアニメーション時間（2.5秒）後に再トリガー
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.7) {
                                             animationTrigger.toggle()
                                         }
 
-                                        // 2回目の終了後にテキスト表示を実行
+//                                         2回目の終了後にテキスト表示を実行
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
                                             withAnimation {
                                                 updateMessageState(id: message.id)
@@ -287,7 +285,7 @@ struct ChatSceneView: View {
                     Spacer()
 
                     VStack(alignment: .trailing, spacing: 4) {
-                        Text(scene.characterName)
+                        Text(CharacterName(rawValue: scene.characterName)?.displayName ?? scene.characterName)
                             .font(.system(size: 18))
                             .foregroundColor(Color.gray)
 
@@ -312,7 +310,7 @@ struct ChatSceneView: View {
                 }.frame(maxWidth: .infinity, alignment: .leading)
             }
 
-            if scene.characterName != "カール" { Spacer() }
+            if scene.characterName != scene.rightCharacter { Spacer() }
         }
         .padding(.horizontal)
         .id(message.id) // スクロールIDとして使用

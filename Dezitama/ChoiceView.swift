@@ -70,16 +70,9 @@ struct ChoiceView: View {
                 switch currentImageName {
                 case "note_gurutama":
                     ZStack {
-//                        NavigationLink(destination: GroupchatView(dialogues: groupchatArray)) {
-//                            Image("step1")
-//                                .resizable()
-//                                .scaledToFill()
-//                                .frame(width: 250, height: 100)
-//                        }
-//                        .offset(x: 280, y: -180)
 
                         Button {
-                            path.append(selectedPath.GroupchatView)
+                            path.append(ViewBuilderPath.GroupchatView)
                         } label: {
                             Image("step1")
                                 .resizable()
@@ -106,7 +99,7 @@ struct ChoiceView: View {
 //                        .offset(x: 280, y: -180)
 //                        ネトモ・ステップ１
                         Button {
-                            path.append(selectedPath.NetomoView)
+                            path.append(ViewBuilderPath.NetomoView)
                         } label: {
                             Image("step1")
                                 .resizable()
@@ -117,14 +110,14 @@ struct ChoiceView: View {
 
 //                        ネトモ・ステップ２
                         Button {
-                            path.append(selectedPath.NetomoBranchingView)
+                            path.append(ViewBuilderPath.NetomoBranchingView)
                         } label: {
                             Image("step2")
                                 .resizable()
                                 .scaledToFill()
-                                .frame(width: 300, height: 100)
+                                .frame(width: 250, height: 100)
                         }
-                        .offset(x: 300, y: 150)
+                        .offset(x: 280, y: 100)
                     }
                     
                 case "note_potitama":
@@ -138,7 +131,7 @@ struct ChoiceView: View {
 //                        .offset(x: 280, y: -180)
 
                         Button {
-                            path.append(selectedPath.kakusanView)
+                            path.append(ViewBuilderPath.kakusanView)
                         } label: {
                             Image("step1")
                                 .resizable()
@@ -150,8 +143,8 @@ struct ChoiceView: View {
                         Image("step2")
                             .resizable()
                             .scaledToFill()
-                            .frame(width: 300, height: 100)
-                            .offset(x: 300, y: 150)
+                            .frame(width: 250, height: 100)
+                            .offset(x: 280, y: 100)
                     }
                 
                     //図鑑
