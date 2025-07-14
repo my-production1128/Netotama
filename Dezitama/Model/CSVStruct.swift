@@ -40,15 +40,38 @@ struct NetomoBranching: Identifiable {
 
 //scvのキャラクター名を日本語に変換
 enum CharacterName: String {
+//    ニック
     case Nick
+    case Nick_angry
+    case Nick_normal
+
+//    カール
     case Curl
+    case Curl_normal
+    case Curl_anixiety
+    case Curl_happy
+    case Curl_sorry
+    case Curl_tear
+
     case Mother
+    case Mother_normal
+
 
     var displayName: String {
         switch self {
         case .Nick: return "ニック"
+        case .Nick_angry: return "ニック"
+        case .Nick_normal: return "ニック"
+
         case .Curl: return "カール"
+        case .Curl_normal: return "カール"
+        case .Curl_anixiety: return "カール"
+        case .Curl_happy: return "カール"
+        case .Curl_sorry: return "カール"
+        case .Curl_tear: return "カール"
+
         case .Mother: return "カールのお母さん"
+        case .Mother_normal: return "カールのお母さん"
         }
     }
 }

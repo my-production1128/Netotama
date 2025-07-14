@@ -21,6 +21,9 @@ struct NetomoBranchingView: View {
     @State private var currentCharIndex = 0
     @State private var timer: Timer? = nil
 
+    @State private var isTypingComplete: Bool = false
+    @State private var shouldSkipTyping: Bool = false
+
 
 
 
@@ -168,7 +171,6 @@ struct NetomoBranchingView: View {
                                                     currentSceneId = next.sceneId
                                                 }
                                             }
-//                                            .contentShape(Rectangle())
                                             .expandedTapArea(20)
                                     }
 //                                }

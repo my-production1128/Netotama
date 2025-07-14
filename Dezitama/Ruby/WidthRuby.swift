@@ -68,6 +68,7 @@ extension NSAttributedString {
 
 // MARK: - カスタム UILabel (WideRubyLabel)
 class WideRubyLabel: UILabel {
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
@@ -81,6 +82,7 @@ class WideRubyLabel: UILabel {
     private func commonInit() {
         self.numberOfLines = 0
         self.lineBreakMode = .byWordWrapping
+        self.textAlignment = .left  // ここでテキストアライメントを設定
     }
 
     override func drawText(in rect: CGRect) {
@@ -90,17 +92,23 @@ class WideRubyLabel: UILabel {
         }
 
         if attributedText.containsWideRubyAnnotation() {
-            context.translateBy(x: 0, y: rect.height)
+            // Y座標を0に設定して、上端から描画開始
+            let drawingRect = CGRect(x: 0, y: 0, width: rect.width, height: rect.height)
+
+            context.saveGState()
+            context.translateBy(x: 0, y: drawingRect.height)
             context.scaleBy(x: 1.0, y: -1.0)
 
             let framesetter = CTFramesetterCreateWithAttributedString(attributedText)
+            let path = CGPath(rect: drawingRect, transform: nil)
             let frame = CTFramesetterCreateFrame(
                 framesetter,
                 CFRangeMake(0, attributedText.length),
-                CGPath(rect: rect, transform: nil),
+                path,
                 nil
             )
             CTFrameDraw(frame, context)
+            context.restoreGState()
         } else {
             super.drawText(in: rect)
         }
@@ -150,6 +158,8 @@ class WideRubyLabel: UILabel {
             return CGSize(width: ceil(size.width), height: ceil(size.height))
         }
     }
+
+    
 }
 
 // MARK: - SwiftUI ラッパー
@@ -162,6 +172,7 @@ struct WideRubyLabelRepresentable: UIViewRepresentable {
     func makeUIView(context: Context) -> WideRubyLabel {
         let label = WideRubyLabel()
         label.numberOfLines = 0
+        label.textAlignment = .left  // ここでも設定
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentHuggingPriority(.required, for: .vertical)
         return label
@@ -171,7 +182,7 @@ struct WideRubyLabelRepresentable: UIViewRepresentable {
         uiView.attributedText = attributedText
         uiView.font = font
         uiView.textColor = textColor
-        uiView.textAlignment = textAlignment
+        uiView.textAlignment = textAlignment  // 既存のプロパティを使用
     }
 }
 

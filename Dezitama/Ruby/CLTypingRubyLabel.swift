@@ -8,13 +8,30 @@ import SwiftUI
 import UIKit
 
 //ルビ付きの文字をタイピング風アニメーションで表示させるコード
-class CLTypingRubyLabel: RubyLabel {
+class CLTypingRubyLabel: WideRubyLabel {
     var charInterval: Double = 0.05
     private var currentDispatchID = 0
     private var typingStopped = false
     private var typingOver = true
     private var stoppedSubstring: NSAttributedString?
     private let dispatchSerialQ = DispatchQueue(label: "CLTypingRubyQueue")
+
+    
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupLabel()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        setupLabel()
+    }
+
+    private func setupLabel() {
+        self.textAlignment = .left  // ここでテキストアライメントを設定
+        self.numberOfLines = 0
+    }
 
     override var attributedText: NSAttributedString! {
         get { super.attributedText }
@@ -55,6 +72,35 @@ class CLTypingRubyLabel: RubyLabel {
             }
         }
     }
+
+    override func drawText(in rect: CGRect) {
+        guard let context = UIGraphicsGetCurrentContext(), let attributedText = attributedText else {
+            super.drawText(in: rect)
+            return
+        }
+
+        if attributedText.containsRubyAnnotation() {
+            // Y座標を0に設定して、上端から描画開始
+            let drawingRect = CGRect(x: 0, y: 0, width: rect.width, height: rect.height)
+
+            context.saveGState()
+            context.translateBy(x: 0, y: drawingRect.height)
+            context.scaleBy(x: 1.0, y: -1.0)
+
+            let framesetter = CTFramesetterCreateWithAttributedString(attributedText)
+            let path = CGPath(rect: drawingRect, transform: nil)
+            let frame = CTFramesetterCreateFrame(
+                framesetter,
+                CFRangeMake(0, attributedText.length),
+                path,
+                nil
+            )
+            CTFrameDraw(frame, context)
+            context.restoreGState()
+        } else {
+            super.drawText(in: rect)
+        }
+    }
 }
 
 
@@ -66,7 +112,7 @@ struct TypingRubyLabelRepresentable: UIViewRepresentable {
     func makeUIView(context: Context) -> CLTypingRubyLabel {
         let label = CLTypingRubyLabel()
         label.charInterval = charInterval
-        label.textAlignment = .left
+        label.textAlignment = .left  // ここでも設定
         label.numberOfLines = 0
         label.font = font
         return label

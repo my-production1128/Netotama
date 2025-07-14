@@ -16,13 +16,9 @@ struct isChoiceView: View {
     @State private var explanation: Bool = false
     @State private var selectedChoice: Choice? = nil  // どちらの選択肢を選んだかを保存
 
-
-
-    
     @Binding var isPopupVisible: Bool
     @Binding var netomoscene: NetomoBranching
     var onCorrectChoice: () -> Void
-
 
 
     var body: some View {

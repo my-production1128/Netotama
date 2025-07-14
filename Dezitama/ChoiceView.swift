@@ -12,9 +12,6 @@
 import SwiftUI
 
 struct ChoiceView: View {
-//    @State private var netomoArray: [Dialogue] = []
-//    @State private var groupchatArray: [Dialogue] = []
-//    @State private var kakusanArray: [Dialogue] = []
     @State private var currentImageName: String = "note_gurutama"
 
     @Binding var path: NavigationPath
@@ -23,16 +20,15 @@ struct ChoiceView: View {
 
 
     var body: some View {
-//        NavigationStack {
             ZStack {
-                // 背景ノート画像
+//                 背景ノート画像
                 Image(currentImageName)
                     .resizable()
                     .scaledToFill()
                     .frame(width: 850, height: 750)
                     .offset(x: 20, y: -20)
                 
-                // ページ右側の付箋でも切り替えボタン
+//                 ページ右側の付箋でも切り替えボタン
                 VStack {
                     Spacer()
                         .frame(height: 20)
@@ -66,7 +62,7 @@ struct ChoiceView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
                 
-                // 各ストーリーの詳しい説明のページ
+//                 各ストーリーの詳しい説明のページ
                 switch currentImageName {
                 case "note_gurutama":
                     ZStack {
@@ -90,13 +86,6 @@ struct ChoiceView: View {
                     
                 case "note_netotama":
                     ZStack {
-//                        NavigationLink(destination: NetomoView(dialogues: netomoArray)) {
-//                            Image("step1")
-//                                .resizable()
-//                                .scaledToFill()
-//                                .frame(width: 250, height: 100)
-//                        }
-//                        .offset(x: 280, y: -180)
 //                        ネトモ・ステップ１
                         Button {
                             path.append(ViewBuilderPath.NetomoView)
@@ -122,13 +111,6 @@ struct ChoiceView: View {
                     
                 case "note_potitama":
                     ZStack {
-//                        NavigationLink(destination: KakusanView(dialogues: kakusanArray)) {
-//                            Image("step1")
-//                                .resizable()
-//                                .scaledToFill()
-//                                .frame(width: 250, height: 100)
-//                        }
-//                        .offset(x: 280, y: -180)
 
                         Button {
                             path.append(ViewBuilderPath.kakusanView)
@@ -152,13 +134,5 @@ struct ChoiceView: View {
                     EmptyView()
                 }
             }
-//            .onAppear {
-//                netomoArray = loadCSV(fileName: "netomo_var8_0")
-//                groupchatArray = loadCSV(fileName: "groupchat_var5_0")
-//                kakusanArray = loadCSV(fileName: "kakusan_var5_0")
-//                netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver11")//ネトモの分岐ありのストーリー
-//                
-//            }
-//        }
     }
 }
