@@ -19,10 +19,10 @@ struct NetomoView: View {
     var body: some View {
         Group {
             if currentIndex < netomoDialogues.count {
-                let _ = print(netomoDialogues.count)
+//                let _ = print(netomoDialogues.count)
                 sceneView(for: netomoDialogues[currentIndex])
             } else {
-                let _ = print(netomoDialogues.count)
+//                let _ = print(netomoDialogues.count)
                 // 終了画面やChoiceViewへの遷移
                 ZStack {
                     Image("sky")

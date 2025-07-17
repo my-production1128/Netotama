@@ -132,26 +132,12 @@ struct NetomoBranchingView: View {
 //                                    .frame(width: 700, height: 500)
 //                                    .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.825)
 
-//                                    WideRubyLabelRepresentable(
-//                                        attributedText: (displayedText.replacingOccurrences(of: "<br>", with: "\n").createRuby()),
-//                                        font: .systemFont(ofSize: 30),
-//                                        textColor: .black,
-//                                        textAlignment: .left
-//                                    )
-//                                    .frame(width: 700, height: 500)
-//                                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
-//                                    .onChange(of: currentSceneId) {
-//                                        if let newScene = branchingMap[currentSceneId] {
-//                                            startTyping(fullText: newScene.text)
-//                                        }
-//                                    }
-
                                     TypingRubyLabelRepresentable(
-                                        attributedText: current.text.replacingOccurrences(of: "<br>", with: "\n").createRuby(),
+                                        attributedText: current.text.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
                                         charInterval: 0.05,
                                         font: .systemFont(ofSize: 30)
                                     )
-                                    .frame(width: 700, height: 500)
+                                    .frame(width: 700, height: 200)
                                     .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
 
 //                                     ナビゲーション
@@ -232,7 +218,6 @@ struct NetomoBranchingView: View {
         displayedText = ""
         currentCharIndex = 0
         timer?.invalidate()
-        
 
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { t in
             if currentCharIndex < fullText.count {

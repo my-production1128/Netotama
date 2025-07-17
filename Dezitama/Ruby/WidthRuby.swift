@@ -20,8 +20,13 @@ extension String {
                     let baseText = component.replacingOccurrences(of: "｜(.+?)《.+?》", with: "$1", options: .regularExpression)
                     let rubyText = component.replacingOccurrences(of: "｜.+?《(.+?)》", with: "$1", options: .regularExpression)
 
+
+                    let paragraphStyle = NSMutableParagraphStyle()
+                    paragraphStyle.lineSpacing = 100 // 行間を広げる
+                    paragraphStyle.minimumLineHeight = 50 // 最小行高
+
                     let rubyAttribute: [CFString: Any] = [
-                        kCTRubyAnnotationSizeFactorAttributeName: 0.5,
+                        kCTRubyAnnotationSizeFactorAttributeName: 0.42,
                         kCTForegroundColorAttributeName: color
                     ]
 
@@ -31,9 +36,13 @@ extension String {
                         rubyAttribute as CFDictionary
                     )
 
+
                     return NSAttributedString(
                         string: baseText,
-                        attributes: [kCTRubyAnnotationAttributeName as NSAttributedString.Key: rubyAnnotation]
+                        attributes: [kCTRubyAnnotationAttributeName as NSAttributedString.Key: rubyAnnotation,
+                                     .font: UIFont.systemFont(ofSize: 30),
+                                     .paragraphStyle: paragraphStyle
+                        ]
                     )
                 } else {
                     return NSAttributedString(string: component)
@@ -86,32 +95,42 @@ class WideRubyLabel: UILabel {
     }
 
     override func drawText(in rect: CGRect) {
-        guard let context = UIGraphicsGetCurrentContext(), let attributedText = attributedText else {
-            super.drawText(in: rect)
-            return
-        }
+//        guard let context = UIGraphicsGetCurrentContext(), let attributedText = attributedText else {
+//            print("drawText: attributedText is nil")
+//            super.drawText(in: rect)
+//            return
+//        }
 
-        if attributedText.containsWideRubyAnnotation() {
+//        if attributedText.containsWideRubyAnnotation() {
             // Y座標を0に設定して、上端から描画開始
-            let drawingRect = CGRect(x: 0, y: 0, width: rect.width, height: rect.height)
+        // こいつがテキストを小さくしている
+            // 他のdrawTextいじったらこれが周り始める
 
-            context.saveGState()
-            context.translateBy(x: 0, y: drawingRect.height)
-            context.scaleBy(x: 1.0, y: -1.0)
-
-            let framesetter = CTFramesetterCreateWithAttributedString(attributedText)
-            let path = CGPath(rect: drawingRect, transform: nil)
-            let frame = CTFramesetterCreateFrame(
-                framesetter,
-                CFRangeMake(0, attributedText.length),
-                path,
-                nil
-            )
-            CTFrameDraw(frame, context)
-            context.restoreGState()
-        } else {
+//            let drawingRect = CGRect(x: 0, y: 0, width: rect.width, height: rect.height)
+//
+//            context.saveGState()
+//            context.translateBy(x: 0, y: drawingRect.height)
+//            context.scaleBy(x: 1.0, y: -1.0)
+//
+//            let framesetter = CTFramesetterCreateWithAttributedString(attributedText)
+//            let path = CGPath(rect: drawingRect, transform: nil)
+//            let frame = CTFramesetterCreateFrame(
+//                framesetter,
+//                CFRangeMake(0, attributedText.length),
+//                path,
+//                nil
+//            )
+//            CTFrameDraw(frame, context)
+//            context.restoreGState()
+//            super.drawText(in: rect)
+//            print("drawText: attributedText contains WideRubyAnnotation")
+//        }
+//        else {
+        // 求めていたコード
+//            print(attributedText.containsWideRubyAnnotation())
+//            print("drawText: attributedText does not contain WideRubyAnnotation")
             super.drawText(in: rect)
-        }
+//        }
     }
 
     override var intrinsicContentSize: CGSize {
@@ -131,6 +150,12 @@ class WideRubyLabel: UILabel {
                 nil
             )
 
+            let tempLabel = UILabel(frame: .zero)
+            tempLabel.numberOfLines = 0
+            tempLabel.lineBreakMode = .byWordWrapping
+            tempLabel.font = self.font
+            tempLabel.text = self.text
+            tempLabel.attributedText = self.attributedText
             let maxAllowedWidth: CGFloat = 700
 
             if naturalSize.width <= maxAllowedWidth {
@@ -170,6 +195,9 @@ struct WideRubyLabelRepresentable: UIViewRepresentable {
     let textAlignment: NSTextAlignment
 
     func makeUIView(context: Context) -> WideRubyLabel {
+        let style = NSMutableParagraphStyle()
+        style.lineSpacing = 20
+        style.alignment = .center
         let label = WideRubyLabel()
         label.numberOfLines = 0
         label.textAlignment = .left  // ここでも設定

@@ -48,7 +48,7 @@ struct ContentView: View {
                 netomoDialogues = loadCSV(fileName: "netomo_var8_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_var5_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
-                netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver14")//ネトモの分岐ありのストーリー
+                netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver19")//ネトモの分岐ありのストーリー
 
             }
             .navigationDestination(for: ViewBuilderPath.self) { viewID in

@@ -22,12 +22,16 @@ struct ChatSceneView: View {
 
     @State var isTyping = false
     @State var pendingMessage: NetomoBranching? = nil
+
 //     アニメーションの表示
     @State var animationTrigger = true
     @State var chatMessage: [ChatMessage] = []
     @State private var triangleAnimationTrigger = false
     @State private var offsetY: CGFloat = 0.0
     @State var currentChoiceScene: NetomoBranching? = nil
+
+
+    @State private var isLarge: Bool = false
 
 
 //    scvファイル
@@ -73,63 +77,41 @@ struct ChatSceneView: View {
                         }
                     }
 
-
                     VStack{
-                        Spacer()
                         Button {
+//                            デバック用関数
                             skipAllChatScenes()
                         }label: {
                             Text("飛ばす")
                                 .font(.system(size: 20, weight: .bold, design: .default))
-                        }
+                        }.offset(y: 30)
                         HStack {
-                            Spacer()
-                            Image("next_button")
+
+                            Image("soushin")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 60)
+                                .frame(width: 80)
                                 .padding(40)
-                                .offset(y: offsetY)
+                                .scaleEffect(isLarge ? 0.93 : 1)
+//                                .offset(y: offsetY)//アニメーション
                                 .onAppear {
                                     startLoopingAnimation()
                                 }
                                 .onTapGesture {
-//                                  タイピング中または選択肢表示中なら何もしない
                                     if isTyping || isPopupVisible {
-//                                    print(" タイピング中または選択肢表示中なのでスキップ")
                                         return
                                     }
 
-//                                     最後のメッセージが存在するか確認
-                                    guard let last = chatMessage.last else {
-//                                    print(" 最後のメッセージが見つかりません")
-                                        return
-                                    }
-
+                                    guard let last = chatMessage.last else { return }
                                     let nextId = last.scene.nextSceneId
-
-//                                     次のシーンが branchingMap に存在するか確認
                                     guard let next = branchingMap[nextId] else {
-                                        print(" 次のシーンが見つかりません: \(nextId)")
-                                        onNextScene(nextId) // 必要なら外部ハンドラーを呼ぶ
+                                        onNextScene(nextId)
                                         return
                                     }
-//                                     chat のシーンの場合
+
+                                    // 主人公のセリフだけボタンで進める
                                     if next.sceneType == "chat" {
-                                        if next.characterName != next.rightCharacter/*ネトモ：カール*/ {
-//                                             相手のセリフ（アニメーションあり）
-                                            isTyping = true
-                                            pendingMessage = next
-                                            DispatchQueue.main.asyncAfter(deadline: .now()) {
-                                                if let msg = pendingMessage {
-                                                    let newMsg = ChatMessage(scene: msg)
-                                                    chatMessage.append(newMsg)
-                                                    netomoScene = msg  // 最新のシーンを更新
-                                                }
-                                                pendingMessage = nil
-                                                isTyping = false
-                                            }
-                                        } else {
+                                        if next.characterName == next.rightCharacter {
 //                                             自分のセリフ（即時表示）
                                             let newMsg = ChatMessage(scene: next, isAnimating: false, showText: true)
                                             netomoScene = next //  最新のシーンを更新
@@ -141,13 +123,77 @@ struct ChatSceneView: View {
                                             } else {
                                                 chatMessage.append(newMsg)
                                             }
+                                        } else {
+                                            // 相手のセリフは自動で進める（ここでは触らない）
                                         }
                                     } else {
-//                                         chat 以外のシーンなら外のハンドラに任せる
                                         onNextScene(nextId)
                                     }
+
+                                    // ボタン押した後に「次が相手のセリフ」なら自動で返信
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                        proceedToNextIfNeeded()
+                                    }
                                 }
-                                .padding(.top, 10)
+
+//                                .onTapGesture {
+////                                  タイピング中または選択肢表示中なら何もしない
+//                                    if isTyping || isPopupVisible {
+////                                    print(" タイピング中または選択肢表示中なのでスキップ")
+//                                        return
+//                                    }
+//
+////                                     最後のメッセージが存在するか確認
+//                                    guard let last = chatMessage.last else {
+////                                    print(" 最後のメッセージが見つかりません")
+//                                        return
+//                                    }
+//
+//                                    let nextId = last.scene.nextSceneId
+//
+////                                     次のシーンが branchingMap に存在するか確認
+//                                    guard let next = branchingMap[nextId] else {
+//                                        print(" 次のシーンが見つかりません: \(nextId)")
+//                                        onNextScene(nextId) // 必要なら外部ハンドラーを呼ぶ
+//                                        return
+//                                    }
+////                                     chat のシーンの場合
+//                                    if next.sceneType == "chat" {
+//                                        if next.characterName != next.rightCharacter/*ネトモ：カール*/ {
+////                                             相手のセリフ（アニメーションあり）
+//                                            isTyping = true
+//                                            pendingMessage = next
+//                                            DispatchQueue.main.asyncAfter(deadline: .now()) {
+//                                                if let msg = pendingMessage {
+//                                                    let newMsg = ChatMessage(scene: msg)
+//                                                    chatMessage.append(newMsg)
+//                                                    netomoScene = msg  // 最新のシーンを更新
+//                                                }
+//                                                pendingMessage = nil
+//                                                isTyping = false
+//                                            }
+////                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+////                                                proceedToNextIfNeeded()
+////                                            }
+//                                        } else {
+////                                             自分のセリフ（即時表示）
+//                                            let newMsg = ChatMessage(scene: next, isAnimating: false, showText: true)
+//                                            netomoScene = next //  最新のシーンを更新
+//
+//                                            if next.isChoice == true {
+//                                                isPopupVisible = true // シーン追加・更新後に表示
+////                                                chatMessage.append(newMsg)
+//                                                currentChoiceScene = next
+//                                            } else {
+//                                                chatMessage.append(newMsg)
+//                                            }
+//                                        }
+//                                    } else {
+////                                         chat 以外のシーンなら外のハンドラに任せる
+//                                        onNextScene(nextId)
+//                                    }
+//                                }
+                                .position(x: geometry.size.width * 0.645, y: geometry.size.height * 0.76)
                         }
                     }
 
@@ -165,25 +211,19 @@ struct ChatSceneView: View {
                     }
                 }
                 .onAppear {
-//                                    最初のメッセージを表示させておく
                     if let first = branchingMap[initialSceneId] {
-                        //                    messageStack = [first]
                         chatMessage = [ChatMessage(scene: first)]
+                        netomoScene = first
 
+                        // 最初のセリフがネトモなら自動で続ける
+                        if first.characterName != first.rightCharacter {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                                proceedToNextIfNeeded()
+                            }
+                        }
                     }
                 }
             }
-    }
-
-//    次へすすむ三角形のボタンのアニメーションをループさせる
-    private func startLoopingAnimation() {
-        let animation = Animation
-            .easeInOut(duration: 0.6)
-            .repeatForever(autoreverses: true)
-
-        withAnimation(animation) {
-            offsetY = 8.0
-        }
     }
 
     // アニメーション終了時に状態更新する
@@ -221,6 +261,7 @@ struct ChatSceneView: View {
 //相手の発言：左寄せでドットアニメーションのあとにテキスト表示（緑背景）
 //アニメーションが必要な場合は `typingAnimationView()` を表示し、
 //指定時間後にテキストへ切り替える。
+    
     @ViewBuilder
     func messageRow(for message: ChatMessage) -> some View {
         let scene = message.scene
@@ -244,22 +285,21 @@ struct ChatSceneView: View {
                                     .padding(22)
                                     .font(.system(size: 22))
                                     .background(Color.white.opacity(1.0))
-//                                                                .frame(alignment: .leading)
                                     .cornerRadius(16)
                                     .onAppear {
-//                                         最初のアニメーション
+                                        // 最初のアニメーション
                                         animationTrigger.toggle()
 
-//                                         1回目のアニメーション時間（2.5秒）後に再トリガー
+                                        // アニメーション時間後に切り替え
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.7) {
                                             animationTrigger.toggle()
                                         }
 
-//                                         2回目の終了後にテキスト表示を実行
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
                                             withAnimation {
                                                 updateMessageState(id: message.id)
                                             }
+                                            proceedToNextIfNeeded()
                                         }
                                     }
                             }
@@ -316,7 +356,7 @@ struct ChatSceneView: View {
         .id(message.id) // スクロールIDとして使用
     }
 
-
+//    デバック用 - チャットシーンを飛ばすボタン
     private func skipAllChatScenes() {
         guard let last = chatMessage.last else { return }
         var nextId = last.scene.nextSceneId
@@ -326,5 +366,51 @@ struct ChatSceneView: View {
         }
 
         onNextScene(nextId)  // 最初の非チャットシーンに移動
+    }
+
+
+//    送信ボタンのアニメーション
+    private func startLoopingAnimation() {
+        Timer.scheduledTimer(withTimeInterval: 0.7, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 0.7)) {
+                isLarge.toggle()
+            }
+        }
+    }
+
+//    次のチャットがネトモだった場合は自動で返信させる関数
+    private func proceedToNextIfNeeded() {
+        guard let last = chatMessage.last else { return }
+
+        let nextId = last.scene.nextSceneId
+        guard let next = branchingMap[nextId] else { return }
+
+        // 選択肢の直前なら止まる
+        if next.isChoice ?? false {
+            return
+        }
+
+        // 主人公のセリフでは止まる（ユーザー操作待ち）
+        if next.characterName == next.rightCharacter {
+            return
+        }
+
+        // 相手のセリフは自動で進める
+        isTyping = true
+        pendingMessage = next
+        DispatchQueue.main.asyncAfter(deadline: .now()) {
+            if let msg = pendingMessage {
+                let newMsg = ChatMessage(scene: msg)
+                chatMessage.append(newMsg)
+                netomoScene = msg
+            }
+            pendingMessage = nil
+            isTyping = false
+
+            // 続きがあるか再帰
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                proceedToNextIfNeeded()
+            }
+        }
     }
 }

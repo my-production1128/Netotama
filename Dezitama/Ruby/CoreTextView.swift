@@ -55,6 +55,7 @@ extension String {
 extension NSAttributedString {
     func containsRubyAnnotation() -> Bool {
         var found = false
+
         self.enumerateAttribute(
             NSAttributedString.Key(rawValue: kCTRubyAnnotationAttributeName as String),
             in: NSRange(location: 0, length: self.length),
@@ -65,6 +66,7 @@ extension NSAttributedString {
                 stop.pointee = true
             }
         }
+//        print(attributedText)
         return found
     }
 }
@@ -160,7 +162,7 @@ class RubyLabel: UILabel {
 }
 
 
-// MARK: - SwiftUI ラッパー
+// MARK:  SwiftUI ラッパー
 struct RubyLabelRepresentable: UIViewRepresentable {
     let attributedText: NSAttributedString
     let font: UIFont
