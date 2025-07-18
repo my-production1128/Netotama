@@ -19,7 +19,7 @@ struct Dialogue: Identifiable {
 
 
 //step2の分岐ありのストーリー
-struct NetomoBranching: Identifiable {
+struct Branching: Identifiable {
     let id = UUID()
     let storyId: String
     let sceneId: String
@@ -53,8 +53,13 @@ enum CharacterName: String {
     case Curl_sorry
     case Curl_tear
 
+//    お母さん
     case Mother
     case Mother_normal
+
+//    アレック
+//    コニー
+//    セシル
 
 
     var displayName: String {

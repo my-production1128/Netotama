@@ -9,34 +9,34 @@ import SwiftUI
 // 一つのメッセージの情報を保持する構造体
 struct ChatMessage: Identifiable {
     let id = UUID()
-    let scene: NetomoBranching
+    let scene: Branching
     var isAnimating: Bool = true
     var showText: Bool = false
 }
 
 struct ChatSceneView: View {
-    let branchingMap: [String: NetomoBranching]
+    let branchingMap: [String: Branching]
     let initialSceneId: String
     var onNextScene: (String) -> Void
 
 
     @State var isTyping = false
-    @State var pendingMessage: NetomoBranching? = nil
+    @State var pendingMessage: Branching? = nil
 
 //     アニメーションの表示
     @State var animationTrigger = true
     @State var chatMessage: [ChatMessage] = []
     @State private var triangleAnimationTrigger = false
     @State private var offsetY: CGFloat = 0.0
-    @State var currentChoiceScene: NetomoBranching? = nil
+    @State var currentChoiceScene: Branching? = nil
 
 
     @State private var isLarge: Bool = false
 
 
 //    scvファイル
-    @Binding var netomoScene: NetomoBranching
-    @Binding var netomoBranchings: [NetomoBranching]
+    @Binding var netomoScene: Branching
+    @Binding var netomoBranchings: [Branching]
 //    選択肢のポップアップを表示する
     @Binding var isPopupVisible: Bool
 //    @Binding var nextChat: Bool

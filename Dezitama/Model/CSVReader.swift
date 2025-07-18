@@ -43,8 +43,8 @@ func loadCSV(fileName: String) -> [Dialogue] {
 }
 
 
-func loadNetomoBranchingCSV(fileName: String) -> [NetomoBranching] {
-    var result: [NetomoBranching] = []
+func loadNetomoBranchingCSV(fileName: String) -> [Branching] {
+    var result: [Branching] = []
 
     guard let path = Bundle.main.path(forResource: fileName, ofType: "csv") else {
         print("❌ ファイルが見つかりません: \(fileName).csv")
@@ -75,7 +75,7 @@ func loadNetomoBranchingCSV(fileName: String) -> [NetomoBranching] {
                 }
             }()
 
-            let b = NetomoBranching(
+            let b = Branching(
                 storyId: cols[0],
                 sceneId: cols[1],
                 sceneType: cols[2],

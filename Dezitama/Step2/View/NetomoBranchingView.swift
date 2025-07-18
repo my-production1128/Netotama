@@ -28,13 +28,13 @@ struct NetomoBranchingView: View {
 
 
     @Binding var path: NavigationPath
-    @Binding var netomoScene: NetomoBranching
-    @Binding var netomoBranchings: [NetomoBranching]
+    @Binding var netomoScene: Branching
+    @Binding var netomoBranchings: [Branching]
 
 
 
-    private var branchingMap: [String: NetomoBranching] {
-        var map: [String: NetomoBranching] = [:]
+    private var branchingMap: [String: Branching] {
+        var map: [String: Branching] = [:]
         for b in netomoBranchings {
             if map[b.sceneId] == nil {
                 map[b.sceneId] = b
@@ -53,6 +53,116 @@ struct NetomoBranchingView: View {
                     VStack {
                         Spacer()
 //                    scenetypeがchatの時
+
+                        switch current.sceneType {
+                            case "chat":
+                            ChatSceneView(
+                                branchingMap: branchingMap,
+                                initialSceneId: currentSceneId,
+                                onNextScene: { nextId in
+                                    historyStack.append(currentSceneId)
+                                    currentSceneId = nextId
+                                },
+                                netomoScene: $netomoScene,
+                                netomoBranchings: $netomoBranchings,
+                                isPopupVisible: $isPopupVisible
+                            )
+                        default:
+                            ZStack {
+                                HStack {
+//                                    話し手が1人だった時
+                                    if !current.leftCharacter.isEmpty && current.rightCharacter.isEmpty {
+                                        Spacer()
+                                        Image(current.leftCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 500)
+                                            .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
+                                        Spacer()
+
+                                    } else if current.leftCharacter.isEmpty && !current.rightCharacter.isEmpty {
+                                        Spacer()
+
+                                        Image(current.rightCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 500)
+                                            .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
+                                        Spacer()
+                                    } else {
+                                        Image(current.leftCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 450)
+
+                                        Image(current.rightCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+//                                                .renderingMode(.template)
+//                                            .grayscale(0.5)
+                                            .frame(height: 450)
+//                                                .foregroundStyle(Color.gray)
+                                    }
+                                }
+
+//                                Group{
+//                                     吹き出し背景
+                                    Image(current.speechBubble)
+                                        .resizable()
+                                        .frame(width: 950, height: 250)
+                                        .offset(x:-13, y: 0)
+                                        .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.8)
+
+//                                     キャラ名ラベル
+                                    Text(CharacterName(rawValue: current.characterName)?.displayName ?? current.characterName)
+                                        .font(.system(size: 35))
+                                        .font(.title)
+                                        .padding(6)
+                                        .cornerRadius(8)
+                                        .position(x: geometry.size.width * 0.22,y: geometry.size.height * 0.685)
+
+//                                    セリフ本文
+//                                    チャット以外専用のルビつきのテキスト
+//                                    WideRubyLabelRepresentable(
+//                                        attributedText: (current.text.replacingOccurrences(of: "<br>", with: "\n").createRuby()),
+//                                        font: .systemFont(ofSize: 30),
+//                                        textColor: .black,
+//                                        textAlignment: .left
+//                                    )
+//                                    .frame(width: 700, height: 500)
+//                                    .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.825)
+
+                                    TypingRubyLabelRepresentable(
+                                        attributedText: current.text.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
+                                        charInterval: 0.05,
+                                        font: .systemFont(ofSize: 30)
+                                    )
+                                    .frame(width: 700, height: 200)
+                                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+
+//                                     ナビゲーション
+                                    HStack {
+                                        Image("next_button")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 35)
+                                            .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
+                                            .offset(y: offsetY)
+                                            .onAppear {
+                                                startLoopingAnimation()
+                                            }
+                                            .onTapGesture {
+                                                if let next = branchingMap[current.nextSceneId] {
+                                                    historyStack.append(currentSceneId)
+                                                    currentSceneId = next.sceneId
+                                                }
+                                            }
+                                            .expandedTapArea(20)
+                                    }
+//                                }
+                            }
+                        }
+                        /*
                         if current.sceneType == "chat" {
                             ChatSceneView(
                                 branchingMap: branchingMap,
@@ -162,6 +272,7 @@ struct NetomoBranchingView: View {
 //                                }
                             }
                         }
+                        */
                     }
                     .background {
                         Image(current.background)

@@ -18,8 +18,14 @@ struct ContentView: View {
 
     @State private var path = NavigationPath()
     @State private var isTextVisible: Bool = false// テキストの点滅
-    @State var netomoBranchings: [NetomoBranching] = []
-    @State var netomoScene: NetomoBranching = NetomoBranching(
+    @State var netomoBranchings: [Branching] = []
+    @State var netomoScene: Branching = Branching(
+        storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
+        background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
+        choiceText1: "", choiceText2: ""
+    )
+    @State var groupchatBranchings: [Branching] = []
+    @State var gropchatScene: Branching = Branching(
         storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
         background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
         choiceText1: "", choiceText2: ""
@@ -49,6 +55,7 @@ struct ContentView: View {
                 groupchatDialogues = loadCSV(fileName: "groupchat_var5_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
                 netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver19")//ネトモの分岐ありのストーリー
+                groupchatBranchings = loadNetomoBranchingCSV(fileName: "gruopchat_branch_ver1")
 
             }
             .navigationDestination(for: ViewBuilderPath.self) { viewID in
