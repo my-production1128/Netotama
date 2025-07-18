@@ -123,12 +123,12 @@ import UIKit
     open func continueTyping() {
         
         guard typingOver == false else {
-            print("CLTypingLabel: Animation is already over")
+//            print("CLTypingLabel: Animation is already over")
             return
         }
         
         guard typingStopped == true else {
-            print("CLTypingLabel: Animation is not stopped")
+//            print("CLTypingLabel: Animation is not stopped")
             return
         }
         guard let stoppedSubstring = stoppedSubstring else {

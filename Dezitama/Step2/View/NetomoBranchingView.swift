@@ -21,17 +21,20 @@ struct NetomoBranchingView: View {
     @State private var currentCharIndex = 0
     @State private var timer: Timer? = nil
 
+    @State private var isTypingComplete: Bool = false
+    @State private var shouldSkipTyping: Bool = false
+
 
 
 
     @Binding var path: NavigationPath
-    @Binding var netomoScene: NetomoBranching
-    @Binding var netomoBranchings: [NetomoBranching]
+    @Binding var netomoScene: Branching
+    @Binding var netomoBranchings: [Branching]
 
 
 
-    private var branchingMap: [String: NetomoBranching] {
-        var map: [String: NetomoBranching] = [:]
+    private var branchingMap: [String: Branching] {
+        var map: [String: Branching] = [:]
         for b in netomoBranchings {
             if map[b.sceneId] == nil {
                 map[b.sceneId] = b
@@ -49,7 +52,117 @@ struct NetomoBranchingView: View {
                 if let current = branchingMap[currentSceneId] {
                     VStack {
                         Spacer()
-                        //                    scenetypeがchatの時
+//                    scenetypeがchatの時
+
+                        switch current.sceneType {
+                            case "chat":
+                            ChatSceneView(
+                                branchingMap: branchingMap,
+                                initialSceneId: currentSceneId,
+                                onNextScene: { nextId in
+                                    historyStack.append(currentSceneId)
+                                    currentSceneId = nextId
+                                },
+                                netomoScene: $netomoScene,
+                                netomoBranchings: $netomoBranchings,
+                                isPopupVisible: $isPopupVisible
+                            )
+                        default:
+                            ZStack {
+                                HStack {
+//                                    話し手が1人だった時
+                                    if !current.leftCharacter.isEmpty && current.rightCharacter.isEmpty {
+                                        Spacer()
+                                        Image(current.leftCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 500)
+                                            .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
+                                        Spacer()
+
+                                    } else if current.leftCharacter.isEmpty && !current.rightCharacter.isEmpty {
+                                        Spacer()
+
+                                        Image(current.rightCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 500)
+                                            .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
+                                        Spacer()
+                                    } else {
+                                        Image(current.leftCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 450)
+
+                                        Image(current.rightCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+//                                                .renderingMode(.template)
+//                                            .grayscale(0.5)
+                                            .frame(height: 450)
+//                                                .foregroundStyle(Color.gray)
+                                    }
+                                }
+
+//                                Group{
+//                                     吹き出し背景
+                                    Image(current.speechBubble)
+                                        .resizable()
+                                        .frame(width: 950, height: 250)
+                                        .offset(x:-13, y: 0)
+                                        .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.8)
+
+//                                     キャラ名ラベル
+                                    Text(CharacterName(rawValue: current.characterName)?.displayName ?? current.characterName)
+                                        .font(.system(size: 35))
+                                        .font(.title)
+                                        .padding(6)
+                                        .cornerRadius(8)
+                                        .position(x: geometry.size.width * 0.22,y: geometry.size.height * 0.685)
+
+//                                    セリフ本文
+//                                    チャット以外専用のルビつきのテキスト
+//                                    WideRubyLabelRepresentable(
+//                                        attributedText: (current.text.replacingOccurrences(of: "<br>", with: "\n").createRuby()),
+//                                        font: .systemFont(ofSize: 30),
+//                                        textColor: .black,
+//                                        textAlignment: .left
+//                                    )
+//                                    .frame(width: 700, height: 500)
+//                                    .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.825)
+
+                                    TypingRubyLabelRepresentable(
+                                        attributedText: current.text.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
+                                        charInterval: 0.05,
+                                        font: .systemFont(ofSize: 30)
+                                    )
+                                    .frame(width: 700, height: 200)
+                                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+
+//                                     ナビゲーション
+                                    HStack {
+                                        Image("next_button")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 35)
+                                            .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
+                                            .offset(y: offsetY)
+                                            .onAppear {
+                                                startLoopingAnimation()
+                                            }
+                                            .onTapGesture {
+                                                if let next = branchingMap[current.nextSceneId] {
+                                                    historyStack.append(currentSceneId)
+                                                    currentSceneId = next.sceneId
+                                                }
+                                            }
+                                            .expandedTapArea(20)
+                                    }
+//                                }
+                            }
+                        }
+                        /*
                         if current.sceneType == "chat" {
                             ChatSceneView(
                                 branchingMap: branchingMap,
@@ -66,7 +179,7 @@ struct NetomoBranchingView: View {
 //                        scenetypeがchatじゃない時
                             ZStack {
                                 HStack {
-                                    //                                    話し手が1人だった時
+//                                    話し手が1人だった時
                                     if !current.leftCharacter.isEmpty && current.rightCharacter.isEmpty {
                                         Spacer()
                                         Image(current.leftCharacter)
@@ -95,23 +208,23 @@ struct NetomoBranchingView: View {
                                         Image(current.rightCharacter)
                                             .resizable()
                                             .scaledToFit()
-                                        //                                                .renderingMode(.template)
+//                                                .renderingMode(.template)
 //                                            .grayscale(0.5)
                                             .frame(height: 450)
-                                        //                                                .foregroundStyle(Color.gray)
+//                                                .foregroundStyle(Color.gray)
                                     }
                                 }
 
-                                Group{
-                                    // 吹き出し背景
+//                                Group{
+//                                     吹き出し背景
                                     Image(current.speechBubble)
                                         .resizable()
                                         .frame(width: 950, height: 250)
                                         .offset(x:-13, y: 0)
                                         .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.8)
 
-                                    // キャラ名ラベル
-                                    Text(current.characterName)
+//                                     キャラ名ラベル
+                                    Text(CharacterName(rawValue: current.characterName)?.displayName ?? current.characterName)
                                         .font(.system(size: 35))
                                         .font(.title)
                                         .padding(6)
@@ -129,33 +242,15 @@ struct NetomoBranchingView: View {
 //                                    .frame(width: 700, height: 500)
 //                                    .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.825)
 
-//                                    WideRubyLabelRepresentable(
-//                                        attributedText: (displayedText.replacingOccurrences(of: "<br>", with: "\n").createRuby()),
-//                                        font: .systemFont(ofSize: 30),
-//                                        textColor: .black,
-//                                        textAlignment: .left
-//                                    )
-//                                    .frame(width: 700, height: 500)
-//                                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
-//                                    .onChange(of: currentSceneId) {
-//                                        if let newScene = branchingMap[currentSceneId] {
-//                                            startTyping(fullText: newScene.text)
-//                                        }
-//                                    }
-
                                     TypingRubyLabelRepresentable(
-                                        attributedText: current.text.replacingOccurrences(of: "<br>", with: "\n").createRuby(),
+                                        attributedText: current.text.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
                                         charInterval: 0.05,
                                         font: .systemFont(ofSize: 30)
                                     )
-                                    .frame(width: 700, height: 500)
+                                    .frame(width: 700, height: 200)
                                     .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
 
-
-
-
-
-                                    // ナビゲーション
+//                                     ナビゲーション
                                     HStack {
                                         Image("next_button")
                                             .resizable()
@@ -172,12 +267,12 @@ struct NetomoBranchingView: View {
                                                     currentSceneId = next.sceneId
                                                 }
                                             }
-//                                            .contentShape(Rectangle())
                                             .expandedTapArea(20)
                                     }
-                                }
+//                                }
                             }
                         }
+                        */
                     }
                     .background {
                         Image(current.background)
@@ -201,10 +296,10 @@ struct NetomoBranchingView: View {
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
                                 .padding(.top, 30)
-                            //                        .overlay{
-                            //                            // isGrayOutがtrueの時にグレーアウト
-                            //                            Color.black.opacity(isPopupVisible ? 0.45 : 0)
-                            //                        }
+//                        .overlay{
+//                            // isGrayOutがtrueの時にグレーアウト
+//                            Color.black.opacity(isPopupVisible ? 0.45 : 0)
+//                        }
                         }
                         Spacer()
                     }
@@ -234,7 +329,6 @@ struct NetomoBranchingView: View {
         displayedText = ""
         currentCharIndex = 0
         timer?.invalidate()
-        
 
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { t in
             if currentCharIndex < fullText.count {
@@ -251,14 +345,14 @@ struct NetomoBranchingView: View {
 
 
 extension View {
-    /// 見た目を変えずにタップ領域だけ広げる
+/// 見た目を変えずにタップ領域だけ広げる
     func expandedTapArea(_ size: CGFloat) -> some View {
         self
-            // 1) size 分だけ余分に padding を足して…
+// 1) size 分だけ余分に padding を足して…
             .padding(size)
-            // 2) その余分な部分も含めてタップ可能にし…
+// 2) その余分な部分も含めてタップ可能にし…
             .contentShape(Rectangle())
-            // 3) レイアウト上は元に戻す
+// 3) レイアウト上は元に戻す
             .padding(-size)
     }
 }

@@ -19,10 +19,10 @@ struct NetomoView: View {
     var body: some View {
         Group {
             if currentIndex < netomoDialogues.count {
-                let _ = print(netomoDialogues.count)
+//                let _ = print(netomoDialogues.count)
                 sceneView(for: netomoDialogues[currentIndex])
             } else {
-                let _ = print(netomoDialogues.count)
+//                let _ = print(netomoDialogues.count)
                 // 終了画面やChoiceViewへの遷移
                 ZStack {
                     Image("sky")
@@ -408,10 +408,13 @@ struct NetomoView: View {
                     .cornerRadius(12)
                     .padding()
                     .contentShape(Rectangle())
-                
+
+
+//                選択画面に戻る
                 if currentIndex >= netomoDialogues.count - 1 {
                     Button(action: {
-                        goChoiceView = true
+//                        goChoiceView = true
+                        path.removeLast()
                     }) {
                         Image("story_back")
                             .resizable()

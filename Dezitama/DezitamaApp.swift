@@ -11,6 +11,7 @@ import SwiftUI
 struct DezitamaApp: App {
     var body: some Scene {
         WindowGroup {
+//            SplashScreenView()
             ContentView()
         }
     }

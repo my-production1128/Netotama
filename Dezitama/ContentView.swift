@@ -13,16 +13,19 @@ struct ContentView: View {
     @State var groupchatDialogues: [Dialogue] = []
     @State private var kakusanDialogues: [Dialogue] = []
 
-    // LottieViewの表示管理
-    @State var isLottieViewVisible: Bool = true
-
 
 
 
     @State private var path = NavigationPath()
     @State private var isTextVisible: Bool = false// テキストの点滅
-    @State var netomoBranchings: [NetomoBranching] = []
-    @State var netomoScene: NetomoBranching = NetomoBranching(
+    @State var netomoBranchings: [Branching] = []
+    @State var netomoScene: Branching = Branching(
+        storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
+        background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
+        choiceText1: "", choiceText2: ""
+    )
+    @State var groupchatBranchings: [Branching] = []
+    @State var gropchatScene: Branching = Branching(
         storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
         background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
         choiceText1: "", choiceText2: ""
@@ -36,22 +39,9 @@ struct ContentView: View {
                         .ignoresSafeArea()
                 VStack {
                     Spacer()
-//                    Image("デジたまアイコン仮")
-//                        .resizable()
-//                        .frame(width: 500, height: 500)
-//                        .padding(50)
-//                    if isLottieViewVisible{
-//                        LottieView(filename: "egg_start_ver2")
-//                            .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-//                            .background(Color.clear)
-//                            .edgesIgnoringSafeArea(.all)
-//                    }
 
-//                    NavigationLink(destination: ChoiceView()) {
-//                        Text("tap to start")
-//                    }
                     Button {
-                        path.append(selectedPath.ChoiceView)
+                        path.append(ViewBuilderPath.ChoiceView)
                     } label: {
                         Text("Tap to Start")
                     }
@@ -59,14 +49,16 @@ struct ContentView: View {
                     Spacer()
                 }
             }
+//            csvファイルの読み込み
             .onAppear {
                 netomoDialogues = loadCSV(fileName: "netomo_var8_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_var5_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
-                netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver11")//ネトモの分岐ありのストーリー
+                netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver19")//ネトモの分岐ありのストーリー
+                groupchatBranchings = loadNetomoBranchingCSV(fileName: "gruopchat_branch_ver1")
 
             }
-            .navigationDestination(for: selectedPath.self) { viewID in
+            .navigationDestination(for: ViewBuilderPath.self) { viewID in
                 switch viewID {
                 case .ContentView:
                     ContentView()

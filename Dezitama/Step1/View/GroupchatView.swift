@@ -30,6 +30,8 @@ struct GroupchatView: View {
                         .scaledToFill()
                         .ignoresSafeArea()
 
+
+//                    選択画面に戻る
                     Button(action: {
                         path.removeLast()
                     }) {
