@@ -17,8 +17,8 @@ struct ChoiceView: View {
     @Binding var path: NavigationPath
     @Binding var netomoScene: Branching
     @Binding var netomoBranchings: [Branching]
-    @Binding var groupScene: Branching
-    @Binding var groupBranchings: [Branching]
+//    @Binding var groupScene: Branching
+//    @Binding var groupBranchings: [Branching]
 
 
     var body: some View {
