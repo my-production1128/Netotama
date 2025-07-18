@@ -17,3 +17,13 @@ enum ViewBuilderPath: Hashable {
     case kakusanView
     case NetomoView
 }
+
+//enum AboutContentType: String, Identifiable {
+//    var id: String { rawValue }
+//
+//    case about = "アプリについて"
+//    case terms = "利用規約"
+//    case guide = "使い方"
+//    case credit = "クレジット"
+//}
+
