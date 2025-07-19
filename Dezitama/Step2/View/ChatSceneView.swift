@@ -35,8 +35,10 @@ struct ChatSceneView: View {
 
 
 //    scvファイル
-    @Binding var netomoScene: Branching
-    @Binding var netomoBranchings: [Branching]
+    @Binding var allBranchings: [Branching]
+    @Binding var allScene: Branching
+//    @Binding var netomoScene: Branching
+//    @Binding var netomoBranchings: [Branching]
 //    選択肢のポップアップを表示する
     @Binding var isPopupVisible: Bool
 //    @Binding var nextChat: Bool
@@ -114,7 +116,7 @@ struct ChatSceneView: View {
                                         if next.characterName == next.rightCharacter {
 //                                             自分のセリフ（即時表示）
                                             let newMsg = ChatMessage(scene: next, isAnimating: false, showText: true)
-                                            netomoScene = next //  最新のシーンを更新
+                                            allScene = next //  最新のシーンを更新
 
                                             if next.isChoice == true {
                                                 isPopupVisible = true // シーン追加・更新後に表示
@@ -213,7 +215,7 @@ struct ChatSceneView: View {
                 .onAppear {
                     if let first = branchingMap[initialSceneId] {
                         chatMessage = [ChatMessage(scene: first)]
-                        netomoScene = first
+                        allScene = first
 
                         // 最初のセリフがネトモなら自動で続ける
                         if first.characterName != first.rightCharacter {
@@ -402,7 +404,7 @@ struct ChatSceneView: View {
             if let msg = pendingMessage {
                 let newMsg = ChatMessage(scene: msg)
                 chatMessage.append(newMsg)
-                netomoScene = msg
+                allScene = msg
             }
             pendingMessage = nil
             isTyping = false

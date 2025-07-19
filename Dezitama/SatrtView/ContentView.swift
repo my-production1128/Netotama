@@ -20,18 +20,30 @@ struct ContentView: View {
 
     @State private var path = NavigationPath()
 //    @State private var isTextVisible: Bool = false// テキストの点滅
-    @State var netomoBranchings: [Branching] = []
-    @State var netomoScene: Branching = Branching(
+
+
+    // 全てのシナリオデータを保持する一つの配列
+    @State var allBranchings: [Branching] = []
+    @State var allScene: Branching = Branching(
         storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
         background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
         choiceText1: "", choiceText2: ""
     )
-    @State var groupchatBranchings: [Branching] = []
-    @State var gropchatScene: Branching = Branching(
-        storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
-        background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
-        choiceText1: "", choiceText2: ""
-    )
+
+//    @State var netomoBranchings: [Branching] = []
+//    @State var allScene: Branching = Branching(
+//        storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
+//        background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
+//        choiceText1: "", choiceText2: ""
+//    )
+//    @State var groupBranchings: [Branching] = []
+//    @State var allScene: Branching = Branching(
+//        storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
+//        background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
+//        choiceText1: "", choiceText2: ""
+//    )
+
+
 
 
     var body: some View {
@@ -43,7 +55,6 @@ struct ContentView: View {
                     if isLottieViewVisible{
                         LottieView(filename: "egg_start_ver5_0")
                             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-//                            .background(Color.clear)
                             .edgesIgnoringSafeArea(.all)
                     }
                     MenuView(isOpen: $isMenuOpen)
@@ -72,9 +83,10 @@ struct ContentView: View {
                 netomoDialogues = loadCSV(fileName: "netomo_var8_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_var5_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
-                netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver19")//ネトモの分岐ありのストーリー
-                groupchatBranchings = loadNetomoBranchingCSV(fileName: "gruopchat_branch_ver1")
-
+                let netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver19")
+                let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver2")
+                self.allBranchings = netomoBranchings + groupBranchings
+                 print(self.allBranchings.map { $0.storyId })
             }
             .navigationDestination(for: ViewBuilderPath.self) { viewID in
                 switch viewID {
@@ -82,15 +94,29 @@ struct ContentView: View {
                     ContentView()
 
                 case .ChoiceView:
-                    ChoiceView(path: $path,
-                               netomoScene: $netomoScene,
-                               netomoBranchings: $netomoBranchings)
+                    ChoiceView(path: $path
+//                               allBranchings: $allBranchings,
+//                               allScene: $allScene
+                    )
 
-                case .NetomoBranchingView:
-                    NetomoBranchingView(path: $path,
-                                             netomoScene: $netomoScene,
-                                             netomoBranchings: $netomoBranchings)
-                    .navigationBarBackButtonHidden(true)
+                case .StoryBranchView(let StoryId):
+                    StoryBranchView(path: $path,
+                                    allBranchings: $allBranchings,
+                                    allScene: $allScene,
+                                    StoryId: StoryId
+                    )
+//                    switch storyId {
+//                    case "netomo":
+//                        StoryBranchView(path: $path,
+//                                        allBranchings: $allBranchings,
+//                                        allScene: $allScene)
+//
+//                    case "groupchat":
+//                        StoryBranchView(path: $path,
+//                                        allBranchings: $allBranchings,
+//                                        allScene: $allScene)
+//                    }
+//                    .navigationBarBackButtonHidden(true)
 
                 case .GroupchatView:
                     GroupchatView(path: $path, groupchatDialogues: $groupchatDialogues)
