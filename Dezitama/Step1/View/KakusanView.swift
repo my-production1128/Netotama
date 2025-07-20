@@ -33,7 +33,7 @@ struct KakusanView: View {
             .onTapGesture {
                 currentIndex += 1
             }
-            
+
         //公園
         }else if current.background == "Park" {
             ZStack{
@@ -42,7 +42,7 @@ struct KakusanView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //キャラクター
                 if current.characterName == "コニー" {
                     HStack{
@@ -52,7 +52,7 @@ struct KakusanView: View {
                         Image("セシル")
                             .resizable()
                             .frame(width: 350, height: 550)
-                        
+
                     }
                 } else {
                     HStack{
@@ -62,7 +62,7 @@ struct KakusanView: View {
                         Image("セシル")
                             .resizable()
                             .frame(width: 400, height: 600)
-                        
+
                     }
                 }
                 //吹き出し
@@ -70,13 +70,13 @@ struct KakusanView: View {
                     .resizable()
                     .frame(width: 900, height: 250)
                     .offset(x: 0, y:200)
-                
+
                 //名前
                 Text(current.characterName)
                     .font(.largeTitle)
                     .foregroundColor(.black)
                     .offset(x:-300, y:90)
-                
+
                 //テキスト
                 Text(current.dialogueText)
                     .font(.largeTitle)
@@ -84,7 +84,7 @@ struct KakusanView: View {
                     .multilineTextAlignment(.center)
                     .cornerRadius(12)
                     .offset(y:200)
-                
+
                 //ボタン
                 Button(action: {
                     currentIndex += 1
@@ -97,7 +97,7 @@ struct KakusanView: View {
                 }
                 .offset(x:400,y:300)
             }
-            
+
         //逆上がり動画
         } else if current.background == "Move1" {
             ZStack{
@@ -109,7 +109,7 @@ struct KakusanView: View {
             .onTapGesture {
                 currentIndex += 1
             }
-            
+
         //チャット１
         } else if current.background == "Chat1" {
             ZStack{
@@ -118,7 +118,7 @@ struct KakusanView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //テキスト
                 ZStack(alignment: .bottom) {
                     ScrollViewReader { proxy in
@@ -127,22 +127,22 @@ struct KakusanView: View {
                                 ForEach(0...currentIndex, id: \.self) { index in
                                     let dialogue = kakusanDialogues[index]
                                     let isRight = dialogue.characterName == "サンドラ"
-                                    
+
                                     HStack(alignment: .bottom) {
                                         if isRight { Spacer() }
-                                        
+
                                         if !isRight {
                                             Image("nick_icon")
                                                 .resizable()
                                                 .frame(width: 30, height: 30)
                                                 .padding(.leading, 8)
                                         }
-                                        
+
                                         VStack(alignment: .leading, spacing: 4) {
                                             Text(dialogue.characterName)
                                                 .font(.caption)
                                                 .foregroundColor(.white)
-                                            
+
                                             Text(dialogue.dialogueText)
                                                 .padding()
                                                 .font(.title3)
@@ -152,15 +152,15 @@ struct KakusanView: View {
                                         }
                                         .frame(maxWidth: 200, alignment: isRight ? .trailing : .leading)
                                         .padding(isRight ? .trailing : .leading, 0)
-                                        
-                                        
+
+
                                         if isRight {
                                             Image("sandra_icon")
                                                 .resizable()
                                                 .frame(width: 30, height: 30)
                                                 .padding(.trailing, 8)
                                         }
-                                        
+
                                         if !isRight { Spacer() }
                                     }
                                     .id(index)
@@ -177,7 +177,7 @@ struct KakusanView: View {
                             }
                         }
                     }
-                    
+
                     //ボタン
                     Button(action: {
                         currentIndex += 1
@@ -191,7 +191,7 @@ struct KakusanView: View {
                     .offset(x:175,y:115)
                 }
             }
-            
+
         //Chat画面２
         } else if current.background == "Chat2" {
             ZStack{
@@ -200,7 +200,7 @@ struct KakusanView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //テキスト
                 ZStack(alignment: .bottom) {
                     ScrollViewReader { proxy in
@@ -209,22 +209,22 @@ struct KakusanView: View {
                                 ForEach(0...currentIndex, id: \.self) { index in
                                     let dialogue = kakusanDialogues[index]
                                     let isRight = dialogue.characterName == "サンドラ"
-                                    
+
                                     HStack(alignment: .bottom) {
                                         if isRight { Spacer() }
-                                        
+
                                         if !isRight {
                                             Image("nick_icon")
                                                 .resizable()
                                                 .frame(width: 30, height: 30)
                                                 .padding(.leading, 8)
                                         }
-                                        
+
                                         VStack(alignment: .leading, spacing: 4) {
                                             Text(dialogue.characterName)
                                                 .font(.caption)
                                                 .foregroundColor(.white)
-                                            
+
                                             Text(dialogue.dialogueText)
                                                 .padding()
                                                 .font(.title3)
@@ -234,15 +234,15 @@ struct KakusanView: View {
                                         }
                                         .frame(maxWidth: 200, alignment: isRight ? .trailing : .leading)
                                         .padding(isRight ? .trailing : .leading, 0)
-                                        
-                                        
+
+
                                         if isRight {
                                             Image("sandra_icon")
                                                 .resizable()
                                                 .frame(width: 30, height: 30)
                                                 .padding(.trailing, 8)
                                         }
-                                        
+
                                         if !isRight { Spacer() }
                                     }
                                     .id(index)
@@ -259,7 +259,7 @@ struct KakusanView: View {
                             }
                         }
                     }
-                    
+
                     //ボタン
                     Button(action: {
                         currentIndex += 1
@@ -273,7 +273,7 @@ struct KakusanView: View {
                     .offset(x:175,y:115)
                 }
             }
-            
+
         //教室１
         } else if current.background == "Classroom1" {
             ZStack{
@@ -282,7 +282,7 @@ struct KakusanView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //キャラクター
                 if current.characterName == "コニー" {
                     HStack{
@@ -292,7 +292,7 @@ struct KakusanView: View {
                         Image("セシル")
                             .resizable()
                             .frame(width: 350, height: 550)
-                        
+
                     }
                 } else {
                     HStack{
@@ -302,7 +302,7 @@ struct KakusanView: View {
                         Image("セシル")
                             .resizable()
                             .frame(width: 400, height: 600)
-                        
+
                     }
                 }
                 //吹き出し
@@ -310,13 +310,13 @@ struct KakusanView: View {
                     .resizable()
                     .frame(width: 900, height: 250)
                     .offset(x: 0, y:200)
-                
+
                 //名前
                 Text(current.characterName)
                     .font(.largeTitle)
                     .foregroundColor(.black)
                     .offset(x:-300, y:90)
-                
+
                 //テキスト
                 Text(current.dialogueText)
                     .font(.largeTitle)
@@ -324,7 +324,7 @@ struct KakusanView: View {
                     .multilineTextAlignment(.center)
                     .cornerRadius(12)
                     .offset(y:200)
-                
+
                 //ボタン
                 Button(action: {
                     currentIndex += 1
@@ -337,7 +337,7 @@ struct KakusanView: View {
                 }
                 .offset(x:400,y:300)
             }
-            
+
         //コニーの家
         } else if current.background == "Cony" {
             ZStack{
@@ -346,7 +346,7 @@ struct KakusanView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //キャラクター
                 if current.characterName == "コニー" {
                     HStack{
@@ -356,7 +356,7 @@ struct KakusanView: View {
                         Image("セシル")
                             .resizable()
                             .frame(width: 350, height: 550)
-                        
+
                     }
                 } else {
                     HStack{
@@ -366,7 +366,7 @@ struct KakusanView: View {
                         Image("セシル")
                             .resizable()
                             .frame(width: 400, height: 600)
-                        
+
                     }
                 }
                 //吹き出し
@@ -374,13 +374,13 @@ struct KakusanView: View {
                     .resizable()
                     .frame(width: 900, height: 250)
                     .offset(x: 0, y:200)
-                
+
                 //名前
                 Text(current.characterName)
                     .font(.largeTitle)
                     .foregroundColor(.black)
                     .offset(x:-300, y:90)
-                
+
                 //テキスト
                 Text(current.dialogueText)
                     .font(.largeTitle)
@@ -388,7 +388,7 @@ struct KakusanView: View {
                     .multilineTextAlignment(.center)
                     .cornerRadius(12)
                     .offset(y:200)
-                
+
                 //ボタン
                 Button(action: {
                     currentIndex += 1
@@ -401,7 +401,7 @@ struct KakusanView: View {
                 }
                 .offset(x:400,y:300)
             }
-        
+
         //教室２
         } else if current.background == "Classroom2" {
             ZStack{
@@ -410,7 +410,7 @@ struct KakusanView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //キャラクター
                 if current.characterName == "コニー" {
                     HStack{
@@ -420,7 +420,7 @@ struct KakusanView: View {
                         Image("セシル")
                             .resizable()
                             .frame(width: 350, height: 550)
-                        
+
                     }
                 } else {
                     HStack{
@@ -430,7 +430,7 @@ struct KakusanView: View {
                         Image("セシル")
                             .resizable()
                             .frame(width: 400, height: 600)
-                        
+
                     }
                 }
                 //吹き出し
@@ -438,13 +438,13 @@ struct KakusanView: View {
                     .resizable()
                     .frame(width: 900, height: 250)
                     .offset(x: 0, y:200)
-                
+
                 //名前
                 Text(current.characterName)
                     .font(.largeTitle)
                     .foregroundColor(.black)
                     .offset(x:-300, y:90)
-                
+
                 //テキスト
                 Text(current.dialogueText)
                     .font(.largeTitle)
@@ -452,7 +452,7 @@ struct KakusanView: View {
                     .multilineTextAlignment(.center)
                     .cornerRadius(12)
                     .offset(y:200)
-                
+
                 //ボタン
                 Button(action: {
                     currentIndex += 1
@@ -465,7 +465,7 @@ struct KakusanView: View {
                 }
                 .offset(x:400,y:300)
             }
-            
+
         //教室３
         } else if current.background == "Classroom3" {
             ZStack{
@@ -474,7 +474,7 @@ struct KakusanView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //キャラクター
                 if current.characterName == "コニー" {
                     HStack{
@@ -484,7 +484,7 @@ struct KakusanView: View {
                         Image("セシル")
                             .resizable()
                             .frame(width: 350, height: 550)
-                        
+
                     }
                 } else {
                     HStack{
@@ -494,7 +494,7 @@ struct KakusanView: View {
                         Image("セシル")
                             .resizable()
                             .frame(width: 400, height: 600)
-                        
+
                     }
                 }
                 //吹き出し
@@ -502,13 +502,13 @@ struct KakusanView: View {
                     .resizable()
                     .frame(width: 900, height: 250)
                     .offset(x: 0, y:200)
-                
+
                 //名前
                 Text(current.characterName)
                     .font(.largeTitle)
                     .foregroundColor(.black)
                     .offset(x:-300, y:90)
-                
+
                 //テキスト
                 Text(current.dialogueText)
                     .font(.largeTitle)
@@ -516,7 +516,7 @@ struct KakusanView: View {
                     .multilineTextAlignment(.center)
                     .cornerRadius(12)
                     .offset(y:200)
-                
+
                 //ボタン
                 Button(action: {
                     currentIndex += 1
@@ -535,14 +535,14 @@ struct KakusanView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 Text(current.dialogueText)
                     .font(.largeTitle)
                     .multilineTextAlignment(.center)
                     .cornerRadius(12)
                     .padding()
                     .contentShape(Rectangle())
-                
+
                 if currentIndex >= kakusanDialogues.count - 1 {
                     Button(action: {
 //                        goChoiceView = true

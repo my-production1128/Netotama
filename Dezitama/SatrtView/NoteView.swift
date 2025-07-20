@@ -1,14 +1,9 @@
 //
-//  ChoiceView.swift
+//  NoteView.swift
 //  Dezitama
 //
 //  Created by 末廣月渚 on 2025/06/27.
 //
-
-//.border(Color.black, width: 5)
-
-
-
 import SwiftUI
 
 struct ShakeEffect: GeometryEffect {
@@ -22,7 +17,7 @@ struct ShakeEffect: GeometryEffect {
     }
 }
 
-struct ChoiceView: View {
+struct NoteView: View {
     @State private var currentImageName: String = "note_gurutama"
 
     @Binding var path: NavigationPath

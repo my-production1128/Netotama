@@ -35,35 +35,13 @@ struct StoryBranchView: View {
     private var currentStoryBranchings: [Branching] {
         return allBranchings.filter { $0.storyId == StoryId }
     }
-//    @Binding var netomoScene: Branching
-//    @Binding var netomoBranchings: [Branching]
 
-//    @Binding var groupScene: Branching
-//    @Binding var groupBranchings: [Branching]
-
-
-//
-//    private var branchingMap: [String: Branching] {
-//        var map: [String: Branching] = [:]
-//        for b in allBranchings {
-//            if map[b.sceneId] == nil {
-//                map[b.sceneId] = b
-//            } else {
-//                print("⚠️ Duplicate sceneId found: \(b.sceneId)")
-//            }
-//        }
-//        return map
-//    }
-    // 2. 次に、その絞り込んだデータを使ってmapを作る【ここを修正！】
     private var branchingMap: [String: Branching] {
         var map: [String: Branching] = [:]
-
-        // allBranchings ではなく currentStoryBranchings を使う！
         for b in currentStoryBranchings {
             if map[b.sceneId] == nil {
                 map[b.sceneId] = b
             } else {
-                // 本来、この警告は出なくなるはず
                 print("⚠️ Duplicate sceneId found in the same story: \(b.sceneId)")
             }
         }
@@ -80,225 +58,105 @@ struct StoryBranchView: View {
 //                    scenetypeがchatの時
                         switch current.sceneType {
                             case "chat":
+//                            let _ =
                             ChatSceneView(
                                 branchingMap: branchingMap,
                                 initialSceneId: currentSceneId,
                                 onNextScene: { nextId in
+                                    print("StoryBranchView: onNextSceneが呼ばれました。nextId = \(nextId)")
                                     historyStack.append(currentSceneId)
                                     currentSceneId = nextId
                                 },
                                 allBranchings: $allBranchings,
                                 allScene: $allScene,
-//                                netomoScene: $netomoScene,
-//                                netomoBranchings: $netomoBranchings,
                                 isPopupVisible: $isPopupVisible
                             )
+
+                        case "talk":
+                            ZStack {
+                                HStack {
+//                                    話し手が1人だった時
+                                    if !current.leftCharacter.isEmpty && current.rightCharacter.isEmpty {
+                                        Spacer()
+                                        Image(current.leftCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 500)
+                                            .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
+                                        Spacer()
+
+                                    } else if current.leftCharacter.isEmpty && !current.rightCharacter.isEmpty {
+                                        Spacer()
+
+                                        Image(current.rightCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 500)
+                                            .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
+                                        Spacer()
+                                    } else {
+                                        Image(current.leftCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 450)
+
+                                        Image(current.rightCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(height: 450)
+                                    }
+                                }
+
+                                Group{
+//                                     吹き出し背景
+                                    Image(current.speechBubble)
+                                        .resizable()
+                                        .frame(width: 950, height: 250)
+                                        .offset(x:-13, y: 0)
+                                        .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.8)
+
+//                                     キャラ名ラベル
+                                    Text(CharacterName(rawValue: current.characterName)?.displayName ?? current.characterName)
+                                        .font(.system(size: 35))
+                                        .font(.title)
+                                        .padding(6)
+                                        .cornerRadius(8)
+                                        .position(x: geometry.size.width * 0.22,y: geometry.size.height * 0.673)
+
+                                    TypingRubyLabelRepresentable(
+                                        attributedText: current.text.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
+                                        charInterval: 0.05,
+                                        font: .systemFont(ofSize: 30)
+                                    )
+                                    .frame(width: 700, height: 200)
+                                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+
+//                                     ナビゲーション
+                                    HStack {
+                                        Image("next_button")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 35)
+                                            .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
+                                            .offset(y: offsetY)
+                                            .onAppear {
+                                                startLoopingAnimation()
+                                            }
+                                            .onTapGesture {
+                                                if let next = branchingMap[current.nextSceneId] {
+                                                    historyStack.append(currentSceneId)
+                                                    currentSceneId = next.sceneId
+                                                }
+                                            }
+                                            .expandedTapArea(20)
+                                    }
+                                }
+                                .offset(y: 20)
+                            }
+
                         default:
-                            ZStack {
-                                HStack {
-//                                    話し手が1人だった時
-                                    if !current.leftCharacter.isEmpty && current.rightCharacter.isEmpty {
-                                        Spacer()
-                                        Image(current.leftCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 500)
-                                            .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
-                                        Spacer()
-
-                                    } else if current.leftCharacter.isEmpty && !current.rightCharacter.isEmpty {
-                                        Spacer()
-
-                                        Image(current.rightCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 500)
-                                            .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
-                                        Spacer()
-                                    } else {
-                                        Image(current.leftCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 450)
-
-                                        Image(current.rightCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-//                                                .renderingMode(.template)
-//                                            .grayscale(0.5)
-                                            .frame(height: 450)
-//                                                .foregroundStyle(Color.gray)
-                                    }
-                                }
-
-//                                Group{
-//                                     吹き出し背景
-                                    Image(current.speechBubble)
-                                        .resizable()
-                                        .frame(width: 950, height: 250)
-                                        .offset(x:-13, y: 0)
-                                        .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.8)
-
-//                                     キャラ名ラベル
-                                    Text(CharacterName(rawValue: current.characterName)?.displayName ?? current.characterName)
-                                        .font(.system(size: 35))
-                                        .font(.title)
-                                        .padding(6)
-                                        .cornerRadius(8)
-                                        .position(x: geometry.size.width * 0.22,y: geometry.size.height * 0.685)
-
-//                                    セリフ本文
-//                                    チャット以外専用のルビつきのテキスト
-//                                    WideRubyLabelRepresentable(
-//                                        attributedText: (current.text.replacingOccurrences(of: "<br>", with: "\n").createRuby()),
-//                                        font: .systemFont(ofSize: 30),
-//                                        textColor: .black,
-//                                        textAlignment: .left
-//                                    )
-//                                    .frame(width: 700, height: 500)
-//                                    .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.825)
-
-                                    TypingRubyLabelRepresentable(
-                                        attributedText: current.text.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
-                                        charInterval: 0.05,
-                                        font: .systemFont(ofSize: 30)
-                                    )
-                                    .frame(width: 700, height: 200)
-                                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
-
-//                                     ナビゲーション
-                                    HStack {
-                                        Image("next_button")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 35)
-                                            .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
-                                            .offset(y: offsetY)
-                                            .onAppear {
-                                                startLoopingAnimation()
-                                            }
-                                            .onTapGesture {
-                                                if let next = branchingMap[current.nextSceneId] {
-                                                    historyStack.append(currentSceneId)
-                                                    currentSceneId = next.sceneId
-                                                }
-                                            }
-                                            .expandedTapArea(20)
-                                    }
-//                                }
-                            }
+                            Text("このscemneTypeは未対応です")
                         }
-                        /*
-                        if current.sceneType == "chat" {
-                            ChatSceneView(
-                                branchingMap: branchingMap,
-                                initialSceneId: current.sceneId,
-                                onNextScene: { nextId in
-                                    historyStack.append(currentSceneId)
-                                    currentSceneId = nextId
-                                },
-                                netomoScene: $netomoScene,
-                                netomoBranchings: $netomoBranchings,
-                                isPopupVisible: $isPopupVisible
-                            )
-                        } else {
-//                        scenetypeがchatじゃない時
-                            ZStack {
-                                HStack {
-//                                    話し手が1人だった時
-                                    if !current.leftCharacter.isEmpty && current.rightCharacter.isEmpty {
-                                        Spacer()
-                                        Image(current.leftCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 500)
-                                            .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
-                                        Spacer()
-
-                                    } else if current.leftCharacter.isEmpty && !current.rightCharacter.isEmpty {
-                                        Spacer()
-
-                                        Image(current.rightCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 500)
-                                            .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
-                                        Spacer()
-                                    } else {
-                                        Image(current.leftCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 450)
-
-
-                                        Image(current.rightCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-//                                                .renderingMode(.template)
-//                                            .grayscale(0.5)
-                                            .frame(height: 450)
-//                                                .foregroundStyle(Color.gray)
-                                    }
-                                }
-
-//                                Group{
-//                                     吹き出し背景
-                                    Image(current.speechBubble)
-                                        .resizable()
-                                        .frame(width: 950, height: 250)
-                                        .offset(x:-13, y: 0)
-                                        .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.8)
-
-//                                     キャラ名ラベル
-                                    Text(CharacterName(rawValue: current.characterName)?.displayName ?? current.characterName)
-                                        .font(.system(size: 35))
-                                        .font(.title)
-                                        .padding(6)
-                                        .cornerRadius(8)
-                                        .position(x: geometry.size.width * 0.22,y: geometry.size.height * 0.685)
-
-//                                    セリフ本文
-//                                    チャット以外専用のルビつきのテキスト
-//                                    WideRubyLabelRepresentable(
-//                                        attributedText: (current.text.replacingOccurrences(of: "<br>", with: "\n").createRuby()),
-//                                        font: .systemFont(ofSize: 30),
-//                                        textColor: .black,
-//                                        textAlignment: .left
-//                                    )
-//                                    .frame(width: 700, height: 500)
-//                                    .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.825)
-
-                                    TypingRubyLabelRepresentable(
-                                        attributedText: current.text.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
-                                        charInterval: 0.05,
-                                        font: .systemFont(ofSize: 30)
-                                    )
-                                    .frame(width: 700, height: 200)
-                                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
-
-//                                     ナビゲーション
-                                    HStack {
-                                        Image("next_button")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 35)
-                                            .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
-                                            .offset(y: offsetY)
-                                            .onAppear {
-                                                startLoopingAnimation()
-                                            }
-                                            .onTapGesture {
-                                                if let next = branchingMap[current.nextSceneId] {
-                                                    historyStack.append(currentSceneId)
-                                                    currentSceneId = next.sceneId
-                                                }
-                                            }
-                                            .expandedTapArea(20)
-                                    }
-//                                }
-                            }
-                        }
-                        */
                     }
                     .background {
                         Image(current.background)
@@ -321,7 +179,7 @@ struct StoryBranchView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
-                                .padding(.top, 30)
+                                .padding(.top, 0)
 //                        .overlay{
 //                            // isGrayOutがtrueの時にグレーアウト
 //                            Color.black.opacity(isPopupVisible ? 0.45 : 0)
@@ -342,6 +200,9 @@ struct StoryBranchView: View {
 
     //    三角形アニメーションがループする用の関数
     private func startLoopingAnimation() {
+        // 一旦アニメーションをリセット
+        offsetY = 0.0
+        // 新たにアニメーション
         let animation = Animation
             .easeInOut(duration: 0.6)
             .repeatForever(autoreverses: true)

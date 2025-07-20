@@ -37,11 +37,9 @@ struct ChatSceneView: View {
 //    scvファイル
     @Binding var allBranchings: [Branching]
     @Binding var allScene: Branching
-//    @Binding var netomoScene: Branching
-//    @Binding var netomoBranchings: [Branching]
+
 //    選択肢のポップアップを表示する
     @Binding var isPopupVisible: Bool
-//    @Binding var nextChat: Bool
 
 
 
@@ -79,16 +77,8 @@ struct ChatSceneView: View {
                         }
                     }
 
-                    VStack{
-                        Button {
-//                            デバック用関数
-                            skipAllChatScenes()
-                        }label: {
-                            Text("飛ばす")
-                                .font(.system(size: 20, weight: .bold, design: .default))
-                        }.offset(y: 30)
+//                    VStack{
                         HStack {
-
                             Image("soushin")
                                 .resizable()
                                 .scaledToFit()
@@ -111,7 +101,7 @@ struct ChatSceneView: View {
                                         return
                                     }
 
-                                    // 主人公のセリフだけボタンで進める
+//                                     主人公のセリフだけボタンで進める
                                     if next.sceneType == "chat" {
                                         if next.characterName == next.rightCharacter {
 //                                             自分のセリフ（即時表示）
@@ -119,15 +109,15 @@ struct ChatSceneView: View {
                                             allScene = next //  最新のシーンを更新
 
                                             if next.isChoice == true {
-                                                isPopupVisible = true // シーン追加・更新後に表示
-//                                                chatMessage.append(newMsg)
+                                                isPopupVisible = true
                                                 currentChoiceScene = next
                                             } else {
                                                 chatMessage.append(newMsg)
                                             }
-                                        } else {
-                                            // 相手のセリフは自動で進める（ここでは触らない）
                                         }
+//                                        else {
+//                                            // 相手のセリフは自動で進める（ここでは触らない）
+//                                        }
                                     } else {
                                         onNextScene(nextId)
                                     }
@@ -137,67 +127,21 @@ struct ChatSceneView: View {
                                         proceedToNextIfNeeded()
                                     }
                                 }
-
-//                                .onTapGesture {
-////                                  タイピング中または選択肢表示中なら何もしない
-//                                    if isTyping || isPopupVisible {
-////                                    print(" タイピング中または選択肢表示中なのでスキップ")
-//                                        return
-//                                    }
-//
-////                                     最後のメッセージが存在するか確認
-//                                    guard let last = chatMessage.last else {
-////                                    print(" 最後のメッセージが見つかりません")
-//                                        return
-//                                    }
-//
-//                                    let nextId = last.scene.nextSceneId
-//
-////                                     次のシーンが branchingMap に存在するか確認
-//                                    guard let next = branchingMap[nextId] else {
-//                                        print(" 次のシーンが見つかりません: \(nextId)")
-//                                        onNextScene(nextId) // 必要なら外部ハンドラーを呼ぶ
-//                                        return
-//                                    }
-////                                     chat のシーンの場合
-//                                    if next.sceneType == "chat" {
-//                                        if next.characterName != next.rightCharacter/*ネトモ：カール*/ {
-////                                             相手のセリフ（アニメーションあり）
-//                                            isTyping = true
-//                                            pendingMessage = next
-//                                            DispatchQueue.main.asyncAfter(deadline: .now()) {
-//                                                if let msg = pendingMessage {
-//                                                    let newMsg = ChatMessage(scene: msg)
-//                                                    chatMessage.append(newMsg)
-//                                                    netomoScene = msg  // 最新のシーンを更新
-//                                                }
-//                                                pendingMessage = nil
-//                                                isTyping = false
-//                                            }
-////                                            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
-////                                                proceedToNextIfNeeded()
-////                                            }
-//                                        } else {
-////                                             自分のセリフ（即時表示）
-//                                            let newMsg = ChatMessage(scene: next, isAnimating: false, showText: true)
-//                                            netomoScene = next //  最新のシーンを更新
-//
-//                                            if next.isChoice == true {
-//                                                isPopupVisible = true // シーン追加・更新後に表示
-////                                                chatMessage.append(newMsg)
-//                                                currentChoiceScene = next
-//                                            } else {
-//                                                chatMessage.append(newMsg)
-//                                            }
-//                                        }
-//                                    } else {
-////                                         chat 以外のシーンなら外のハンドラに任せる
-//                                        onNextScene(nextId)
-//                                    }
-//                                }
-                                .position(x: geometry.size.width * 0.645, y: geometry.size.height * 0.76)
+                                .position(x: geometry.size.width * 0.645, y: geometry.size.height * 0.805)
                         }
-                    }
+                        Button {
+                            skipAllChatScenes()
+                        } label: {
+                            Text("飛ばす")
+                                .font(.system(size: 20, weight: .bold, design: .default))
+                                // ▼ 当たり判定を広げて、見やすくするための修飾子を追加 ▼
+                                .padding(10)
+                                .background(Color.red) // 背景を赤くして目立たせる
+                                .foregroundColor(.white)
+                                .clipShape(Capsule())
+                        }
+                        .border(Color.yellow, width: 3)
+//                    }
 
 //                     選択肢の問題を出す
                     if isPopupVisible, let choiceScene = currentChoiceScene {
@@ -317,7 +261,8 @@ struct ChatSceneView: View {
                                 .padding(13)
                                 .background(Color.white.opacity(1.0))
                                 .cornerRadius(16)
-                                .frame(maxWidth: 350, alignment: .leading)                            }
+                                .frame(maxWidth: 350, alignment: .leading)
+                            }
                         }
                     }.frame(maxWidth: .infinity, alignment: .leading)
 
@@ -330,7 +275,6 @@ struct ChatSceneView: View {
                         Text(CharacterName(rawValue: scene.characterName)?.displayName ?? scene.characterName)
                             .font(.system(size: 18))
                             .foregroundColor(Color.gray)
-
 
 //                        ルビ付きでテキストを表示
                         RubyLabelRepresentable(
@@ -345,7 +289,6 @@ struct ChatSceneView: View {
                         .cornerRadius(16)
                         .frame(maxWidth: 350, alignment: .trailing)
                     }
-
                     Image(scene.icon)
                         .resizable()
                         .frame(width: 48, height: 48)
@@ -358,16 +301,14 @@ struct ChatSceneView: View {
         .id(message.id) // スクロールIDとして使用
     }
 
-//    デバック用 - チャットシーンを飛ばすボタン
+//    デバック用のスキップボタン
     private func skipAllChatScenes() {
         guard let last = chatMessage.last else { return }
         var nextId = last.scene.nextSceneId
-
         while let next = branchingMap[nextId], next.sceneType == "chat" {
             nextId = next.nextSceneId
         }
-
-        onNextScene(nextId)  // 最初の非チャットシーンに移動
+        onNextScene(nextId)
     }
 
 

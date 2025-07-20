@@ -75,7 +75,7 @@ struct ContentView: View {
                     }
                 }
                 .onTapGesture {
-                    path.append(ViewBuilderPath.ChoiceView)
+                    path.append(ViewBuilderPath.NoteView)
                 }
 
 //            csvファイルの読み込み
@@ -84,20 +84,17 @@ struct ContentView: View {
                 groupchatDialogues = loadCSV(fileName: "groupchat_var5_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
                 let netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver19")
-                let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver2")
+                let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver4")
                 self.allBranchings = netomoBranchings + groupBranchings
-                 print(self.allBranchings.map { $0.storyId })
+//                 print(self.allBranchings.map { $0.storyId })
             }
             .navigationDestination(for: ViewBuilderPath.self) { viewID in
                 switch viewID {
                 case .ContentView:
                     ContentView()
 
-                case .ChoiceView:
-                    ChoiceView(path: $path
-//                               allBranchings: $allBranchings,
-//                               allScene: $allScene
-                    )
+                case .NoteView:
+                    NoteView(path: $path)
 
                 case .StoryBranchView(let StoryId):
                     StoryBranchView(path: $path,
@@ -105,18 +102,7 @@ struct ContentView: View {
                                     allScene: $allScene,
                                     StoryId: StoryId
                     )
-//                    switch storyId {
-//                    case "netomo":
-//                        StoryBranchView(path: $path,
-//                                        allBranchings: $allBranchings,
-//                                        allScene: $allScene)
-//
-//                    case "groupchat":
-//                        StoryBranchView(path: $path,
-//                                        allBranchings: $allBranchings,
-//                                        allScene: $allScene)
-//                    }
-//                    .navigationBarBackButtonHidden(true)
+                    .navigationBarBackButtonHidden(true)
 
                 case .GroupchatView:
                     GroupchatView(path: $path, groupchatDialogues: $groupchatDialogues)
