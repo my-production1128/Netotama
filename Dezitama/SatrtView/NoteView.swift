@@ -21,13 +21,6 @@ struct NoteView: View {
     @State private var currentImageName: String = "note_gurutama"
 
     @Binding var path: NavigationPath
-//    @Binding var allBranchings: [Branching]
-//    @Binding var allScene: Branching
-
-//    @Binding var netomoScene: Branching
-//    @Binding var netomoBranchings: [Branching]
-//    @Binding var groupScene: Branching
-//    @Binding var groupBranchings: [Branching]
 
     @State private var shakeTrigger: Int = 0
     @State private var showTutorial: Bool = true

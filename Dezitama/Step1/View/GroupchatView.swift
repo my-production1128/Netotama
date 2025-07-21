@@ -14,11 +14,9 @@ struct GroupchatView: View {
 
     @Binding var path: NavigationPath
     @Binding var groupchatDialogues: [Dialogue]
-//    @Binding var netomoScene: NetomoBranching
-//    @Binding var netomoBranchings: [NetomoBranching]
 
     var body: some View {
-//        Group {
+        Group {
             if currentIndex < groupchatDialogues.count {
                 sceneView(for: groupchatDialogues[currentIndex])
             } else {
@@ -43,7 +41,7 @@ struct GroupchatView: View {
                     .offset(x: 400, y: 300)
                 }
             }
-//        }
+        }
     }
 
     @ViewBuilder
@@ -116,7 +114,7 @@ struct GroupchatView: View {
                     }
                 }
                 //吹き出し
-                Image("speech_bubble_yellow")
+                Image("speech_bubble_beige")
                     .resizable()
                     .frame(width: 1000, height: 300)
                     .offset(x: 0, y:200)
@@ -144,22 +142,22 @@ struct GroupchatView: View {
                         .scaledToFit()
                         .frame(width: 30, height: 30)
                         .padding()
-                        .border(Color.black, width: 1)
                 }
                 .offset(x:400,y:300)
 
-
                 //戻るボタン
-                HStack{
+                HStack {
                     Spacer()
-                    VStack{
-                        Button(action: {
+                    VStack {
+                        Button {
                             path.removeLast()
-                        }) {
+                        }label: {
                             Image("home")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
+                                .padding(.top, 30)
+
                         }
                         Spacer()
                     }
@@ -262,16 +260,18 @@ struct GroupchatView: View {
                 }
 
                 //戻るボタン
-                HStack{
+                HStack {
                     Spacer()
-                    VStack{
-                        Button(action: {
+                    VStack {
+                        Button {
                             path.removeLast()
-                        }) {
+                        }label: {
                             Image("home")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
+                                .padding(.top, 30)
+
                         }
                         Spacer()
                     }
@@ -358,7 +358,7 @@ struct GroupchatView: View {
                     }
 
                     //吹き出し
-                    Image("speech_bubble_yellow")
+                    Image("speech_bubble_beige")
                         .resizable()
                         .frame(width: 1000, height: 300)
                         .offset(x: 0, y:200)
@@ -400,6 +400,7 @@ struct GroupchatView: View {
                                     .resizable()
                                     .scaledToFit()
                                     .frame(width: 100, height: 100)
+                                    .padding(.top, 30)
                             }
                             Spacer()
                         }
@@ -600,6 +601,7 @@ struct GroupchatView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
+                                .padding(.top, 30)
                         }
                         Spacer()
                     }
@@ -691,7 +693,7 @@ struct GroupchatView: View {
                 }
 
                 //吹き出し
-                Image("speech_bubble_yellow")
+                Image("speech_bubble_beige")
                     .resizable()
                     .frame(width: 1000, height: 300)
                     .offset(x: 0, y:200)
@@ -733,6 +735,7 @@ struct GroupchatView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
+                                .padding(.top, 30)
                         }
                         Spacer()
                     }
@@ -915,6 +918,7 @@ struct GroupchatView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
+                                .padding(.top, 30)
                         }
                         Spacer()
                     }

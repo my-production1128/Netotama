@@ -16,6 +16,8 @@ enum ViewBuilderPath: Hashable {
     case GroupchatView
     case kakusanView
     case NetomoView
+    case Credit
+    case HowToUse
 }
 
 //enum AboutContentType: String, Identifiable {

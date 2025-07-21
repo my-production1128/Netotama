@@ -57,7 +57,7 @@ struct ContentView: View {
                             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
                             .edgesIgnoringSafeArea(.all)
                     }
-                    MenuView(isOpen: $isMenuOpen)
+                    MenuView(isOpen: $isMenuOpen, path: $path)
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -80,11 +80,11 @@ struct ContentView: View {
 
 //            csvファイルの読み込み
             .onAppear {
-                netomoDialogues = loadCSV(fileName: "netomo_var8_0")
+                netomoDialogues = loadCSV(fileName: "netomo_ver9_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_var5_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
                 let netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver19")
-                let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver4")
+                let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver5")
                 self.allBranchings = netomoBranchings + groupBranchings
 //                 print(self.allBranchings.map { $0.storyId })
             }
@@ -95,6 +95,7 @@ struct ContentView: View {
 
                 case .NoteView:
                     NoteView(path: $path)
+                        .navigationBarBackButtonHidden(true)
 
                 case .StoryBranchView(let StoryId):
                     StoryBranchView(path: $path,
@@ -106,13 +107,20 @@ struct ContentView: View {
 
                 case .GroupchatView:
                     GroupchatView(path: $path, groupchatDialogues: $groupchatDialogues)
+                        .navigationBarBackButtonHidden(true)
 
                 case .kakusanView:
                     KakusanView(path: $path, kakusanDialogues: $kakusanDialogues)
+                        .navigationBarBackButtonHidden(true)
 
                 case .NetomoView:
                     NetomoView(netomoDialogues: $netomoDialogues, path: $path)
+                        .navigationBarBackButtonHidden(true)
 
+                case .Credit:
+                    Credit()
+                case .HowToUse:
+                    HowToUse()
                 }
             }
         }

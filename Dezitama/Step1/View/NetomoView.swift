@@ -4,7 +4,6 @@
 //
 //  Created by 末廣月渚 on 2025/06/06.
 //
-
 import SwiftUI
 
 struct NetomoView: View {
@@ -152,8 +151,8 @@ struct NetomoView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
+                                .padding(.top, 30)
                         }
-                        .border(Color.black, width: 3)
                         Spacer()
                     }
                 }
@@ -173,9 +172,11 @@ struct NetomoView: View {
                         Image("Nick")
                             .resizable()
                             .frame(width: 300, height: 700)
+                            .offset(x:-50)
                         Image("Curl")
                             .resizable()
-                            .frame(width: 300, height: 600)
+                            .frame(width: 250, height: 550)
+                            .offset(x:50)
 
                     }
                 } else {
@@ -183,14 +184,16 @@ struct NetomoView: View {
                         Image("Nick")
                             .resizable()
                             .frame(width: 250, height: 650)
+                            .offset(x:-50)
                         Image("Curl")
                             .resizable()
-                            .frame(width: 350, height: 650)
+                            .frame(width: 300, height: 600)
+                            .offset(x:50)
 
                     }
                 }
                 //吹き出し
-                Image("speech_bubble_yellow")
+                Image("speech_bubble_beige")
                     .resizable()
                     .frame(width: 900, height: 250)
                     .offset(x: 0, y:200)
@@ -202,12 +205,19 @@ struct NetomoView: View {
                     .offset(x:-300, y:90)
 
                 //テキスト
-                Text(current.dialogueText)
-                    .font(.largeTitle)
-                    .frame(width: 600, height: 300)
-                    .multilineTextAlignment(.center)
-                    .cornerRadius(12)
-                    .offset(y:200)
+//                Text(current.dialogueText)
+//                    .font(.largeTitle)
+//                    .frame(width: 600, height: 300)
+//                    .multilineTextAlignment(.center)
+//                    .cornerRadius(12)
+//                    .offset(y:200)
+                TypingRubyLabelRepresentable(
+                    attributedText: current.dialogueText.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
+                    charInterval: 0.05,
+                    font: .systemFont(ofSize: 30)
+                )
+                .frame(width: 700, height: 200)
+//                .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
 
                 //ボタン
                 Button(action: {
@@ -232,6 +242,7 @@ struct NetomoView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
+                                .padding(.top, 30)
                         }
                         Spacer()
                     }
@@ -326,7 +337,7 @@ struct NetomoView: View {
                                         if isRight { Spacer() }
 
                                         if !isRight {
-                                            Image("curl_icon")
+                                            Image("nick_icon")
                                                 .resizable()
                                                 .frame(width: 50, height: 50)
                                                 .padding(.leading, 8)
@@ -349,7 +360,7 @@ struct NetomoView: View {
 
 
                                         if isRight {
-                                            Image("nick_icon")
+                                            Image("curl_icon")
                                                 .resizable()
                                                 .frame(width: 50, height: 50)
                                                 .padding(.trailing, 8)
@@ -396,6 +407,7 @@ struct NetomoView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
+                                .padding(.top, 30)
                         }
                         Spacer()
                     }
@@ -411,7 +423,7 @@ struct NetomoView: View {
                     .ignoresSafeArea()
 
                 //吹き出し
-                Image("speech_bubble_blue")
+                Image("speech_bubble_beige")
                     .resizable()
                     .frame(width: 900, height: 250)
                     .offset(x: 0, y:200)
@@ -453,6 +465,7 @@ struct NetomoView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
+                                .padding(.top, 30)
                         }
                         Spacer()
                     }
