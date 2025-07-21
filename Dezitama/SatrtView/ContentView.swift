@@ -20,18 +20,30 @@ struct ContentView: View {
 
     @State private var path = NavigationPath()
 //    @State private var isTextVisible: Bool = false// テキストの点滅
-    @State var netomoBranchings: [Branching] = []
-    @State var netomoScene: Branching = Branching(
+
+
+    // 全てのシナリオデータを保持する一つの配列
+    @State var allBranchings: [Branching] = []
+    @State var allScene: Branching = Branching(
         storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
         background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
         choiceText1: "", choiceText2: ""
     )
-    @State var groupchatBranchings: [Branching] = []
-    @State var gropchatScene: Branching = Branching(
-        storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
-        background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
-        choiceText1: "", choiceText2: ""
-    )
+
+//    @State var netomoBranchings: [Branching] = []
+//    @State var allScene: Branching = Branching(
+//        storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
+//        background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
+//        choiceText1: "", choiceText2: ""
+//    )
+//    @State var groupBranchings: [Branching] = []
+//    @State var allScene: Branching = Branching(
+//        storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
+//        background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
+//        choiceText1: "", choiceText2: ""
+//    )
+
+
 
 
     var body: some View {
@@ -43,10 +55,9 @@ struct ContentView: View {
                     if isLottieViewVisible{
                         LottieView(filename: "egg_start_ver5_0")
                             .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-//                            .background(Color.clear)
                             .edgesIgnoringSafeArea(.all)
                     }
-                    MenuView(isOpen: $isMenuOpen)
+                    MenuView(isOpen: $isMenuOpen, path: $path)
                 }
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
@@ -64,43 +75,52 @@ struct ContentView: View {
                     }
                 }
                 .onTapGesture {
-                    path.append(ViewBuilderPath.ChoiceView)
+                    path.append(ViewBuilderPath.NoteView)
                 }
 
 //            csvファイルの読み込み
             .onAppear {
-                netomoDialogues = loadCSV(fileName: "netomo_var8_0")
+                netomoDialogues = loadCSV(fileName: "netomo_ver9_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_var5_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
-                netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver19")//ネトモの分岐ありのストーリー
-                groupchatBranchings = loadNetomoBranchingCSV(fileName: "gruopchat_branch_ver1")
-
+                let netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver19")
+                let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver5")
+                self.allBranchings = netomoBranchings + groupBranchings
+//                 print(self.allBranchings.map { $0.storyId })
             }
             .navigationDestination(for: ViewBuilderPath.self) { viewID in
                 switch viewID {
                 case .ContentView:
                     ContentView()
 
-                case .ChoiceView:
-                    ChoiceView(path: $path,
-                               netomoScene: $netomoScene,
-                               netomoBranchings: $netomoBranchings)
+                case .NoteView:
+                    NoteView(path: $path)
+                        .navigationBarBackButtonHidden(true)
 
-                case .NetomoBranchingView:
-                    NetomoBranchingView(path: $path,
-                                             netomoScene: $netomoScene,
-                                             netomoBranchings: $netomoBranchings)
+                case .StoryBranchView(let StoryId):
+                    StoryBranchView(path: $path,
+                                    allBranchings: $allBranchings,
+                                    allScene: $allScene,
+                                    StoryId: StoryId
+                    )
                     .navigationBarBackButtonHidden(true)
 
                 case .GroupchatView:
                     GroupchatView(path: $path, groupchatDialogues: $groupchatDialogues)
+                        .navigationBarBackButtonHidden(true)
 
                 case .kakusanView:
                     KakusanView(path: $path, kakusanDialogues: $kakusanDialogues)
+                        .navigationBarBackButtonHidden(true)
 
                 case .NetomoView:
                     NetomoView(netomoDialogues: $netomoDialogues, path: $path)
+                        .navigationBarBackButtonHidden(true)
 
+                case .Credit:
+                    Credit()
+                case .HowToUse:
+                    HowToUse()
                 }
             }
         }

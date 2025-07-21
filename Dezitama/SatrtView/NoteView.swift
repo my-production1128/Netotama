@@ -1,14 +1,9 @@
 //
-//  ChoiceView.swift
+//  NoteView.swift
 //  Dezitama
 //
 //  Created by 末廣月渚 on 2025/06/27.
 //
-
-//.border(Color.black, width: 5)
-
-
-
 import SwiftUI
 
 struct ShakeEffect: GeometryEffect {
@@ -22,14 +17,10 @@ struct ShakeEffect: GeometryEffect {
     }
 }
 
-struct ChoiceView: View {
+struct NoteView: View {
     @State private var currentImageName: String = "note_gurutama"
 
     @Binding var path: NavigationPath
-    @Binding var netomoScene: Branching
-    @Binding var netomoBranchings: [Branching]
-//    @Binding var groupScene: Branching
-//    @Binding var groupBranchings: [Branching]
 
     @State private var shakeTrigger: Int = 0
     @State private var showTutorial: Bool = true
@@ -43,7 +34,7 @@ struct ChoiceView: View {
                 .frame(width: 850, height: 750)
                 .offset(x: 20, y: -20)
 
-            //                 ページ右側の付箋でも切り替えボタン
+//                 ページ右側の付箋でも切り替えボタン
             VStack {
                 Spacer()
                     .frame(height: 20)
@@ -102,11 +93,15 @@ struct ChoiceView: View {
                     }
                     .offset(x: 280, y: -180)
 
-                    Image("step2")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 250, height: 100)
-                        .offset(x: 280, y: 100)
+                    Button {
+                        path.append(ViewBuilderPath.StoryBranchView("groupchat"))
+                    } label: {
+                        Image("step2")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 250, height: 100)
+                    }
+                    .offset(x: 280, y: 100)
                 }
 
             case "note_netotama":
@@ -122,9 +117,9 @@ struct ChoiceView: View {
                     }
                     .offset(x: 280, y: -180)
 
-                    //                        ネトモ・ステップ２
+//                        ネトモ・ステップ２
                     Button {
-                        path.append(ViewBuilderPath.NetomoBranchingView)
+                        path.append(ViewBuilderPath.StoryBranchView("netomo"))
                     } label: {
                         Image("step2")
                             .resizable()

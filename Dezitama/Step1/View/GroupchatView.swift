@@ -8,22 +8,19 @@
 import SwiftUI
 
 struct GroupchatView: View {
-//    @Binding var groupchatDialogues: [Dialogue]
     @State private var currentIndex = 0
     @State private var isShowingLog = false
     @State private var goChoiceView = false
 
     @Binding var path: NavigationPath
     @Binding var groupchatDialogues: [Dialogue]
-//    @Binding var netomoScene: NetomoBranching
-//    @Binding var netomoBranchings: [NetomoBranching]
 
     var body: some View {
         Group {
             if currentIndex < groupchatDialogues.count {
                 sceneView(for: groupchatDialogues[currentIndex])
             } else {
-                // 終了画面やChoiceViewへの遷移
+                // 終了画面やNoteViewへの遷移
                 ZStack {
                     Image("sky")
                         .resizable()
@@ -46,7 +43,7 @@ struct GroupchatView: View {
             }
         }
     }
-    
+
     @ViewBuilder
     func sceneView(for current: Dialogue) -> some View {
         switch current.background {
@@ -61,7 +58,7 @@ struct GroupchatView: View {
             .onTapGesture {
                 currentIndex += 1
             }
-            
+
         //教室１
         case "Classroom1" :
             ZStack{
@@ -70,64 +67,64 @@ struct GroupchatView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //キャラクター
                 ZStack{
                     if current.characterName == "アレック" {
-                        Image("アレック")
+                        Image("Alec")
                             .resizable()
                             .frame(width: 300, height: 700)
                             .offset(x:-300)
-                        Image("セシル")
+                        Image("Cecil")
                             .resizable()
                             .frame(width: 250, height: 450)
                             .offset(x:0)
-                        Image("コニー")
+                        Image("Cony")
                             .resizable()
                             .frame(width: 250, height: 450)
                             .offset(x:300)
-                        
+
                     } else if current.characterName == "セシル" {
-                            Image("アレック")
-                                .resizable()
-                                .frame(width: 250, height: 650)
-                                .offset(x:-300)
-                            Image("セシル")
-                                .resizable()
-                                .frame(width: 300, height: 500)
-                                .offset(x:0)
-                            Image("コニー")
-                                .resizable()
-                                .frame(width: 250, height: 450)
-                                .offset(x:300)
-                        
+                        Image("Alec")
+                            .resizable()
+                            .frame(width: 250, height: 650)
+                            .offset(x:-300)
+                        Image("Cecil")
+                            .resizable()
+                            .frame(width: 300, height: 500)
+                            .offset(x:0)
+                        Image("Cony")
+                            .resizable()
+                            .frame(width: 250, height: 450)
+                            .offset(x:300)
+
                     } else {
-                            Image("アレック")
-                                .resizable()
-                                .frame(width: 250, height: 650)
-                                .offset(x:-300)
-                            Image("セシル")
-                                .resizable()
-                                .frame(width: 250, height: 450)
-                                .offset(x:0)
-                            Image("コニー")
-                                .resizable()
-                                .frame(width: 300, height: 500)
-                                .offset(x:300)
+                        Image("Alec")
+                            .resizable()
+                            .frame(width: 250, height: 650)
+                            .offset(x:-300)
+                        Image("Cecil")
+                            .resizable()
+                            .frame(width: 250, height: 450)
+                            .offset(x:0)
+                        Image("Cony")
+                            .resizable()
+                            .frame(width: 300, height: 500)
+                            .offset(x:300)
                     }
                 }
                 //吹き出し
-                Image("speech_bubble_yellow")
+                Image("speech_bubble_beige")
                     .resizable()
                     .frame(width: 1000, height: 300)
                     .offset(x: 0, y:200)
-                
+
                 //名前
                 Text(current.characterName)
                     .font(.largeTitle)
                     .foregroundColor(.black)
                     .offset(x:-300, y:90)
-                
+
                 //テキスト
                 Text(current.dialogueText)
                     .font(.largeTitle)
@@ -135,7 +132,7 @@ struct GroupchatView: View {
                     .multilineTextAlignment(.center)
                     .cornerRadius(12)
                     .offset(y:200)
-                
+
                 //ボタン
                 Button(action: {
                     currentIndex += 1
@@ -147,8 +144,26 @@ struct GroupchatView: View {
                         .padding()
                 }
                 .offset(x:400,y:300)
+
+                //戻るボタン
+                HStack {
+                    Spacer()
+                    VStack {
+                        Button {
+                            path.removeLast()
+                        }label: {
+                            Image("home")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .padding(.top, 30)
+
+                        }
+                        Spacer()
+                    }
+                }
             }
-            
+
         //チャット画面１
         case "Chat1" :
             ZStack{
@@ -157,51 +172,64 @@ struct GroupchatView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //テキスト
                 ZStack(alignment: .bottom) {
                     ScrollViewReader { proxy in
                         ScrollView {
                             VStack(spacing: 12) {
-                                ForEach(0...currentIndex, id: \.self) { index in
+                                ForEach(15...currentIndex, id: \.self) { index in
                                     let dialogue = groupchatDialogues[index]
                                     let isRight = dialogue.characterName == "セシル"
 
-                                    HStack(alignment: .bottom) {
-                                        if isRight { Spacer() }
-                                        
-                                        if !isRight {
-                                            Image("alex_icon")
-                                                .resizable()
-                                                .frame(width: 30, height: 30)
-                                                .padding(.leading, 8)
+                                    HStack(alignment: .bottom, spacing: 8) {
+                                        if isRight {
+                                            Spacer()
                                         }
-                                        
-                                        VStack(alignment: .leading, spacing: 4) {
+
+                                        if !isRight {
+                                            // 左側キャラのアイコン（アレックとコニー）
+                                            Image(getCharacterIcon(for: dialogue.characterName))
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 30, height: 30)
+                                                .clipShape(Circle())
+                                        }
+
+                                        VStack(alignment: isRight ? .trailing : .leading, spacing: 4) {
+                                            // キャラクター名
                                             Text(dialogue.characterName)
                                                 .font(.caption)
-                                                .foregroundColor(.white)
-                                            
+                                                .foregroundColor(.secondary)
+
+                                            // セリフ
                                             Text(dialogue.dialogueText)
-                                                .padding()
-                                                .font(.title3)
+                                                .padding(.horizontal, 12)
+                                                .padding(.vertical, 8)
+                                                .font(.body)
                                                 .foregroundColor(.black)
-                                                .background(Color.white.opacity(0.8))
-                                                .cornerRadius(20)
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 16)
+                                                        .fill(Color.white)
+                                                )
                                         }
-                                        .frame(maxWidth: 200, alignment: isRight ? .trailing : .leading)
-                                        .padding(isRight ? .trailing : .leading, 0)
-                                        
-                                        
+                                        .frame(maxWidth: 250, alignment: isRight ? .trailing : .leading)
+
                                         if isRight {
+                                            // 右側キャラのアイコン（セシル）
                                             Image("cecil_icon")
                                                 .resizable()
+                                                .aspectRatio(contentMode: .fit)
                                                 .frame(width: 30, height: 30)
-                                                .padding(.trailing, 8)
+                                                .clipShape(Circle())
                                         }
-                                        
-                                        if !isRight { Spacer() }
+
+                                        if !isRight {
+                                            Spacer()
+                                        }
                                     }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 4)
                                     .id(index)
                                 }
                             }
@@ -216,7 +244,7 @@ struct GroupchatView: View {
                             }
                         }
                     }
-                    
+
                     //ボタン
                     Button(action: {
                         currentIndex += 1
@@ -228,9 +256,28 @@ struct GroupchatView: View {
                             .padding()
                     }
                     .offset(x:175,y:115)
+
+                }
+
+                //戻るボタン
+                HStack {
+                    Spacer()
+                    VStack {
+                        Button {
+                            path.removeLast()
+                        }label: {
+                            Image("home")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .padding(.top, 30)
+
+                        }
+                        Spacer()
+                    }
                 }
             }
-            
+
         //教室２
         case "Classroom2" :
                 ZStack{
@@ -239,89 +286,89 @@ struct GroupchatView: View {
                         .resizable()
                         .scaledToFill()
                         .ignoresSafeArea()
-                    
+
                     //キャラクター
                     ZStack {
                         if current.characterName == "アレック" {
-                            Image("アレック")
+                            Image("Alec")
                                 .resizable()
                                 .frame(width: 300, height: 700)
-                                .offset(x: -150)
-                            
-                            Image("セシル")
+                                .offset(x:-300)
+                            Image("Cecil")
                                 .resizable()
                                 .frame(width: 250, height: 450)
-                                .offset(x: 50)
-                            
-                            Image("コニー")
+                                .offset(x:0)
+                            Image("Cony")
                                 .resizable()
                                 .frame(width: 250, height: 450)
-                                .offset(x: 180)
+                                .offset(x:300)
+
                         } else if current.characterName == "セシル" {
-                            HStack{
-                                Image("アレック")
+                                Image("Alec")
                                     .resizable()
                                     .frame(width: 250, height: 650)
-                                    .offset(x:-150)
-                                Image("セシル")
+                                    .offset(x:-300)
+                                Image("Cecil")
                                     .resizable()
                                     .frame(width: 300, height: 500)
                                     .offset(x:0)
-                                Image("コニー")
+                                Image("Cony")
                                     .resizable()
                                     .frame(width: 250, height: 450)
-                                    .offset(x:150)
-                            }
+                                    .offset(x:300)
+
                         } else if current.characterName == "コニー" {
-                            HStack{
-                                Image("アレック")
+                                Image("Alec")
                                     .resizable()
                                     .frame(width: 250, height: 650)
-                                    .offset(x:-150)
-                                Image("セシル")
+                                    .offset(x:-300)
+                                Image("Cecil")
                                     .resizable()
                                     .frame(width: 250, height: 450)
                                     .offset(x:0)
-                                Image("コニー")
+                                Image("Cony")
                                     .resizable()
                                     .frame(width: 300, height: 500)
-                                    .offset(x:150)
-                            }
+                                    .offset(x:300)
                         }
                         else if current.characterName == "カール" {
                             HStack{
-                                Image("カール")
+                                Image("Curl")
                                     .resizable()
                                     .frame(width: 300, height: 600)
-                                Image("先生")
+                                    .offset(x:-100)
+                                Image("Teacher")
                                     .resizable()
                                     .frame(width: 300, height: 450)
+                                    .offset(x:100)
                             }
                         }
                         else {
                             HStack{
-                                Image("カール")
+                                Image("Curl")
                                     .resizable()
                                     .frame(width: 250, height: 550)
-                                Image("先生")
+                                    .offset(x:-100)
+                                Image("Teacher")
                                     .resizable()
                                     .frame(width: 350, height: 500)
+                                    .offset(x:100)
                             }
                         }
                     }
-                    
+
                     //吹き出し
-                    Image("speech_bubble_yellow")
+                    Image("speech_bubble_beige")
                         .resizable()
                         .frame(width: 1000, height: 300)
                         .offset(x: 0, y:200)
-                    
+
                     //名前
                     Text(current.characterName)
                         .font(.largeTitle)
                         .foregroundColor(.black)
                         .offset(x:-300, y:90)
-                    
+
                     //テキスト
                     Text(current.dialogueText)
                         .font(.largeTitle)
@@ -329,7 +376,7 @@ struct GroupchatView: View {
                         .multilineTextAlignment(.center)
                         .cornerRadius(12)
                         .offset(y:200)
-                    
+
                     //ボタン
                     Button(action: {
                         currentIndex += 1
@@ -341,8 +388,114 @@ struct GroupchatView: View {
                             .padding()
                     }
                     .offset(x:400,y:300)
+
+                    //戻るボタン
+                    HStack{
+                        Spacer()
+                        VStack{
+                            Button(action: {
+                                path.removeLast()
+                            }) {
+                                Image("home")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 100, height: 100)
+                                    .padding(.top, 30)
+                            }
+                            Spacer()
+                        }
+                    }
+
+                    //セリフボタン
+                    HStack {
+                        VStack {
+                            Button(action: {
+                                isShowingLog.toggle()
+                            }) {
+                                Image("chat")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                            }
+//                            .frame(width: 50, height: 50) // タッチエリアを制限
+
+                            Spacer()
+                        }
+                        Spacer()
+                    }
+                    .padding(50)
+                    .zIndex(2)
+
+                    if isShowingLog {
+                        GeometryReader { geometry in
+                            ScrollView {
+                                VStack(spacing: 12) {
+                                    ForEach(1...currentIndex, id: \.self) { index in
+                                        let dialogue = groupchatDialogues[index]
+                                        let isRight = dialogue.characterName == "セシル"
+
+                                        HStack(alignment: .bottom, spacing: 8) {
+                                            if isRight {
+                                                Spacer()
+                                            }
+
+                                            if !isRight {
+                                                // 左側キャラのアイコン（アレックとコニー）
+                                                Image(getCharacterIcon(for: dialogue.characterName))
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 30, height: 30)
+                                                    .clipShape(Circle())
+                                            }
+
+                                            VStack(alignment: isRight ? .trailing : .leading, spacing: 4) {
+                                                // キャラクター名
+                                                Text(dialogue.characterName)
+                                                    .font(.caption)
+                                                    .foregroundColor(.white)
+
+                                                // セリフ
+                                                Text(dialogue.dialogueText)
+                                                    .padding(.horizontal, 12)
+                                                    .padding(.vertical, 8)
+                                                    .font(.body)
+                                                    .foregroundColor(.black)
+                                                    .background(
+                                                        RoundedRectangle(cornerRadius: 16)
+                                                            .fill(Color.white)
+                                                    )
+                                            }
+                                            .frame(maxWidth: 250, alignment: isRight ? .trailing : .leading)
+
+                                            if isRight {
+                                                // 右側キャラのアイコン（セシル）
+                                                Image("cecil_icon")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 30, height: 30)
+                                                    .clipShape(Circle())
+                                            }
+
+                                            if !isRight {
+                                                Spacer()
+                                            }
+                                        }
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 4)
+                                        .id(index)
+                                    }
+                                }
+                            }
+                            .padding()
+                            .background(Color.black.opacity(0.6))
+                            .cornerRadius(16)
+                            .frame(width: geometry.size.width / 2, height: geometry.size.height)
+                            .transition(.move(edge: .leading))
+                            .zIndex(1)
+                        }
+                    }
                 }
-            
+
         //チャット画面２
         case "Chat2" :
             ZStack{
@@ -351,51 +504,64 @@ struct GroupchatView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //テキスト
                 ZStack(alignment: .bottom) {
                     ScrollViewReader { proxy in
                         ScrollView {
                             VStack(spacing: 12) {
-                                ForEach(0...currentIndex, id: \.self) { index in
+                                ForEach(42...currentIndex, id: \.self) { index in
                                     let dialogue = groupchatDialogues[index]
                                     let isRight = dialogue.characterName == "セシル"
 
-                                    HStack(alignment: .bottom) {
-                                        if isRight { Spacer() }
-                                        
-                                        if !isRight {
-                                            Image("alex_icon")
-                                                .resizable()
-                                                .frame(width: 30, height: 30)
-                                                .padding(.leading, 8)
+                                    HStack(alignment: .bottom, spacing: 8) {
+                                        if isRight {
+                                            Spacer()
                                         }
-                                        
-                                        VStack(alignment: .leading, spacing: 4) {
+
+                                        if !isRight {
+                                            // 左側キャラのアイコン（アレックとコニー）
+                                            Image(getCharacterIcon(for: dialogue.characterName))
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 30, height: 30)
+                                                .clipShape(Circle())
+                                        }
+
+                                        VStack(alignment: isRight ? .trailing : .leading, spacing: 4) {
+                                            // キャラクター名
                                             Text(dialogue.characterName)
                                                 .font(.caption)
-                                                .foregroundColor(.white)
-                                            
+                                                .foregroundColor(.secondary)
+
+                                            // セリフ
                                             Text(dialogue.dialogueText)
-                                                .padding()
-                                                .font(.title3)
+                                                .padding(.horizontal, 12)
+                                                .padding(.vertical, 8)
+                                                .font(.body)
                                                 .foregroundColor(.black)
-                                                .background(Color.white.opacity(0.8))
-                                                .cornerRadius(20)
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 16)
+                                                        .fill(Color.white)
+                                                )
                                         }
-                                        .frame(maxWidth: 200, alignment: isRight ? .trailing : .leading)
-                                        .padding(isRight ? .trailing : .leading, 0)
-                                        
-                                        
+                                        .frame(maxWidth: 250, alignment: isRight ? .trailing : .leading)
+
                                         if isRight {
+                                            // 右側キャラのアイコン（セシル）
                                             Image("cecil_icon")
                                                 .resizable()
+                                                .aspectRatio(contentMode: .fit)
                                                 .frame(width: 30, height: 30)
-                                                .padding(.trailing, 8)
+                                                .clipShape(Circle())
                                         }
-                                        
-                                        if !isRight { Spacer() }
+
+                                        if !isRight {
+                                            Spacer()
+                                        }
                                     }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 4)
                                     .id(index)
                                 }
                             }
@@ -410,7 +576,7 @@ struct GroupchatView: View {
                             }
                         }
                     }
-                    
+
                     //ボタン
                     Button(action: {
                         currentIndex += 1
@@ -423,8 +589,25 @@ struct GroupchatView: View {
                     }
                     .offset(x:175,y:115)
                 }
+
+                //戻るボタン
+                HStack{
+                    Spacer()
+                    VStack{
+                        Button(action: {
+                            path.removeLast()
+                        }) {
+                            Image("home")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .padding(.top, 30)
+                        }
+                        Spacer()
+                    }
+                }
             }
-            
+
         //教室３
         case "Classroom3" :
             ZStack{
@@ -433,85 +616,94 @@ struct GroupchatView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //キャラクター
                 if current.characterName == "アレック" {
-                    HStack{
-                        Image("アレック")
-                            .resizable()
-                            .frame(width: 300, height: 700)
-                        Image("セシル")
-                            .resizable()
-                            .frame(width: 250, height: 450)
-                        Image("コニー")
-                            .resizable()
-                            .frame(width: 250, height: 450)
-                    }
+                    Image("Alec")
+                        .resizable()
+                        .frame(width: 300, height: 700)
+                        .offset(x:-300)
+                    Image("Cecil")
+                        .resizable()
+                        .frame(width: 250, height: 450)
+                        .offset(x:0)
+                    Image("Cony")
+                        .resizable()
+                        .frame(width: 250, height: 450)
+                        .offset(x:300)
+
                 } else if current.characterName == "セシル" {
+                    Image("Alec")
+                        .resizable()
+                        .frame(width: 250, height: 650)
+                        .offset(x:-300)
+                    Image("Cecil")
+                        .resizable()
+                        .frame(width: 300, height: 500)
+                        .offset(x:0)
+                    Image("Cony")
+                        .resizable()
+                        .frame(width: 250, height: 450)
+                        .offset(x:300)
+
+                } else if current.characterName == "コニー"{
+                    Image("Alec")
+                        .resizable()
+                        .frame(width: 250, height: 650)
+                        .offset(x:-300)
+                    Image("Cecil")
+                        .resizable()
+                        .frame(width: 250, height: 450)
+                        .offset(x:0)
+                    Image("Cony")
+                        .resizable()
+                        .frame(width: 300, height: 500)
+                        .offset(x:300)
+
+                }else if current.characterName == "ブライアン" {
                     HStack{
-                        Image("アレック")
-                            .resizable()
-                            .frame(width: 250, height: 650)
-                        Image("セシル")
-                            .resizable()
-                            .frame(width: 300, height: 500)
-                        Image("コニー")
-                            .resizable()
-                            .frame(width: 250, height: 450)
-                    }
-                } else if current.characterName == "コニー" {
-                    HStack{
-                        Image("アレック")
-                            .resizable()
-                            .frame(width: 250, height: 650)
-                        Image("セシル")
-                            .resizable()
-                            .frame(width: 250, height: 450)
-                        Image("コニー")
-                            .resizable()
-                            .frame(width: 300, height: 500)
-                    }
-                }
-                else if current.characterName == "ブライアン" {
-                    HStack{
-                        Image("ブライアン")
+                        Image("Brian")
                             .resizable()
                             .frame(width: 350, height: 500)
-                        Image("カール")
+                            .offset(x:400)
+                        Image("Curl")
                             .resizable()
                             .frame(width: 250, height: 550)
+                            .offset(x:-400)
                     }
                 }
                 else if current.characterName == "カール" {
                     HStack{
-                        Image("ブライアン")
+                        Image("Brian")
                             .resizable()
                             .frame(width: 300, height: 450)
-                        Image("カール")
+                            .offset(x:400)
+                        Image("Curl")
                             .resizable()
                             .frame(width: 300, height: 600)
+                            .offset(x:-400)
                     }
                 }
                 else {
                     HStack{
-                        Image("先生")
+                        Image("Teacher")
                             .resizable()
                             .frame(width: 350, height: 500)
                     }
                 }
-                
+
                 //吹き出し
-                Image("speech_bubble_yellow")
+                Image("speech_bubble_beige")
                     .resizable()
                     .frame(width: 1000, height: 300)
                     .offset(x: 0, y:200)
-                
+
                 //名前
                 Text(current.characterName)
                     .font(.largeTitle)
                     .foregroundColor(.black)
                     .offset(x:-300, y:90)
-                
+
                 //テキスト
                 Text(current.dialogueText)
                     .font(.largeTitle)
@@ -519,20 +711,126 @@ struct GroupchatView: View {
                     .multilineTextAlignment(.center)
                     .cornerRadius(12)
                     .offset(y:200)
-                
+
                 //ボタン
                 Button(action: {
                     currentIndex += 1
                 }) {
                     Image("next_button")
                         .resizable()
-                        .scaledToFit()
+                        .scaledToFill()
                         .frame(width: 30, height: 30)
                         .padding()
                 }
                 .offset(x:400,y:300)
+
+                //戻るボタン
+                HStack{
+                    Spacer()
+                    VStack{
+                        Button(action: {
+                            path.removeLast()
+                        }) {
+                            Image("home")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .padding(.top, 30)
+                        }
+                        Spacer()
+                    }
+                }
+
+                //セリフボタン
+                HStack {
+                    VStack {
+                        Button(action: {
+                            isShowingLog.toggle()
+                        }) {
+                            Image("chat")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 50, height: 50)
+                        }
+//                            .frame(width: 50, height: 50) // タッチエリアを制限
+
+                        Spacer()
+                    }
+                    Spacer()
+                }
+                .padding(50)
+                .zIndex(2)
+
+                if isShowingLog {
+                    GeometryReader { geometry in
+                        ScrollView {
+                            VStack(spacing: 12) {
+                                ForEach(1...currentIndex, id: \.self) { index in
+                                    let dialogue = groupchatDialogues[index]
+                                    let isRight = dialogue.characterName == "セシル"
+
+                                    HStack(alignment: .bottom, spacing: 8) {
+                                        if isRight {
+                                            Spacer()
+                                        }
+
+                                        if !isRight {
+                                            // 左側キャラのアイコン（アレックとコニー）
+                                            Image(getCharacterIcon(for: dialogue.characterName))
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 30, height: 30)
+                                                .clipShape(Circle())
+                                        }
+
+                                        VStack(alignment: isRight ? .trailing : .leading, spacing: 4) {
+                                            // キャラクター名
+                                            Text(dialogue.characterName)
+                                                .font(.caption)
+                                                .foregroundColor(.white)
+
+                                            // セリフ
+                                            Text(dialogue.dialogueText)
+                                                .padding(.horizontal, 12)
+                                                .padding(.vertical, 8)
+                                                .font(.body)
+                                                .foregroundColor(.black)
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 16)
+                                                        .fill(Color.white)
+                                                )
+                                        }
+                                        .frame(maxWidth: 250, alignment: isRight ? .trailing : .leading)
+
+                                        if isRight {
+                                            // 右側キャラのアイコン（セシル）
+                                            Image("cecil_icon")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 30, height: 30)
+                                                .clipShape(Circle())
+                                        }
+
+                                        if !isRight {
+                                            Spacer()
+                                        }
+                                    }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 4)
+                                    .id(index)
+                                }
+                            }
+                        }
+                        .padding()
+                        .background(Color.black.opacity(0.6))
+                        .cornerRadius(16)
+                        .frame(width: geometry.size.width / 2, height: geometry.size.height)
+                        .transition(.move(edge: .leading))
+                        .zIndex(1)
+                    }
+                }
             }
-            
+
         //チャット画面３
         case "Chat3" :
             ZStack{
@@ -541,51 +839,46 @@ struct GroupchatView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //テキスト
                 ZStack(alignment: .bottom) {
                     ScrollViewReader { proxy in
                         ScrollView {
                             VStack(spacing: 12) {
-                                ForEach(0...currentIndex, id: \.self) { index in
+                                ForEach(93...currentIndex, id: \.self) { index in
                                     let dialogue = groupchatDialogues[index]
-                                    let isRight = dialogue.characterName == "セシル"
 
-                                    HStack(alignment: .bottom) {
-                                        if isRight { Spacer() }
-
-                                        if !isRight {
-                                            Image("alex_icon")
-                                                .resizable()
-                                                .frame(width: 30, height: 30)
-                                                .padding(.leading, 8)
-                                        }
+                                    HStack(alignment: .bottom, spacing: 8) {
+                                        // 全員のアイコンを左側に表示
+                                        Image(getCharacterIcon(for: dialogue.characterName))
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 30, height: 30)
+                                            .clipShape(Circle())
 
                                         VStack(alignment: .leading, spacing: 4) {
+                                            // キャラクター名
                                             Text(dialogue.characterName)
                                                 .font(.caption)
-                                                .foregroundColor(.white)
+                                                .foregroundColor(.secondary)
 
+                                            // セリフ
                                             Text(dialogue.dialogueText)
-                                                .padding()
-                                                .font(.title3)
+                                                .padding(.horizontal, 12)
+                                                .padding(.vertical, 8)
+                                                .font(.body)
                                                 .foregroundColor(.black)
-                                                .background(Color.white.opacity(0.8))
-                                                .cornerRadius(20)
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 16)
+                                                        .fill(Color.white)
+                                                )
                                         }
-                                        .frame(maxWidth: 200, alignment: isRight ? .trailing : .leading)
-                                        .padding(isRight ? .trailing : .leading, 0)
+                                        .frame(maxWidth: 250, alignment: .leading)
 
-
-                                        if isRight {
-                                            Image("cecil_icon")
-                                                .resizable()
-                                                .frame(width: 30, height: 30)
-                                                .padding(.trailing, 8)
-                                        }
-
-                                        if !isRight { Spacer() }
+                                        Spacer() // 右側に余白を作る
                                     }
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 4)
                                     .id(index)
                                 }
                             }
@@ -600,7 +893,7 @@ struct GroupchatView: View {
                             }
                         }
                     }
-                    
+
                     //ボタン
                     Button(action: {
                         currentIndex += 1
@@ -613,9 +906,26 @@ struct GroupchatView: View {
                     }
                     .offset(x:175,y:115)
                 }
+
+                //戻るボタン
+                HStack{
+                    Spacer()
+                    VStack{
+                        Button(action: {
+                            path.removeLast()
+                        }) {
+                            Image("home")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .padding(.top, 30)
+                        }
+                        Spacer()
+                    }
+                }
             }
-            
-            
+
+
         //その他
         default:
             ZStack {
@@ -632,14 +942,47 @@ struct GroupchatView: View {
                     .cornerRadius(12)
                     .padding()
                     .contentShape(Rectangle())
-                
-                
+
+                //戻るボタン
+                Button(action: {
+                    path.removeLast()
+                }) {
+                    Image("story_back")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 300, height: 300)
+                        .padding()
+                }
+                .offset(x: 400, y: 300)
+
+
             }
             .onTapGesture {
                 if currentIndex < groupchatDialogues.count - 1 {
                     currentIndex += 1
                 }
             }
+        }
+    }
+
+    private func getCharacterIcon(for characterName: String) -> String {
+        switch characterName {
+        case "アレック":
+            return "alec_icon"
+        case "コニー":
+            return "cony_icon"
+        case "ブライアン":
+            return "brian_icon"
+        case "カール":
+            return "curl_icon"
+        case "ケビン":
+            return "kevin_icon"
+        case "ロビー":
+            return "robby_icon"
+        case "サンドラ":
+            return "sandra_icon"
+        default:
+            return "default_icon" // デフォルトアイコン
         }
     }
 }

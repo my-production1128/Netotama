@@ -4,7 +4,6 @@
 //
 //  Created by 末廣月渚 on 2025/06/06.
 //
-
 import SwiftUI
 
 struct NetomoView: View {
@@ -23,7 +22,7 @@ struct NetomoView: View {
                 sceneView(for: netomoDialogues[currentIndex])
             } else {
 //                let _ = print(netomoDialogues.count)
-                // 終了画面やChoiceViewへの遷移
+                // 終了画面やNoteViewへの遷移
                 ZStack {
                     Image("sky")
                         .resizable()
@@ -46,7 +45,7 @@ struct NetomoView: View {
         }
     }
 
-    
+
     @ViewBuilder
     func sceneView(for current: Dialogue) -> some View {
         switch current.background {
@@ -61,7 +60,7 @@ struct NetomoView: View {
             .onTapGesture {
                 currentIndex += 1
             }
-            
+
         case "Chat1" :
             ZStack{
                 //背景
@@ -69,31 +68,31 @@ struct NetomoView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //テキスト
                 ZStack(alignment: .bottom) {
                     ScrollViewReader { proxy in
                         ScrollView {
                             VStack(spacing: 12) {
-                                ForEach(0...currentIndex, id: \.self) { index in
+                                ForEach(1...currentIndex, id: \.self) { index in
                                     let dialogue = netomoDialogues[index]
                                     let isRight = dialogue.characterName == "カール"
-                                    
+
                                     HStack(alignment: .bottom) {
                                         if isRight { Spacer() }
-                                        
+
                                         if !isRight {
                                             Image("nick_icon")
                                                 .resizable()
                                                 .frame(width: 30, height: 30)
                                                 .padding(.leading, 8)
                                         }
-                                        
+
                                         VStack(alignment: .leading, spacing: 4) {
                                             Text(dialogue.characterName)
                                                 .font(.caption)
                                                 .foregroundColor(.white)
-                                            
+
                                             Text(dialogue.dialogueText)
                                                 .padding()
                                                 .font(.title3)
@@ -103,15 +102,15 @@ struct NetomoView: View {
                                         }
                                         .frame(maxWidth: 200, alignment: isRight ? .trailing : .leading)
                                         .padding(isRight ? .trailing : .leading, 0)
-                                        
-                                        
+
+
                                         if isRight {
                                             Image("curl_icon")
                                                 .resizable()
                                                 .frame(width: 30, height: 30)
                                                 .padding(.trailing, 8)
                                         }
-                                        
+
                                         if !isRight { Spacer() }
                                     }
                                     .id(index)
@@ -128,7 +127,7 @@ struct NetomoView: View {
                             }
                         }
                     }
-                    
+
                     //ボタン
                     Button(action: {
                         currentIndex += 1
@@ -141,8 +140,24 @@ struct NetomoView: View {
                     }
                     .offset(x:175,y:115)
                 }
+                //戻るボタン
+                HStack{
+                    Spacer()
+                    VStack{
+                        Button(action: {
+                            path.removeLast()
+                        }) {
+                            Image("home")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .padding(.top, 30)
+                        }
+                        Spacer()
+                    }
+                }
             }
-            
+
         case "Park" :
             ZStack{
                 //背景
@@ -150,49 +165,60 @@ struct NetomoView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //キャラクター
                 if current.characterName == "ニック" {
                     HStack{
-                        Image("ニック")
+                        Image("Nick")
                             .resizable()
                             .frame(width: 300, height: 700)
-                        Image("サンドラ")
+                            .offset(x:-50)
+                        Image("Curl")
                             .resizable()
-                            .frame(width: 400, height: 400)
-                        
+                            .frame(width: 250, height: 550)
+                            .offset(x:50)
+
                     }
                 } else {
                     HStack{
-                        Image("ニック")
+                        Image("Nick")
                             .resizable()
                             .frame(width: 250, height: 650)
-                        Image("サンドラ")
+                            .offset(x:-50)
+                        Image("Curl")
                             .resizable()
-                            .frame(width: 450, height: 450)
-                        
+                            .frame(width: 300, height: 600)
+                            .offset(x:50)
+
                     }
                 }
                 //吹き出し
-                Image("speech_bubble_yellow")
+                Image("speech_bubble_beige")
                     .resizable()
                     .frame(width: 900, height: 250)
                     .offset(x: 0, y:200)
-                
+
                 //名前
                 Text(current.characterName)
                     .font(.largeTitle)
                     .foregroundColor(.black)
                     .offset(x:-300, y:90)
-                
+
                 //テキスト
-                Text(current.dialogueText)
-                    .font(.largeTitle)
-                    .frame(width: 600, height: 300)
-                    .multilineTextAlignment(.center)
-                    .cornerRadius(12)
-                    .offset(y:200)
-                
+//                Text(current.dialogueText)
+//                    .font(.largeTitle)
+//                    .frame(width: 600, height: 300)
+//                    .multilineTextAlignment(.center)
+//                    .cornerRadius(12)
+//                    .offset(y:200)
+                TypingRubyLabelRepresentable(
+                    attributedText: current.dialogueText.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
+                    charInterval: 0.05,
+                    font: .systemFont(ofSize: 30)
+                )
+                .frame(width: 700, height: 200)
+//                .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+
                 //ボタン
                 Button(action: {
                     currentIndex += 1
@@ -204,7 +230,24 @@ struct NetomoView: View {
                         .padding()
                 }
                 .offset(x:400,y:300)
-                
+
+                //戻るボタン
+                HStack{
+                    Spacer()
+                    VStack{
+                        Button(action: {
+                            path.removeLast()
+                        }) {
+                            Image("home")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .padding(.top, 30)
+                        }
+                        Spacer()
+                    }
+                }
+
                 //セリフボタン
                 Button(action: {
                     isShowingLog.toggle()
@@ -216,30 +259,30 @@ struct NetomoView: View {
                 }
                 .offset(x: -480, y: -350)
                 .zIndex(2)
-                
+
                 if isShowingLog {
                     GeometryReader { geometry in
                         ScrollView {
                             VStack(spacing: 12) {
                                 ForEach(0...currentIndex, id: \.self) { index in
                                     let dialogue = netomoDialogues[index]
-                                    let isRight = dialogue.characterName == "サンドラ"
-                                    
+                                    let isRight = dialogue.characterName == "カール"
+
                                     HStack(alignment: .bottom) {
                                         if isRight { Spacer() }
-                                        
+
                                         if !isRight {
                                             Image("nick_icon")
                                                 .resizable()
                                                 .frame(width: 30, height: 30)
                                                 .padding(.leading, 8)
                                         }
-                                        
+
                                         VStack(alignment: .leading, spacing: 4) {
                                             Text(dialogue.characterName)
                                                 .font(.caption)
                                                 .foregroundColor(.white)
-                                            
+
                                             Text(dialogue.dialogueText)
                                                 .padding()
                                                 .font(.title3)
@@ -249,15 +292,15 @@ struct NetomoView: View {
                                         }
                                         .frame(maxWidth: 200, alignment: isRight ? .trailing : .leading)
                                         .padding(isRight ? .trailing : .leading, 0)
-                                        
-                                        
+
+
                                         if isRight {
-                                            Image("sandra_icon")
+                                            Image("curl_icon")
                                                 .resizable()
                                                 .frame(width: 30, height: 30)
                                                 .padding(.trailing, 8)
                                         }
-                                        
+
                                         if !isRight { Spacer() }
                                     }
                                 }
@@ -272,7 +315,7 @@ struct NetomoView: View {
                     }
                 }
             }
-            
+
         case "Chat2" :
             ZStack{
                 //背景
@@ -280,31 +323,31 @@ struct NetomoView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //テキスト
                 ZStack(alignment: .bottom) {
                     ScrollViewReader { proxy in
                         ScrollView {
                             VStack(spacing: 12) {
-                                ForEach(0...currentIndex, id: \.self) { index in
+                                ForEach(65...currentIndex, id: \.self) { index in
                                     let dialogue = netomoDialogues[index]
-                                    let isRight = dialogue.characterName == "サンドラ"
-                                    
+                                    let isRight = dialogue.characterName == "カール"
+
                                     HStack(alignment: .bottom) {
                                         if isRight { Spacer() }
-                                        
+
                                         if !isRight {
-                                            Image("sandra_icon")
+                                            Image("nick_icon")
                                                 .resizable()
                                                 .frame(width: 50, height: 50)
                                                 .padding(.leading, 8)
                                         }
-                                        
+
                                         VStack(alignment: .leading, spacing: 4) {
                                             Text(dialogue.characterName)
                                                 .font(.caption)
                                                 .foregroundColor(.white)
-                                            
+
                                             Text(dialogue.dialogueText)
                                                 .padding()
                                                 .font(.title3)
@@ -314,15 +357,15 @@ struct NetomoView: View {
                                         }
                                         .frame(maxWidth: 200, alignment: isRight ? .trailing : .leading)
                                         .padding(isRight ? .trailing : .leading, 0)
-                                        
-                                        
+
+
                                         if isRight {
-                                            Image("nick_icon")
+                                            Image("curl_icon")
                                                 .resizable()
                                                 .frame(width: 50, height: 50)
                                                 .padding(.trailing, 8)
                                         }
-                                        
+
                                         if !isRight { Spacer() }
                                     }
                                     .id(index)
@@ -339,7 +382,7 @@ struct NetomoView: View {
                             }
                         }
                     }
-                    
+
                     //ボタン
                     Button(action: {
                         currentIndex += 1
@@ -352,8 +395,25 @@ struct NetomoView: View {
                     }
                     .offset(x:175,y:115)
                 }
+
+                //戻るボタン
+                HStack{
+                    Spacer()
+                    VStack{
+                        Button(action: {
+                            path.removeLast()
+                        }) {
+                            Image("home")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .padding(.top, 30)
+                        }
+                        Spacer()
+                    }
+                }
             }
-            
+
         case "News" :
             ZStack{
                 //背景
@@ -361,19 +421,19 @@ struct NetomoView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 //吹き出し
-                Image("speech_bubble_blue")
+                Image("speech_bubble_beige")
                     .resizable()
                     .frame(width: 900, height: 250)
                     .offset(x: 0, y:200)
-                
+
                 //名前
                 Text(current.characterName)
                     .font(.largeTitle)
                     .foregroundColor(.black)
                     .offset(x:-300, y:90)
-                
+
                 //テキスト
                 Text(current.dialogueText)
                     .font(.largeTitle)
@@ -381,7 +441,7 @@ struct NetomoView: View {
                     .multilineTextAlignment(.center)
                     .cornerRadius(12)
                     .offset(y:200)
-                
+
                 //ボタン
                 Button(action: {
                     currentIndex += 1
@@ -393,15 +453,32 @@ struct NetomoView: View {
                         .padding()
                 }
                 .offset(x:400,y:300)
+
+                //戻るボタン
+                HStack{
+                    Spacer()
+                    VStack{
+                        Button(action: {
+                            path.removeLast()
+                        }) {
+                            Image("home")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 100, height: 100)
+                                .padding(.top, 30)
+                        }
+                        Spacer()
+                    }
+                }
             }
-            
+
         default:
             ZStack {
                 Image("sky")
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                
+
                 Text(current.dialogueText)
                     .font(.largeTitle)
                     .multilineTextAlignment(.center)
@@ -413,7 +490,7 @@ struct NetomoView: View {
 //                選択画面に戻る
                 if currentIndex >= netomoDialogues.count - 1 {
                     Button(action: {
-//                        goChoiceView = true
+
                         path.removeLast()
                     }) {
                         Image("story_back")

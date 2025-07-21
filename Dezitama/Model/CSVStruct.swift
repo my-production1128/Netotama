@@ -58,16 +58,36 @@ enum CharacterName: String {
     case Mother_normal
 
 //    アレック
+    case Alec
+
 //    コニー
+    case Cony
+
 //    セシル
+    case Cecil
+
+//    先生
+    case Teacher
+
+//    ブライアン
+    case Brian
+
+//    サンドラ
+    case Sandra
+
+//    ロビー
+    case Robbie
+
 
 
     var displayName: String {
         switch self {
+//            ニック
         case .Nick: return "ニック"
         case .Nick_angry: return "ニック"
         case .Nick_normal: return "ニック"
 
+//            カール
         case .Curl: return "カール"
         case .Curl_normal: return "カール"
         case .Curl_anixiety: return "カール"
@@ -75,8 +95,29 @@ enum CharacterName: String {
         case .Curl_sorry: return "カール"
         case .Curl_tear: return "カール"
 
+//            カールのお母さん
         case .Mother: return "カールのお母さん"
         case .Mother_normal: return "カールのお母さん"
+
+//            アレック
+        case .Alec: return "アレック"
+
+//            コニー
+        case .Cony: return "コニー"
+
+//            セシル
+        case .Cecil: return "セシル"
+
+//            先生
+        case .Teacher: return "先生"
+
+//            ブライアン
+        case .Brian: return "ブライアン"
+
+//            サンドラ
+        case .Sandra: return "サンドラ"
+//            ロビー
+        case .Robbie: return "ロビー"
         }
     }
 }
