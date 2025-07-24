@@ -67,6 +67,7 @@ struct isChoiceView: View {
                         }.position(x: geometry.size.width * 0.8925, y: geometry.size.height * 0.9)
                     }
                 }
+
 //                丸を出す関数
                 if showCorrectMark {
                     Image("circle")
@@ -82,7 +83,6 @@ struct isChoiceView: View {
 
     private func handleChoice(_ choice: Choice) {
         selectedChoice = choice
-
         // 正解の文字列と比較
         let selectedText = (choice == .choice1) ? netomoscene.choiceText1 : netomoscene.choiceText2
         if selectedText == netomoscene.text {

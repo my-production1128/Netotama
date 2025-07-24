@@ -41,8 +41,6 @@ struct ChatSceneView: View {
 //    選択肢のポップアップを表示する
     @Binding var isPopupVisible: Bool
 
-
-
     var color: Color = .blue
     var dotSize: CGFloat = 30
     var bounceHeight: CGFloat = 90
@@ -51,6 +49,10 @@ struct ChatSceneView: View {
     var body: some View {
             GeometryReader { geometry in
                 ZStack {
+                    Text(ChatMessage(scene: self.allScene).scene.groupName)
+                        .position(x: geometry.size.width * 0.5
+                                  ,y: geometry.size.height * 0.125
+                        )
                     VStack {
 //                                        チャットの画面のスクロール部分
                         ScrollViewReader { proxy in
@@ -65,7 +67,6 @@ struct ChatSceneView: View {
                             }
                             .padding(.bottom, 10)
                             .frame(width: 500, height: 450)
-//                            .background(Color.black.opacity(0.5))
                             .position(x: geometry.size.width  * 0.492,y: geometry.size.height * 0.45)
                             .onChange(of: chatMessage.count) {
                                 withAnimation {
@@ -77,7 +78,6 @@ struct ChatSceneView: View {
                         }
                     }
 
-//                    VStack{
                         HStack {
                             Image("soushin")
                                 .resizable()
@@ -89,59 +89,20 @@ struct ChatSceneView: View {
                                 .onAppear {
                                     startLoopingAnimation()
                                 }
-                                .onTapGesture {
-                                    if isTyping || isPopupVisible {
-                                        return
-                                    }
-
-                                    guard let last = chatMessage.last else { return }
-                                    let nextId = last.scene.nextSceneId
-                                    guard let next = branchingMap[nextId] else {
-                                        onNextScene(nextId)
-                                        return
-                                    }
-
-//                                     主人公のセリフだけボタンで進める
-                                    if next.sceneType == "chat" {
-                                        if next.characterName == next.rightCharacter {
-//                                             自分のセリフ（即時表示）
-                                            let newMsg = ChatMessage(scene: next, isAnimating: false, showText: true)
-                                            allScene = next //  最新のシーンを更新
-
-                                            if next.isChoice == true {
-                                                isPopupVisible = true
-                                                currentChoiceScene = next
-                                            } else {
-                                                chatMessage.append(newMsg)
-                                            }
-                                        }
-//                                        else {
-//                                            // 相手のセリフは自動で進める（ここでは触らない）
-//                                        }
-                                    } else {
-                                        onNextScene(nextId)
-                                    }
-
-                                    // ボタン押した後に「次が相手のセリフ」なら自動で返信
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                                        proceedToNextIfNeeded()
-                                    }
-                                }
                                 .position(x: geometry.size.width * 0.645, y: geometry.size.height * 0.805)
                         }
-//                        Button {
-//                            skipAllChatScenes()
-//                        } label: {
-//                            Text("飛ばす")
-//                                .font(.system(size: 20, weight: .bold, design: .default))
-//                                // ▼ 当たり判定を広げて、見やすくするための修飾子を追加 ▼
-//                                .padding(10)
-//                                .background(Color.red) // 背景を赤くして目立たせる
-//                                .foregroundColor(.white)
-//                                .clipShape(Capsule())
-//                        }
-//                        .border(Color.yellow, width: 3)
-//                    }
+                        Button {
+                            skipAllChatScenes()
+                        } label: {
+                            Text("飛ばす")
+                                .font(.system(size: 20, weight: .bold, design: .default))
+                                // ▼ 当たり判定を広げて、見やすくするための修飾子を追加 ▼
+                                .padding(10)
+                                .background(Color.red) // 背景を赤くして目立たせる
+                                .foregroundColor(.white)
+                                .clipShape(Capsule())
+                        }
+                        .border(Color.yellow, width: 3)
 
 //                     選択肢の問題を出す
                     if isPopupVisible, let choiceScene = currentChoiceScene {
@@ -156,6 +117,46 @@ struct ChatSceneView: View {
                         )
                     }
                 }
+//                ↓ここから送信ボタンをタップした時の処理
+//                Zstackの範囲を全画面に広げてから.onTapGestureの処理を実行
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    if isTyping || isPopupVisible {
+                        return
+                    }
+
+                    guard let last = chatMessage.last else { return }
+                    let nextId = last.scene.nextSceneId
+                    guard let next = branchingMap[nextId] else {
+                        onNextScene(nextId)
+                        return
+                    }
+
+//                                     主人公のセリフだけボタンで進める
+                    if next.sceneType == "chat" {
+                        if next.characterName == next.rightCharacter {
+//                                             自分のセリフ（即時表示）
+                            let newMsg = ChatMessage(scene: next, isAnimating: false, showText: true)
+                            allScene = next //  最新のシーンを更新
+
+                            if next.isChoice == true {
+                                isPopupVisible = true
+                                currentChoiceScene = next
+                            } else {
+                                chatMessage.append(newMsg)
+                            }
+                        }
+                    } else {
+                        onNextScene(nextId)
+                    }
+                    // ボタン押した後に「次が相手のセリフ」なら自動で返信
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        proceedToNextIfNeeded()
+                    }
+                }
+//                ↑ここまでonTapGestureの処理
+
                 .onAppear {
                     if let first = branchingMap[initialSceneId] {
                         chatMessage = [ChatMessage(scene: first)]
@@ -179,6 +180,7 @@ struct ChatSceneView: View {
             chatMessage[index].showText = true
         }
     }
+
     // タイピングアニメーションのView
     @ViewBuilder
     private func typingAnimationView() -> some View {
@@ -192,22 +194,22 @@ struct ChatSceneView: View {
                     } keyframes: { _ in
                         KeyframeTrack {
                             LinearKeyframe(0.0, duration: Double(index) * 0.1)
-                            SpringKeyframe(-0.15 * bounceHeight, duration: 0.6)
-                            SpringKeyframe(0.0, duration: 0.8)
+                            SpringKeyframe(-0.15 * bounceHeight, duration: 0.5)
+                            SpringKeyframe(0.0, duration: 0.7)
                         }
                     }
             }
         }
     }
-    
-    
+
+
 //与えられたチャットメッセージに応じて、
 //ユーザー発言 or 相手発言の表示ビューを構築する。
 //ユーザーの発言：右寄せで即時表示（青背景）
 //相手の発言：左寄せでドットアニメーションのあとにテキスト表示（緑背景）
 //アニメーションが必要な場合は `typingAnimationView()` を表示し、
 //指定時間後にテキストへ切り替える。
-    
+
     @ViewBuilder
     func messageRow(for message: ChatMessage) -> some View {
         let scene = message.scene
@@ -237,11 +239,11 @@ struct ChatSceneView: View {
                                         animationTrigger.toggle()
 
                                         // アニメーション時間後に切り替え
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.7) {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
                                             animationTrigger.toggle()
                                         }
-
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+//                                        2回目のアニメーション
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 2.7) {
                                             withAnimation {
                                                 updateMessageState(id: message.id)
                                             }
@@ -253,8 +255,10 @@ struct ChatSceneView: View {
 //                            ルビつきでテキストを表示
                             if message.showText {
                                 RubyLabelRepresentable(
-                                    attributedText: scene.text.replacingOccurrences(of: "<br>", with: "\n").createRuby(),
-                                    font: .systemFont(ofSize: 22),
+                                    attributedText: scene.text
+                                        .replacingOccurrences(of: "<br>", with: "\n")
+                                        .createRuby(font: .customFont(ofSize: 22), color: .black),
+                                    font: .customFont(ofSize: 22),
                                     textColor: .black,
                                     textAlignment: .left
                                 )
@@ -262,6 +266,33 @@ struct ChatSceneView: View {
                                 .background(Color.white.opacity(1.0))
                                 .cornerRadius(16)
                                 .frame(maxWidth: 350, alignment: .leading)
+//                                .onAppear {
+//                                    // フォント情報を出力
+//                                    let systemFont = UIFont.systemFont(ofSize: 22)
+//                                    let customFont = UIFont.customFont(ofSize: 22)
+//
+//                                    print("=== フォント確認 ===")
+//                                    print("システムフォント: \(systemFont.fontName)")
+//                                    print("カスタムフォント: \(customFont.fontName)")
+//                                    print("同じフォント？: \(systemFont.fontName == customFont.fontName)")
+//
+//                                    // MPLUSフォントが読み込まれているかチェック
+//                                    if let mplus = UIFont(name: "MPLUS1-Regular", size: 22) {
+//                                        print("✅ MPLUS1-Regular 読み込み成功: \(mplus.fontName)")
+//                                    } else {
+//                                        print("❌ MPLUS1-Regular 読み込み失敗")
+//                                    }
+//
+//                                    // 利用可能なMPLUSフォントを検索
+//                                    print("利用可能なMPLUSフォント:")
+//                                    for family in UIFont.familyNames {
+//                                        for font in UIFont.fontNames(forFamilyName: family) {
+//                                            if font.lowercased().contains("mplus") || font.lowercased().contains("m+") {
+//                                                print("  - \(font)")
+//                                            }
+//                                        }
+//                                    }
+//                                }
                             }
                         }
                     }.frame(maxWidth: .infinity, alignment: .leading)
@@ -278,10 +309,12 @@ struct ChatSceneView: View {
 
 //                        ルビ付きでテキストを表示
                         RubyLabelRepresentable(
-                            attributedText: scene.text.replacingOccurrences(of: "<br>", with: "\n").createRuby(),
-                            font: .systemFont(ofSize: 22),
+                            attributedText: scene.text
+                                .replacingOccurrences(of: "<br>", with: "\n")
+                                .createRuby(font: .customFont(ofSize: 22), color: .black),
+                            font: .customFont(ofSize: 22),
                             textColor: .black,
-                            textAlignment: .left,
+                            textAlignment: .left
                         )
                         .font(.system(size: 22))
                         .padding(13)
@@ -294,7 +327,6 @@ struct ChatSceneView: View {
                         .frame(width: 48, height: 48)
                 }.frame(maxWidth: .infinity, alignment: .leading)
             }
-
             if scene.characterName != scene.rightCharacter { Spacer() }
         }
         .padding(.horizontal)

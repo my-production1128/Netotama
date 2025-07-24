@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-//import UIKit
 
 struct StoryBranchView: View {
     @State private var currentSceneId: String = ""
@@ -23,6 +22,9 @@ struct StoryBranchView: View {
 
     @State private var isTypingComplete: Bool = false
     @State private var shouldSkipTyping: Bool = false
+
+    let talkFont = UIFont.customFont(ofSize: 30)
+    let charaNameFont = UIFont.customFont(ofSize: 35)
 
 
 
@@ -54,7 +56,7 @@ struct StoryBranchView: View {
                 if let current = branchingMap[currentSceneId] {
                     VStack {
                         Spacer()
-                        
+
 //                    scenetypeがchatの時
                         switch current.sceneType {
                             case "chat":
@@ -63,7 +65,7 @@ struct StoryBranchView: View {
                                 branchingMap: branchingMap,
                                 initialSceneId: currentSceneId,
                                 onNextScene: { nextId in
-                                    print("StoryBranchView: onNextSceneが呼ばれました。nextId = \(nextId)")
+//                                    print("StoryBranchView: onNextSceneが呼ばれました。nextId = \(nextId)")
                                     historyStack.append(currentSceneId)
                                     currentSceneId = nextId
                                 },
@@ -124,9 +126,13 @@ struct StoryBranchView: View {
                                         .position(x: geometry.size.width * 0.22,y: geometry.size.height * 0.673)
 
                                     TypingRubyLabelRepresentable(
-                                        attributedText: current.text.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
+                                        // createWideRuby に font を渡す
+                                        attributedText: current.text
+                                            .replacingOccurrences(of: "<br>", with: "\n")
+                                            .createWideRuby(font: talkFont, color: .black), // ← 修正
                                         charInterval: 0.05,
-                                        font: .systemFont(ofSize: 30)
+                                        // こちらにも同じ font を渡す
+                                        font: talkFont // ← 修正
                                     )
                                     .frame(width: 700, height: 200)
                                     .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
@@ -142,17 +148,21 @@ struct StoryBranchView: View {
                                             .onAppear {
                                                 startLoopingAnimation()
                                             }
-                                            .onTapGesture {
-                                                if let next = branchingMap[current.nextSceneId] {
-                                                    historyStack.append(currentSceneId)
-                                                    currentSceneId = next.sceneId
-                                                }
-                                            }
-                                            .expandedTapArea(20)
                                     }
                                 }
                                 .offset(y: 20)
                             }
+//                            ↓ここから送信ボタンをタップした時の処理
+//                            Zstackの範囲を全画面に広げてから.onTapGestureの処理を実行
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                if let next = branchingMap[current.nextSceneId] {
+                                    historyStack.append(currentSceneId)
+                                    currentSceneId = next.sceneId
+                                }
+                            }
+//                            ↑ここまでonTapGestureの処理
 
                         default:
                             Text("このscemneTypeは未対応です")

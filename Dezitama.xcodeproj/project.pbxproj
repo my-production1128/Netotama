@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A68D3D02E313081006032B9 /* MPLUS1-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8A68D3CF2E313081006032B9 /* MPLUS1-Regular.ttf */; };
 		8A7AD33C2E1F6AD600BF4664 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 8A7AD33B2E1F6AD600BF4664 /* Lottie */; };
 /* End PBXBuildFile section */
 
@@ -22,12 +23,26 @@
 
 /* Begin PBXFileReference section */
 		0661A04D2DDB941700016B1C /* Dezitama.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dezitama.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8A68D3CF2E313081006032B9 /* MPLUS1-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "MPLUS1-Regular.ttf"; path = "../../Desktop/自主研究/M_PLUS_1/static/MPLUS1-Regular.ttf"; sourceTree = "<group>"; };
 		8A7AD2EA2E1E929400BF4664 /* DezitamaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DezitamaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		8A68D3CE2E313028006032B9 /* Exceptions for "Dezitama" folder in "Dezitama" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 0661A04C2DDB941700016B1C /* Dezitama */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0661A04F2DDB941700016B1C /* Dezitama */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8A68D3CE2E313028006032B9 /* Exceptions for "Dezitama" folder in "Dezitama" target */,
+			);
 			path = Dezitama;
 			sourceTree = "<group>";
 		};
@@ -60,6 +75,7 @@
 		0661A0442DDB941700016B1C = {
 			isa = PBXGroup;
 			children = (
+				8A68D3CF2E313081006032B9 /* MPLUS1-Regular.ttf */,
 				0661A04F2DDB941700016B1C /* Dezitama */,
 				8A7AD2EB2E1E929400BF4664 /* DezitamaUITests */,
 				0661A04E2DDB941700016B1C /* Products */,
@@ -171,6 +187,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A68D3D02E313081006032B9 /* MPLUS1-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,6 +357,10 @@
 				DEVELOPMENT_TEAM = 68N989W5NW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Dezitama/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -369,6 +390,10 @@
 				DEVELOPMENT_TEAM = 68N989W5NW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Dezitama/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

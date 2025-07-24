@@ -25,26 +25,10 @@ struct ContentView: View {
     // 全てのシナリオデータを保持する一つの配列
     @State var allBranchings: [Branching] = []
     @State var allScene: Branching = Branching(
-        storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
+        storyId: "", sceneId: "", sceneType: "", groupName: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
         background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
         choiceText1: "", choiceText2: ""
     )
-
-//    @State var netomoBranchings: [Branching] = []
-//    @State var allScene: Branching = Branching(
-//        storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
-//        background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
-//        choiceText1: "", choiceText2: ""
-//    )
-//    @State var groupBranchings: [Branching] = []
-//    @State var allScene: Branching = Branching(
-//        storyId: "", sceneId: "", sceneType: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
-//        background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
-//        choiceText1: "", choiceText2: ""
-//    )
-
-
-
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -62,7 +46,7 @@ struct ContentView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button {
-                            /// isMenuOpenの変化にアニメーションをつける
+//                           isMenuOpenの変化にアニメーションをつける
                             withAnimation(.easeInOut(duration: 0.3)) {
                                 isMenuOpen.toggle()
                             }
@@ -77,14 +61,13 @@ struct ContentView: View {
                 .onTapGesture {
                     path.append(ViewBuilderPath.NoteView)
                 }
-
 //            csvファイルの読み込み
             .onAppear {
                 netomoDialogues = loadCSV(fileName: "netomo_ver9_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_var5_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
-                let netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver19")
-                let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver5")
+                let netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver20")
+                let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver7")
                 self.allBranchings = netomoBranchings + groupBranchings
 //                 print(self.allBranchings.map { $0.storyId })
             }
