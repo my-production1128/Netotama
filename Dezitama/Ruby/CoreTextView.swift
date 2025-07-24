@@ -13,7 +13,7 @@ import CoreText
 //chattypeの時のルビを振るコード
 // MARK: - String拡張：ルビ付きNSAttributedStringを生成
 extension String {
-    func createRuby(color: UIColor = .black) -> NSAttributedString {
+    func createRuby(font: UIFont, color: UIColor = .black) -> NSAttributedString {
         let textWithRuby = replacingOccurrences(of: "(｜.+?《.+?》)", with: ",$1,", options: .regularExpression)
             .components(separatedBy: ",")
             .map { component -> NSAttributedString in
@@ -33,13 +33,26 @@ extension String {
                         rubyAttribute as CFDictionary
                     )
 
+//                    let attributes: [NSAttributedString.Key: Any] = [
+//                        kCTRubyAnnotationAttributeName as NSAttributedString.Key: rubyAnnotation,
+//                        .font: font,
+//                        .foregroundColor: color
+//                    ]
+//                    return NSAttributedString(string: baseText, attributes: attributes)
+
                     return NSAttributedString(
                         string: baseText,
-                        attributes: [kCTRubyAnnotationAttributeName as NSAttributedString.Key: rubyAnnotation]
+                        attributes: [kCTRubyAnnotationAttributeName as NSAttributedString.Key: rubyAnnotation,
+                                     .font: font // ← 修正！
+//                                     .paragraphStyle: paragraphStyle
+                        ]
                     )
                 } else {
-                    // ルビがない部分はそのままNSAttributedStringで返す
-                    return NSAttributedString(string: component)
+                    // ルビがない部分もフォントを適用
+                    return NSAttributedString(string: component, attributes: [ // ← 修正！
+                        .font: font,
+                        .foregroundColor: color
+                    ])
                 }
             }
             .reduce(NSMutableAttributedString()) {
@@ -66,7 +79,6 @@ extension NSAttributedString {
                 stop.pointee = true
             }
         }
-//        print(attributedText)
         return found
     }
 }
@@ -162,7 +174,7 @@ class RubyLabel: UILabel {
 }
 
 
-// MARK:  SwiftUI ラッパー
+// MARK: - SwiftUI ラッパー
 struct RubyLabelRepresentable: UIViewRepresentable {
     let attributedText: NSAttributedString
     let font: UIFont
@@ -171,6 +183,7 @@ struct RubyLabelRepresentable: UIViewRepresentable {
 
     func makeUIView(context: Context) -> RubyLabel {
         let label = RubyLabel()
+//        label.font = UIFont.CustomFont
         label.numberOfLines = 0
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentHuggingPriority(.required, for: .vertical)
@@ -182,6 +195,12 @@ struct RubyLabelRepresentable: UIViewRepresentable {
         uiView.font = font
         uiView.textColor = textColor
         uiView.textAlignment = textAlignment
+    }
+}
+
+extension UIFont {
+    static func customFont(ofSize size: CGFloat) -> UIFont {
+        return UIFont(name: "MPLUS1-Regular", size: size) ?? UIFont.systemFont(ofSize: size)
     }
 }
 

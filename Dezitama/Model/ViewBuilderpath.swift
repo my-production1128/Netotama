@@ -10,22 +10,13 @@ enum ViewBuilderPath: Hashable {
     case ContentView
 //    ストーリー選択画面
     case NoteView
-    // 分岐ありのストーリー
+//    分岐ありのストーリー
     case StoryBranchView(String)
 
     case GroupchatView
     case kakusanView
     case NetomoView
     case Credit
+//    チュートリアル画面
     case HowToUse
 }
-
-//enum AboutContentType: String, Identifiable {
-//    var id: String { rawValue }
-//
-//    case about = "アプリについて"
-//    case terms = "利用規約"
-//    case guide = "使い方"
-//    case credit = "クレジット"
-//}
-

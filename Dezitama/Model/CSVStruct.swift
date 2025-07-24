@@ -24,6 +24,7 @@ struct Branching: Identifiable {
     let storyId: String
     let sceneId: String
     let sceneType: String
+    let groupName: String
     let icon: String
     let characterName: String
     let leftCharacter: String

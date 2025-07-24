@@ -205,17 +205,17 @@ struct NetomoView: View {
                     .offset(x:-300, y:90)
 
                 //テキスト
-//                Text(current.dialogueText)
-//                    .font(.largeTitle)
-//                    .frame(width: 600, height: 300)
-//                    .multilineTextAlignment(.center)
-//                    .cornerRadius(12)
-//                    .offset(y:200)
-                TypingRubyLabelRepresentable(
-                    attributedText: current.dialogueText.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
-                    charInterval: 0.05,
-                    font: .systemFont(ofSize: 30)
-                )
+                Text(current.dialogueText)
+                    .font(.largeTitle)
+                    .frame(width: 600, height: 300)
+                    .multilineTextAlignment(.center)
+                    .cornerRadius(12)
+                    .offset(y:200)
+//                TypingRubyLabelRepresentable(
+//                    attributedText: current.dialogueText.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
+//                    charInterval: 0.05,
+//                    font: .systemFont(ofSize: 30)
+//                )
                 .frame(width: 700, height: 200)
 //                .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
 

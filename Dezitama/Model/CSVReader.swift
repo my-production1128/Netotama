@@ -16,7 +16,7 @@ func loadCSV(fileName: String) -> [Dialogue] {
     var result: [Dialogue] = []
 
     guard let path = Bundle.main.path(forResource: fileName, ofType: "csv") else {
-//        print("ファイルが見つかりません")
+        print("ファイルが見つかりません")
         return []
     }
 
@@ -59,13 +59,13 @@ func loadNetomoBranchingCSV(fileName: String) -> [Branching] {
             if i == 0 { continue } // ヘッダ行スキップ
             let cols = row.components(separatedBy: ",")
 
-            guard cols.count >= 14 else {
+            guard cols.count >= 15 else {
                 print("❌ 列が足りない line \(i): \(cols)")
                 continue
             }
 
             let isChoice: Bool? = {
-                let raw = cols[11].trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                let raw = cols[12].trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
                 if raw == "true" || raw == "1" {
                     return true
                 } else if raw == "false" || raw == "0" {
@@ -79,17 +79,18 @@ func loadNetomoBranchingCSV(fileName: String) -> [Branching] {
                 storyId: cols[0],
                 sceneId: cols[1],
                 sceneType: cols[2],
-                icon: cols[3],
-                characterName: cols[4],
-                leftCharacter: cols[5],
-                rightCharacter: cols[6],
-                text: cols[7],
-                background: cols[8],
-                speechBubble: cols[9],
-                nextSceneId: cols[10],
+                groupName: cols[3],
+                icon: cols[4],
+                characterName: cols[5],
+                leftCharacter: cols[6],
+                rightCharacter: cols[7],
+                text: cols[8],
+                background: cols[9],
+                speechBubble: cols[10],
+                nextSceneId: cols[11],
                 isChoice: isChoice,
-                choiceText1: cols[12],
-                choiceText2: cols[13]
+                choiceText1: cols[13],
+                choiceText2: cols[14]
             )
 
             result.append(b)

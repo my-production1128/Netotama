@@ -12,14 +12,13 @@ import CoreText
 //会話画面におけるテキストのルビをふるコード
 // MARK: - String拡張：ルビ付きNSAttributedStringを生成
 extension String {
-    func createWideRuby(color: UIColor = .black) -> NSAttributedString {
+    func createWideRuby(font: UIFont, color: UIColor = .black) -> NSAttributedString {
         let textWithRuby = replacingOccurrences(of: "(｜.+?《.+?》)", with: ",$1,", options: .regularExpression)
             .components(separatedBy: ",")
             .map { component -> NSAttributedString in
                 if let _ = component.range(of: "｜(.+?)《(.+?)》", options: .regularExpression) {
                     let baseText = component.replacingOccurrences(of: "｜(.+?)《.+?》", with: "$1", options: .regularExpression)
                     let rubyText = component.replacingOccurrences(of: "｜.+?《(.+?)》", with: "$1", options: .regularExpression)
-
 
                     let paragraphStyle = NSMutableParagraphStyle()
                     paragraphStyle.lineSpacing = 100 // 行間を広げる
@@ -36,16 +35,21 @@ extension String {
                         rubyAttribute as CFDictionary
                     )
 
-
+                    // ...
                     return NSAttributedString(
                         string: baseText,
                         attributes: [kCTRubyAnnotationAttributeName as NSAttributedString.Key: rubyAnnotation,
-                                     .font: UIFont.systemFont(ofSize: 30),
+                                     .font: font, // ← 修正！
                                      .paragraphStyle: paragraphStyle
                         ]
                     )
+                    // ...
                 } else {
-                    return NSAttributedString(string: component)
+                    // ルビがない部分もフォントを適用
+                    return NSAttributedString(string: component, attributes: [ // ← 修正！
+                        .font: font,
+                        .foregroundColor: color
+                    ])
                 }
             }
             .reduce(NSMutableAttributedString()) {
@@ -56,7 +60,6 @@ extension String {
         return textWithRuby
     }
 }
-
 // MARK: - NSAttributedString拡張：ルビ有無確認
 extension NSAttributedString {
     func containsWideRubyAnnotation() -> Bool {
@@ -74,7 +77,6 @@ extension NSAttributedString {
         return found
     }
 }
-
 // MARK: - カスタム UILabel (WideRubyLabel)
 class WideRubyLabel: UILabel {
 
@@ -95,42 +97,7 @@ class WideRubyLabel: UILabel {
     }
 
     override func drawText(in rect: CGRect) {
-//        guard let context = UIGraphicsGetCurrentContext(), let attributedText = attributedText else {
-//            print("drawText: attributedText is nil")
-//            super.drawText(in: rect)
-//            return
-//        }
-
-//        if attributedText.containsWideRubyAnnotation() {
-            // Y座標を0に設定して、上端から描画開始
-        // こいつがテキストを小さくしている
-            // 他のdrawTextいじったらこれが周り始める
-
-//            let drawingRect = CGRect(x: 0, y: 0, width: rect.width, height: rect.height)
-//
-//            context.saveGState()
-//            context.translateBy(x: 0, y: drawingRect.height)
-//            context.scaleBy(x: 1.0, y: -1.0)
-//
-//            let framesetter = CTFramesetterCreateWithAttributedString(attributedText)
-//            let path = CGPath(rect: drawingRect, transform: nil)
-//            let frame = CTFramesetterCreateFrame(
-//                framesetter,
-//                CFRangeMake(0, attributedText.length),
-//                path,
-//                nil
-//            )
-//            CTFrameDraw(frame, context)
-//            context.restoreGState()
-//            super.drawText(in: rect)
-//            print("drawText: attributedText contains WideRubyAnnotation")
-//        }
-//        else {
-        // 求めていたコード
-//            print(attributedText.containsWideRubyAnnotation())
-//            print("drawText: attributedText does not contain WideRubyAnnotation")
             super.drawText(in: rect)
-//        }
     }
 
     override var intrinsicContentSize: CGSize {
@@ -196,7 +163,7 @@ struct WideRubyLabelRepresentable: UIViewRepresentable {
 
     func makeUIView(context: Context) -> WideRubyLabel {
         let style = NSMutableParagraphStyle()
-        style.lineSpacing = 20
+//        style.lineSpacing = 20
         style.alignment = .center
         let label = WideRubyLabel()
         label.numberOfLines = 0
@@ -212,5 +179,11 @@ struct WideRubyLabelRepresentable: UIViewRepresentable {
         uiView.textColor = textColor
         uiView.textAlignment = textAlignment  // 既存のプロパティを使用
     }
+
+//    extension UIFont {
+//        static func customFont(ofSize size: CGFloat) -> UIFont {
+//            return UIFont(name: "MPLUS1-Regular", size: size) ?? UIFont.systemFont(ofSize: size)
+//        }
+//    }
 }
 
