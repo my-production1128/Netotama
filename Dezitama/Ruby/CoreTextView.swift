@@ -33,13 +33,6 @@ extension String {
                         rubyAttribute as CFDictionary
                     )
 
-//                    let attributes: [NSAttributedString.Key: Any] = [
-//                        kCTRubyAnnotationAttributeName as NSAttributedString.Key: rubyAnnotation,
-//                        .font: font,
-//                        .foregroundColor: color
-//                    ]
-//                    return NSAttributedString(string: baseText, attributes: attributes)
-
                     return NSAttributedString(
                         string: baseText,
                         attributes: [kCTRubyAnnotationAttributeName as NSAttributedString.Key: rubyAnnotation,
