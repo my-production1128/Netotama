@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8A68D3D02E313081006032B9 /* MPLUS1-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8A68D3CF2E313081006032B9 /* MPLUS1-Regular.ttf */; };
+		8A68D4662E336948006032B9 /* MPLUS1-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8A68D4652E336948006032B9 /* MPLUS1-Regular.ttf */; };
 		8A7AD33C2E1F6AD600BF4664 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 8A7AD33B2E1F6AD600BF4664 /* Lottie */; };
 /* End PBXBuildFile section */
 
@@ -23,7 +23,7 @@
 
 /* Begin PBXFileReference section */
 		0661A04D2DDB941700016B1C /* Dezitama.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dezitama.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8A68D3CF2E313081006032B9 /* MPLUS1-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "MPLUS1-Regular.ttf"; path = "../../Desktop/自主研究/M_PLUS_1/static/MPLUS1-Regular.ttf"; sourceTree = "<group>"; };
+		8A68D4652E336948006032B9 /* MPLUS1-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "MPLUS1-Regular.ttf"; path = "../M_PLUS_1/static/MPLUS1-Regular.ttf"; sourceTree = "<group>"; };
 		8A7AD2EA2E1E929400BF4664 /* DezitamaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DezitamaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -75,7 +75,7 @@
 		0661A0442DDB941700016B1C = {
 			isa = PBXGroup;
 			children = (
-				8A68D3CF2E313081006032B9 /* MPLUS1-Regular.ttf */,
+				8A68D4652E336948006032B9 /* MPLUS1-Regular.ttf */,
 				0661A04F2DDB941700016B1C /* Dezitama */,
 				8A7AD2EB2E1E929400BF4664 /* DezitamaUITests */,
 				0661A04E2DDB941700016B1C /* Products */,
@@ -187,7 +187,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A68D3D02E313081006032B9 /* MPLUS1-Regular.ttf in Resources */,
+				8A68D4662E336948006032B9 /* MPLUS1-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
