@@ -23,6 +23,11 @@ struct StoryBranchView: View {
     @State private var isTypingComplete: Bool = false
     @State private var shouldSkipTyping: Bool = false
 
+
+    // 選択肢のシーンを一時的に保持する新しいState変数
+       @State private var currentChoiceScene: Branching? = nil
+
+
     let talkFont = UIFont.customFont(ofSize: 30)
     let charaNameFont = UIFont.customFont(ofSize: 35)
 
@@ -32,6 +37,7 @@ struct StoryBranchView: View {
     @Binding var path: NavigationPath
     @Binding var allBranchings: [Branching]
     @Binding var allScene: Branching
+
     let StoryId: String
 // 表示に必要なデータだけを、allBranchingsからリアルタイムで絞り込む
     private var currentStoryBranchings: [Branching] {
@@ -134,7 +140,8 @@ struct StoryBranchView: View {
                                         // こちらにも同じ font を渡す
                                         font: talkFont // ← 修正
                                     )
-                                    .frame(width: 700, height: 200)
+                                    .fixedSize(horizontal: false, vertical: true) // UILabelのサイズ計算を尊重させる
+                                    .frame(maxWidth: 700)
                                     .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
 
 //                                     ナビゲーション
@@ -157,9 +164,24 @@ struct StoryBranchView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .contentShape(Rectangle())
                             .onTapGesture {
+                                // ポップアップ表示中はタップを無効にする
+                                if isPopupVisible {
+                                    print("ポップアップ表示中のためタップを無効にします。")
+                                    return
+                                }
+
                                 if let next = branchingMap[current.nextSceneId] {
                                     historyStack.append(currentSceneId)
-                                    currentSceneId = next.sceneId
+                                    // 次のシーンが選択肢の場合
+                                    if next.isChoice == true {
+                                        isPopupVisible = true
+                                        currentChoiceScene = next
+                                        // ここにprint文を追加
+                                        print("次のシーンは選択肢です。isPopupVisible: \(isPopupVisible), choiceSceneId: \(currentChoiceScene?.sceneId ?? "nil")")
+                                    } else {
+                                        currentSceneId = next.sceneId
+                                        print("次のシーンに遷移します。sceneId: \(currentSceneId)")
+                                    }
                                 }
                             }
 //                            ↑ここまでonTapGestureの処理
@@ -198,6 +220,21 @@ struct StoryBranchView: View {
                         Spacer()
                     }
                 }
+
+
+                if isPopupVisible, let choiceScene = currentChoiceScene {
+                    let _ = print("isChoiceViewを呼び出します。isPopupVisible: \(isPopupVisible), choiceSceneId: \(choiceScene.sceneId)")
+                    isChoiceView(
+                        isPopupVisible: $isPopupVisible,
+                        allScene: .constant(choiceScene),
+                        onCorrectChoice: {
+                            // 正解した後の次のシーンに遷移するロジック
+                            self.currentSceneId = choiceScene.nextSceneId
+                            self.currentChoiceScene = nil // ポップアップを非表示にした後、状態をリセット
+                        }
+                    )
+                }
+
             }
             .onAppear {
                 if let first = allBranchings.first {
@@ -237,19 +274,5 @@ struct StoryBranchView: View {
                 timer = nil
             }
         }
-    }
-}
-
-
-extension View {
-/// 見た目を変えずにタップ領域だけ広げる
-    func expandedTapArea(_ size: CGFloat) -> some View {
-        self
-// 1) size 分だけ余分に padding を足して…
-            .padding(size)
-// 2) その余分な部分も含めてタップ可能にし…
-            .contentShape(Rectangle())
-// 3) レイアウト上は元に戻す
-            .padding(-size)
     }
 }

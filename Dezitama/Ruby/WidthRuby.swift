@@ -13,6 +13,14 @@ import CoreText
 // MARK: - String拡張：ルビ付きNSAttributedStringを生成
 extension String {
     func createWideRuby(font: UIFont, color: UIColor = .black) -> NSAttributedString {
+
+//        改行の間隔を全部統一
+        let generalLineSpacing: CGFloat = 15.0
+        let rubyLineSpacing: CGFloat = font.pointSize * -0.5
+
+        let generalParagraphStyle = NSMutableParagraphStyle()
+        generalParagraphStyle.lineSpacing = generalLineSpacing
+
         let textWithRuby = replacingOccurrences(of: "(｜.+?《.+?》)", with: ",$1,", options: .regularExpression)
             .components(separatedBy: ",")
             .map { component -> NSAttributedString in
@@ -20,12 +28,11 @@ extension String {
                     let baseText = component.replacingOccurrences(of: "｜(.+?)《.+?》", with: "$1", options: .regularExpression)
                     let rubyText = component.replacingOccurrences(of: "｜.+?《(.+?)》", with: "$1", options: .regularExpression)
 
-                    let paragraphStyle = NSMutableParagraphStyle()
-                    paragraphStyle.lineSpacing = 100 // 行間を広げる
-                    paragraphStyle.minimumLineHeight = 50 // 最小行高
+                    let rubyParagraphStyle = NSMutableParagraphStyle()
+                    rubyParagraphStyle.lineSpacing = rubyLineSpacing
 
                     let rubyAttribute: [CFString: Any] = [
-                        kCTRubyAnnotationSizeFactorAttributeName: 0.42,
+                        kCTRubyAnnotationSizeFactorAttributeName: 0.5,
                         kCTForegroundColorAttributeName: color
                     ]
 
@@ -35,21 +42,37 @@ extension String {
                         rubyAttribute as CFDictionary
                     )
 
+                    let attributes: [NSAttributedString.Key: Any] = [
+                        kCTRubyAnnotationAttributeName as NSAttributedString.Key: rubyAnnotation,
+                        .font: font,
+                        .foregroundColor: color,
+                        .paragraphStyle: rubyParagraphStyle // ルビ用の狭い行間を適用
+                    ]
+
+                    return NSAttributedString(string: baseText, attributes: attributes)
+
                     // ...
-                    return NSAttributedString(
-                        string: baseText,
-                        attributes: [kCTRubyAnnotationAttributeName as NSAttributedString.Key: rubyAnnotation,
-                                     .font: font, // ← 修正！
-                                     .paragraphStyle: paragraphStyle
-                        ]
-                    )
+//                    return NSAttributedString(
+//                        string: baseText,
+//                        attributes: [kCTRubyAnnotationAttributeName as NSAttributedString.Key: rubyAnnotation,
+//                                     .font: font, // ← 修正！
+//                                     .paragraphStyle: paragraphStyle
+//                        ]
+//                    )
                     // ...
                 } else {
                     // ルビがない部分もフォントを適用
-                    return NSAttributedString(string: component, attributes: [ // ← 修正！
+                    let attributes: [NSAttributedString.Key: Any] = [
                         .font: font,
-                        .foregroundColor: color
-                    ])
+                        .foregroundColor: color,
+                        .paragraphStyle: generalParagraphStyle // 改行用の広い行間を適用
+                    ]
+                    return NSAttributedString(string: component, attributes: attributes)
+//                    return NSAttributedString(string: component, attributes: [ // ← 修正！
+//                        .font: font,
+//                        .foregroundColor: color,
+//                        .paragraphStyle: paragraphStyle
+//                    ])
                 }
             }
             .reduce(NSMutableAttributedString()) {
@@ -186,4 +209,5 @@ struct WideRubyLabelRepresentable: UIViewRepresentable {
 //        }
 //    }
 }
+
 
