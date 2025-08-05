@@ -17,7 +17,7 @@ struct isChoiceView: View {
     @State private var selectedChoice: Choice? = nil  // どちらの選択肢を選んだかを保存
 
     @Binding var isPopupVisible: Bool
-    @Binding var netomoscene: Branching
+    @Binding var allScene: Branching
     var onCorrectChoice: () -> Void
 
 
@@ -32,7 +32,7 @@ struct isChoiceView: View {
                     Button(action: {
                         handleChoice(.choice1)
                     }){
-                        Text(netomoscene.choiceText1)
+                        Text(allScene.choiceText1)
                             .font(.system(size: 30, weight: .bold, design: .default))
                             .foregroundColor(.white)
                     }.buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice1))
@@ -41,7 +41,7 @@ struct isChoiceView: View {
                     Button(action: {
                         handleChoice(.choice2)
                     }) {
-                        Text(netomoscene.choiceText2)
+                        Text(allScene.choiceText2)
                             .font(.system(size: 30, weight: .bold, design: .default))
                             .foregroundColor(.white)
                     }
@@ -84,8 +84,8 @@ struct isChoiceView: View {
     private func handleChoice(_ choice: Choice) {
         selectedChoice = choice
         // 正解の文字列と比較
-        let selectedText = (choice == .choice1) ? netomoscene.choiceText1 : netomoscene.choiceText2
-        if selectedText == netomoscene.text {
+        let selectedText = (choice == .choice1) ? allScene.choiceText1 : allScene.choiceText2
+        if selectedText == allScene.text {
             showCorrectMark = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 showCorrectMark = false

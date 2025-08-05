@@ -108,7 +108,7 @@ struct ChatSceneView: View {
                     if isPopupVisible, let choiceScene = currentChoiceScene {
                         isChoiceView(
                             isPopupVisible: $isPopupVisible,
-                            netomoscene: .constant(choiceScene),
+                            allScene: .constant(choiceScene),
                             onCorrectChoice: {
                                 let newMsg = ChatMessage(scene: choiceScene, isAnimating: false, showText: true)
                                 chatMessage.append(newMsg)
@@ -266,33 +266,33 @@ struct ChatSceneView: View {
                                 .background(Color.white.opacity(1.0))
                                 .cornerRadius(16)
                                 .frame(maxWidth: 350, alignment: .leading)
-                                .onAppear {
-                                    // フォント情報を出力
-                                    let systemFont = UIFont.systemFont(ofSize: 22)
-                                    let customFont = UIFont.customFont(ofSize: 22)
-
-                                    print("=== フォント確認 ===")
-                                    print("システムフォント: \(systemFont.fontName)")
-                                    print("カスタムフォント: \(customFont.fontName)")
-                                    print("同じフォント？: \(systemFont.fontName == customFont.fontName)")
-
-                                    // MPLUSフォントが読み込まれているかチェック
-                                    if let mplus = UIFont(name: "MPLUS1-Regular", size: 22) {
-                                        print("✅ MPLUS1-Regular 読み込み成功: \(mplus.fontName)")
-                                    } else {
-                                        print("❌ MPLUS1-Regular 読み込み失敗")
-                                    }
-
-                                    // 利用可能なMPLUSフォントを検索
-                                    print("利用可能なMPLUSフォント:")
-                                    for family in UIFont.familyNames {
-                                        for font in UIFont.fontNames(forFamilyName: family) {
-                                            if font.lowercased().contains("mplus") || font.lowercased().contains("m+") {
-                                                print("  - \(font)")
-                                            }
-                                        }
-                                    }
-                                }
+//                                .onAppear {
+//                                    // フォント情報を出力
+//                                    let systemFont = UIFont.systemFont(ofSize: 22)
+//                                    let customFont = UIFont.customFont(ofSize: 22)
+//
+//                                    print("=== フォント確認 ===")
+//                                    print("システムフォント: \(systemFont.fontName)")
+//                                    print("カスタムフォント: \(customFont.fontName)")
+//                                    print("同じフォント？: \(systemFont.fontName == customFont.fontName)")
+//
+//                                    // MPLUSフォントが読み込まれているかチェック
+//                                    if let mplus = UIFont(name: "MPLUS1-Regular", size: 22) {
+//                                        print("✅ MPLUS1-Regular 読み込み成功: \(mplus.fontName)")
+//                                    } else {
+//                                        print("❌ MPLUS1-Regular 読み込み失敗")
+//                                    }
+//
+//                                    // 利用可能なMPLUSフォントを検索
+//                                    print("利用可能なMPLUSフォント:")
+//                                    for family in UIFont.familyNames {
+//                                        for font in UIFont.fontNames(forFamilyName: family) {
+//                                            if font.lowercased().contains("mplus") || font.lowercased().contains("m+") {
+//                                                print("  - \(font)")
+//                                            }
+//                                        }
+//                                    }
+//                                }
                             }
                         }
                     }.frame(maxWidth: .infinity, alignment: .leading)

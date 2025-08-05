@@ -22,8 +22,14 @@ extension String {
                     let baseText = component.replacingOccurrences(of: "｜(.+?)《.+?》", with: "$1", options: .regularExpression)
                     let rubyText = component.replacingOccurrences(of: "｜.+?《(.+?)》", with: "$1", options: .regularExpression)
 
+                    // ▼▼▼ ここから追加・修正 ▼▼▼
+                    let paragraphStyle = NSMutableParagraphStyle()
+                    // 行間を調整してルビと本文の距離を近づけます。
+                    paragraphStyle.lineSpacing = font.pointSize * 0.5
+                    // ▲▲▲ ここまで追加・修正 ▲▲▲
+
                     let rubyAttribute: [CFString: Any] = [
-                        kCTRubyAnnotationSizeFactorAttributeName: 0.5,
+                        kCTRubyAnnotationSizeFactorAttributeName: 0.42,
                         kCTForegroundColorAttributeName: color
                     ]
 
