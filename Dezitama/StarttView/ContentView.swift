@@ -63,8 +63,8 @@ struct ContentView: View {
                 }
 //            csvファイルの読み込み
             .onAppear {
-                netomoDialogues = loadCSV(fileName: "netomo_ver9_0")
-                groupchatDialogues = loadCSV(fileName: "groupchat_var5_0")
+                netomoDialogues = loadCSV(fileName: "netomo_ver10_0")
+                groupchatDialogues = loadCSV(fileName: "groupchat_var11_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
                 let netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver20")
                 let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver7")
@@ -97,7 +97,7 @@ struct ContentView: View {
                         .navigationBarBackButtonHidden(true)
 
                 case .NetomoView:
-                    NetomoView(netomoDialogues: $netomoDialogues, path: $path)
+                    NetomoView(path: $path, netomoDialogues: $netomoDialogues)
                         .navigationBarBackButtonHidden(true)
 
                 case .Credit:
