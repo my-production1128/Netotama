@@ -12,8 +12,7 @@ struct KakusanView: View {
 //    @State var dialogues: [Dialogue] = []
     @State private var currentIndex = 0
     @State private var isShowingLog = false
-    @State private var goChoiceView = false
-
+    
     @Binding var path: NavigationPath
     @Binding var kakusanDialogues: [Dialogue]
 
@@ -545,7 +544,6 @@ struct KakusanView: View {
 
                 if currentIndex >= kakusanDialogues.count - 1 {
                     Button(action: {
-//                        goChoiceView = true
                         path.removeLast()
                     }) {
                         Image("story_back")

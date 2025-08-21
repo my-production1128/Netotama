@@ -2,511 +2,285 @@
 //  NetomoView.swift
 //  Dezitama
 //
-//  Created by 末廣月渚 on 2025/06/06.
+//  Refactored to use CommonUIComponents and follow GroupchatView pattern
 //
+
 import SwiftUI
 
 struct NetomoView: View {
-    // ContentViewでロードしたCSVファイルをバインド
-    @Binding var netomoDialogues: [Dialogue]
+    // MARK: - State Properties
     @State private var currentIndex = 0
     @State private var isShowingLog = false
-    @State private var goChoiceView = false
-
+    
+    // Typing Animation State
+    @State private var displayedText = ""
+    @State private var currentCharIndex = 0
+    @State private var timer: Timer?
+    @State private var isTypingComplete = false
+    @State private var shouldSkipTyping = false
+    
+    // Button Animation State
+    @State private var offsetY: CGFloat = 0.0
+    
+    // MARK: - Bindings
     @Binding var path: NavigationPath
+    @Binding var netomoDialogues: [Dialogue]
+    
+    // MARK: - Constants
+    private let talkFont = UIFont.customFont(ofSize: 30)
+    private let charaNameFont = UIFont.customFont(ofSize: 35)
+    private let typingInterval: TimeInterval = 0.05
+    private let animationDuration: Double = 0.6
+    private let animationOffset: CGFloat = 8.0
+    private let chatBackgrounds = ["Chat"]
+    private let rightCharacterName = "カール"
 
+    // MARK: - Body
     var body: some View {
-        Group {
-            if currentIndex < netomoDialogues.count {
-//                let _ = print(netomoDialogues.count)
-                sceneView(for: netomoDialogues[currentIndex])
-            } else {
-//                let _ = print(netomoDialogues.count)
-                // 終了画面やNoteViewへの遷移
-                ZStack {
-                    Image("sky")
-                        .resizable()
-                        .scaledToFill()
-                        .ignoresSafeArea()
-
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            path.removeLast()
-                        }) {
-                            Image("story_back")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 300, height: 300)
-                        }
-                    }
+        GeometryReader { geometry in
+            Group {
+                if currentIndex < netomoDialogues.count {
+                    sceneView(for: netomoDialogues[currentIndex], geometry: geometry)
+                } else {
+                    endSceneView
                 }
+            }
+            .onAppear(perform: initializeTyping)
+        }
+    }
+    
+    // MARK: - End Scene View
+    private var endSceneView: some View {
+        ZStack {
+            CommonUIComponents.backgroundImage("sky")
+            
+            CommonUIComponents.backToSelectionButton {
+                path.removeLast()
             }
         }
     }
-
-
+    
+    // MARK: - Scene View Builder
     @ViewBuilder
-    func sceneView(for current: Dialogue) -> some View {
+    func sceneView(for current: Dialogue, geometry: GeometryProxy) -> some View {
         switch current.background {
-        case "Introduction" :
-            ZStack{
-                //背景
-                Image("netotama_blackboard")
-                    .resizable()
-                    .scaledToFill()
-                    .ignoresSafeArea()
-            }
-            .onTapGesture {
-                currentIndex += 1
-            }
-
-        case "Chat1" :
-            ZStack{
-                //背景
-                Image("chat_netotama")
-                    .resizable()
-                    .scaledToFill()
-                    .ignoresSafeArea()
-
-                //テキスト
-                ZStack(alignment: .bottom) {
-                    ScrollViewReader { proxy in
-                        ScrollView {
-                            VStack(spacing: 12) {
-                                ForEach(1...currentIndex, id: \.self) { index in
-                                    let dialogue = netomoDialogues[index]
-                                    let isRight = dialogue.characterName == "カール"
-
-                                    HStack(alignment: .bottom) {
-                                        if isRight { Spacer() }
-
-                                        if !isRight {
-                                            Image("nick_icon")
-                                                .resizable()
-                                                .frame(width: 30, height: 30)
-                                                .padding(.leading, 8)
-                                        }
-
-                                        VStack(alignment: .leading, spacing: 4) {
-                                            Text(dialogue.characterName)
-                                                .font(.caption)
-                                                .foregroundColor(.white)
-
-                                            Text(dialogue.dialogueText)
-                                                .padding()
-                                                .font(.title3)
-                                                .foregroundColor(.black)
-                                                .background(Color.white.opacity(0.8))
-                                                .cornerRadius(20)
-                                        }
-                                        .frame(maxWidth: 200, alignment: isRight ? .trailing : .leading)
-                                        .padding(isRight ? .trailing : .leading, 0)
-
-
-                                        if isRight {
-                                            Image("curl_icon")
-                                                .resizable()
-                                                .frame(width: 30, height: 30)
-                                                .padding(.trailing, 8)
-                                        }
-
-                                        if !isRight { Spacer() }
-                                    }
-                                    .id(index)
-                                }
-                            }
-                            .padding(.bottom, 80)
-                            .padding(.top)
-                        }
-                        .frame(width: 450, height: 400)
-                        .offset(y:-60)
-                        .onChange(of: currentIndex) {
-                            withAnimation {
-                                proxy.scrollTo(currentIndex, anchor: .bottom)
-                            }
-                        }
-                    }
-
-                    //ボタン
-                    Button(action: {
-                        currentIndex += 1
-                    }) {
-                        Image("soushin")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 80, height: 80)
-                            .padding()
-                    }
-                    .offset(x:175,y:115)
-                }
-                //戻るボタン
-                HStack{
-                    Spacer()
-                    VStack{
-                        Button(action: {
-                            path.removeLast()
-                        }) {
-                            Image("home")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 100, height: 100)
-                                .padding(.top, 30)
-                        }
-                        Spacer()
-                    }
-                }
-            }
-
-        case "Park" :
-            ZStack{
-                //背景
-                Image("park")
-                    .resizable()
-                    .scaledToFill()
-                    .ignoresSafeArea()
-
-                //キャラクター
-                if current.characterName == "ニック" {
-                    HStack{
-                        Image("Nick")
-                            .resizable()
-                            .frame(width: 300, height: 700)
-                            .offset(x:-50)
-                        Image("Curl")
-                            .resizable()
-                            .frame(width: 250, height: 550)
-                            .offset(x:50)
-
-                    }
-                } else {
-                    HStack{
-                        Image("Nick")
-                            .resizable()
-                            .frame(width: 250, height: 650)
-                            .offset(x:-50)
-                        Image("Curl")
-                            .resizable()
-                            .frame(width: 300, height: 600)
-                            .offset(x:50)
-
-                    }
-                }
-                //吹き出し
-                Image("speech_bubble_beige")
-                    .resizable()
-                    .frame(width: 900, height: 250)
-                    .offset(x: 0, y:200)
-
-                //名前
-                Text(current.characterName)
-                    .font(.largeTitle)
-                    .foregroundColor(.black)
-                    .offset(x:-300, y:90)
-
-                //テキスト
-                Text(current.dialogueText)
-                    .font(.largeTitle)
-                    .frame(width: 600, height: 300)
-                    .multilineTextAlignment(.center)
-                    .cornerRadius(12)
-                    .offset(y:200)
-//                TypingRubyLabelRepresentable(
-//                    attributedText: current.dialogueText.replacingOccurrences(of: "<br>", with: "\n").createWideRuby(),
-//                    charInterval: 0.05,
-//                    font: .systemFont(ofSize: 30)
-//                )
-                .frame(width: 700, height: 200)
-//                .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
-
-                //ボタン
-                Button(action: {
-                    currentIndex += 1
-                }) {
-                    Image("next_button")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 30, height: 30)
-                        .padding()
-                }
-                .offset(x:400,y:300)
-
-                //戻るボタン
-                HStack{
-                    Spacer()
-                    VStack{
-                        Button(action: {
-                            path.removeLast()
-                        }) {
-                            Image("home")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 100, height: 100)
-                                .padding(.top, 30)
-                        }
-                        Spacer()
-                    }
-                }
-
-                //セリフボタン
-                Button(action: {
-                    isShowingLog.toggle()
-                }) {
-                    Image("soushin")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 100, height: 100)
-                }
-                .offset(x: -480, y: -350)
-                .zIndex(2)
-
-                if isShowingLog {
-                    GeometryReader { geometry in
-                        ScrollView {
-                            VStack(spacing: 12) {
-                                ForEach(0...currentIndex, id: \.self) { index in
-                                    let dialogue = netomoDialogues[index]
-                                    let isRight = dialogue.characterName == "カール"
-
-                                    HStack(alignment: .bottom) {
-                                        if isRight { Spacer() }
-
-                                        if !isRight {
-                                            Image("nick_icon")
-                                                .resizable()
-                                                .frame(width: 30, height: 30)
-                                                .padding(.leading, 8)
-                                        }
-
-                                        VStack(alignment: .leading, spacing: 4) {
-                                            Text(dialogue.characterName)
-                                                .font(.caption)
-                                                .foregroundColor(.white)
-
-                                            Text(dialogue.dialogueText)
-                                                .padding()
-                                                .font(.title3)
-                                                .foregroundColor(.white)
-                                                .background(isRight ? Color.green.opacity(0.8) : Color.blue.opacity(0.8))
-                                                .cornerRadius(20)
-                                        }
-                                        .frame(maxWidth: 200, alignment: isRight ? .trailing : .leading)
-                                        .padding(isRight ? .trailing : .leading, 0)
-
-
-                                        if isRight {
-                                            Image("curl_icon")
-                                                .resizable()
-                                                .frame(width: 30, height: 30)
-                                                .padding(.trailing, 8)
-                                        }
-
-                                        if !isRight { Spacer() }
-                                    }
-                                }
-                            }
-                        }
-                        .padding()
-                        .background(Color.black.opacity(0.6))
-                        .cornerRadius(16)
-                        .frame(width: geometry.size.width / 2, height: geometry.size.height)
-                        .transition(.move(edge: .leading))
-                        .zIndex(1)
-                    }
-                }
-            }
-
-        case "Chat2" :
-            ZStack{
-                //背景
-                Image("chat_netotama")
-                    .resizable()
-                    .scaledToFill()
-                    .ignoresSafeArea()
-
-                //テキスト
-                ZStack(alignment: .bottom) {
-                    ScrollViewReader { proxy in
-                        ScrollView {
-                            VStack(spacing: 12) {
-                                ForEach(65...currentIndex, id: \.self) { index in
-                                    let dialogue = netomoDialogues[index]
-                                    let isRight = dialogue.characterName == "カール"
-
-                                    HStack(alignment: .bottom) {
-                                        if isRight { Spacer() }
-
-                                        if !isRight {
-                                            Image("nick_icon")
-                                                .resizable()
-                                                .frame(width: 50, height: 50)
-                                                .padding(.leading, 8)
-                                        }
-
-                                        VStack(alignment: .leading, spacing: 4) {
-                                            Text(dialogue.characterName)
-                                                .font(.caption)
-                                                .foregroundColor(.white)
-
-                                            Text(dialogue.dialogueText)
-                                                .padding()
-                                                .font(.title3)
-                                                .foregroundColor(.black)
-                                                .background(Color.white.opacity(0.8))
-                                                .cornerRadius(20)
-                                        }
-                                        .frame(maxWidth: 200, alignment: isRight ? .trailing : .leading)
-                                        .padding(isRight ? .trailing : .leading, 0)
-
-
-                                        if isRight {
-                                            Image("curl_icon")
-                                                .resizable()
-                                                .frame(width: 50, height: 50)
-                                                .padding(.trailing, 8)
-                                        }
-
-                                        if !isRight { Spacer() }
-                                    }
-                                    .id(index)
-                                }
-                            }
-                            .padding(.bottom, 80)
-                            .padding(.top)
-                        }
-                        .frame(width: 450, height: 400)
-                        .offset(y:-60)
-                        .onChange(of: currentIndex) {
-                            withAnimation {
-                                proxy.scrollTo(currentIndex, anchor: .bottom)
-                            }
-                        }
-                    }
-
-                    //ボタン
-                    Button(action: {
-                        currentIndex += 1
-                    }) {
-                        Image("soushin")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 80, height: 80)
-                            .padding()
-                    }
-                    .offset(x:175,y:115)
-                }
-
-                //戻るボタン
-                HStack{
-                    Spacer()
-                    VStack{
-                        Button(action: {
-                            path.removeLast()
-                        }) {
-                            Image("home")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 100, height: 100)
-                                .padding(.top, 30)
-                        }
-                        Spacer()
-                    }
-                }
-            }
-
-        case "News" :
-            ZStack{
-                //背景
-                Image("news")
-                    .resizable()
-                    .scaledToFill()
-                    .ignoresSafeArea()
-
-                //吹き出し
-                Image("speech_bubble_beige")
-                    .resizable()
-                    .frame(width: 900, height: 250)
-                    .offset(x: 0, y:200)
-
-                //名前
-                Text(current.characterName)
-                    .font(.largeTitle)
-                    .foregroundColor(.black)
-                    .offset(x:-300, y:90)
-
-                //テキスト
-                Text(current.dialogueText)
-                    .font(.largeTitle)
-                    .frame(width: 600, height: 300)
-                    .multilineTextAlignment(.center)
-                    .cornerRadius(12)
-                    .offset(y:200)
-
-                //ボタン
-                Button(action: {
-                    currentIndex += 1
-                }) {
-                    Image("next_button")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 30, height: 30)
-                        .padding()
-                }
-                .offset(x:400,y:300)
-
-                //戻るボタン
-                HStack{
-                    Spacer()
-                    VStack{
-                        Button(action: {
-                            path.removeLast()
-                        }) {
-                            Image("home")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 100, height: 100)
-                                .padding(.top, 30)
-                        }
-                        Spacer()
-                    }
-                }
-            }
-
+        case "Introduction":
+            introductionScene()
+        case "Chat1":
+            chatScene(current: current)
+        case "Park", "News":
+            TalkingScene(current: current, geometry: geometry)
+        case "Summary":
+            summaryScene(current: current)
         default:
-            ZStack {
-                Image("sky")
-                    .resizable()
-                    .scaledToFill()
-                    .ignoresSafeArea()
-
-                Text(current.dialogueText)
-                    .font(.largeTitle)
-                    .multilineTextAlignment(.center)
-                    .cornerRadius(12)
-                    .padding()
-                    .contentShape(Rectangle())
-
-
-//                選択画面に戻る
-                if currentIndex >= netomoDialogues.count - 1 {
-                    Button(action: {
-
-                        path.removeLast()
-                    }) {
-                        Image("story_back")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 300, height: 300)
-                            .padding()
+            defaultScene(current: current)
+        }
+    }
+    
+    // MARK: - Introduction Scene
+    private func introductionScene() -> some View {
+        ZStack {
+            CommonUIComponents.backgroundImage("netotama_blackboard")
+        }
+        .onTapGesture(perform: handleSceneTap)
+    }
+    
+    // MARK: - Chat Scene (Using ChatView)
+    private func chatScene(current: Dialogue) -> some View {
+        let chatDialogues = ChatSceneHelpers.getChatDialoguesFromCurrentIndex(
+            dialogues: netomoDialogues,
+            currentIndex: currentIndex,
+            chatBackgrounds: chatBackgrounds
+        )
+        
+        return ChatView(
+            chatDialogues: chatDialogues,
+            onNextScene: {
+                ChatSceneHelpers.moveToNextNonChatScene(
+                    dialogues: netomoDialogues,
+                    currentIndex: &currentIndex,
+                    chatBackgrounds: chatBackgrounds,
+                    onStartTyping: { fullText in
+                        startTyping(fullText: fullText)
                     }
-                    .offset(x: 400, y: 300)
-                }
+                )
+            },
+            path: $path
+        )
+    }
+    
+    // MARK: - Talking Scene (Using TalkingView)
+    private func TalkingScene(current: Dialogue, geometry: GeometryProxy) -> some View {
+        ZStack {
+            // 背景
+            if current.background == "Park" {
+                CommonUIComponents.backgroundImage("Park")
+            }else{
+                CommonUIComponents.backgroundImage("news")
             }
-            .onTapGesture {
-                if currentIndex < netomoDialogues.count - 1 {
-                    currentIndex += 1
-                }
+            // TalkingViewコンポーネントを使用
+            TalkingView(
+                current: current,
+                geometry: geometry,
+                displayedText: $displayedText,
+                offsetY: $offsetY,
+                onSceneTap: handleSceneTap,
+                onStartLoopingAnimation: startLoopingAnimation
+            )
+            
+            // オーバーレイボタン
+            CommonUIComponents.overlayButtons(
+                onHomeAction: { path.removeLast() },
+                onLogAction: { isShowingLog.toggle() }
+            )
+            
+            if isShowingLog {
+                logOverlay(geometry: geometry.frame(in: .global))
             }
+        }
+    }
+    
+    // MARK: - Summary Scene
+    private func summaryScene(current: Dialogue) -> some View {
+        ZStack {
+            CommonUIComponents.backgroundImage("sky")
+            
+            CommonUIComponents.rubyText(
+                text: current.dialogueText,
+                maxWidth: 600,
+                font: talkFont,
+                typingInterval: typingInterval
+            )
+            .padding()
+            
+            CommonUIComponents.backToSelectionButton {
+                path.removeLast()
+            }
+        }
+        .onTapGesture(perform: handleSceneTap)
+    }
+    
+    // MARK: - Default Scene
+    private func defaultScene(current: Dialogue) -> some View {
+        ZStack {
+            CommonUIComponents.backgroundImage("sky")
+            
+            CommonUIComponents.rubyText(
+                text: current.dialogueText,
+                maxWidth: 600,
+                font: talkFont,
+                typingInterval: typingInterval
+            )
+            .padding()
+            
+            CommonUIComponents.backToSelectionButton {
+                path.removeLast()
+            }
+        }
+        .onTapGesture(perform: handleSceneTap)
+    }
+    
+    // MARK: - Character Display (Park Scene specific)
+    private func characterDisplay(for current: Dialogue) -> some View {
+        HStack {
+            if current.characterName == "ニック" {
+                Image("Nick")
+                    .resizable()
+                    .frame(width: 300, height: 700)
+                    .offset(x: -50)
+                
+                Image("Curl")
+                    .resizable()
+                    .frame(width: 250, height: 550)
+                    .offset(x: 50)
+            } else {
+                Image("Nick")
+                    .resizable()
+                    .frame(width: 250, height: 650)
+                    .offset(x: -50)
+                
+                Image("Curl")
+                    .resizable()
+                    .frame(width: 300, height: 600)
+                    .offset(x: 50)
+            }
+        }
+    }
+    
+    // MARK: - Log Overlay
+    private func logOverlay(geometry: CGRect) -> some View {
+        LogComponents.logOverlay(
+            dialogues: netomoDialogues,
+            currentIndex: currentIndex,
+            geometry: geometry
+        ) { dialogue in
+            AnyView(
+                LogComponents.logMessageRow(
+                    dialogue: dialogue,
+                    rightCharacterName: rightCharacterName,
+                    iconProvider: getCharacterIcon
+                )
+            )
+        }
+    }
+}
+
+// MARK: - Helper Methods
+extension NetomoView {
+    private func handleSceneTap() {
+        timer?.invalidate()
+        goToNextScene()
+    }
+    
+    private func goToNextScene() {
+        currentIndex += 1
+        
+        if currentIndex < netomoDialogues.count {
+            let currentDialogue = netomoDialogues[currentIndex]
+            
+            // Chatシーンでない場合のみタイピングを開始
+            if !chatBackgrounds.contains(currentDialogue.background) &&
+               !currentDialogue.dialogueText.isEmpty {
+                startTyping(fullText: currentDialogue.dialogueText)
+            }
+        }
+    }
+    
+    private func initializeTyping() {
+        if let firstDialogue = netomoDialogues.first {
+            // 最初のシーンがChatでない場合のみタイピング開始
+            if !chatBackgrounds.contains(firstDialogue.background) &&
+               !firstDialogue.dialogueText.isEmpty {
+                startTyping(fullText: firstDialogue.dialogueText)
+            }
+        }
+    }
+    
+    private func startLoopingAnimation() {
+        AnimationHelpers.startLoopingAnimation(
+            offsetY: $offsetY,
+            duration: animationDuration,
+            offset: animationOffset
+        )
+    }
+
+    private func startTyping(fullText: String) {
+        AnimationHelpers.startTyping(
+            fullText: fullText,
+            displayedText: $displayedText,
+            currentCharIndex: $currentCharIndex,
+            timer: $timer,
+            isTypingComplete: $isTypingComplete,
+            typingInterval: typingInterval
+        )
+    }
+
+    private func getCharacterIcon(for characterName: String) -> String {
+        switch characterName {
+        case "ニック": return "nick_icon"
+        case "カール": return "curl_icon"
+        case "キャスター": return "caster_icon"
+        default: return "default_icon"
         }
     }
 }

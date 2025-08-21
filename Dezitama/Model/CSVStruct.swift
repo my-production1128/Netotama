@@ -15,8 +15,16 @@ struct Dialogue: Identifiable {
     let characterName: String
     let dialogueText: String
     let background: String
+    let talkingPeople: String?           // TalkingPeople
+    let leftCharacter: String?           // LeftCharacter
+    let centerCharacter: String?         // CenterCharacter
+    let rightCharacter: String?          // RightCharacter
+    let oneCharacter: String?            // OneCharacter
+    let twoCharacter: String?            // TwoCharacter
+    let onePerson: String?               // OnePerson
+    let leftChat: String?                // LeftChat
+    let rightChat: String?               // RightChat
 }
-
 
 //step2の分岐ありのストーリー
 struct Branching: Identifiable {
@@ -60,18 +68,43 @@ enum CharacterName: String {
 
 //    アレック
     case Alec
+    case Alec_normal
+    case Alec_anxiety
+    case Alec_disgusting
+    case Alec_smile
+    case Alec_surprised
+    case Alec_sorry
 
 //    コニー
     case Cony
-
+    case Cony_normal
+    case Cony_anixiety
+    case Cony_irritation
+    case Cony_panic
+    case Cony_smile
+    case Cony_sorry
+    case Cony_surprised
+    case Cony_trouble
+    
 //    セシル
     case Cecil
+    case Cecil_normal
+    case Cecil_anixiety
+    case Cecil_irritation
+    case Cecil_panic
+    case Cecil_smile
+    case Cecil_sorry
+    case Cecil_surprised
 
 //    先生
     case Teacher
+    case Teacher_normal
+    case Teacher_irritation
 
 //    ブライアン
     case Brian
+    case Brian_normal
+    case Brain_trouble
 
 //    サンドラ
     case Sandra
@@ -102,18 +135,43 @@ enum CharacterName: String {
 
 //            アレック
         case .Alec: return "アレック"
+        case .Alec_normal: return "アレック"
+        case .Alec_anxiety: return "アレック"
+        case .Alec_disgusting: return "アレック"
+        case .Alec_smile: return "アレック"
+        case .Alec_surprised: return "アレック"
+        case .Alec_sorry: return "アレック"
 
 //            コニー
         case .Cony: return "コニー"
+        case .Cony_normal: return "コニー"
+        case .Cony_anixiety: return "コニー"
+        case .Cony_irritation: return "コニー"
+        case .Cony_panic: return "コニー"
+        case .Cony_smile: return "コニー"
+        case .Cony_sorry: return "コニー"
+        case .Cony_surprised: return "コニー"
+        case .Cony_trouble: return "コニー"
 
 //            セシル
         case .Cecil: return "セシル"
-
+        case .Cecil_normal: return "セシル"
+        case .Cecil_anixiety: return "セシル"
+        case .Cecil_irritation: return "セシル"
+        case .Cecil_panic: return "セシル"
+        case .Cecil_smile: return "セシル"
+        case .Cecil_sorry: return "セシル"
+        case .Cecil_surprised: return "セシル"
+            
 //            先生
         case .Teacher: return "先生"
-
+        case .Teacher_normal: return "先生"
+        case .Teacher_irritation: return "先生"
+            
 //            ブライアン
         case .Brian: return "ブライアン"
+        case .Brian_normal: return "ブライアン"
+        case .Brain_trouble: return "ブライアン"
 
 //            サンドラ
         case .Sandra: return "サンドラ"
