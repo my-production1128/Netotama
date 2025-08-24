@@ -67,9 +67,8 @@ struct ContentView: View {
                 groupchatDialogues = loadCSV(fileName: "groupchat_var5_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
                 let netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver20")
-                let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver7")
+                let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver9")
                 self.allBranchings = netomoBranchings + groupBranchings
-//                 print(self.allBranchings.map { $0.storyId })
             }
             .navigationDestination(for: ViewBuilderPath.self) { viewID in
                 switch viewID {
