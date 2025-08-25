@@ -25,22 +25,9 @@
 		8A7AD2EA2E1E929400BF4664 /* DezitamaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DezitamaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		8A68D3CE2E313028006032B9 /* Exceptions for "Dezitama" folder in "Dezitama" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 0661A04C2DDB941700016B1C /* Dezitama */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		0661A04F2DDB941700016B1C /* Dezitama */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				8A68D3CE2E313028006032B9 /* Exceptions for "Dezitama" folder in "Dezitama" target */,
-			);
 			path = Dezitama;
 			sourceTree = "<group>";
 		};
