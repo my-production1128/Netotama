@@ -32,6 +32,7 @@ struct ChatSceneView: View {
 
 
     @State private var isLarge: Bool = false
+    @State private var proxy: ScrollViewProxy?
 
 
 //    scvファイル
@@ -40,6 +41,8 @@ struct ChatSceneView: View {
 
 //    選択肢のポップアップを表示する
     @Binding var isPopupVisible: Bool
+//    会話の見返しボタン用関数
+    @Binding var conversationHistory: [Branching]
 
     var color: Color = .blue
     var dotSize: CGFloat = 30
@@ -59,7 +62,7 @@ struct ChatSceneView: View {
                             ScrollView {
                                 VStack(spacing: 12) {
                                     ForEach(chatMessage) { message in
-                                        messageRow(for: message)
+                                        messageRow(for: message, proxy: proxy)
                                             .id(message.id)
                                     }
                                 }
@@ -68,12 +71,8 @@ struct ChatSceneView: View {
                             .padding(.bottom, 10)
                             .frame(width: 500, height: 450)
                             .position(x: geometry.size.width  * 0.492,y: geometry.size.height * 0.45)
-                            .onChange(of: chatMessage.count) {
-                                withAnimation {
-                                    if let last = chatMessage.last {
-                                        proxy.scrollTo(last.id, anchor: .bottom)
-                                    }
-                                }
+                            .onAppear {
+                                self.proxy = proxy // proxy を状態変数に代入
                             }
                         }
                     }
@@ -85,7 +84,6 @@ struct ChatSceneView: View {
                                 .frame(width: 80)
                                 .padding(40)
                                 .scaleEffect(isLarge ? 0.93 : 1)
-//                                .offset(y: offsetY)//アニメーション
                                 .onAppear {
                                     startLoopingAnimation()
                                 }
@@ -96,9 +94,8 @@ struct ChatSceneView: View {
                         } label: {
                             Text("飛ばす")
                                 .font(.system(size: 20, weight: .bold, design: .default))
-                                // ▼ 当たり判定を広げて、見やすくするための修飾子を追加 ▼
                                 .padding(10)
-                                .background(Color.red) // 背景を赤くして目立たせる
+                                .background(Color.red)
                                 .foregroundColor(.white)
                                 .clipShape(Capsule())
                         }
@@ -117,12 +114,17 @@ struct ChatSceneView: View {
                         )
                     }
                 }
-//                ↓ここから送信ボタンをタップした時の処理
-//                Zstackの範囲を全画面に広げてから.onTapGestureの処理を実行
+//                ↓ここから送信ボタンをタップした時の処理・Zstackの範囲を全画面に広げてから.onTapGestureの処理を実行
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .contentShape(Rectangle())
                 .onTapGesture {
                     if isTyping || isPopupVisible {
+                        return
+                    }
+                    
+                    guard let last = chatMessage.last else { return }
+                    // 最後のメッセージが相手のセリフであり、かつアニメーションが完了していない場合はタップを無効にする
+                    if last.scene.characterName != last.scene.rightCharacter && last.isAnimating {
                         return
                     }
 
@@ -135,8 +137,9 @@ struct ChatSceneView: View {
 
 //                                     主人公のセリフだけボタンで進める
                     if next.sceneType == "chat" {
+//                        rightchracterで主人公かどうか判断している
                         if next.characterName == next.rightCharacter {
-//                                             自分のセリフ（即時表示）
+//                            自分のセリフ（即時表示）
                             let newMsg = ChatMessage(scene: next, isAnimating: false, showText: true)
                             allScene = next //  最新のシーンを更新
 
@@ -145,15 +148,24 @@ struct ChatSceneView: View {
                                 currentChoiceScene = next
                             } else {
                                 chatMessage.append(newMsg)
+                                conversationHistory.append(newMsg.scene)
+                                DispatchQueue.main.async {
+                                    if let last = chatMessage.last {
+                                        withAnimation {
+                                            self.proxy?.scrollTo(last.id, anchor: .bottom)
+                                        }
+                                    }
+                                }
                             }
                         }
                     } else {
                         onNextScene(nextId)
                     }
+
                     // ボタン押した後に「次が相手のセリフ」なら自動で返信
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         proceedToNextIfNeeded()
-                    }
+//                    }
                 }
 //                ↑ここまでonTapGestureの処理
 
@@ -164,9 +176,9 @@ struct ChatSceneView: View {
 
                         // 最初のセリフがネトモなら自動で続ける
                         if first.characterName != first.rightCharacter {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
                                 proceedToNextIfNeeded()
-                            }
+//                            }
                         }
                     }
                 }
@@ -211,7 +223,7 @@ struct ChatSceneView: View {
 //指定時間後にテキストへ切り替える。
 
     @ViewBuilder
-    func messageRow(for message: ChatMessage) -> some View {
+    func messageRow(for message: ChatMessage, proxy: ScrollViewProxy) -> some View {
         let scene = message.scene
         HStack {
             if scene.characterName == scene.rightCharacter { Spacer() }
@@ -235,9 +247,14 @@ struct ChatSceneView: View {
                                     .background(Color.white.opacity(1.0))
                                     .cornerRadius(16)
                                     .onAppear {
+                                        DispatchQueue.main.async {
+                                            withAnimation {
+                                                self.proxy?.scrollTo(message.id, anchor: .bottom)
+                                            }
+                                        }
+
                                         // 最初のアニメーション
                                         animationTrigger.toggle()
-
                                         // アニメーション時間後に切り替え
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
                                             animationTrigger.toggle()
@@ -247,7 +264,7 @@ struct ChatSceneView: View {
                                             withAnimation {
                                                 updateMessageState(id: message.id)
                                             }
-                                            proceedToNextIfNeeded()
+//                                            proceedToNextIfNeeded()
                                         }
                                     }
                             }
@@ -266,37 +283,16 @@ struct ChatSceneView: View {
                                 .background(Color.white.opacity(1.0))
                                 .cornerRadius(16)
                                 .frame(maxWidth: 350, alignment: .leading)
-//                                .onAppear {
-//                                    // フォント情報を出力
-//                                    let systemFont = UIFont.systemFont(ofSize: 22)
-//                                    let customFont = UIFont.customFont(ofSize: 22)
-//
-//                                    print("=== フォント確認 ===")
-//                                    print("システムフォント: \(systemFont.fontName)")
-//                                    print("カスタムフォント: \(customFont.fontName)")
-//                                    print("同じフォント？: \(systemFont.fontName == customFont.fontName)")
-//
-//                                    // MPLUSフォントが読み込まれているかチェック
-//                                    if let mplus = UIFont(name: "MPLUS1-Regular", size: 22) {
-//                                        print("✅ MPLUS1-Regular 読み込み成功: \(mplus.fontName)")
-//                                    } else {
-//                                        print("❌ MPLUS1-Regular 読み込み失敗")
-//                                    }
-//
-//                                    // 利用可能なMPLUSフォントを検索
-//                                    print("利用可能なMPLUSフォント:")
-//                                    for family in UIFont.familyNames {
-//                                        for font in UIFont.fontNames(forFamilyName: family) {
-//                                            if font.lowercased().contains("mplus") || font.lowercased().contains("m+") {
-//                                                print("  - \(font)")
-//                                            }
-//                                        }
-//                                    }
-//                                }
+                                .onAppear {
+                                    DispatchQueue.main.async {
+                                        withAnimation {
+                                            proxy.scrollTo(message.id, anchor: .bottom)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }.frame(maxWidth: .infinity, alignment: .leading)
-
                 }
             } else {
                 HStack(alignment: .top){
@@ -355,10 +351,30 @@ struct ChatSceneView: View {
 
 //    次のチャットがネトモだった場合は自動で返信させる関数
     private func proceedToNextIfNeeded() {
-        guard let last = chatMessage.last else { return }
+//        デバック用コード
+        print("proceedToNextIfNeededが呼び出されました。")
+        guard let last = chatMessage.last else {
+            print("最後のチャットメッセージがありません。")
+            return
+        }
 
         let nextId = last.scene.nextSceneId
+        print("次のシーンID: \(nextId)")
+//        ここ
+
+
+        if isTyping || isPopupVisible {
+            return
+        }
+//        let last = chatMessage.last
+
+//        let nextId = last.scene.nextSceneId
         guard let next = branchingMap[nextId] else { return }
+
+        if next.sceneType != "chat" {
+            onNextScene(nextId)
+            return
+        }
 
         // 選択肢の直前なら止まる
         if next.isChoice ?? false {
@@ -370,22 +386,27 @@ struct ChatSceneView: View {
             return
         }
 
+        // 直前のメッセージが主人公のセリフか、相手のセリフかを判定
+        let isLastMessageFromProtagonist = last.scene.characterName == last.scene.rightCharacter
+
+        // 遅延時間を設定
+        let delay: TimeInterval = isLastMessageFromProtagonist ? 0.7 : 4.0
+
         // 相手のセリフは自動で進める
         isTyping = true
         pendingMessage = next
-        DispatchQueue.main.asyncAfter(deadline: .now()) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
             if let msg = pendingMessage {
                 let newMsg = ChatMessage(scene: msg)
                 chatMessage.append(newMsg)
+                conversationHistory.append(newMsg.scene)
                 allScene = msg
             }
             pendingMessage = nil
             isTyping = false
 
             // 続きがあるか再帰
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
                 proceedToNextIfNeeded()
-            }
         }
     }
 }
