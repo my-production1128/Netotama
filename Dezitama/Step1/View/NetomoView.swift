@@ -2,9 +2,8 @@
 //  NetomoView.swift
 //  Dezitama
 //
-//  Refactored to use CommonUIComponents and follow GroupchatView pattern
+//  Created by 末廣月渚 on 2025/06/06.
 //
-
 import SwiftUI
 
 struct NetomoView: View {
@@ -66,7 +65,7 @@ struct NetomoView: View {
         switch current.background {
         case "Introduction":
             introductionScene()
-        case "Chat1":
+        case "Chat":
             chatScene(current: current)
         case "Park", "News":
             TalkingScene(current: current, geometry: geometry)
@@ -112,17 +111,10 @@ struct NetomoView: View {
     // MARK: - Talking Scene (Using TalkingView)
     private func TalkingScene(current: Dialogue, geometry: GeometryProxy) -> some View {
         ZStack {
-            // 背景
-            if current.background == "Park" {
-                CommonUIComponents.backgroundImage("Park")
-            }else{
-                CommonUIComponents.backgroundImage("news")
-            }
             // TalkingViewコンポーネントを使用
             TalkingView(
                 current: current,
                 geometry: geometry,
-                displayedText: $displayedText,
                 offsetY: $offsetY,
                 onSceneTap: handleSceneTap,
                 onStartLoopingAnimation: startLoopingAnimation
@@ -273,14 +265,5 @@ extension NetomoView {
             isTypingComplete: $isTypingComplete,
             typingInterval: typingInterval
         )
-    }
-
-    private func getCharacterIcon(for characterName: String) -> String {
-        switch characterName {
-        case "ニック": return "nick_icon"
-        case "カール": return "curl_icon"
-        case "キャスター": return "caster_icon"
-        default: return "default_icon"
-        }
     }
 }

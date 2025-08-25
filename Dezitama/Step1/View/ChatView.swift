@@ -52,8 +52,16 @@ struct ChatView: View {
                         onNextScene()
                     }
                 } else {
-                    //背景
-                    backgroundImage("chat_gurutama")
+                    // 背景 - chatDialoguesの最初の要素からstoryIdを取得
+                    if let firstDialogue = chatDialogues.first {
+                        if firstDialogue.storyId == "groupchat" {
+                            CommonUIComponents.backgroundImage("chat_gurutama")
+                        } else if firstDialogue.storyId == "Netomo" {
+                            CommonUIComponents.backgroundImage("chat_netotama")
+                        } else if firstDialogue.storyId == "Kakusan" {
+                            CommonUIComponents.backgroundImage("chat_potitama")
+                        }
+                    }
                     
                     // チャット表示エリア
                     chatDisplayArea(geometry: geometry)
@@ -62,7 +70,7 @@ struct ChatView: View {
                     sendButton(geometry: geometry)
                     
                     // デバッグ用スキップボタン
-                    skipButton
+    //                skipButton
                     
                     // オーバーレイボタン
                     overlayButtons
@@ -78,31 +86,6 @@ struct ChatView: View {
     }
     
     // MARK: - View Components
-    
-//    private func backgroundImage(_ imageName: String) -> some View {
-//        Image(imageName)
-//            .resizable()
-//            .scaledToFill()
-//            .ignoresSafeArea()
-//    }
-    
-//    private var endScreenView: some View {
-//        VStack {
-//            Text("チャット終了")
-//                .font(.title)
-//                .padding()
-//
-//            Button("戻る") {
-//                path.removeLast()
-//            }
-//            .font(.title2)
-//            .padding()
-//            .background(Color.blue)
-//            .foregroundColor(.white)
-//            .cornerRadius(10)
-//        }
-//    }
-    
     private func chatDisplayArea(geometry: GeometryProxy) -> some View {
         ScrollViewReader { proxy in
             ScrollView {
@@ -150,26 +133,26 @@ struct ChatView: View {
         )
     }
     
-    private var skipButton: some View {
-        VStack {
-            HStack {
-                Spacer()
-                Button {
-                    shouldReturnToGroupchat = true
-                } label: {
-                    Text("飛ばす")
-                        .font(.system(size: 20, weight: .bold))
-                        .padding(10)
-                        .background(Color.red)
-                        .foregroundColor(.white)
-                        .clipShape(Capsule())
-                }
-                .border(Color.yellow, width: 3)
-                .offset(x:0,y:0)
-            }
-            Spacer()
-        }
-    }
+//    private var skipButton: some View {
+//        VStack {
+//            HStack {
+//                Spacer()
+//                Button {
+//                    shouldReturnToGroupchat = true
+//                } label: {
+//                    Text("飛ばす")
+//                        .font(.system(size: 20, weight: .bold))
+//                        .padding(10)
+//                        .background(Color.red)
+//                        .foregroundColor(.white)
+//                        .clipShape(Capsule())
+//                }
+//                .border(Color.yellow, width: 3)
+//                .offset(x:0,y:0)
+//            }
+//            Spacer()
+//        }
+//    }
     
     private var overlayButtons: some View {
         Group {
@@ -282,13 +265,6 @@ struct ChatView: View {
             textAlignment: .left
         )
     }
-    
-//    private func characterIcon(for characterName: String) -> some View {
-//        Image(getCharacterIcon(for: characterName))
-//            .resizable()
-//            .frame(width: 48, height: 48)
-//            .clipShape(Circle())
-//    }
     
     // MARK: - Animation Views
     
@@ -439,16 +415,4 @@ struct ChatView: View {
         default: return characterName
         }
     }
-    
-//    private func getCharacterIcon(for characterName: String) -> String {
-//        switch characterName {
-//        case "アレック": return "alec_icon"
-//        case "セシル": return "cecil_icon"
-//        case "コニー": return "cony_icon"
-//        case "ケビン": return "kevin_icon"
-//        case "ロビー": return "robby_icon"
-//        case "サンドラ": return "sandra_icon"
-//        default: return "default_icon"
-//        }
-//    }
 }

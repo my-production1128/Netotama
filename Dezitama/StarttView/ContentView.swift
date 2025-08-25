@@ -65,7 +65,7 @@ struct ContentView: View {
             .onAppear {
                 netomoDialogues = loadCSV(fileName: "netomo_ver10_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_ver11_0")
-                kakusanDialogues = loadCSV(fileName: "kakusan_var5_0")
+                kakusanDialogues = loadCSV(fileName: "kakusan_ver9_0")
                 let netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver20")
                 let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver7")
                 self.allBranchings = netomoBranchings + groupBranchings

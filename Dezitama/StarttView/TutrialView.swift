@@ -12,19 +12,19 @@ struct TutorialView: View {
             // スライド部分
             TabView(selection: $currentPage) {
                 // スライド 1
-                slideView(imageName: "tutrial_01")
+                slideView(imageName: "tutrial_N01")
                     .tag(0)
                 
                 // スライド 2
-                slideView(imageName: "tutrial_02")
+                slideView(imageName: "tutrial_N02")
                     .tag(1)
                 
                 // スライド 3
-                slideView(imageName: "tutrial_03")
+                slideView(imageName: "tutrial_N03")
                     .tag(2)
                 
                 // スライド 4
-                slideView(imageName: "tutrial_04")
+                slideView(imageName: "tutrial_N04")
                     .tag(3)
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))

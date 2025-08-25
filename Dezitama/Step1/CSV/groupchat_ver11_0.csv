@@ -1,5 +1,5 @@
 storyId,sceneId,characterName,dialogueText,background,TalkingPeople,LeftCharacter,CenterCharacter,RightCharacter,OneCharacter,TwoCharacter,OnePerson,LeftChat,RightChat
-storyId,Scene0,,,Introduction,,,,,,,,,
+groupchat,Scene0,,,Introduction,,,,,,,,,
 groupchat,Scene1,アレック,やっと｜授業《じゅぎょう》終わった〜,Classroom,Three,Alec_smile,Cecil_normal,Cony_normal,,,,,
 groupchat,Scene2,コニー,まじ｜疲《つか》れたね,Classroom,Three,Alec_normal,Cecil_normal,Cony_normal,,,,,
 groupchat,Scene3,セシル,先生の｜授業《じゅぎょう》って<br>面白いけど｜内容《ないよう》｜難《むずか》しいもんね,Classroom,Three,Alec_normal,Cecil_normal,Cony_normal,,,,,

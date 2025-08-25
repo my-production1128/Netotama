@@ -45,6 +45,7 @@ func getCharacterIcon(for characterName: String) -> String {
     case "ロビー": return "robby_icon"
     case "サンドラ": return "sandra_icon"
     case "先生": return "teacher_icon"
+    case "ニック": return "nick_icon"
     default: return "default_icon"
     }
 }

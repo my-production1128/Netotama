@@ -2,7 +2,7 @@
 //  GroupchatView.swift
 //  Dezitama
 //
-//  Refactored to use CommonUIComponents
+//  Created by 末廣月渚 on 2025/08/18.
 //
 
 import SwiftUI
@@ -12,13 +12,7 @@ struct GroupchatView: View {
     @State private var currentIndex = 0
     @State private var isShowingLog = false
     
-    // Typing Animation State
-    @State private var displayedText = ""
-    @State private var currentCharIndex = 0
-    @State private var timer: Timer?
-    @State private var isTypingComplete = false
-    @State private var shouldSkipTyping = false
-    
+    // タイピングアニメーション用の状態（TypingRubyLabelRepresentableに任せるため削除）
     // Button Animation State
     @State private var offsetY: CGFloat = 0.0
     
@@ -45,7 +39,6 @@ struct GroupchatView: View {
                     endSceneView
                 }
             }
-            .onAppear(perform: initializeTyping)
         }
     }
     
@@ -92,7 +85,6 @@ struct GroupchatView: View {
             TalkingView(
                 current: current,
                 geometry: geometry,
-                displayedText: $displayedText,
                 offsetY: $offsetY,
                 onSceneTap: handleSceneTap,
                 onStartLoopingAnimation: startLoopingAnimation
@@ -125,8 +117,7 @@ struct GroupchatView: View {
                     dialogues: groupchatDialogues,
                     currentIndex: &currentIndex,
                     chatBackgrounds: chatBackgrounds,
-                    onStartTyping: { fullText in
-                        startTyping(fullText: fullText)
+                    onStartTyping: { _ in
                     }
                 )
             },
@@ -195,32 +186,13 @@ struct GroupchatView: View {
 // MARK: - Helper Methods
 extension GroupchatView {
     private func handleSceneTap() {
-        timer?.invalidate()
+        // タイマーの停止処理を削除（TypingRubyLabelRepresentableが自動管理）
         goToNextScene()
     }
     
     private func goToNextScene() {
         currentIndex += 1
-        
-        if currentIndex < groupchatDialogues.count {
-            let currentDialogue = groupchatDialogues[currentIndex]
-            
-            // Chatシーンでない場合のみタイピングを開始
-            if !chatBackgrounds.contains(currentDialogue.background) &&
-               !currentDialogue.dialogueText.isEmpty {
-                startTyping(fullText: currentDialogue.dialogueText)
-            }
-        }
-    }
-    
-    private func initializeTyping() {
-        if let firstDialogue = groupchatDialogues.first {
-            // 最初のシーンがChatでない場合のみタイピング開始
-            if !chatBackgrounds.contains(firstDialogue.background) &&
-               !firstDialogue.dialogueText.isEmpty {
-                startTyping(fullText: firstDialogue.dialogueText)
-            }
-        }
+        // タイピング開始の処理を削除（各シーンで自動的に開始される）
     }
     
     private func startLoopingAnimation() {
@@ -229,31 +201,5 @@ extension GroupchatView {
             duration: animationDuration,
             offset: animationOffset
         )
-    }
-
-    private func startTyping(fullText: String) {
-        AnimationHelpers.startTyping(
-            fullText: fullText,
-            displayedText: $displayedText,
-            currentCharIndex: $currentCharIndex,
-            timer: $timer,
-            isTypingComplete: $isTypingComplete,
-            typingInterval: typingInterval
-        )
-    }
-
-    private func getCharacterIcon(for characterName: String) -> String {
-        switch characterName {
-        case "アレック": return "alec_icon"
-        case "セシル": return "cecil_icon"
-        case "コニー": return "cony_icon"
-        case "ブライアン": return "brian_icon"
-        case "カール": return "curl_icon"
-        case "ケビン": return "kevin_icon"
-        case "ロビー": return "robby_icon"
-        case "サンドラ": return "sandra_icon"
-        case "先生": return "teacher_icon"
-        default: return "default_icon"
-        }
     }
 }

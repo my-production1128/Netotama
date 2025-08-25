@@ -13,7 +13,6 @@ struct TalkingView: View {
     let geometry: GeometryProxy
     
     // MARK: - Bindings
-    @Binding var displayedText: String
     @Binding var offsetY: CGFloat
     
     // MARK: - Actions
@@ -27,7 +26,16 @@ struct TalkingView: View {
     // MARK: - Body
     var body: some View {
         ZStack {
-            backgroundImage("classroom")
+            // 背景
+            if current.background == "Park" {
+                CommonUIComponents.backgroundImage("park")
+            } else if current.background == "Classroom" {
+                CommonUIComponents.backgroundImage("classroom")
+            } else if current.background == "News" {
+                CommonUIComponents.backgroundImage("news")
+            } else {
+                CommonUIComponents.backgroundImage("my_room")
+            }
             
             // TalkingPeopleに基づいてキャラクターを配置
             characterLayoutView
@@ -61,9 +69,11 @@ struct TalkingView: View {
                 characterImage(
                     current.safeLeftCharacter,
                     width: getCharacterSize(for: current.safeLeftCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).width,
-                    height: getCharacterSize(for: current.safeLeftCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).height
+                    height: getCharacterSize(for: current.safeLeftCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).height,
+                    isSpeaking: isCharacterSpeaking(current.safeLeftCharacter, speakerName: current.characterName)
                 )
                 .offset(x: -300)
+                .animation(.easeInOut(duration: 0.3), value: isCharacterSpeaking(current.safeLeftCharacter, speakerName: current.characterName))
             }
             
             // 中央のキャラクター
@@ -71,9 +81,11 @@ struct TalkingView: View {
                 characterImage(
                     current.safeCenterCharacter,
                     width: getCharacterSize(for: current.safeCenterCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).width,
-                    height: getCharacterSize(for: current.safeCenterCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).height
+                    height: getCharacterSize(for: current.safeCenterCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).height,
+                    isSpeaking: isCharacterSpeaking(current.safeCenterCharacter, speakerName: current.characterName)
                 )
                 .offset(x: 0)
+                .animation(.easeInOut(duration: 0.3), value: isCharacterSpeaking(current.safeCenterCharacter, speakerName: current.characterName))
             }
             
             // 右のキャラクター
@@ -81,9 +93,11 @@ struct TalkingView: View {
                 characterImage(
                     current.safeRightCharacter,
                     width: getCharacterSize(for: current.safeRightCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).width,
-                    height: getCharacterSize(for: current.safeRightCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).height
+                    height: getCharacterSize(for: current.safeRightCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).height,
+                    isSpeaking: isCharacterSpeaking(current.safeRightCharacter, speakerName: current.characterName)
                 )
                 .offset(x: 300)
+                .animation(.easeInOut(duration: 0.3), value: isCharacterSpeaking(current.safeRightCharacter, speakerName: current.characterName))
             }
         }
     }
@@ -96,9 +110,11 @@ struct TalkingView: View {
                 characterImage(
                     current.safeOneCharacter,
                     width: getCharacterSize(for: current.safeOneCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).width,
-                    height: getCharacterSize(for: current.safeOneCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).height
+                    height: getCharacterSize(for: current.safeOneCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).height,
+                    isSpeaking: isCharacterSpeaking(current.safeOneCharacter, speakerName: current.characterName)
                 )
                 .offset(x: -100)
+                .animation(.easeInOut(duration: 0.3), value: isCharacterSpeaking(current.safeOneCharacter, speakerName: current.characterName))
             }
             
             // TwoCharacter（右側）
@@ -106,9 +122,11 @@ struct TalkingView: View {
                 characterImage(
                     current.safeTwoCharacter,
                     width: getCharacterSize(for: current.safeTwoCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).width,
-                    height: getCharacterSize(for: current.safeTwoCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).height
+                    height: getCharacterSize(for: current.safeTwoCharacter, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).height,
+                    isSpeaking: isCharacterSpeaking(current.safeTwoCharacter, speakerName: current.characterName)
                 )
                 .offset(x: 100)
+                .animation(.easeInOut(duration: 0.3), value: isCharacterSpeaking(current.safeTwoCharacter, speakerName: current.characterName))
             }
         }
     }
@@ -120,15 +138,23 @@ struct TalkingView: View {
                 characterImage(
                     current.safeOnePerson,
                     width: getCharacterSize(for: current.safeOnePerson, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).width,
-                    height: getCharacterSize(for: current.safeOnePerson, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).height
+                    height: getCharacterSize(for: current.safeOnePerson, speaking: current.characterName, talkingPeople: current.safeTalkingPeople).height,
+                    isSpeaking: isCharacterSpeaking(current.safeOnePerson, speakerName: current.characterName)
                 )
+                .animation(.easeInOut(duration: 0.3), value: isCharacterSpeaking(current.safeOnePerson, speakerName: current.characterName))
             }
         }
     }
     
+    // MARK: - キャラクターが話し手かどうかの判定（改善版）
+    private func isCharacterSpeaking(_ imageName: String, speakerName: String) -> Bool {
+        let characterName = getCharacterNameFromImage(imageName)
+        return characterName == speakerName
+    }
+    
     // MARK: - キャラクターサイズ計算
     private func getCharacterSize(for imageName: String, speaking characterName: String, talkingPeople: String) -> (width: CGFloat, height: CGFloat) {
-        let isSpeaking = getCharacterNameFromImage(imageName) == characterName
+        let isSpeaking = isCharacterSpeaking(imageName, speakerName: characterName)
         let baseSize = getBaseCharacterSize(for: imageName)
         let multiplier: CGFloat = isSpeaking ? 1.2 : 1.0 // 話し手は20%大きく
         
@@ -158,9 +184,12 @@ struct TalkingView: View {
         return imageName.components(separatedBy: "_").first ?? imageName
     }
     
-    // MARK: - 画像名からキャラクター名を取得
+    // MARK: - 画像名からキャラクター名を取得（改善版）
     private func getCharacterNameFromImage(_ imageName: String) -> String {
-        switch imageName {
+        // 表情のサフィックスを除去してベース名を取得
+        let baseName = extractBaseCharacterName(from: imageName)
+        
+        switch baseName {
         case "Alec":
             return "アレック"
         case "Cecil":
@@ -174,6 +203,8 @@ struct TalkingView: View {
         case "Brian":
             return "ブライアン"
         default:
+            // デバッグ用：不明なキャラクター名をログ出力
+            print("未知のキャラクター名: \(imageName) (ベース名: \(baseName))")
             return ""
         }
     }
@@ -193,16 +224,17 @@ struct TalkingView: View {
                 .foregroundColor(.black)
                 .position(x: geometry.size.width * 0.22, y: geometry.size.height * 0.673)
             
-            // セリフテキスト（ルビ対応）
+            // セリフテキスト（ルビ対応）- キー変更でリフレッシュ
             TypingRubyLabelRepresentable(
-                attributedText: displayedText
+                attributedText: current.dialogueText
                     .replacingOccurrences(of: "<br>", with: "\n")
                     .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black),
-                charInterval: 0.05, // タイピング速度を調整
+                charInterval: 0.05,
                 font: UIFont.customFont(ofSize: 30)
             )
             .frame(maxWidth: 700)
             .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+            .id(current.dialogueText) // キー変更でTypingRubyLabelRepresentableを再作成
             
             // ナビゲーションボタン（アニメーション付き）
             Button(action: onSceneTap) {
@@ -230,31 +262,12 @@ struct TalkingView: View {
             .ignoresSafeArea()
     }
     
-    private func characterImage(_ imageName: String, width: CGFloat, height: CGFloat) -> some View {
+    private func characterImage(_ imageName: String, width: CGFloat, height: CGFloat, isSpeaking: Bool = false) -> some View {
         Image(imageName)
             .resizable()
             .frame(width: width, height: height)
-    }
-}
-
-// MARK: - TalkingView Configuration
-extension TalkingView {
-    /// カスタム背景画像を使用する場合の初期化
-    init(
-        current: Dialogue,
-        geometry: GeometryProxy,
-        displayedText: Binding<String>,
-        offsetY: Binding<CGFloat>,
-        backgroundImage: String? = nil,
-        onSceneTap: @escaping () -> Void,
-        onStartLoopingAnimation: @escaping () -> Void
-    ) {
-        self.current = current
-        self.geometry = geometry
-        self._displayedText = displayedText
-        self._offsetY = offsetY
-        self.onSceneTap = onSceneTap
-        self.onStartLoopingAnimation = onStartLoopingAnimation
+            .scaleEffect(isSpeaking ? 1.0 : 0.95) // 話し手以外は少し小さく
+            .opacity(isSpeaking ? 1.0 : 0.8) // 話し手以外は少し透明に
     }
 }
 
