@@ -5,6 +5,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>MPLUS1-Regular.ttf</string>
+		<string>MPLUS1-Medium.ttf</string>
 	</array>
 </dict>
 </plist>

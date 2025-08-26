@@ -53,9 +53,8 @@ struct ChatSceneView: View {
             GeometryReader { geometry in
                 ZStack {
                     Text(ChatMessage(scene: self.allScene).scene.groupName)
-                        .position(x: geometry.size.width * 0.5
-                                  ,y: geometry.size.height * 0.125
-                        )
+                        .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.123)
+                        .font(.custom("MPLUS1-Medium", size: 24))
                     VStack {
 //                                        チャットの画面のスクロール部分
                         ScrollViewReader { proxy in
@@ -72,7 +71,7 @@ struct ChatSceneView: View {
                             .frame(width: 500, height: 450)
                             .position(x: geometry.size.width  * 0.492,y: geometry.size.height * 0.45)
                             .onAppear {
-                                self.proxy = proxy // proxy を状態変数に代入
+                                self.proxy = proxy
                             }
                         }
                     }
@@ -163,9 +162,7 @@ struct ChatSceneView: View {
                     }
 
                     // ボタン押した後に「次が相手のセリフ」なら自動で返信
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         proceedToNextIfNeeded()
-//                    }
                 }
 //                ↑ここまでonTapGestureの処理
 
@@ -237,7 +234,7 @@ struct ChatSceneView: View {
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text(CharacterName(rawValue: scene.characterName)?.displayName ?? scene.characterName)
-                                .font(.system(size: 18))
+                                .font(.custom("MPLUS1-Regular", size: 18))
                                 .foregroundColor(Color.gray)
 
                             if message.isAnimating {
@@ -300,7 +297,7 @@ struct ChatSceneView: View {
 
                     VStack(alignment: .trailing, spacing: 4) {
                         Text(CharacterName(rawValue: scene.characterName)?.displayName ?? scene.characterName)
-                            .font(.system(size: 18))
+                            .font(.custom("MPLUS1-Regular", size: 18))
                             .foregroundColor(Color.gray)
 
 //                        ルビ付きでテキストを表示
@@ -316,7 +313,7 @@ struct ChatSceneView: View {
                         .padding(13)
                         .background(Color.white.opacity(1.0))
                         .cornerRadius(16)
-                        .frame(maxWidth: 350, alignment: .trailing)
+                        .frame(maxWidth: 450, alignment: .trailing)
                     }
                     Image(scene.icon)
                         .resizable()

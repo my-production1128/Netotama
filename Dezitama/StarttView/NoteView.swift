@@ -142,11 +142,15 @@ struct NoteView: View {
                     }
                     .offset(x: 280, y: -180)
 
-                    Image("step2")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 250, height: 100)
-                        .offset(x: 280, y: 100)
+                    Button {
+                        path.append(ViewBuilderPath.StoryBranchView("kakusan"))
+                    } label: {
+                        Image("step2")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 250, height: 100)
+                    }
+                    .offset(x: 280, y: 100)
                 }
 
                 //図鑑

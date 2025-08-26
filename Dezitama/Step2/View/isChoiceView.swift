@@ -28,35 +28,56 @@ struct isChoiceView: View {
                     .opacity(0.45)
                     .ignoresSafeArea()
                 VStack(spacing: 30) {
-//                    選択肢１のボタン
+                    //                    選択肢１のボタン
                     Button(action: {
                         handleChoice(.choice1)
                     }){
-                        Text(allScene.choiceText1)
-                            .font(.system(size: 30, weight: .bold, design: .default))
-                            .foregroundColor(.white)
-                    }.buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice1))
+                        RubyLabelRepresentable(
+                            attributedText: allScene.choiceText1
+                                .replacingOccurrences(of: "<br>", with: "\n")
+                                .createRuby(font: .customFont(ofSize: 30), color: .black),
+                            font: .customFont(ofSize: 30), // ★ .systemFontから修正
+                            textColor: .white,
+                            textAlignment: .left
+                        )
+                        .fixedSize(horizontal: false, vertical: true) // ★ 追加: テキストの高さに合わせる
+                        .frame(maxWidth: geometry.size.width * 0.8) // ★ 修正: 幅を画面の80%に設定
+                        .padding(.horizontal, 20) // ★ パディングを追加
+                        .foregroundColor(.white)
+                    }
+                    .buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice1))
 
-//                    選択肢２のボタン
+                    //                    選択肢２のボタン
                     Button(action: {
                         handleChoice(.choice2)
                     }) {
-                        Text(allScene.choiceText2)
-                            .font(.system(size: 30, weight: .bold, design: .default))
-                            .foregroundColor(.white)
+                        RubyLabelRepresentable(
+                            attributedText: allScene.choiceText2
+                                .replacingOccurrences(of: "<br>", with: "\n")
+                                .createRuby(font: .customFont(ofSize: 30), color: .black),
+                            font: .customFont(ofSize: 30), // ★ .systemFontから修正
+                            textColor: .white,
+                            textAlignment: .left
+                        )
+                        .fixedSize(horizontal: false, vertical: true) // ★ 追加: テキストの高さに合わせる
+                        .frame(maxWidth: geometry.size.width * 0.8) // ★ 修正: 幅を画面の80%に設定
+                        .padding(.horizontal, 20) // ★ パディングを追加
+                        .foregroundColor(.white)
                     }
                     .buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice2))
                 }
 
-//                解説画面の表示
+                //                解説画面の表示
                 if explanation {
                     ZStack {
                         VStack {
-                            Image("blackboard")
+                            Image(allScene.blackboard)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 950, height: 650)
-                        }.border(Color.black, width: 3)
+                                .frame(width: 850, height: 850)
+                        }
+                        //                        .border(Color.black, width: 3)
+
                         Button(action: {
                             explanation = false
                         }) {
@@ -68,7 +89,7 @@ struct isChoiceView: View {
                     }
                 }
 
-//                丸を出す関数
+                //                丸を出す関数
                 if showCorrectMark {
                     Image("circle")
                         .resizable()
