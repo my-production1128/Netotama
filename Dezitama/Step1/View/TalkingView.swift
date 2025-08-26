@@ -175,6 +175,8 @@ struct TalkingView: View {
         case "Curl": return (250, 550)
         case "Teacher": return (300, 450)
         case "Brian": return (300, 450)
+        case "Nick" : return (250, 650)
+        case "Sandra": return (250, 250)
         default: return (250, 450)
         }
     }
@@ -200,6 +202,10 @@ struct TalkingView: View {
             return "カール"
         case "Teacher":
             return "先生"
+        case "Nick":
+            return "ニック"
+        case "Sandra":
+            return "サンドラ"
         case "Brian":
             return "ブライアン"
         default:
@@ -266,8 +272,9 @@ struct TalkingView: View {
         Image(imageName)
             .resizable()
             .frame(width: width, height: height)
+            .saturation(isSpeaking ? 1.0 : 0.7) // 彩度を30%に下げる
+            .brightness(isSpeaking ? 0.0 : -0.2) // 明るさを20%下げる
             .scaleEffect(isSpeaking ? 1.0 : 0.95) // 話し手以外は少し小さく
-            .opacity(isSpeaking ? 1.0 : 0.8) // 話し手以外は少し透明に
     }
 }
 

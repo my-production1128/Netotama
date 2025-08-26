@@ -192,13 +192,17 @@ struct LogComponents {
                     }
                 }
             }
+            .padding(.top, 0)
+            .padding(.bottom, 0)
+            .padding(.horizontal)
         }
-        .padding()
         .background(Color.black.opacity(0.6))
         .cornerRadius(16)
-        .frame(width: geometry.width / 2, height: geometry.height)
+        .frame(width: geometry.width / 2, height: .infinity)  // heightを.infinityに変更
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .transition(.move(edge: .leading))
         .zIndex(1)
+        .clipped()
     }
     
     // MARK: - Generic Log Message Row
@@ -221,18 +225,19 @@ struct LogComponents {
             
             VStack(alignment: isRight ? .trailing : .leading, spacing: 4) {
                 Text(dialogue.characterName)
-                    .font(.caption)
+                    .font(Font(UIFont.customFont(ofSize: 16)))
                     .foregroundColor(.white)
                 
-                Text(dialogue.dialogueText)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .font(.body)
-                    .foregroundColor(.black)
-                    .background(
-                        RoundedRectangle(cornerRadius: 16)
-                            .fill(Color.white)
-                    )
+                CommonUIComponents.rubyText(
+                    text: dialogue.dialogueText,
+                    maxWidth: 230,  // ボタンとの重複を避けるため少し狭く
+                    font: UIFont.customFont(ofSize: 20),
+                    typingInterval: 0
+                )
+                .background(
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.white)
+                )
             }
             .frame(maxWidth: 250, alignment: isRight ? .trailing : .leading)
             

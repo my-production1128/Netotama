@@ -39,7 +39,7 @@ struct MenuView: View {
                             VStack(spacing: 20) {
                                 Text("アプリについて")
                                     .foregroundColor(.black)
-                                    .font(.largeTitle)
+                                    .font(Font(UIFont.customFont(ofSize: 35)))
                                     .padding()
 
                                 Button {
@@ -48,7 +48,7 @@ struct MenuView: View {
                                 } label: {
                                     Text("・クレジット")
                                         .foregroundColor(.black)
-                                        .font(.title3)
+                                        .font(Font(UIFont.customFont(ofSize: 25)))
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding()
                                 }
@@ -59,7 +59,7 @@ struct MenuView: View {
                                 } label: {
                                     Text("・アプリの使い方")
                                         .foregroundColor(.black)
-                                        .font(.title3)
+                                        .font(Font(UIFont.customFont(ofSize: 25)))
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding()
                                 }
