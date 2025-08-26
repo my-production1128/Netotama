@@ -52,7 +52,8 @@ func loadCSV(fileName: String) -> [Dialogue] {
 }
 
 
-func loadNetomoBranchingCSV(fileName: String) -> [Branching] {
+// CSVReader.swift
+func loadBranchingCSV(fileName: String) -> [Branching] {
     var result: [Branching] = []
 
     guard let path = Bundle.main.path(forResource: fileName, ofType: "csv") else {
@@ -65,16 +66,16 @@ func loadNetomoBranchingCSV(fileName: String) -> [Branching] {
         let rows = csv.components(separatedBy: .newlines).filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
 
         for (i, row) in rows.enumerated() {
-            if i == 0 { continue } // ヘッダ行スキップ
+            if i == 0 { continue }
             let cols = row.components(separatedBy: ",")
 
-            guard cols.count >= 15 else {
+            guard cols.count >= 17 else {
                 print("❌ 列が足りない line \(i): \(cols)")
                 continue
             }
 
             let isChoice: Bool? = {
-                let raw = cols[12].trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                let raw = cols[13].trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
                 if raw == "true" || raw == "1" {
                     return true
                 } else if raw == "false" || raw == "0" {
@@ -92,14 +93,16 @@ func loadNetomoBranchingCSV(fileName: String) -> [Branching] {
                 icon: cols[4],
                 characterName: cols[5],
                 leftCharacter: cols[6],
-                rightCharacter: cols[7],
-                text: cols[8],
-                background: cols[9],
-                speechBubble: cols[10],
-                nextSceneId: cols[11],
+                centerCharacter: cols[7],
+                rightCharacter: cols[8],
+                text: cols[9],
+                background: cols[10],
+                speechBubble: cols[11],
+                nextSceneId: cols[12],
                 isChoice: isChoice,
-                choiceText1: cols[13],
-                choiceText2: cols[14]
+                choiceText1: cols[14],
+                choiceText2: cols[15],
+                blackboard: cols[16]
             )
 
             result.append(b)
@@ -107,6 +110,5 @@ func loadNetomoBranchingCSV(fileName: String) -> [Branching] {
     } catch {
         print("CSV読み込みエラー：\(error)")
     }
-
     return result
 }

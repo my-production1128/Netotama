@@ -36,6 +36,7 @@ struct Branching: Identifiable {
     let icon: String
     let characterName: String
     let leftCharacter: String
+    let centerCharacter: String
     let rightCharacter: String
     let text: String
     let background: String
@@ -44,6 +45,7 @@ struct Branching: Identifiable {
     let isChoice: Bool?
     let choiceText1: String
     let choiceText2: String
+    let blackboard: String
 }
 
 
@@ -95,6 +97,7 @@ enum CharacterName: String {
     case Cecil_smile
     case Cecil_sorry
     case Cecil_surprised
+    case Cecil_trouble
 
 //    先生
     case Teacher
@@ -104,13 +107,15 @@ enum CharacterName: String {
 //    ブライアン
     case Brian
     case Brian_normal
-    case Brain_trouble
+    case Brian_trouble
 
 //    サンドラ
     case Sandra
+    case Sandra_sorry
 
 //    ロビー
     case Robbie
+    case Robbie_irritaion
 
 
 
@@ -162,7 +167,8 @@ enum CharacterName: String {
         case .Cecil_smile: return "セシル"
         case .Cecil_sorry: return "セシル"
         case .Cecil_surprised: return "セシル"
-            
+        case .Cecil_trouble: return "セシル"
+
 //            先生
         case .Teacher: return "先生"
         case .Teacher_normal: return "先生"
@@ -171,12 +177,17 @@ enum CharacterName: String {
 //            ブライアン
         case .Brian: return "ブライアン"
         case .Brian_normal: return "ブライアン"
-        case .Brain_trouble: return "ブライアン"
+        case .Brian_trouble: return "ブライアン"
 
 //            サンドラ
         case .Sandra: return "サンドラ"
+        case .Sandra_sorry: return "サンドラ"
 //            ロビー
         case .Robbie: return "ロビー"
+        case .Robbie_irritaion: return "ロビー"
+
+        default:
+            return ""
         }
     }
 }

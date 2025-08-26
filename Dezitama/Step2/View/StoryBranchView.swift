@@ -14,40 +14,40 @@ struct StoryBranchView: View {
     @State private var offsetY: CGFloat = 0.0
     @State var isPopupVisible: Bool = false
     @State var nextChat: Bool = false
-    
-    
+
+
     @State private var displayedText = ""
     @State private var currentCharIndex = 0
     @State private var timer: Timer? = nil
-    
+
     @State private var isTypingComplete: Bool = false
     @State private var shouldSkipTyping: Bool = false
-    
-    
+
+
     // 選択肢のシーンを一時的に保持する新しいState変数
     @State private var currentChoiceScene: Branching? = nil
-    
+
     //    会話の見返しボタン用関数
     @State var isChatLogVisible: Bool = false
     @State private var conversationHistory: [Branching] = []
-    
-    
+
+    //    ストーリーが終了した場合セリフを最後まで読んだあとにタップしたか判別する
+    @State private var isEndSceneReady: Bool = false
+
+
     let talkFont = UIFont.customFont(ofSize: 30)
     let charaNameFont = UIFont.customFont(ofSize: 35)
-    
-    
-    
-    
+
     @Binding var path: NavigationPath
     @Binding var allBranchings: [Branching]
     @Binding var allScene: Branching
-    
+
     let StoryId: String
     // 表示に必要なデータだけを、allBranchingsからリアルタイムで絞り込む
     private var currentStoryBranchings: [Branching] {
         return allBranchings.filter { $0.storyId == StoryId }
     }
-    
+
     private var branchingMap: [String: Branching] {
         var map: [String: Branching] = [:]
         for b in currentStoryBranchings {
@@ -59,16 +59,41 @@ struct StoryBranchView: View {
         }
         return map
     }
-    
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 if let current = branchingMap[currentSceneId] {
                     VStack {
                         Spacer()
-                        
+
                         //                    scenetypeがchatの時
                         switch current.sceneType {
+                        case "screen":
+                            ZStack {
+                                HStack {
+                                    Image("next_button")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 35)
+                                        .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
+                                        .offset(y: offsetY)
+                                        .onAppear {
+                                            startLoopingAnimation()
+                                        }
+                                }
+                                Text(current.text)
+                                    .font(.custom("MPLUS1-Regular", size: 35))
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                if let next = branchingMap[current.nextSceneId]{
+                                    currentSceneId = next.sceneId
+                                }
+                            }
+
+
                         case "chat":
                             ChatSceneView(
                                 branchingMap: branchingMap,
@@ -83,43 +108,67 @@ struct StoryBranchView: View {
                                 isPopupVisible: $isPopupVisible,
                                 conversationHistory: $conversationHistory
                             )
-                            
+
                             //                            scenetypeがtalkの
                         case "talk":
                             ZStack {
-                                HStack {
-                                    //                                    話し手が1人だった時
-                                    if !current.leftCharacter.isEmpty && current.rightCharacter.isEmpty {
-                                        Spacer()
-                                        Image(current.leftCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 500)
-                                            .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
-                                        Spacer()
-                                        
-                                    } else if current.leftCharacter.isEmpty && !current.rightCharacter.isEmpty {
-                                        Spacer()
-                                        
-                                        Image(current.rightCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 500)
-                                            .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
-                                        Spacer()
-                                    } else {
-                                        Image(current.leftCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 450)
-                                        
-                                        Image(current.rightCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(height: 450)
-                                    }
-                                }
-                                
+                                // MARK: - キャラクター表示部分
+                                // 表示するキャラクターの数を数える
+                                let characterCount = [current.leftCharacter, current.centerCharacter, current.rightCharacter].filter { !$0.isEmpty }.count
+
+                                // HStacをキャラクター数に応じて調整
+                                HStack(spacing: 20) {
+                                            // キャラクターが2人以下の場合は左にSpacerを配置
+                                            if characterCount <= 2 {
+                                                Spacer()
+                                            }
+
+                                            // 左のキャラクター
+                                            if !current.leftCharacter.isEmpty {
+                                                characterImage(
+                                                    imageName: current.leftCharacter,
+                                                    speakingCharacter: current.characterName
+                                                )
+                                                .frame(width: 250, height: 450)
+                                            }
+
+                                            // キャラクターが1人または2人の場合にSpacerを挿入
+                                            if characterCount == 2 {
+                                                Spacer()
+                                            }
+
+                                            // 中央のキャラクター
+                                            if !current.centerCharacter.isEmpty {
+                                                characterImage(
+                                                    imageName: current.centerCharacter,
+                                                    speakingCharacter: current.characterName
+                                                )
+                                                .frame(width: 250, height: 450)
+                                            }
+
+                                            // キャラクターが1人または2人の場合にSpacerを挿入
+                                            if characterCount == 1 || characterCount == 2 {
+                                                Spacer()
+                                            }
+
+                                            // 右のキャラクター
+                                            if !current.rightCharacter.isEmpty {
+                                                characterImage(
+                                                    imageName: current.rightCharacter,
+                                                    speakingCharacter: current.characterName
+                                                )
+                                                .frame(width: 250, height: 450)
+                                            }
+
+                                            // キャラクターが2人以下の場合は右にSpacerを配置
+                                            if characterCount <= 2 {
+                                                Spacer()
+                                            }
+                                        }
+                                .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+
+
                                 Group{
                                     //                                     吹き出し背景
                                     Image(current.speechBubble)
@@ -127,23 +176,15 @@ struct StoryBranchView: View {
                                         .frame(width: 950, height: 250)
                                         .offset(x:-13, y: 0)
                                         .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.8)
-                                    
+
                                     //                                     キャラ名ラベル
                                     let characterNameText = CharacterName(rawValue: current.characterName)?.displayName ?? current.characterName
-                                    
-                                    RubyLabelRepresentable(
-                                        attributedText: characterNameText
-                                            .replacingOccurrences(of: "<br>", with: "\n")
-                                            .createRuby(font: charaNameFont, color: .black), // talkFontを使う
-                                        font: charaNameFont,
-                                        textColor: .black,
-                                        textAlignment: .center
-                                    )
-                                    .font(.system(size: 35))
-                                    .font(.title)
-                                    .padding(6)
-                                    .cornerRadius(8)
-                                    .position(x: geometry.size.width * 0.22,y: geometry.size.height * 0.673)
+                                    Text(characterNameText)
+                                        .font(.custom("MPLUS1-Regular", size: 35))
+                                        .font(.title)
+                                        .padding(6)
+                                        .cornerRadius(8)
+                                        .position(x: geometry.size.width * 0.22,y: geometry.size.height * 0.677)
 
                                     //                                    テキスト（会話文）
                                     TypingRubyLabelRepresentable(
@@ -158,7 +199,7 @@ struct StoryBranchView: View {
                                     .fixedSize(horizontal: false, vertical: true) // UILabelのサイズ計算を尊重させる
                                     .frame(maxWidth: 700)
                                     .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
-                                    
+
                                     //                                     ナビゲーション
                                     HStack {
                                         Image("next_button")
@@ -184,7 +225,7 @@ struct StoryBranchView: View {
                                     print("ポップアップ表示中のためタップを無効にします。")
                                     return
                                 }
-                                
+
                                 if let next = branchingMap[current.nextSceneId] {
                                     historyStack.append(currentSceneId)
                                     // 次のシーンが選択肢の場合
@@ -198,32 +239,14 @@ struct StoryBranchView: View {
                                         print("次のシーンに遷移します。sceneId: \(currentSceneId)")
                                     }
                                     conversationHistory.append(next)
+                                }else if current.nextSceneId == "end" {
+                                    isEndSceneReady = true
                                 }
                             }
                             //                            ↑ここまでonTapGestureの処理
-                            
+
                         default:
                             Text("このscemneTypeは未対応です")
-                        }
-                        
-                        if current.nextSceneId == "end" {
-                            Color.black
-                                .opacity(0.45)
-                                .ignoresSafeArea()
-                            VStack {
-                                Spacer()
-                                HStack {
-                                    Spacer()
-                                    Button {
-                                        path.removeLast()
-                                    } label: {
-                                        Image("back_start")
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 500, height: 100)
-                                    }
-                                }
-                            }.padding()
                         }
                     }
                     .background {
@@ -236,7 +259,7 @@ struct StoryBranchView: View {
                 } else {
                     Text("ストーリーが読み込めませんでしたnetomoBranchView")
                 }
-                
+
                 HStack {
                     Spacer()
                     VStack {
@@ -252,8 +275,7 @@ struct StoryBranchView: View {
                         Spacer()
                     }
                 }
-                
-                
+
                 if isPopupVisible, let choiceScene = currentChoiceScene {
                     let _ = print("isChoiceViewを呼び出します。isPopupVisible: \(isPopupVisible), choiceSceneId: \(choiceScene.sceneId)")
                     isChoiceView(
@@ -266,7 +288,7 @@ struct StoryBranchView: View {
                         }
                     )
                 }
-                
+
                 //                会話の見返しボタン
                 // ★ 履歴ボタンとログビューの追加
                 VStack {
@@ -277,54 +299,60 @@ struct StoryBranchView: View {
                             Image("chat") // chatボタンを流用
                                 .resizable()
                                 .scaledToFill()
-                                .frame(width: 50, height: 50)
+                                .frame(width: 60, height: 60)
                                 .padding(20)
                         }
                         Spacer()
                     }
                     Spacer()
                 }
-                .zIndex(2)
-                
+                .zIndex(0)
+
                 if isChatLogVisible {
                     GeometryReader { innerGeometry in
-                        ScrollViewReader { proxy in
-                            ScrollView {
-                                VStack(spacing: 12) {
-                                    ForEach(conversationHistory, id: \.id) { scene in
-                                        let isRight = scene.characterName == scene.rightCharacter
-                                        HStack(alignment: .bottom, spacing: 8) {
-                                            if !isRight {
-                                                Image(scene.icon)
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .frame(width: 30, height: 30)
-                                                    .clipShape(Circle())
-                                            }
-                                            
-                                            VStack(alignment: isRight ? .trailing : .leading, spacing: 4) {
-//                                                見返し用キャラクター名
-                                                let characterName = CharacterName(rawValue: scene.characterName)?.displayName ?? "不明"
-                                                RubyLabelRepresentable(
-                                                    attributedText: characterName
-                                                        .replacingOccurrences(of: "<br>", with: "\n")
-                                                        .createRuby(font: .customFont(ofSize: 15), color: .black),
-                                                    font: .systemFont(ofSize: 15),
-                                                    textColor: .black,
-                                                    textAlignment: .center
-                                                )
-                                                .padding(6)
-                                                .cornerRadius(8)
+                        // ★ 全体をZStackで囲む
+                        ZStack(alignment: .leading) {
+                            // ★ 1. 背景をタップ可能にして閉じるロジックを追加
+                            Color.black.opacity(0.001)
+                                .edgesIgnoringSafeArea(.all)
+                                .onTapGesture {
+                                    withAnimation(.easeOut(duration: 0.3)) {
+                                        isChatLogVisible = false
+                                    }
+                                }
+                                .zIndex(0) // 背景を一番後ろに
 
-                                                //                                                見返し用セリフ
-                                                RubyLabelRepresentable(
-                                                    attributedText: scene.text
-                                                        .replacingOccurrences(of: "<br>", with: "\n")
-                                                        .createRuby(font: .customFont(ofSize: 22), color: .black),
-                                                    font: .systemFont(ofSize: 20),
-                                                    textColor: .black,
-                                                    textAlignment: .left
-                                                )
+                            // ★ 2. スクロールビュー
+                            ScrollViewReader { proxy in
+                                ScrollView {
+                                    VStack(spacing: 12) {
+                                        ForEach(conversationHistory, id: \.id) { scene in
+                                            let isRight = scene.characterName == scene.rightCharacter
+                                            let characterName = CharacterName(rawValue: scene.characterName)?.displayName ?? "不明"
+
+                                            HStack(alignment: .bottom, spacing: 8) {
+                                                if !isRight {
+                                                    Image(scene.icon)
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fit)
+                                                        .frame(width: 30, height: 30)
+                                                        .clipShape(Circle())
+                                                }
+
+                                                VStack(alignment: isRight ? .trailing : .leading, spacing: 4) {
+                                                    Text(characterName)
+                                                        .font(.custom("MPLUS1-Regular", size: 14))
+                                                        .foregroundColor(.white)
+
+                                                    RubyLabelRepresentable(
+                                                        attributedText: scene.text
+                                                            .replacingOccurrences(of: "<br>", with: "\n")
+                                                            .createRuby(font: .customFont(ofSize: 22),
+                                                                        color: .black),
+                                                        font: .systemFont(ofSize: 20),
+                                                        textColor: .black,
+                                                        textAlignment: .left
+                                                    )
                                                     .padding(.horizontal, 12)
                                                     .padding(.vertical, 8)
                                                     .font(.body)
@@ -333,45 +361,59 @@ struct StoryBranchView: View {
                                                         RoundedRectangle(cornerRadius: 16)
                                                             .fill(Color.white)
                                                     )
+                                                }
+                                                .frame(maxWidth: 250, alignment: isRight ? .trailing : .leading)
+
+                                                if isRight {
+                                                    Image(scene.icon)
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fit)
+                                                        .frame(width: 30, height: 30)
+                                                        .clipShape(Circle())
+                                                }
                                             }
-                                            .frame(maxWidth: 250, alignment: isRight ? .trailing : .leading)
-                                            
-                                            if isRight {
-                                                Image(scene.icon)
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .frame(width: 30, height: 30)
-                                                    .clipShape(Circle())
-                                            }
+                                            .frame(maxWidth: .infinity, alignment: isRight ? .trailing : .leading)
+                                            .padding(.horizontal, 16)
+                                            .padding(.vertical, 4)
+                                            .id(scene.id)
                                         }
-                                        .frame(maxWidth: .infinity, alignment: isRight ? .trailing : .leading)
-                                        .padding(.horizontal, 16)
-                                        .padding(.vertical, 4)
-                                        .id(scene.id) // ★ スクロール対象を特定するためIDを付与
                                     }
+                                    .padding()
                                 }
-                                .padding()
-                            }
-                            .frame(width: innerGeometry.size.width / 2)
-                            .onTapGesture {
-                                isChatLogVisible = false
-                            }
-                            .onChange(of: conversationHistory.count) { // ★ 配列の更新を監視
-                                withAnimation {
+                                .background(Color.black.opacity(0.8)) // スクロールビューの背景
+                                .frame(width: innerGeometry.size.width / 2)
+                                .onAppear {
                                     if let last = conversationHistory.last {
                                         proxy.scrollTo(last.id, anchor: .bottom)
                                     }
                                 }
                             }
+                            .zIndex(1) // スクロールビューを背景より手前に配置
+                            .transition(.move(edge: .leading))
                         }
-                        .background(Color.black.opacity(0.6))
-                        .edgesIgnoringSafeArea(.all)
-                        .transition(.move(edge: .leading))
-                        .zIndex(1)
+                    }
+                    .zIndex(1) // 履歴ビュー全体をボタンの背後に配置
+                }
+
+                if isEndSceneReady {
+                    Color.black
+                        .opacity(0.45)
+                        .ignoresSafeArea()
+                    VStack {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                            Button {
+                                path.removeLast()
+                            } label: {
+                                Image("back_start")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 500, height: 100)
+                            }
+                        }
                     }
                 }
-                
-                // ... (既存のコード) ...
             }
             .onAppear {
                 if let first = currentStoryBranchings.first { // ★ filterされたストーリーの先頭を取得する
@@ -383,7 +425,7 @@ struct StoryBranchView: View {
             }
         }
     }
-    
+
     //    三角形アニメーションがループする用の関数
     private func startLoopingAnimation() {
         // 一旦アニメーションをリセット
@@ -392,17 +434,17 @@ struct StoryBranchView: View {
         let animation = Animation
             .easeInOut(duration: 0.6)
             .repeatForever(autoreverses: true)
-        
+
         withAnimation(animation) {
             offsetY = 8.0
         }
     }
-    
+
     func startTyping(fullText: String) {
         displayedText = ""
         currentCharIndex = 0
         timer?.invalidate()
-        
+
         timer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { t in
             if currentCharIndex < fullText.count {
                 let index = fullText.index(fullText.startIndex, offsetBy: currentCharIndex)
@@ -414,4 +456,29 @@ struct StoryBranchView: View {
             }
         }
     }
+}
+
+@ViewBuilder
+private func characterImage(imageName: String, speakingCharacter: String) -> some View {
+    let isSpeaking = (speakingCharacter == imageName)
+    let speakingScale: CGFloat = isSpeaking ? 1.1 : 1.0 // 話し手は1.1倍に拡大
+
+    Image(imageName)
+        .resizable()
+        .scaledToFit()
+        .scaleEffect(speakingScale)
+    //        .opacity(isSpeaking ? 1.0 : 0.7)
+    // ★ 話し手以外は彩度と明るさを調整してグレーアウト
+        .saturation(isSpeaking ? 1.0 : 0.7) // 彩度を30%に下げる
+        .brightness(isSpeaking ? 0.0 : -0.2) // 明るさを20%下げる
+        .animation(.easeInOut(duration: 0.3), value: isSpeaking)
+}
+
+private func getCharacterNameFromImage(_ imageName: String) -> String {
+    let baseName = imageName.components(separatedBy: "_").first ?? imageName
+    return CharacterName(rawValue: baseName)?.displayName ?? baseName
+}
+
+enum CharacterPosition {
+    case left, center, right
 }
