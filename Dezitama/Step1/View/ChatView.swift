@@ -412,6 +412,8 @@ struct ChatView: View {
         case "ケビン": return "ケビン"
         case "ロビー": return "ロビー"
         case "サンドラ": return "サンドラ"
+        case "ブライアン": return "ブライアン"
+        case "ニック": return "ニック"
         default: return characterName
         }
     }

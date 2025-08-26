@@ -12,7 +12,7 @@ struct GroupchatView: View {
     @State private var currentIndex = 0
     @State private var isShowingLog = false
     
-    // タイピングアニメーション用の状態（TypingRubyLabelRepresentableに任せるため削除）
+    // タイピングアニメーション用の状態
     // Button Animation State
     @State private var offsetY: CGFloat = 0.0
     
@@ -98,8 +98,12 @@ struct GroupchatView: View {
             
             if isShowingLog {
                 logOverlay(geometry: geometry.frame(in: .global))
+                    .ignoresSafeArea()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                    .offset(x: 0, y: 0)
             }
         }
+        .ignoresSafeArea()
     }
     
     // MARK: - Chat Scene

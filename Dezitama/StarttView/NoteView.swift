@@ -6,156 +6,155 @@
 //
 import SwiftUI
 
-struct ShakeEffect: GeometryEffect {
-    var amount: CGFloat = 10   // 揺れる振幅
-    var shakesPerUnit: CGFloat = 3  // 揺れる回数（1ユニットでこの回数）
-    var animatableData: CGFloat
-
-    func effectValue(size: CGSize) -> ProjectionTransform {
-        let translation = amount * sin(animatableData * .pi * shakesPerUnit)
-        return ProjectionTransform(CGAffineTransform(translationX: translation, y: 0))
-    }
-}
-
 struct NoteView: View {
     @State private var currentImageName: String = "note_gurutama"
-
     @Binding var path: NavigationPath
-
     @State private var shakeTrigger: Int = 0
     @State private var showTutorial: Bool = true
 
     var body: some View {
-        ZStack {
-            //                 背景ノート画像
-            Image(currentImageName)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 850, height: 750)
-                .offset(x: 20, y: -20)
+        GeometryReader { geometry in
+            ZStack {
+                Image(currentImageName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(
+                        width: min(geometry.size.width * 1.0, 1150),
+                        height: min(geometry.size.height * 1.0, 1000)
+                    )
+                    .offset(
+                        x: geometry.size.width * 0.02
+                    )
 
-//                 ページ右側の付箋でも切り替えボタン
-            VStack {
-                Spacer()
-                    .frame(height: 20)
+                // ページ右側の付箋ボタン
                 VStack {
-                    Button {
-                        currentImageName = "note_gurutama"
-                    } label: {
-                        Color.clear.frame(width: 70, height: 160)
+                    Spacer()
+                        .frame(height: geometry.size.height * 0.08)
+                    
+                    VStack(spacing: geometry.size.height * 0.01) {
+                        ForEach(["note_gurutama", "note_netotama", "note_potitama", "note_zukan"], id: \.self) { imageName in
+                            Button {
+                                currentImageName = imageName
+                            } label: {
+                                Color.clear.frame(
+                                    width: geometry.size.width * 0.08,
+                                    height: geometry.size.height * 0.2
+                                )
+                            }
+                        }
                     }
-
-                    Button {
-                        currentImageName = "note_netotama"
-                    } label: {
-                        Color.clear.frame(width: 70, height: 160)
-                    }
-
-                    Button {
-                        currentImageName = "note_potitama"
-                    } label: {
-                        Color.clear.frame(width: 70, height: 150)
-                    }
-
-                    Button {
-                        currentImageName = "note_zukan"
-                    } label: {
-                        Color.clear.frame(width: 70, height: 150)
-                    }
+                    .padding(.trailing, geometry.size.width * 0.01)
+                    Spacer()
                 }
-                .padding(.trailing, 5)
-                Spacer()
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
-            .onAppear {
-                let hasSeenTutorial = UserDefaults.standard.bool(forKey: "hasSeenTutorial")
-                if !hasSeenTutorial {
-                    showTutorial = true
-                    UserDefaults.standard.set(true, forKey: "hasSeenTutorial")
-                }
-            }
-            .sheet(isPresented: $showTutorial) {
-                TutorialView()
-            }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
 
-            //                 各ストーリーの詳しい説明のページ
-            switch currentImageName {
-            case "note_gurutama":
-                ZStack {
-
-                    Button {
-                        path.append(ViewBuilderPath.GroupchatView)
-                    } label: {
-                        Image("step1")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 250, height: 100)
-                    }
-                    .offset(x: 280, y: -180)
-
-                    Button {
-                        path.append(ViewBuilderPath.StoryBranchView("groupchat"))
-                    } label: {
-                        Image("step2")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 250, height: 100)
-                    }
-                    .offset(x: 280, y: 100)
-                }
-
-            case "note_netotama":
-                ZStack {
-                    //                        ネトモ・ステップ１
-                    Button {
-                        path.append(ViewBuilderPath.NetomoView)
-                    } label: {
-                        Image("step1")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 250, height: 100)
-                    }
-                    .offset(x: 280, y: -180)
-
-//                        ネトモ・ステップ２
-                    Button {
-                        path.append(ViewBuilderPath.StoryBranchView("netomo"))
-                    } label: {
-                        Image("step2")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 250, height: 100)
-                    }
-                    .offset(x: 280, y: 100)
-                }
-
-            case "note_potitama":
-                ZStack {
-
-                    Button {
-                        path.append(ViewBuilderPath.kakusanView)
-                    } label: {
-                        Image("step1")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 250, height: 100)
-                    }
-                    .offset(x: 280, y: -180)
-
-                    Image("step2")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 250, height: 100)
-                        .offset(x: 280, y: 100)
-                }
-
-                //図鑑
-            default:
-                EmptyView()
+                // コンテンツエリア
+                contentView(geometry: geometry)
             }
         }
-        .background(Image("note_background")
-            .resizable()
-            .scaledToFill())
+        .background(
+            Image("note_background")
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+        )
+        .onAppear {
+            let hasSeenTutorial = UserDefaults.standard.bool(forKey: "hasSeenTutorial")
+            if !hasSeenTutorial {
+                showTutorial = true
+                UserDefaults.standard.set(true, forKey: "hasSeenTutorial")
+            }
+        }
+        .sheet(isPresented: $showTutorial) {
+            TutorialView()
+        }
+    }
+    
+    @ViewBuilder
+    private func contentView(geometry: GeometryProxy) -> some View {
+        switch currentImageName {
+        case "note_gurutama":
+            VStack(spacing: geometry.size.height * 0.18) {
+                Button {
+                    path.append(ViewBuilderPath.GroupchatView)
+                } label: {
+                    Image("step1")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(
+                            width: geometry.size.width * 0.4,
+                            height: geometry.size.height * 0.2
+                        )
+                }
+                
+                Button {
+                    path.append(ViewBuilderPath.StoryBranchView("groupchat"))
+                } label: {
+                    Image("step2")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(
+                            width: geometry.size.width * 0.4,
+                            height: geometry.size.height * 0.2
+                        )
+                }
+            }
+            .offset(x: geometry.size.width * 0.23)
+            
+        case "note_netotama":
+            VStack(spacing: geometry.size.height * 0.18) {
+                Button {
+                    path.append(ViewBuilderPath.NetomoView)
+                } label: {
+                    Image("step1")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(
+                            width: geometry.size.width * 0.4,
+                            height: geometry.size.height * 0.2
+                        )
+                }
+                
+                Button {
+                    path.append(ViewBuilderPath.StoryBranchView("netomo"))
+                } label: {
+                    Image("step2")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(
+                            width: geometry.size.width * 0.4,
+                            height: geometry.size.height * 0.2
+                        )
+                }
+            }
+            .offset(x: geometry.size.width * 0.23)
+            
+        case "note_potitama":
+            VStack(spacing: geometry.size.height * 0.18) {
+                Button {
+                    path.append(ViewBuilderPath.kakusanView)
+                } label: {
+                    Image("step1")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(
+                            width: geometry.size.width * 0.4,
+                            height: geometry.size.height * 0.2
+                        )
+                }
+                
+                Image("step2")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(
+                        width: geometry.size.width * 0.4,
+                        height: geometry.size.height * 0.2
+                    )
+            }
+            .offset(x: geometry.size.width * 0.23)
+            
+        default:
+            EmptyView()
+        }
     }
 }
