@@ -25,9 +25,9 @@ struct ContentView: View {
     // 全てのシナリオデータを保持する一つの配列
     @State var allBranchings: [Branching] = []
     @State var allScene: Branching = Branching(
-        storyId: "", sceneId: "", sceneType: "", groupName: "",icon: "", characterName: "", leftCharacter: "", rightCharacter: "", text: "",
+        storyId: "", sceneId: "", sceneType: "", groupName: "",icon: "", characterName: "", leftCharacter: "",centerCharacter: "" ,rightCharacter: "", text: "",
         background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
-        choiceText1: "", choiceText2: ""
+        choiceText1: "", choiceText2: "", blackboard: ""
     )
 
     var body: some View {
@@ -66,9 +66,10 @@ struct ContentView: View {
                 netomoDialogues = loadCSV(fileName: "netomo_ver10_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_ver11_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_ver9_0")
-                let netomoBranchings = loadNetomoBranchingCSV(fileName: "netomo_branch_ver20")
-                let groupBranchings = loadNetomoBranchingCSV(fileName: "groupchat_branch_ver9")
-                self.allBranchings = netomoBranchings + groupBranchings
+                let netomoBranchings = loadBranchingCSV(fileName: "netomo_branch_ver23")
+                let groupBranchings = loadBranchingCSV(fileName: "groupchat_branch_ver14")
+                let kakusanBranchings = loadBranchingCSV(fileName: "kakusan_branch_ver4")
+                self.allBranchings = netomoBranchings + groupBranchings + kakusanBranchings
             }
             .navigationDestination(for: ViewBuilderPath.self) { viewID in
                 switch viewID {

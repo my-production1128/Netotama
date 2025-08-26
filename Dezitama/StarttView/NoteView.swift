@@ -48,8 +48,89 @@ struct NoteView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .trailing)
 
+<<<<<<< HEAD
                 // コンテンツエリア
                 contentView(geometry: geometry)
+=======
+            //                 各ストーリーの詳しい説明のページ
+            switch currentImageName {
+            case "note_gurutama":
+                ZStack {
+
+                    Button {
+                        path.append(ViewBuilderPath.GroupchatView)
+                    } label: {
+                        Image("step1")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 250, height: 100)
+                    }
+                    .offset(x: 280, y: -180)
+
+                    Button {
+                        path.append(ViewBuilderPath.StoryBranchView("groupchat"))
+                    } label: {
+                        Image("step2")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 250, height: 100)
+                    }
+                    .offset(x: 280, y: 100)
+                }
+
+            case "note_netotama":
+                ZStack {
+                    //                        ネトモ・ステップ１
+                    Button {
+                        path.append(ViewBuilderPath.NetomoView)
+                    } label: {
+                        Image("step1")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 250, height: 100)
+                    }
+                    .offset(x: 280, y: -180)
+
+//                        ネトモ・ステップ２
+                    Button {
+                        path.append(ViewBuilderPath.StoryBranchView("netomo"))
+                    } label: {
+                        Image("step2")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 250, height: 100)
+                    }
+                    .offset(x: 280, y: 100)
+                }
+
+            case "note_potitama":
+                ZStack {
+
+                    Button {
+                        path.append(ViewBuilderPath.kakusanView)
+                    } label: {
+                        Image("step1")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 250, height: 100)
+                    }
+                    .offset(x: 280, y: -180)
+
+                    Button {
+                        path.append(ViewBuilderPath.StoryBranchView("kakusan"))
+                    } label: {
+                        Image("step2")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 250, height: 100)
+                    }
+                    .offset(x: 280, y: 100)
+                }
+
+                //図鑑
+            default:
+                EmptyView()
+>>>>>>> 38bbd39c6aa92ee036c5a0fe414011163876138c
             }
         }
         .background(
