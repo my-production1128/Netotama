@@ -88,17 +88,17 @@ struct ChatSceneView: View {
                                 }
                                 .position(x: geometry.size.width * 0.645, y: geometry.size.height * 0.805)
                         }
-                        Button {
-                            skipAllChatScenes()
-                        } label: {
-                            Text("飛ばす")
-                                .font(.system(size: 20, weight: .bold, design: .default))
-                                .padding(10)
-                                .background(Color.red)
-                                .foregroundColor(.white)
-                                .clipShape(Capsule())
-                        }
-                        .border(Color.yellow, width: 3)
+//                        Button {
+//                            skipAllChatScenes()
+//                        } label: {
+//                            Text("飛ばす")
+//                                .font(.system(size: 20, weight: .bold, design: .default))
+//                                .padding(10)
+//                                .background(Color.red)
+//                                .foregroundColor(.white)
+//                                .clipShape(Capsule())
+//                        }
+//                        .border(Color.yellow, width: 3)
 
 //                     選択肢の問題を出す
                     if isPopupVisible, let choiceScene = currentChoiceScene {

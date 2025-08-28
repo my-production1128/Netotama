@@ -186,8 +186,8 @@ enum CharacterName: String {
         case .Robbie: return "ロビー"
         case .Robbie_irritaion: return "ロビー"
 
-        default:
-            return ""
+//        default:
+//            return ""
         }
     }
 }
