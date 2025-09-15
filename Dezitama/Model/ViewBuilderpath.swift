@@ -11,7 +11,7 @@ enum ViewBuilderPath: Hashable {
 //    ストーリー選択画面
     case NoteView
 //    分岐ありのストーリー
-    case StoryBranchView(String)
+    case GoodStoryBranchView(String)
 
     case GroupchatView
     case kakusanView
