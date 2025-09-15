@@ -33,16 +33,16 @@ struct isChoiceView: View {
                         handleChoice(.choice1)
                     }){
                         RubyLabelRepresentable(
-                            attributedText: allScene.choiceText1
+                            attributedText: allScene.choice1Text
                                 .replacingOccurrences(of: "<br>", with: "\n")
                                 .createRuby(font: .customFont(ofSize: 30), color: .black),
-                            font: .customFont(ofSize: 30), // ★ .systemFontから修正
+                            font: .customFont(ofSize: 30),
                             textColor: .white,
                             textAlignment: .left
                         )
-                        .fixedSize(horizontal: false, vertical: true) // ★ 追加: テキストの高さに合わせる
-                        .frame(maxWidth: geometry.size.width * 0.8) // ★ 修正: 幅を画面の80%に設定
-                        .padding(.horizontal, 20) // ★ パディングを追加
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: geometry.size.width * 0.8)
+                        .padding(.horizontal, 20)
                         .foregroundColor(.white)
                     }
                     .buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice1))
@@ -52,16 +52,16 @@ struct isChoiceView: View {
                         handleChoice(.choice2)
                     }) {
                         RubyLabelRepresentable(
-                            attributedText: allScene.choiceText2
+                            attributedText: allScene.choice2Text
                                 .replacingOccurrences(of: "<br>", with: "\n")
                                 .createRuby(font: .customFont(ofSize: 30), color: .black),
-                            font: .customFont(ofSize: 30), // ★ .systemFontから修正
+                            font: .customFont(ofSize: 30),
                             textColor: .white,
                             textAlignment: .left
                         )
-                        .fixedSize(horizontal: false, vertical: true) // ★ 追加: テキストの高さに合わせる
-                        .frame(maxWidth: geometry.size.width * 0.8) // ★ 修正: 幅を画面の80%に設定
-                        .padding(.horizontal, 20) // ★ パディングを追加
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: geometry.size.width * 0.8)
+                        .padding(.horizontal, 20)
                         .foregroundColor(.white)
                     }
                     .buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice2))
@@ -71,12 +71,11 @@ struct isChoiceView: View {
                 if explanation {
                     ZStack {
                         VStack {
-                            Image(allScene.blackboard)
+                            Image("")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 850, height: 850)
                         }
-                        //                        .border(Color.black, width: 3)
 
                         Button(action: {
                             explanation = false
@@ -105,7 +104,7 @@ struct isChoiceView: View {
     private func handleChoice(_ choice: Choice) {
         selectedChoice = choice
         // 正解の文字列と比較
-        let selectedText = (choice == .choice1) ? allScene.choiceText1 : allScene.choiceText2
+        let selectedText = (choice == .choice1) ? allScene.choice1Text : allScene.choice2Text
         if selectedText == allScene.text {
             showCorrectMark = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {

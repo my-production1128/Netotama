@@ -68,7 +68,7 @@ struct NoteView: View {
                         .offset(x: 280, y: -180)
 
                         Button {
-                            path.append(ViewBuilderPath.StoryBranchView("groupchat"))
+                            path.append(ViewBuilderPath.GoodStoryBranchView("groupchat"))
                         } label: {
                             Image("step2")
                                 .resizable()
@@ -93,7 +93,7 @@ struct NoteView: View {
 
                         //                        ネトモ・ステップ２
                         Button {
-                            path.append(ViewBuilderPath.StoryBranchView("netomo"))
+                            path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story1"))
                         } label: {
                             Image("step2")
                                 .resizable()
@@ -117,7 +117,7 @@ struct NoteView: View {
                         .offset(x: 280, y: -180)
 
                         Button {
-                            path.append(ViewBuilderPath.StoryBranchView("kakusan"))
+                            path.append(ViewBuilderPath.GoodStoryBranchView("kakusan"))
                         } label: {
                             Image("step2")
                                 .resizable()

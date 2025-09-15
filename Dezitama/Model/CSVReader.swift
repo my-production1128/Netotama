@@ -52,7 +52,7 @@ func loadCSV(fileName: String) -> [Dialogue] {
 }
 
 
-// CSVReader.swift
+
 func loadBranchingCSV(fileName: String) -> [Branching] {
     var result: [Branching] = []
 
@@ -69,13 +69,18 @@ func loadBranchingCSV(fileName: String) -> [Branching] {
             if i == 0 { continue }
             let cols = row.components(separatedBy: ",")
 
-            guard cols.count >= 17 else {
-                print("❌ 列が足りない line \(i): \(cols)")
+            // CSVのヘッダーを基に正しい列数を取得
+            let headers = rows[0].components(separatedBy: ",")
+            let columnCount = headers.count
+
+            guard cols.count >= columnCount else {
+                print("❌ 列が足りません line \(i): \(cols)")
                 continue
             }
 
+            // isChoiceの読み込み（インデックス11）
             let isChoice: Bool? = {
-                let raw = cols[13].trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+                let raw = cols[11].trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
                 if raw == "true" || raw == "1" {
                     return true
                 } else if raw == "false" || raw == "0" {
@@ -84,6 +89,11 @@ func loadBranchingCSV(fileName: String) -> [Branching] {
                     return nil
                 }
             }()
+
+            // Percentageの読み込みとDouble型への変換
+            let choice1Percentage = Double(cols[14])
+            let choice2Percentage = Double(cols[18])
+            let choice3Percentage = Double(cols[22])
 
             let b = Branching(
                 storyId: cols[0],
@@ -96,13 +106,22 @@ func loadBranchingCSV(fileName: String) -> [Branching] {
                 centerCharacter: cols[7],
                 rightCharacter: cols[8],
                 text: cols[9],
-                background: cols[10],
-                speechBubble: cols[11],
-                nextSceneId: cols[12],
+                nextSceneId: cols[10],
                 isChoice: isChoice,
-                choiceText1: cols[14],
-                choiceText2: cols[15],
-                blackboard: cols[16]
+                choice1Text: cols[12],
+                choice1Type: cols[13],
+                choice1Percentage: choice1Percentage,
+                choice1NextSceneId: cols[15],
+                choice2Text: cols[16],
+                choice2Type: cols[17],
+                choice2Percentage: choice2Percentage,
+                choice2NextSceneId: cols[19],
+                choice3Text: cols[20],
+                choice3Type: cols[21],
+                choice3Percentage: choice3Percentage,
+                choice3NextSceneId: cols[23],
+                bgm: cols[24],
+                background: cols[25]
             )
 
             result.append(b)

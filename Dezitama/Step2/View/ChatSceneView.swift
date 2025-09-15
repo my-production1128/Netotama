@@ -30,6 +30,9 @@ struct ChatSceneView: View {
     @State private var offsetY: CGFloat = 0.0
     @State var currentChoiceScene: Branching? = nil
 
+//    選択肢なしの主人公のセリフ用関数
+    @State private var noChoiceMessage: Bool = false
+
 
     @State private var isLarge: Bool = false
     @State private var proxy: ScrollViewProxy?
@@ -88,17 +91,18 @@ struct ChatSceneView: View {
                                 }
                                 .position(x: geometry.size.width * 0.645, y: geometry.size.height * 0.805)
                         }
-//                        Button {
-//                            skipAllChatScenes()
-//                        } label: {
-//                            Text("飛ばす")
-//                                .font(.system(size: 20, weight: .bold, design: .default))
-//                                .padding(10)
-//                                .background(Color.red)
-//                                .foregroundColor(.white)
-//                                .clipShape(Capsule())
-//                        }
-//                        .border(Color.yellow, width: 3)
+
+                        Button {
+                            skipAllChatScenes()
+                        } label: {
+                            Text("飛ばす")
+                                .font(.system(size: 20, weight: .bold, design: .default))
+                                .padding(10)
+                                .background(Color.red)
+                                .foregroundColor(.white)
+                                .clipShape(Capsule())
+                        }
+                        .border(Color.yellow, width: 3)
 
 //                     選択肢の問題を出す
                     if isPopupVisible, let choiceScene = currentChoiceScene {
@@ -120,15 +124,14 @@ struct ChatSceneView: View {
                     if isTyping || isPopupVisible {
                         return
                     }
-                    
+
                     guard let last = chatMessage.last else { return }
                     // 最後のメッセージが相手のセリフであり、かつアニメーションが完了していない場合はタップを無効にする
                     if last.scene.characterName != last.scene.rightCharacter && last.isAnimating {
                         return
                     }
-
-                    guard let last = chatMessage.last else { return }
                     let nextId = last.scene.nextSceneId
+
                     guard let next = branchingMap[nextId] else {
                         onNextScene(nextId)
                         return
@@ -173,9 +176,7 @@ struct ChatSceneView: View {
 
                         // 最初のセリフがネトモなら自動で続ける
                         if first.characterName != first.rightCharacter {
-//                            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
                                 proceedToNextIfNeeded()
-//                            }
                         }
                     }
                 }
@@ -359,13 +360,10 @@ struct ChatSceneView: View {
         print("次のシーンID: \(nextId)")
 //        ここ
 
-
         if isTyping || isPopupVisible {
             return
         }
-//        let last = chatMessage.last
 
-//        let nextId = last.scene.nextSceneId
         guard let next = branchingMap[nextId] else { return }
 
         if next.sceneType != "chat" {

@@ -19,15 +19,37 @@ struct ContentView: View {
 
 
     @State private var path = NavigationPath()
-//    @State private var isTextVisible: Bool = false// テキストの点滅
 
 
     // 全てのシナリオデータを保持する一つの配列
     @State var allBranchings: [Branching] = []
     @State var allScene: Branching = Branching(
-        storyId: "", sceneId: "", sceneType: "", groupName: "",icon: "", characterName: "", leftCharacter: "",centerCharacter: "" ,rightCharacter: "", text: "",
-        background: "",speechBubble: "", nextSceneId: "", isChoice: nil,
-        choiceText1: "", choiceText2: "", blackboard: ""
+        storyId: "",
+        sceneId: "",
+        sceneType: "",
+        groupName: "",
+        icon: "",
+        characterName: "",
+        leftCharacter: "",
+        centerCharacter: "",
+        rightCharacter: "",
+        text: "",
+        nextSceneId: "",
+        isChoice: nil,
+        choice1Text: "",
+        choice1Type: "",
+        choice1Percentage: nil,
+        choice1NextSceneId: "",
+        choice2Text: "",
+        choice2Type: "",
+        choice2Percentage: nil,
+        choice2NextSceneId: "",
+        choice3Text: "",
+        choice3Type: "",
+        choice3Percentage: nil,
+        choice3NextSceneId: "",
+        bgm: "",
+        background: ""
     )
 
     var body: some View {
@@ -66,10 +88,11 @@ struct ContentView: View {
                 netomoDialogues = loadCSV(fileName: "netomo_ver10_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_ver11_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_ver9_0")
-                let netomoBranchings = loadBranchingCSV(fileName: "netomo_branch_ver23")
-                let groupBranchings = loadBranchingCSV(fileName: "groupchat_branch_ver14")
-                let kakusanBranchings = loadBranchingCSV(fileName: "kakusan_branch_ver4")
-                self.allBranchings = netomoBranchings + groupBranchings + kakusanBranchings
+                let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver1")
+//                let netomoBranchings = loadBranchingCSV(fileName: "netomo_branch_ver23")
+//                let groupBranchings = loadBranchingCSV(fileName: "groupchat_branch_ver14")
+//                let kakusanBranchings = loadBranchingCSV(fileName: "kakusan_branch_ver4")
+                self.allBranchings = goodNetomoStory1
             }
             .navigationDestination(for: ViewBuilderPath.self) { viewID in
                 switch viewID {
@@ -80,7 +103,7 @@ struct ContentView: View {
                     NoteView(path: $path)
                         .navigationBarBackButtonHidden(true)
 
-                case .StoryBranchView(let StoryId):
+                case .GoodStoryBranchView(let StoryId):
                     StoryBranchView(path: $path,
                                     allBranchings: $allBranchings,
                                     allScene: $allScene,

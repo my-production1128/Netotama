@@ -39,13 +39,22 @@ struct Branching: Identifiable {
     let centerCharacter: String
     let rightCharacter: String
     let text: String
-    let background: String
-    let speechBubble: String
     let nextSceneId: String
     let isChoice: Bool?
-    let choiceText1: String
-    let choiceText2: String
-    let blackboard: String
+    let choice1Text: String
+    let choice1Type: String
+    let choice1Percentage: Double?
+    let choice1NextSceneId: String
+    let choice2Text: String
+    let choice2Type: String
+    let choice2Percentage: Double?
+    let choice2NextSceneId: String
+    let choice3Text: String
+    let choice3Type: String
+    let choice3Percentage: Double?
+    let choice3NextSceneId: String
+    let bgm: String
+    let background: String
 }
 
 

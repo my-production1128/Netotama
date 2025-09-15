@@ -171,7 +171,7 @@ struct StoryBranchView: View {
 
                                 Group{
                                     //                                     吹き出し背景
-                                    Image(current.speechBubble)
+                                    Image("")
                                         .resizable()
                                         .frame(width: 950, height: 250)
                                         .offset(x:-13, y: 0)
