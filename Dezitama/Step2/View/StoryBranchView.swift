@@ -171,7 +171,7 @@ struct StoryBranchView: View {
 
                                 Group{
                                     //                                     吹き出し背景
-                                    Image("")
+                                    Image("speech_bubble_beige")
                                         .resizable()
                                         .frame(width: 950, height: 250)
                                         .offset(x:-13, y: 0)
@@ -261,8 +261,9 @@ struct StoryBranchView: View {
                 }
 
                 HStack {
-                    Spacer()
+//                    Spacer()
                     VStack {
+//                        ホームボタン
                         Button {
                             path.removeLast()
                         }label: {
@@ -272,41 +273,22 @@ struct StoryBranchView: View {
                                 .frame(width: 100, height: 100)
                                 .padding(.top, 0)
                         }
-                        Spacer()
-                    }
-                }
-
-                if isPopupVisible, let choiceScene = currentChoiceScene {
-                    let _ = print("isChoiceViewを呼び出します。isPopupVisible: \(isPopupVisible), choiceSceneId: \(choiceScene.sceneId)")
-                    isChoiceView(
-                        isPopupVisible: $isPopupVisible,
-                        allScene: .constant(choiceScene),
-                        onCorrectChoice: {
-                            // 正解した後の次のシーンに遷移するロジック
-                            self.currentSceneId = choiceScene.nextSceneId
-                            self.currentChoiceScene = nil // ポップアップを非表示にした後、状態をリセット
-                        }
-                    )
-                }
-
-                //                会話の見返しボタン
-                // ★ 履歴ボタンとログビューの追加
-                VStack {
-                    HStack {
-                        Button(action: {
-                            isChatLogVisible.toggle()
-                        }) {
-                            Image("chat") // chatボタンを流用
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 60, height: 60)
-                                .padding(20)
-                        }
-                        Spacer()
+//                        会話見返し機能
+                            Button(action: {
+                                isChatLogVisible.toggle()
+                            }) {
+                                Image("chat") // chatボタンを流用
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 60, height: 60)
+                                    .padding(20)
+                            }
+                            .zIndex(0)
+                            Spacer()
                     }
                     Spacer()
+//                    ここにプログレスバー
                 }
-                .zIndex(0)
 
                 if isChatLogVisible {
                     GeometryReader { innerGeometry in
@@ -393,6 +375,52 @@ struct StoryBranchView: View {
                         }
                     }
                     .zIndex(1) // 履歴ビュー全体をボタンの背後に配置
+                }
+
+
+                if isPopupVisible, let choiceScene = currentChoiceScene {
+                    isChoiceView(
+                        isPopupVisible: $isPopupVisible,
+                        allScene: .constant(choiceScene),
+                        onChoiceSelected: { selectedText, nextId in
+                            // ユーザーが選択したテキストをチャット履歴に追加
+                            let userChoiceScene = Branching(
+                                storyId: choiceScene.storyId,
+                                sceneId: "user_\(UUID().uuidString)", // ユニークなIDを生成
+                                sceneType: "chat",
+                                groupName: choiceScene.groupName, // 適切な値を設定
+                                icon: choiceScene.icon, // 主人公のアイコン
+                                characterName: choiceScene.rightCharacter, // 主人公の名前
+                                leftCharacter: "",
+                                centerCharacter: "",
+                                rightCharacter: choiceScene.rightCharacter,
+                                text: selectedText, // 選択されたテキスト
+                                nextSceneId: nextId,
+                                isChoice: false, // 選択肢としては扱わない
+                                choice1Text: "",
+                                choice1Type: "",
+                                choice1Percentage: nil,
+                                choice1NextSceneId: "",
+                                choice2Text: "",
+                                choice2Type: "",
+                                choice2Percentage: nil,
+                                choice2NextSceneId: "",
+                                choice3Text: "",
+                                choice3Type: "",
+                                choice3Percentage: nil,
+                                choice3NextSceneId: "",
+                                bgm: "",
+                                background: ""
+                            )
+
+                            // 新しいメッセージとして会話履歴に追加し、画面をスクロール
+//                            chatMessage.append(ChatMessage(scene: userChoiceScene))
+//                            conversationHistory.append(userChoiceScene)
+
+                            // 次のシーンへ遷移
+//                            onNextScene(nextId)
+                        }
+                    )
                 }
 
                 if isEndSceneReady {
