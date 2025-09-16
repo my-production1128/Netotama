@@ -109,10 +109,43 @@ struct ChatSceneView: View {
                         isChoiceView(
                             isPopupVisible: $isPopupVisible,
                             allScene: .constant(choiceScene),
-                            onCorrectChoice: {
-                                let newMsg = ChatMessage(scene: choiceScene, isAnimating: false, showText: true)
-                                chatMessage.append(newMsg)
-                                currentChoiceScene = nil
+                            onChoiceSelected: { selectedText, nextId in
+                                // ユーザーが選択したテキストをチャット履歴に追加
+                                let userChoiceScene = Branching(
+                                    storyId: choiceScene.storyId,
+                                    sceneId: "user_\(UUID().uuidString)", // ユニークなIDを生成
+                                    sceneType: "chat",
+                                    groupName: choiceScene.groupName, // 適切な値を設定
+                                    icon: choiceScene.icon, // 主人公のアイコン
+                                    characterName: choiceScene.rightCharacter, // 主人公の名前
+                                    leftCharacter: "",
+                                    centerCharacter: "",
+                                    rightCharacter: choiceScene.rightCharacter,
+                                    text: selectedText, // 選択されたテキスト
+                                    nextSceneId: nextId,
+                                    isChoice: false, // 選択肢としては扱わない
+                                    choice1Text: "",
+                                    choice1Type: "",
+                                    choice1Percentage: nil,
+                                    choice1NextSceneId: "",
+                                    choice2Text: "",
+                                    choice2Type: "",
+                                    choice2Percentage: nil,
+                                    choice2NextSceneId: "",
+                                    choice3Text: "",
+                                    choice3Type: "",
+                                    choice3Percentage: nil,
+                                    choice3NextSceneId: "",
+                                    bgm: "",
+                                    background: ""
+                                )
+
+                                // 新しいメッセージとして会話履歴に追加し、画面をスクロール
+                                chatMessage.append(ChatMessage(scene: userChoiceScene))
+                                conversationHistory.append(userChoiceScene)
+
+                                // 次のシーンへ遷移
+                                onNextScene(nextId)
                             }
                         )
                     }
@@ -212,13 +245,6 @@ struct ChatSceneView: View {
         }
     }
 
-
-//与えられたチャットメッセージに応じて、
-//ユーザー発言 or 相手発言の表示ビューを構築する。
-//ユーザーの発言：右寄せで即時表示（青背景）
-//相手の発言：左寄せでドットアニメーションのあとにテキスト表示（緑背景）
-//アニメーションが必要な場合は `typingAnimationView()` を表示し、
-//指定時間後にテキストへ切り替える。
 
     @ViewBuilder
     func messageRow(for message: ChatMessage, proxy: ScrollViewProxy) -> some View {
@@ -373,6 +399,9 @@ struct ChatSceneView: View {
 
         // 選択肢の直前なら止まる
         if next.isChoice ?? false {
+            // 選択肢のシーンの場合は、自動遷移を停止し、親ビューに通知する
+            isPopupVisible = true
+            currentChoiceScene = next // 選択肢のシーンデータを保持
             return
         }
 
