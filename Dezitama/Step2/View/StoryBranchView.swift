@@ -261,7 +261,6 @@ struct StoryBranchView: View {
                 }
 
                 HStack {
-//                    Spacer()
                     VStack {
 //                        ホームボタン
                         Button {
@@ -285,9 +284,15 @@ struct StoryBranchView: View {
                             }
                             .zIndex(0)
                             Spacer()
+
                     }
                     Spacer()
-//                    ここにプログレスバー
+                    VStack {
+                        Gauge(width: geometry.size.width * 0.3, height: 100)
+                            .padding(.trailing,2)
+                        Spacer()
+
+                    }
                 }
 
                 if isChatLogVisible {
