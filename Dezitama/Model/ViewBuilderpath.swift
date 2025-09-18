@@ -9,7 +9,7 @@ enum ViewBuilderPath: Hashable {
 //    最初の画面
     case ContentView
 //    ストーリー選択画面
-    case NoteView
+    case MapView
 //    分岐ありのストーリー
     case GoodStoryBranchView(String)
 
