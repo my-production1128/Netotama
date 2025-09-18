@@ -19,7 +19,7 @@ struct ContentView: View {
 
 
     @State private var path = NavigationPath()
-
+    @StateObject private var gameManager = GameManager()
 
     // 全てのシナリオデータを保持する一つの配列
     @State var allBranchings: [Branching] = []
@@ -51,7 +51,6 @@ struct ContentView: View {
         bgm: "",
         background: ""
     )
-
     var body: some View {
         NavigationStack(path: $path) {
                 ZStack{
@@ -81,7 +80,7 @@ struct ContentView: View {
                     }
                 }
                 .onTapGesture {
-                    path.append(ViewBuilderPath.MapView)
+                    path.append(ViewBuilderPath.ChoiceView)
                 }
 //            csvファイルの読み込み
             .onAppear {
@@ -99,8 +98,12 @@ struct ContentView: View {
                 case .ContentView:
                     ContentView()
 
-                case .MapView:
-                    MapView(path: $path)
+                case .MapViewBad:
+                    MapView(path: $path, mode: .bad)
+                        .navigationBarBackButtonHidden(true)
+
+                case .MapViewHappy:
+                    MapView(path: $path, mode: .happy)
                         .navigationBarBackButtonHidden(true)
 
                 case .GoodStoryBranchView(let StoryId):
@@ -110,7 +113,7 @@ struct ContentView: View {
                                     StoryId: StoryId
                     )
                     .navigationBarBackButtonHidden(true)
-
+                    
                 case .GroupchatView:
                     GroupchatView(path: $path, groupchatDialogues: $groupchatDialogues)
                         .navigationBarBackButtonHidden(true)
@@ -122,6 +125,10 @@ struct ContentView: View {
                 case .NetomoView:
                     NetomoView(path: $path, netomoDialogues: $netomoDialogues)
                         .navigationBarBackButtonHidden(true)
+                    
+                case .ChoiceView:
+                    ChoiceView(path: $path)
+                        .environmentObject(gameManager)
 
                 case .Credit:
                     Credit()
