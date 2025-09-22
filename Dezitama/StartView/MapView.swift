@@ -1,98 +1,11 @@
+//
+//  MapView.swift
+//  Dezitama
+//
+//  Created by 末廣月渚 on 2025/06/27.
+//
+
 import SwiftUI
-
-// MARK: - Game Mode
-enum GameMode {
-    case happy
-    case bad
-}
-
-// MARK: - Data Models
-struct Stage: Identifiable {
-    let id = UUID()
-    let number: Int
-    var score: Int
-    var isUnlocked: Bool
-}
-
-// MARK: - Game Logic
-class GameManager: ObservableObject {
-    @Published var stages: [Stage] = []
-    
-    //これデバックでtrueにしてる
-    @Published var isHappyUnlocked: Bool = true
-    
-    init() {
-        initializeStages()
-    }
-    
-    private func initializeStages() {
-        stages = Array(1...9).map { stageNumber in
-            Stage(
-                number: stageNumber,
-                score: 0,
-                isUnlocked: stageNumber == 1
-            )
-        }
-    }
-    
-    func unlockNextStage(completedStageNumber: Int, earnedScore: Int, mode: GameMode) {
-        // 現在のステージ更新
-        if let index = stages.firstIndex(where: { $0.number == completedStageNumber }) {
-            stages[index].score = max(stages[index].score, earnedScore)
-        }
-        
-        // 次のステージ解放
-        let nextStageNumber = completedStageNumber + 1
-        if nextStageNumber <= 9,
-           let nextIndex = stages.firstIndex(where: { $0.number == nextStageNumber }) {
-            stages[nextIndex].isUnlocked = true
-        }
-        
-        // ここもデバック用だからあとでコメントアウト外す
-//        if mode == .bad && completedStageNumber == 3 {
-//            isHappyUnlocked = true
-//        }
-    }
-    
-    func handleStageTap(_ stage: Stage, path: inout NavigationPath, mode: GameMode) {
-        if stage.isUnlocked {
-            print("Stage \(stage.number) selected in \(mode) mode")
-            
-            switch mode {
-            case .bad:
-                switch stage.number {
-                case 1:
-                    path.append(ViewBuilderPath.GroupchatView)
-//                case 2:
-//
-//                case 3:
-//
-                default:
-                    break
-                }
-              
-                
-            //ここに書いてね！遷移先
-            case .happy:
-                switch stage.number {
-                case 1:
-                    path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story1"))
-//                case 2:
-//                    path.append(ViewBuilderPath.HappyStage2View)
-                default:
-                    break
-                }
-            }
-            
-        } else {
-            print("Stage \(stage.number) is locked")
-            // ロック中のときはフィードバック
-            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
-            impactFeedback.impactOccurred()
-        }
-    }
-
-}
 
 // MARK: - Stage Button
 struct StageButton: View {
@@ -108,15 +21,20 @@ struct StageButton: View {
                 .frame(width: 100, height: 120)
         }
         .buttonStyle(PlainButtonStyle())
-        .grayscale(stage.isUnlocked ? 0 : 0.8)
     }
     
     private var buttonImageName: String {
+        // 未解除の時
+        if !stage.isUnlocked {
+            return "botann_unlocked_\(stage.id)"
+        }
+        
+        let clampedScore = min(max(stage.score, 0), 3)
         switch mode {
         case .happy:
-            return "botann\(stage.number)_star\(stage.score)"
+            return "botann\(stage.id)_star\(clampedScore)"
         case .bad:
-            return "botann\(stage.number)_thunder\(stage.score)"
+            return "botann\(stage.id)_thunder\(clampedScore)"
         }
     }
 }
@@ -124,8 +42,34 @@ struct StageButton: View {
 // MARK: - Map View
 struct MapView: View {
     @Binding var path: NavigationPath
-    @StateObject private var gameManager = GameManager()
-    let mode: GameMode
+    @EnvironmentObject private var gameManager: GameManager
+    @State private var currentMode: GameMode
+    
+    init(path: Binding<NavigationPath>, mode: GameMode) {
+        self._path = path
+        self._currentMode = State(initialValue: mode)
+        print("MapView init: mode=\(mode)")  // ← これがログに出ていない
+    }
+    
+//    private var currentTotalScore: Int {
+//        switch currentMode {
+//        case .happy:
+//            return gameManager.totalStars
+//        case .bad:
+//            return gameManager.totalThunders
+//        }
+//    }
+//    
+    
+    // 現在のモードに応じたステージ配列を取得
+    private var currentStages: [Stage] {
+        switch currentMode {
+        case .happy:
+            return gameManager.happyStages
+        case .bad:
+            return gameManager.badStages
+        }
+    }
     
     private let stagePositions: [CGPoint] = [
         CGPoint(x: 0.173, y: 0.68),  // Stage 1
@@ -143,33 +87,87 @@ struct MapView: View {
         GeometryReader { geometry in
             ZStack {
                 // 背景切り替え
-                Image(mode == .happy ? "Good_background" : "Bad_background")
+                Image(currentMode == .happy ? "Good_background" : "Bad_background")
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
                 
                 // ステージボタンを配置
-                ForEach(gameManager.stages.indices, id: \.self) { index in
-                    let stage = gameManager.stages[index]
-                    let position = stagePositions[index]
-                    
-                    StageButton(stage: stage, mode: mode) {
-                        gameManager.handleStageTap(stage, path: &path, mode: mode)
+                ForEach(currentStages.indices, id: \.self) { index in
+                    // 安全性チェック
+                    if index < stagePositions.count {
+                        let stage = currentStages[index]
+                        let position = stagePositions[index]
+                        
+                        StageButton(stage: stage, mode: currentMode) {
+                            let unlocked = gameManager.handleStageTap(stage, path: &path, mode: currentMode)
+                            
+                            if !unlocked {
+                                // 未解除ならフィードバック
+                                let impact = UIImpactFeedbackGenerator(style: .light)
+                                impact.impactOccurred()
+                            }
+                        }
+                        .position(
+                            x: geometry.size.width * position.x,
+                            y: geometry.size.height * position.y
+                        )
                     }
-                    .position(
-                        x: geometry.size.width * position.x,
-                        y: geometry.size.height * position.y
-                    )
                 }
+                
+                // 戻るボタン
+                VStack {
+                    HStack {
+                        Button {
+                            if !path.isEmpty {
+                                path.removeLast()
+                            }
+                        } label: {
+                            Image("back_iland")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 100, height: 100)
+                        }
+                        Spacer()
+                        
+//                        ScoreDisplayView(mode: currentMode, totalScore: currentTotalScore)
+                    }
+                    Spacer()
+                }
+                .padding()
+                
+                // モード切り替えボタン
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                currentMode = currentMode == .happy ? .bad : .happy
+                            }
+                        }) {
+                            Image("turn_iland")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 100, height: 100)
+                        }
+                    }
+                    .padding()
+                }
+                .padding()
             }
         }
         .ignoresSafeArea()
+        .onAppear {
+            print("MapView appeared: currentMode=\(currentMode)")
+            print("GameManager happyStages count: \(gameManager.happyStages.count)")
+            print("GameManager badStages count: \(gameManager.badStages.count)")
+        }
     }
 }
 
 // MARK: - Preview
 #Preview {
-    NavigationStack {
-        MapView(path: .constant(NavigationPath()), mode: .happy)
-    }
+    MapView(path: .constant(NavigationPath()), mode: .happy)
+        .environmentObject(GameManager.shared)
 }

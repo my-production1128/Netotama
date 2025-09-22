@@ -14,6 +14,10 @@ struct ChoiceView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
+                Image("choice_background")
+                    .resizable()
+                    .ignoresSafeArea()
+                
                 VStack {
                     Button {
                         path.append(ViewBuilderPath.MapViewBad)
@@ -21,33 +25,29 @@ struct ChoiceView: View {
                         Image("Bad_Button")
                             .resizable()
                             .scaledToFit()
-                            .frame(height: geometry.size.height * 0.4)
+                            .frame(height: geometry.size.height * 0.35)
                             .position(
                                 x: geometry.size.width * 0.5,
-                                y: geometry.size.height * 0.3
+                                y: geometry.size.height * 0.35
                             )
                     }
                     
-                    // Happy ボタン（Bad Stage3クリア後に解放）
                     Button {
-//                        if gameManager.isHappyUnlocked {
                             path.append(ViewBuilderPath.MapViewHappy)
-//                        }
                     } label: {
                         Image("Good_Button")
                             .resizable()
                             .scaledToFit()
-                            .frame(height: geometry.size.height * 0.45)
+                            .frame(height: geometry.size.height * 0.4)
                             .position(
                                 x: geometry.size.width * 0.5,
-                                y: geometry.size.height * 0.2
+                                y: geometry.size.height * 0.25
                             )
-//                            .grayscale(gameManager.isHappyUnlocked ? 0 : 0.9) // ロック時グレー
-//                            .opacity(gameManager.isHappyUnlocked ? 1.0 : 0.5) // 半透明
                     }
-                    .disabled(!gameManager.isHappyUnlocked)
+//                    .disabled(!gameManager.isHappyUnlocked)
                 }
             }
         }
     }
 }
+

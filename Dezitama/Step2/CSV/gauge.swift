@@ -51,7 +51,7 @@ struct Gauge: View {
 //                            .frame(width: geometry.size.width * 0.23,height: geometry.size.height * 0.14)
 //                            .offset(x: 84, y: 26.5)
                     }
-                    .offset(x:22,y: 10)
+                    .offset(x:22,y: 7)
                 }
             }
 //        }

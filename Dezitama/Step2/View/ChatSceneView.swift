@@ -12,6 +12,8 @@ struct ChatMessage: Identifiable {
     let scene: Branching
     var isAnimating: Bool = true
     var showText: Bool = false
+    var imageIsVisible: Bool = false
+    var textIsVisible: Bool = false
 }
 
 struct ChatSceneView: View {
@@ -145,7 +147,7 @@ struct ChatSceneView: View {
                                 conversationHistory.append(userChoiceScene)
 
                                 // 次のシーンへ遷移
-                                onNextScene(nextId)
+                                proceedToNextIfNeeded()
                             }
                         )
                     }
@@ -203,13 +205,17 @@ struct ChatSceneView: View {
 //                ↑ここまでonTapGestureの処理
 
                 .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2)  {
                     if let first = branchingMap[initialSceneId] {
-                        chatMessage = [ChatMessage(scene: first)]
+                        chatMessage = [ChatMessage(scene: first, isAnimating: false, showText: true)]
                         allScene = first
 
-                        // 最初のセリフがネトモなら自動で続ける
-                        if first.characterName != first.rightCharacter {
+                        // 最初のセリフが相手のセリフなら、自動で次のセリフを送信
+//                        if first.characterName != first.rightCharacter {
+                            // 0.5秒の遅延を設定して、次のセリフを自動で送る
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 proceedToNextIfNeeded()
+//                            }
                         }
                     }
                 }
@@ -258,11 +264,15 @@ struct ChatSceneView: View {
                         Image(scene.icon)
                             .resizable()
                             .frame(width: 48, height: 48)
+                            .scaleEffect(message.imageIsVisible ? 1.0 : 0.0, anchor: .bottom)
+                            .animation(.spring(response: 0.4, dampingFraction: 0.6), value: message.imageIsVisible)
 
                         VStack(alignment: .leading, spacing: 4) {
                             Text(CharacterName(rawValue: scene.characterName)?.displayName ?? scene.characterName)
                                 .font(.custom("MPLUS1-Regular", size: 18))
                                 .foregroundColor(Color.gray)
+                                .scaleEffect(message.imageIsVisible ? 1.0 : 0.0, anchor: .bottomLeading)
+                                .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(0.05), value: message.imageIsVisible)
 
                             if message.isAnimating {
                                 typingAnimationView()
@@ -277,7 +287,7 @@ struct ChatSceneView: View {
                                             }
                                         }
 
-                                        // 最初のアニメーション
+//                                         最初のアニメーション
                                         animationTrigger.toggle()
                                         // アニメーション時間後に切り替え
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
@@ -307,12 +317,29 @@ struct ChatSceneView: View {
                                 .background(Color.white.opacity(1.0))
                                 .cornerRadius(16)
                                 .frame(maxWidth: 350, alignment: .leading)
+                                .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .leading)
+                                .opacity(message.textIsVisible ? 1.0 : 0.0)
+                                .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
                                 .onAppear {
                                     DispatchQueue.main.async {
                                         withAnimation {
                                             proxy.scrollTo(message.id, anchor: .bottom)
                                         }
                                     }
+//                                    imageIsVisible = true
+
+                                    withAnimation {
+                                        if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                            chatMessage[index].imageIsVisible = true
+                                        }
+                                    }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                                                withAnimation {
+                                                    if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                                        chatMessage[index].textIsVisible = true
+                                                    }
+                                                }
+                                            }
                                 }
                             }
                         }
@@ -326,6 +353,8 @@ struct ChatSceneView: View {
                         Text(CharacterName(rawValue: scene.characterName)?.displayName ?? scene.characterName)
                             .font(.custom("MPLUS1-Regular", size: 18))
                             .foregroundColor(Color.gray)
+                            .scaleEffect(message.imageIsVisible ? 1.0 : 0.0, anchor: .bottomTrailing)
+                            .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(0.05), value: message.imageIsVisible)
 
 //                        ルビ付きでテキストを表示
                         RubyLabelRepresentable(
@@ -341,10 +370,35 @@ struct ChatSceneView: View {
                         .background(Color.white.opacity(1.0))
                         .cornerRadius(16)
                         .frame(maxWidth: 450, alignment: .trailing)
+                        .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .trailing)
+                        .opacity(message.textIsVisible ? 1.0 : 0.0)
+                        .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
+                        .onAppear {
+                            DispatchQueue.main.async {
+                                withAnimation {
+                                    proxy.scrollTo(message.id, anchor: .bottom)
+                                }
+                            }
+                            withAnimation {
+                                if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                    chatMessage[index].imageIsVisible = true
+                                }
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                                        withAnimation {
+                                            if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                                chatMessage[index].textIsVisible = true
+                                            }
+                                        }
+                                    }
+                        }
+
                     }
                     Image(scene.icon)
                         .resizable()
                         .frame(width: 48, height: 48)
+                        .scaleEffect(message.imageIsVisible ? 1.0 : 0.0, anchor: .bottom)
+                        .animation(.spring(response: 0.4, dampingFraction: 0.6), value: message.imageIsVisible)
                 }.frame(maxWidth: .infinity, alignment: .leading)
             }
             if scene.characterName != scene.rightCharacter { Spacer() }
@@ -410,18 +464,19 @@ struct ChatSceneView: View {
             return
         }
 
-        // 直前のメッセージが主人公のセリフか、相手のセリフかを判定
-        let isLastMessageFromProtagonist = last.scene.characterName == last.scene.rightCharacter
-
-        // 遅延時間を設定
-        let delay: TimeInterval = isLastMessageFromProtagonist ? 0.7 : 4.0
+//        // 直前のメッセージが主人公のセリフか、相手のセリフかを判定
+//        let isLastMessageFromProtagonist = last.scene.characterName == last.scene.rightCharacter
+//
+//        // 遅延時間を設定
+//        let delay: TimeInterval = isLastMessageFromProtagonist ? 1.0 : 4.0
 
         // 相手のセリフは自動で進める
         isTyping = true
         pendingMessage = next
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             if let msg = pendingMessage {
-                let newMsg = ChatMessage(scene: msg)
+                // 新しいメッセージをisAnimating: false, showText: trueとして追加
+                let newMsg = ChatMessage(scene: msg, isAnimating: false, showText: true)
                 chatMessage.append(newMsg)
                 conversationHistory.append(newMsg.scene)
                 allScene = msg
@@ -430,7 +485,7 @@ struct ChatSceneView: View {
             isTyping = false
 
             // 続きがあるか再帰
-                proceedToNextIfNeeded()
+            proceedToNextIfNeeded()
         }
     }
 }
