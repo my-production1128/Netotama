@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct DezitamaApp: App {
+    @StateObject private var gameManager = GameManager.shared
+        
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(gameManager)
         }
     }
 }
