@@ -37,15 +37,12 @@ struct ContentView: View {
         nextSceneId: "",
         isChoice: nil,
         choice1Text: "",
-        choice1Type: "",
         choice1Percentage: nil,
         choice1NextSceneId: "",
         choice2Text: "",
-        choice2Type: "",
         choice2Percentage: nil,
         choice2NextSceneId: "",
         choice3Text: "",
-        choice3Type: "",
         choice3Percentage: nil,
         choice3NextSceneId: "",
         bgm: "",
@@ -87,7 +84,7 @@ struct ContentView: View {
                 netomoDialogues = loadCSV(fileName: "netomo_ver10_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_ver11_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_ver9_0")
-                let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver1")
+                let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver3")
 //                let netomoBranchings = loadBranchingCSV(fileName: "netomo_branch_ver23")
 //                let groupBranchings = loadBranchingCSV(fileName: "groupchat_branch_ver14")
 //                let kakusanBranchings = loadBranchingCSV(fileName: "kakusan_branch_ver4")

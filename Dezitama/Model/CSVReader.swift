@@ -91,9 +91,9 @@ func loadBranchingCSV(fileName: String) -> [Branching] {
             }()
 
             // Percentageの読み込みとDouble型への変換
-            let choice1Percentage = Double(cols[14])
-            let choice2Percentage = Double(cols[18])
-            let choice3Percentage = Double(cols[22])
+            let choice1Percentage = Double(cols[13])
+            let choice2Percentage = Double(cols[16])
+            let choice3Percentage = Double(cols[19])
 
             let b = Branching(
                 storyId: cols[0],
@@ -109,19 +109,16 @@ func loadBranchingCSV(fileName: String) -> [Branching] {
                 nextSceneId: cols[10],
                 isChoice: isChoice,
                 choice1Text: cols[12],
-                choice1Type: cols[13],
                 choice1Percentage: choice1Percentage,
-                choice1NextSceneId: cols[15],
-                choice2Text: cols[16],
-                choice2Type: cols[17],
+                choice1NextSceneId: cols[14],
+                choice2Text: cols[15],
                 choice2Percentage: choice2Percentage,
-                choice2NextSceneId: cols[19],
-                choice3Text: cols[20],
-                choice3Type: cols[21],
+                choice2NextSceneId: cols[17],
+                choice3Text: cols[18],
                 choice3Percentage: choice3Percentage,
-                choice3NextSceneId: cols[23],
-                bgm: cols[24],
-                background: cols[25]
+                choice3NextSceneId: cols[20],
+                bgm: cols[21],
+                background: cols[22]
             )
 
             result.append(b)

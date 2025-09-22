@@ -42,15 +42,12 @@ struct Branching: Identifiable {
     let nextSceneId: String
     let isChoice: Bool?
     let choice1Text: String
-    let choice1Type: String
     let choice1Percentage: Double?
     let choice1NextSceneId: String
     let choice2Text: String
-    let choice2Type: String
     let choice2Percentage: Double?
     let choice2NextSceneId: String
     let choice3Text: String
-    let choice3Type: String
     let choice3Percentage: Double?
     let choice3NextSceneId: String
     let bgm: String
