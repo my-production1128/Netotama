@@ -9,7 +9,7 @@ import SwiftUI
 // 一つのメッセージの情報を保持する構造体
 struct ChatMessage: Identifiable {
     let id = UUID()
-    let scene: Branching
+    var scene: Branching // ★ ここを `var` に変更
     var isAnimating: Bool = true
     var showText: Bool = false
     var imageIsVisible: Bool = false
@@ -112,43 +112,48 @@ struct ChatSceneView: View {
                             isPopupVisible: $isPopupVisible,
                             allScene: .constant(choiceScene),
                             onChoiceSelected: { selectedText, nextId in
-                                // ユーザーが選択したテキストをチャット履歴に追加
-                                let userChoiceScene = Branching(
-                                    storyId: choiceScene.storyId,
-                                    sceneId: "user_\(UUID().uuidString)", // ユニークなIDを生成
-                                    sceneType: "chat",
-                                    groupName: choiceScene.groupName, // 適切な値を設定
-                                    icon: choiceScene.icon, // 主人公のアイコン
-                                    characterName: choiceScene.rightCharacter, // 主人公の名前
-                                    leftCharacter: "",
-                                    centerCharacter: "",
-                                    rightCharacter: choiceScene.rightCharacter,
-                                    text: selectedText, // 選択されたテキスト
-                                    nextSceneId: nextId,
-                                    isChoice: false, // 選択肢としては扱わない
-                                    choice1Text: "",
-                                    choice1Percentage: nil,
-                                    choice1NextSceneId: "",
-                                    choice2Text: "",
-                                    choice2Percentage: nil,
-                                    choice2NextSceneId: "",
-                                    choice3Text: "",
-                                    choice3Percentage: nil,
-                                    choice3NextSceneId: "",
-                                    bgm: "",
-                                    background: ""
-                                )
+                                // ユーザーが選択したテキストで最後のメッセージを置き換える
+                                if let lastMessageIndex = chatMessage.indices.last {
+                                    // 既存のシーンデータを取得
+                                    let existingScene = chatMessage[lastMessageIndex].scene
 
-                                // 新しいメッセージとして会話履歴に追加
-                                chatMessage.append(ChatMessage(scene: userChoiceScene, isAnimating: false, showText: true))
-                                conversationHistory.append(userChoiceScene)
-                                DispatchQueue.main.async {
-                                    if let last = chatMessage.last {
-                                        withAnimation {
-                                            self.proxy?.scrollTo(last.id, anchor: .bottom)
-                                        }
-                                    }
+                                    // 新しいデータで新しい `Branching` インスタンスを作成
+                                    let newScene = Branching(
+                                        storyId: existingScene.storyId,
+                                        sceneId: existingScene.sceneId,
+                                        sceneType: existingScene.sceneType,
+                                        groupName: existingScene.groupName,
+                                        icon: existingScene.icon,
+                                        characterName: existingScene.characterName,
+                                        leftCharacter: existingScene.leftCharacter,
+                                        centerCharacter: existingScene.centerCharacter,
+                                        rightCharacter: existingScene.rightCharacter,
+                                        text: selectedText, // 選択肢のテキストで上書き
+                                        nextSceneId: nextId, // 選択肢の次のシーンIDで上書き
+                                        isChoice: false, // 選択肢ではないので false
+                                        choice1Text: existingScene.choice1Text,
+                                        choice1Percentage: existingScene.choice1Percentage,
+                                        choice1NextSceneId: existingScene.choice1NextSceneId,
+                                        choice2Text: existingScene.choice2Text,
+                                        choice2Percentage: existingScene.choice2Percentage,
+                                        choice2NextSceneId: existingScene.choice2NextSceneId,
+                                        choice3Text: existingScene.choice3Text,
+                                        choice3Percentage: existingScene.choice3Percentage,
+                                        choice3NextSceneId: existingScene.choice3NextSceneId,
+                                        bgm: existingScene.bgm,
+                                        background: existingScene.background
+                                    )
+
+                                    // 新しい `Branching` インスタンスでメッセージを更新
+                                    chatMessage[lastMessageIndex].isAnimating = false
+                                    chatMessage[lastMessageIndex].showText = true
+                                    chatMessage[lastMessageIndex].scene = newScene
+                                    conversationHistory[lastMessageIndex] = newScene
+                                    allScene = newScene
                                 }
+
+                                // ポップアップを閉じる
+                                isPopupVisible = false
 
                                 // 次のシーンへ遷移
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -219,6 +224,7 @@ struct ChatSceneView: View {
                                         }
                                     }
                                 }
+
                             } else {
                                 // 選択肢なしの主人公のセリフはアニメーション付きで追加
                                 let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
@@ -302,7 +308,7 @@ struct ChatSceneView: View {
                     }
             }
         }
-        .padding(4)
+        .padding(3)
     }
 
 
@@ -312,6 +318,7 @@ struct ChatSceneView: View {
         HStack {
             if scene.characterName == scene.rightCharacter { Spacer() }
 
+//            主人公じゃない時
             if scene.characterName != scene.rightCharacter {
                 VStack {
                     HStack(alignment: .top) {
@@ -367,7 +374,7 @@ struct ChatSceneView: View {
                                 .background(Color.white.opacity(1.0))
                                 .cornerRadius(16)
                                 .frame(maxWidth: 350, alignment: .leading)
-                                .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .leading)
+                                .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomLeading)
                                 .opacity(message.textIsVisible ? 1.0 : 0.0)
                                 .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
                                 .onAppear {
@@ -410,16 +417,13 @@ struct ChatSceneView: View {
                                 .padding(13)
                                 .background(Color.white.opacity(1.0))
                                 .cornerRadius(16)
+                                .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomTrailing)
+                                .opacity(message.textIsVisible ? 1.0 : 0.0)
+                                .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
                                 .onAppear {
+                                    
                                     // アニメーションを無限ループで表示
                                     animationTrigger.toggle()
-                                    // アイコンと名前のアニメーションも開始
-                                    withAnimation {
-                                        if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
-                                            chatMessage[index].imageIsVisible = true
-                                        }
-                                    }
-                                     // アニメーション表示時にスクロール
                                     DispatchQueue.main.async {
                                         if let last = chatMessage.last {
                                             withAnimation {
@@ -427,7 +431,29 @@ struct ChatSceneView: View {
                                             }
                                         }
                                     }
+                                    // アイコンと名前のアニメーションも開始
+                                    withAnimation {
+                                        if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                            chatMessage[index].imageIsVisible = true
+                                        }
+                                    }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                                             withAnimation {
+                                                 if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                                     chatMessage[index].textIsVisible = true
+                                                 }
+                                             }
+                                         }
+                                     // アニメーション表示時にスクロール
+
                                 }
+//                                .onDisappear {
+//                                    withAnimation {
+//                                        if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+//                                            chatMessage[index].textIsVisible = false
+//                                        }
+//                                    }
+//                                }
                         }
 
 //                        ルビ付きでテキストを表示
@@ -440,12 +466,11 @@ struct ChatSceneView: View {
                                 textColor: .black,
                                 textAlignment: .left
                             )
-                            .font(.system(size: 22))
                             .padding(13)
                             .background(Color.white.opacity(1.0))
                             .cornerRadius(16)
-                            .frame(maxWidth: 450, alignment: .trailing)
-                            .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .trailing)
+                            .frame(maxWidth: 450, alignment: .bottomTrailing)
+                            .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomTrailing)
                             .opacity(message.textIsVisible ? 1.0 : 0.0)
                             .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
                             .onAppear {
@@ -529,19 +554,12 @@ struct ChatSceneView: View {
         // 選択肢の直前では自動で進まないようにする
         if next.isChoice ?? false {
             // 3秒の遅延後にアニメーション付きのメッセージを追加
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
                 chatMessage.append(newMsg)
                 conversationHistory.append(newMsg.scene)
                 allScene = next
                 isTyping = false
-                DispatchQueue.main.async {
-                    if let last = chatMessage.last {
-                        withAnimation {
-                            self.proxy?.scrollTo(last.id, anchor: .bottom)
-                        }
-                    }
-                }
             }
             isTyping = true
             return
@@ -550,19 +568,12 @@ struct ChatSceneView: View {
         // 次が主人公のセリフの場合、アニメーション付きのメッセージを自動で追加して停止
         if next.characterName == next.rightCharacter {
              // 3秒の遅延後にアニメーション付きのメッセージを追加
-             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                  let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
                  chatMessage.append(newMsg)
                  conversationHistory.append(newMsg.scene)
                  allScene = next
                  isTyping = false
-                 DispatchQueue.main.async {
-                     if let last = chatMessage.last {
-                         withAnimation {
-                             self.proxy?.scrollTo(last.id, anchor: .bottom)
-                         }
-                     }
-                 }
              }
              isTyping = true
             return
@@ -578,13 +589,6 @@ struct ChatSceneView: View {
                 chatMessage.append(newMsg)
                 conversationHistory.append(newMsg.scene)
                 allScene = msg
-                DispatchQueue.main.async {
-                    if let last = chatMessage.last {
-                        withAnimation {
-                            self.proxy?.scrollTo(last.id, anchor: .bottom)
-                        }
-                    }
-                }
             }
             pendingMessage = nil
             isTyping = false
