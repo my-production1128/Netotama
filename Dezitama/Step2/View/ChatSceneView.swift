@@ -49,7 +49,9 @@ struct ChatSceneView: View {
 //    会話の見返しボタン用関数
     @Binding var conversationHistory: [Branching]
 
-    var color: Color = .blue
+    let animationTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
+
+    var color: Color = .gray
     var dotSize: CGFloat = 30
     var bounceHeight: CGFloat = 90
     var repeatCount: Int = 2
@@ -94,17 +96,17 @@ struct ChatSceneView: View {
                                 .position(x: geometry.size.width * 0.645, y: geometry.size.height * 0.805)
                         }
 
-                        Button {
-                            skipAllChatScenes()
-                        } label: {
-                            Text("飛ばす")
-                                .font(.system(size: 20, weight: .bold, design: .default))
-                                .padding(10)
-                                .background(Color.red)
-                                .foregroundColor(.white)
-                                .clipShape(Capsule())
-                        }
-                        .border(Color.yellow, width: 3)
+//                        Button {
+//                            skipAllChatScenes()
+//                        } label: {
+//                            Text("飛ばす")
+//                                .font(.system(size: 20, weight: .bold, design: .default))
+//                                .padding(10)
+//                                .background(Color.red)
+//                                .foregroundColor(.white)
+//                                .clipShape(Capsule())
+//                        }
+//                        .border(Color.yellow, width: 3)
 
 //                    選択肢の問題を出す
                     if isPopupVisible, let choiceScene = currentChoiceScene {
@@ -308,7 +310,7 @@ struct ChatSceneView: View {
                     }
             }
         }
-        .padding(3)
+        .padding(5)
     }
 
 
@@ -352,7 +354,7 @@ struct ChatSceneView: View {
                                          DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
                                              animationTrigger.toggle()
                                          }
-                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2.7) {
+                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                                              withAnimation {
                                                  updateMessageState(id: message.id)
                                              }
@@ -444,16 +446,10 @@ struct ChatSceneView: View {
                                                  }
                                              }
                                          }
-                                     // アニメーション表示時にスクロール
-
                                 }
-//                                .onDisappear {
-//                                    withAnimation {
-//                                        if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
-//                                            chatMessage[index].textIsVisible = false
-//                                        }
-//                                    }
-//                                }
+                                .onReceive(animationTimer) { _ in
+                                    animationTrigger.toggle()
+                                }
                         }
 
 //                        ルビ付きでテキストを表示
@@ -554,7 +550,7 @@ struct ChatSceneView: View {
         // 選択肢の直前では自動で進まないようにする
         if next.isChoice ?? false {
             // 3秒の遅延後にアニメーション付きのメッセージを追加
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
                 chatMessage.append(newMsg)
                 conversationHistory.append(newMsg.scene)
@@ -568,7 +564,7 @@ struct ChatSceneView: View {
         // 次が主人公のセリフの場合、アニメーション付きのメッセージを自動で追加して停止
         if next.characterName == next.rightCharacter {
              // 3秒の遅延後にアニメーション付きのメッセージを追加
-             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                  let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
                  chatMessage.append(newMsg)
                  conversationHistory.append(newMsg.scene)

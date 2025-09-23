@@ -50,6 +50,10 @@ final class GameManager: ObservableObject {
     @Published private(set) var totalStars: Int = 0
     @Published private(set) var totalThunders: Int = 0
 
+    // MARK: - Score Management Properties
+    @Published var currentScore: Double = 0.0
+    private var pointsPerChoice: Double = 0.0
+
     // UserDefaults key
     private let saveKey = "GameManager_v1_save"
     private let userDefaults = UserDefaults.standard
@@ -278,5 +282,36 @@ final class GameManager: ObservableObject {
         isHappyUnlocked = false
         recalcTotals()
         saveProgress()
+    }
+
+    // MARK: - Score Management Methods
+    /// ストーリー開始時にスコアを初期化し、分岐ごとの基本ポイントを計算する
+    func startStory(storyId: String, allBranchings: [Branching]) {
+        // スコアをリセット
+        currentScore = 0.0
+
+        // このストーリーIDに含まれる選択肢の数を数える
+        let choiceCount = allBranchings.filter { $0.storyId == storyId && $0.isChoice == true }.count
+
+        // 選択肢が1つ以上あれば、1回あたりの基本ポイントを計算
+        if choiceCount > 0 {
+            pointsPerChoice = 100.0 / Double(choiceCount)
+        } else {
+            pointsPerChoice = 0.0
+        }
+        print("ストーリー開始: \(storyId), 1分岐あたりの基本ポイント: \(pointsPerChoice)")
+    }
+
+    /// 選択肢のパーセンテージに応じてスコアを加算する
+    func addScore(percentage: Double?) {
+        guard let percentage = percentage else { return }
+
+        let scoreToAdd = pointsPerChoice * percentage
+        currentScore += scoreToAdd
+
+        // スコアが0から100の範囲に収まるように調整
+        currentScore = min(max(currentScore, 0.0), 100.0)
+
+        print("スコア加算: \(scoreToAdd) -> 現在のスコア: \(currentScore)")
     }
 }

@@ -14,8 +14,11 @@ enum Choice: String {
 
 struct isChoiceView: View {
     @State private var showCorrectMark: Bool = false
-    @State private var explanation: Bool = false
-    @State private var selectedChoice: Choice? = nil  // どちらの選択肢を選んだかを保存
+    @State private var selectedChoice: Choice? = nil
+    @State private var isChoiceMade = false
+
+//    選択肢のポイント用
+    @EnvironmentObject private var gameManager: GameManager
 
     @Binding var isPopupVisible: Bool
     @Binding var allScene: Branching
@@ -26,9 +29,13 @@ struct isChoiceView: View {
         GeometryReader { geometry in
             ZStack {
                 Color.black
-                    .opacity(0.45)
+                    .opacity(0.5)
                     .ignoresSafeArea()
+
                 VStack(spacing: 30) {
+                    Text("あなたなら何て言う？")
+                        .font(.custom("MPLUS1-Bold", size: 40))
+                        .foregroundColor(.white)
                     //                    選択肢１のボタン
                     Button(action: {
                         handleChoice(.choice1)
@@ -38,15 +45,15 @@ struct isChoiceView: View {
                                 .replacingOccurrences(of: "<br>", with: "\n")
                                 .createRuby(font: .customFont(ofSize: 30), color: .black),
                             font: .customFont(ofSize: 30),
-                            textColor: .white,
+                            textColor: .black,
                             textAlignment: .left
                         )
                         .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: geometry.size.width * 0.8)
+                        .frame(width: 430, height: 120)
                         .padding(.horizontal, 20)
-                        .foregroundColor(.white)
                     }
                     .buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice1))
+                    .disabled(isChoiceMade)
 
                     //                    選択肢２のボタン
                     Button(action: {
@@ -57,15 +64,15 @@ struct isChoiceView: View {
                                 .replacingOccurrences(of: "<br>", with: "\n")
                                 .createRuby(font: .customFont(ofSize: 30), color: .black),
                             font: .customFont(ofSize: 30),
-                            textColor: .white,
+                            textColor: .black,
                             textAlignment: .left
                         )
                         .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: geometry.size.width * 0.8)
+                        .frame(width: 430, height: 120)
                         .padding(.horizontal, 20)
-                        .foregroundColor(.white)
                     }
                     .buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice2))
+                    .disabled(isChoiceMade)
 
 //                    選択肢３のボタン
                     Button(action: {
@@ -76,36 +83,15 @@ struct isChoiceView: View {
                                 .replacingOccurrences(of: "<br>", with: "\n")
                                 .createRuby(font: .customFont(ofSize: 30), color: .black),
                             font: .customFont(ofSize: 30),
-                            textColor: .white,
+                            textColor: .black,
                             textAlignment: .left
                         )
                         .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: geometry.size.width * 0.8)
+                        .frame(width: 430, height: 120)
                         .padding(.horizontal, 20)
-                        .foregroundColor(.white)
                     }
                     .buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice3))
-                }
-            }
-
-            //                解説画面の表示
-            if explanation {
-                ZStack {
-                    VStack {
-                        Image("")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 850, height: 850)
-                    }
-
-                    Button(action: {
-                        explanation = false
-                    }) {
-                        Image("story_back")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 500, height: 100)
-                    }.position(x: geometry.size.width * 0.8925, y: geometry.size.height * 0.9)
+                    .disabled(isChoiceMade)
                 }
             }
 
@@ -123,36 +109,53 @@ struct isChoiceView: View {
 
 
     private func handleChoice(_ choice: Choice) {
+        // 選択済みフラグを立てて、ボタンを即座に無効化
+        isChoiceMade = true
+        // タップしたボタンの色を即座に変更
+        selectedChoice = choice
+
         // 選択肢の情報を取得
         let selectedText: String?
         let nextId: String?
+        let percentage: Double?
 
         switch choice {
         case .choice1:
             selectedText = allScene.choice1Text
             nextId = allScene.choice1NextSceneId
+            percentage = allScene.choice1Percentage
         case .choice2:
             selectedText = allScene.choice2Text
             nextId = allScene.choice2NextSceneId
+            percentage = allScene.choice2Percentage
         case .choice3:
             selectedText = allScene.choice3Text
             nextId = allScene.choice3NextSceneId
+            percentage = allScene.choice3Percentage
         }
 
         if let text = selectedText, let id = nextId {
-            isPopupVisible = false
-            // 親ビューに選択されたテキストと次のシーンIDを渡す
-            onChoiceSelected(text, id)
+            // スコア加算は遅延の前に行う
+            gameManager.addScore(percentage: percentage)
+
+            // 0.5秒待ってから画面を閉じる
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                isPopupVisible = false
+                // 親ビューに選択されたテキストと次のシーンIDを渡す
+                onChoiceSelected(text, id)
+            }
         }
     }
 
     struct CustomButtonStyle: ButtonStyle {
         var isSelected: Bool
 
+        let defaultBackgroundColor = Color(red: 0.992, green: 0.925, blue: 0.824) // #FDECD2
+        let selectedBackgroundColor = Color(red: 1.0, green: 0.737, blue: 0.251) // #FFBC40
+
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .background(isSelected || configuration.isPressed ? Color.red : Color.blue)
-                .foregroundColor(.white)
+                .background(isSelected || configuration.isPressed ? selectedBackgroundColor : defaultBackgroundColor)
                 .clipShape(Capsule())
                 .scaleEffect(configuration.isPressed ? 0.95 : 1)
                 .animation(.easeOut(duration: 0.1), value: configuration.isPressed)

@@ -121,7 +121,7 @@ struct ContentView: View {
                 netomoDialogues = loadCSV(fileName: "netomo_ver10_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_ver11_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_ver9_0")
-                let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver1")
+                let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver4")
                 //                let netomoBranchings = loadBranchingCSV(fileName: "netomo_branch_ver23")
                 //                let groupBranchings = loadBranchingCSV(fileName: "groupchat_branch_ver14")
                 //                let kakusanBranchings = loadBranchingCSV(fileName: "kakusan_branch_ver4")
