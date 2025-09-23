@@ -39,6 +39,41 @@ struct StageButton: View {
     }
 }
 
+// MARK: - Total Score
+struct ScoreDisplayView: View {
+    let mode: GameMode
+    let totalScore: Int
+    private let maxScore = 27
+    
+    var body: some View {
+        Text(displayText)
+            .font(Font(UIFont.customFont(ofSize: 43)))
+            .foregroundColor(.black)
+    }
+    
+    // 表示テキスト
+    private var displayText: String {
+        switch mode {
+        case .happy:
+            return "\(totalScore)/\(maxScore)"
+        case .bad:
+            return "\(totalScore)/\(maxScore)"
+        }
+    }
+}
+
+
+// MARK: - Kumo
+struct KumoView: View {
+    var body: some View {
+        Image("kumo")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 100, height: 100)
+    }
+}
+
+
 // MARK: - Map View
 struct MapView: View {
     @Binding var path: NavigationPath
@@ -48,18 +83,18 @@ struct MapView: View {
     init(path: Binding<NavigationPath>, mode: GameMode) {
         self._path = path
         self._currentMode = State(initialValue: mode)
-        print("MapView init: mode=\(mode)")  // ← これがログに出ていない
+        print("MapView init: mode=\(mode)")
     }
     
-//    private var currentTotalScore: Int {
-//        switch currentMode {
-//        case .happy:
-//            return gameManager.totalStars
-//        case .bad:
-//            return gameManager.totalThunders
-//        }
-//    }
-//    
+    private var currentTotalScore: Int {
+        switch currentMode {
+        case .happy:
+            return gameManager.totalStars
+        case .bad:
+            return gameManager.totalThunders
+        }
+    }
+    
     
     // 現在のモードに応じたステージ配列を取得
     private var currentStages: [Stage] {
@@ -115,11 +150,40 @@ struct MapView: View {
                     }
                 }
                 
+//                VStack{
+//                    Button("リセット") {
+//                        GameManager.shared.resetProgress()
+//                    }
+//                    .padding()
+//                    .background(Color.red)
+//                    .foregroundColor(.white)
+//                    .cornerRadius(8)
+//                    
+//                    Button("デバック"){
+//                        GameManager.shared.setDebugUnlockAll()
+//                    }
+//                    .padding()
+//                    .background(Color.green)
+//                    .foregroundColor(.white)
+//                    .cornerRadius(8)
+//                }
+                
+                Image(currentMode == .happy ? "good_kumo_03" : "bad_kumo_02")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 600, height: 600)
+                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.2) // 画面上部中央など
+                Image(currentMode == .happy ? "good_kumo_03" : "bad_kumo_02")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 500, height: 500)
+                    .position(x: geometry.size.width * 0.8, y: geometry.size.height * 0.6) // 画面上部中央など
+                
                 // 戻るボタン
                 VStack {
                     HStack {
                         Button {
-                            if !path.isEmpty {
+                            if !path.isEmpty{
                                 path.removeLast()
                             }
                         } label: {
@@ -129,8 +193,6 @@ struct MapView: View {
                                 .frame(width: 100, height: 100)
                         }
                         Spacer()
-                        
-//                        ScoreDisplayView(mode: currentMode, totalScore: currentTotalScore)
                     }
                     Spacer()
                 }
@@ -155,6 +217,17 @@ struct MapView: View {
                     .padding()
                 }
                 .padding()
+                
+                //総数表示
+                VStack {
+                    HStack {
+                        Spacer()
+                        ScoreDisplayView(mode: currentMode, totalScore: currentTotalScore)
+                    }
+                    .padding(.top, 25)
+                    Spacer()
+                }
+                .padding(75)
             }
         }
         .ignoresSafeArea()

@@ -128,7 +128,7 @@ final class GameManager: ObservableObject {
         saveProgress()
     }
 
-    /// ステージを「プレイ済み」にする
+    //ステージを「プレイ済み」にする
     func setStagePlayed(stageId: Int, mode: GameMode) {
         guard let idx = index(of: stageId, in: mode) else { return }
         switch mode {
@@ -138,7 +138,7 @@ final class GameManager: ObservableObject {
         saveProgress()
     }
 
-    /// 次のステージを解放（通常は前のステージをクリアしたときに呼ぶ）
+    // 次のステージを解放（通常は前のステージをクリアしたときに呼ぶ）
     func unlockNextStage(after stageId: Int, mode: GameMode) {
         let nextId = stageId + 1
         guard nextId <= 9, let nextIdx = index(of: nextId, in: mode) else { return }
@@ -149,11 +149,11 @@ final class GameManager: ObservableObject {
         saveProgress()
     }
 
-    /// ストーリー終了時に StoryView から呼ぶ総合処理
-    /// - これ1回で score 更新・isPlayed 設定・次ステージ解放・特殊解放判定・保存 まで行います
+    //ストーリー終了時に StoryView から呼ぶ総合処理
+    //- これ1回で score 更新・isPlayed 設定・次ステージ解放・特殊解放判定・保存 まで行います
     func completeStage(stageId: Int, mode: GameMode, earnedScore: Int) {
         updateStageScore(stageId: stageId, mode: mode, earnedScore: earnedScore)
-        setStagePlayed(stageId: stageId, mode: mode)
+//        setStagePlayed(stageId: stageId, mode: mode)
         unlockNextStage(after: stageId, mode: mode)
         checkSpecialUnlocks(completedStage: stageId, mode: mode)
         recalcTotals()
@@ -193,9 +193,9 @@ final class GameManager: ObservableObject {
         case .bad:
             switch stageId {
             case 1:
-                path.append(ViewBuilderPath.GroupchatView)
-            case 2:
                 path.append(ViewBuilderPath.NetomoView)
+            case 2:
+                path.append(ViewBuilderPath.GroupchatView)
             case 3:
                 path.append(ViewBuilderPath.kakusanView)
             case 4:
