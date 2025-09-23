@@ -51,32 +51,69 @@ struct ContentView: View {
         bgm: "",
         background: ""
     )
+    
+    @State private var animate = false
+    
+    
     var body: some View {
         NavigationStack(path: $path) {
             ZStack{
-                Color(red: 0.68, green: 0.93, blue: 0.93)
-                    .ignoresSafeArea()
+//                if isLottieViewVisible{
+//                    LottieView(filename: "StartAnimation")
+//                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+//                        .edgesIgnoringSafeArea(.all)
+//                }
                 
-                if isLottieViewVisible{
-                    LottieView(filename: "egg_start_ver5_0")
-                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-                        .edgesIgnoringSafeArea(.all)
-                }
+                Image("dejitama_startbackground")
+                    .resizable()
+                    .scaledToFill()
+                    
+                
                 MenuView(isOpen: $isMenuOpen, path: $path)
+                
+                VStack{
+                    Spacer()
+                    
+                    Image("dejitama_logo")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 450, height: 450)
+                        .offset(y: animate ? 0 : -40)
+                        .onAppear {
+                            // 最初は真ん中に配置してからアニメーションを開始
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                                animate = true
+                            }
+                        }
+                        .animation(
+                            .easeInOut(duration: 1.2)
+                            .repeatForever(autoreverses: true),
+                            value: animate
+                        )
+                    
+//                    Spacer()
+                   
+                    Image("start")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 300, height: 100)
+                    
+                    Spacer()
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        //isMenuOpenの変化にアニメーションをつける
-                        withAnimation(.easeInOut(duration: 0.3)) {
-                            isMenuOpen.toggle()
-                        }
-                    } label: {
-                        Image("imark")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 50, height: 50)
-                    }
+//                    Button {
+//                        //isMenuOpenの変化にアニメーションをつける
+//                        withAnimation(.easeInOut(duration: 0.3)) {
+//                            isMenuOpen.toggle()
+//                        }
+//                    } label: {
+//                        Image("imark")
+//                            .resizable()
+//                            .scaledToFill()
+//                            .frame(width: 50, height: 50)
+//                    }
                 }
             }
             .onTapGesture {
@@ -93,8 +130,6 @@ struct ContentView: View {
                 //                let kakusanBranchings = loadBranchingCSV(fileName: "kakusan_branch_ver4")
                 self.allBranchings = goodNetomoStory1
                 
-                //デバック用ステージ全解放
-                gameManager.setDebugUnlockAll()
             }
             .navigationDestination(for: ViewBuilderPath.self) { viewID in
                 switch viewID {
