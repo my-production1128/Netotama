@@ -10,8 +10,12 @@ import SwiftUI
 struct Gauge: View {
     var width: CGFloat
     var height: CGFloat
+    var score: Double
 
     var body: some View {
+
+        let progress = score / 100.0
+
             Group {
                 ZStack {
                     Image("step2_gauge_frame")
@@ -24,6 +28,7 @@ struct Gauge: View {
 //                        .frame(width: geometry.size.width)
 
                     Group {
+//                        バーの背景（灰色）
                         Image("step2_yellow")
                             .resizable()
                             .scaledToFit()
@@ -36,6 +41,17 @@ struct Gauge: View {
                             .resizable()
                             .scaledToFit()
                             .frame(width: width * 0.675, height: height * 0.25)
+                            .mask(
+                                // ゲージの幅に合わせて、左から progress の割合だけ表示する
+                                GeometryReader { geometry in
+                                    HStack {
+                                        Rectangle()
+                                            .frame(width: geometry.size.width * CGFloat(progress))
+                                            .animation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.6), value: progress)
+                                        Spacer(minLength: 0)
+                                    }
+                                }
+                            )
 
 //                            .resizable()
 //                            .scaledToFit()
@@ -59,5 +75,6 @@ struct Gauge: View {
 }
 
 #Preview {
-    Gauge(width: 300, height: 100)
+    // プレビューで動作確認できるように、scoreに適当な値を入れる
+    Gauge(width: 300, height: 100, score: 75.0)
 }

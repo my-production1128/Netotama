@@ -371,7 +371,7 @@ struct ChatView: View {
             animationTrigger.toggle()
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.7) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             updateMessageState(id: messageId)
         }
     }

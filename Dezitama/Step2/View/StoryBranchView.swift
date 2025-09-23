@@ -34,6 +34,9 @@ struct StoryBranchView: View {
     //    ストーリーが終了した場合セリフを最後まで読んだあとにタップしたか判別する
     @State private var isEndSceneReady: Bool = false
 
+//    選択肢のポイント用
+    @EnvironmentObject private var gameManager: GameManager
+
 
     let talkFont = UIFont.customFont(ofSize: 30)
     let charaNameFont = UIFont.customFont(ofSize: 35)
@@ -288,7 +291,7 @@ struct StoryBranchView: View {
                     }
                     Spacer()
                     VStack {
-                        Gauge(width: geometry.size.width * 0.3, height: 100)
+                        Gauge(width: geometry.size.width * 0.3, height: 100, score: gameManager.currentScore)
                             .padding(.trailing,2)
                         Spacer()
 
@@ -322,13 +325,13 @@ struct StoryBranchView: View {
                                                     Image(scene.icon)
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fit)
-                                                        .frame(width: 30, height: 30)
+                                                        .frame(width: 40, height: 40)
                                                         .clipShape(Circle())
                                                 }
 
                                                 VStack(alignment: isRight ? .trailing : .leading, spacing: 4) {
                                                     Text(characterName)
-                                                        .font(.custom("MPLUS1-Regular", size: 14))
+                                                        .font(.custom("MPLUS1-Regular", size: 16))
                                                         .foregroundColor(.white)
 
                                                     RubyLabelRepresentable(
@@ -355,7 +358,7 @@ struct StoryBranchView: View {
                                                     Image(scene.icon)
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fit)
-                                                        .frame(width: 30, height: 30)
+                                                        .frame(width: 40, height: 40)
                                                         .clipShape(Circle())
                                                 }
                                             }
@@ -367,7 +370,7 @@ struct StoryBranchView: View {
                                     }
                                     .padding()
                                 }
-                                .background(Color.black.opacity(0.8)) // スクロールビューの背景
+                                .background(Color.black.opacity(0.7)) // スクロールビューの背景
                                 .frame(width: innerGeometry.size.width / 2)
                                 .onAppear {
                                     if let last = conversationHistory.last {
@@ -446,6 +449,10 @@ struct StoryBranchView: View {
                 }
             }
             .onAppear {
+
+                // ビューが表示されたら、GameManagerのストーリー開始処理を呼ぶ
+                gameManager.startStory(storyId: StoryId, allBranchings: allBranchings)
+
                 if let first = currentStoryBranchings.first { // ★ filterされたストーリーの先頭を取得する
                     currentSceneId = first.sceneId
                     startTyping(fullText: first.text)
