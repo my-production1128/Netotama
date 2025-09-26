@@ -1,60 +1,11 @@
 //
-//  Dialogue.swift
+//  Untitled.swift
 //  Dezitama
 //
-//  Created by 末廣月渚 on 2025/05/20.
+//  Created by 濱松未波 on 2025/09/26.
 //
+
 import Foundation
-
-
-//step1の分岐なしのストーリー用
-struct Dialogue: Identifiable {
-    let id = UUID()
-    let storyId: String
-    let sceneId: String
-    let characterName: String
-    let dialogueText: String
-    let background: String
-    let talkingPeople: String?           // TalkingPeople
-    let leftCharacter: String?           // LeftCharacter
-    let centerCharacter: String?         // CenterCharacter
-    let rightCharacter: String?          // RightCharacter
-    let oneCharacter: String?            // OneCharacter
-    let twoCharacter: String?            // TwoCharacter
-    let onePerson: String?               // OnePerson
-    let leftChat: String?                // LeftChat
-    let rightChat: String?               // RightChat
-}
-
-//step2の分岐ありのストーリー
-struct Branching: Identifiable {
-    let id = UUID()
-    let storyId: String
-    let sceneId: String
-    let sceneType: String
-    let groupName: String
-    let icon: String
-    let characterName: String
-    let leftCharacter: String
-    let centerCharacter: String
-    let rightCharacter: String
-    let text: String
-    let nextSceneId: String
-    let isChoice: Bool?
-    let choice1Text: String
-    let choice1Percentage: Double?
-    let choice1NextSceneId: String
-    let choice2Text: String
-    let choice2Percentage: Double?
-    let choice2NextSceneId: String
-    let choice3Text: String
-    let choice3Percentage: Double?
-    let choice3NextSceneId: String
-    let bgm: String
-    let background: String
-}
-
-
 //scvのキャラクター名を日本語に変換
 enum CharacterName: String {
 //    ニック
@@ -93,7 +44,7 @@ enum CharacterName: String {
     case Cony_sorry
     case Cony_surprised
     case Cony_trouble
-    
+
 //    セシル
     case Cecil
     case Cecil_normal
@@ -179,7 +130,7 @@ enum CharacterName: String {
         case .Teacher: return "先生"
         case .Teacher_normal: return "先生"
         case .Teacher_irritation: return "先生"
-            
+
 //            ブライアン
         case .Brian: return "ブライアン"
         case .Brian_normal: return "ブライアン"
@@ -191,9 +142,6 @@ enum CharacterName: String {
 //            ロビー
         case .Robbie: return "ロビー"
         case .Robbie_irritaion: return "ロビー"
-
-//        default:
-//            return ""
         }
     }
 }

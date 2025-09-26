@@ -134,6 +134,8 @@ struct isChoiceView: View {
             percentage = allScene.choice3Percentage
         }
 
+        print("🔵 選択肢を選びました！読み込んだパーセンテージ: \(percentage ?? -1.0)")
+
         if let text = selectedText, let id = nextId {
             // スコア加算は遅延の前に行う
             gameManager.addScore(percentage: percentage)

@@ -32,7 +32,12 @@ struct StoryBranchView: View {
     @State private var conversationHistory: [Branching] = []
 
     //    ストーリーが終了した場合セリフを最後まで読んだあとにタップしたか判別する
-    @State private var isEndSceneReady: Bool = false
+    @State var isEndSceneReady: Bool = false
+
+    @State private var finalStars: Int = 0
+
+        let stageId: Int
+        let mode: GameMode
 
 //    選択肢のポイント用
     @EnvironmentObject private var gameManager: GameManager
@@ -61,6 +66,15 @@ struct StoryBranchView: View {
             }
         }
         return map
+    }
+
+    init(path: Binding<NavigationPath>, allBranchings: Binding<[Branching]>, allScene: Binding<Branching>, StoryId: String, stageId: Int, mode: GameMode) {
+        self._path = path
+        self._allBranchings = allBranchings
+        self._allScene = allScene
+        self.StoryId = StoryId
+        self.stageId = stageId
+        self.mode = mode
     }
 
     var body: some View {
@@ -102,14 +116,23 @@ struct StoryBranchView: View {
                                 branchingMap: branchingMap,
                                 initialSceneId: currentSceneId,
                                 onNextScene: { nextId in
-                                    //                                    print("StoryBranchView: onNextSceneが呼ばれました。nextId = \(nextId)")
-                                    historyStack.append(currentSceneId)
-                                    currentSceneId = nextId
+                                    if nextId == "end" {
+                                        if !isEndSceneReady { // 処理が重複しないようにする
+                                            let stars = gameManager.scoreToStars(score: gameManager.currentScore)
+                                            self.finalStars = stars
+                                            gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
+                                            isEndSceneReady = true
+                                        }
+                                    } else {
+                                        historyStack.append(currentSceneId)
+                                        currentSceneId = nextId
+                                    }
                                 },
                                 allBranchings: $allBranchings,
                                 allScene: $allScene,
                                 isPopupVisible: $isPopupVisible,
-                                conversationHistory: $conversationHistory
+                                conversationHistory: $conversationHistory,
+                                isEndSceneReady: $isEndSceneReady
                             )
 
                             //                            scenetypeがtalkの
@@ -243,7 +266,12 @@ struct StoryBranchView: View {
                                     }
                                     conversationHistory.append(next)
                                 }else if current.nextSceneId == "end" {
-                                    isEndSceneReady = true
+                                    if !isEndSceneReady { // 処理が重複しないようにする
+                                        let stars = gameManager.scoreToStars(score: gameManager.currentScore)
+                                        self.finalStars = stars
+                                        gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
+                                        isEndSceneReady = true
+                                    }
                                 }
                             }
                             //                            ↑ここまでonTapGestureの処理
@@ -428,12 +456,38 @@ struct StoryBranchView: View {
                     )
                 }
 
+                // StoryBranchView.swift の body の最後の方
                 if isEndSceneReady {
                     Color.black
                         .opacity(0.45)
                         .ignoresSafeArea()
+
+                    // ▼▼▼ VStack全体を置き換え ▼▼▼
                     VStack {
                         Spacer()
+
+                        // finalStarsの値に応じてテキストを表示
+                        switch finalStars {
+                        case 1:
+                            Text("星１")
+                                .font(.system(size: 100, weight: .bold))
+                                .foregroundColor(.yellow)
+                        case 2:
+                            Text("星２")
+                                .font(.system(size: 100, weight: .bold))
+                                .foregroundColor(.yellow)
+                        case 3:
+                            Text("星３")
+                                .font(.system(size: 100, weight: .bold))
+                                .foregroundColor(.yellow)
+                        default:
+                            Text("もう少し！") // 星0個の場合
+                                .font(.system(size: 80, weight: .bold))
+                                .foregroundColor(.white)
+                        }
+
+                        Spacer()
+
                         HStack {
                             Spacer()
                             Button {

@@ -9,7 +9,7 @@ import SwiftUI
 // 一つのメッセージの情報を保持する構造体
 struct ChatMessage: Identifiable {
     let id = UUID()
-    var scene: Branching // ★ ここを `var` に変更
+    var scene: Branching
     var isAnimating: Bool = true
     var showText: Bool = false
     var imageIsVisible: Bool = false
@@ -48,6 +48,7 @@ struct ChatSceneView: View {
     @Binding var isPopupVisible: Bool
 //    会話の見返しボタン用関数
     @Binding var conversationHistory: [Branching]
+    @Binding var isEndSceneReady: Bool
 
     let animationTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
 
@@ -106,7 +107,19 @@ struct ChatSceneView: View {
 //                                .foregroundColor(.white)
 //                                .clipShape(Capsule())
 //                        }
-//                        .border(Color.yellow, width: 3)
+
+                    Button {
+                        skipToNextChoice()
+                    } label: {
+                        Text("選択肢までスキップ")
+                            .font(.system(size: 18, weight: .bold))
+                            .padding(12)
+                            .background(Color.blue.opacity(0.8))
+                            .foregroundColor(.white)
+                            .clipShape(Capsule())
+                            .shadow(radius: 4)
+                    }
+                    .position(x: geometry.size.width - 120, y: geometry.size.height - 50)
 
 //                    選択肢の問題を出す
                     if isPopupVisible, let choiceScene = currentChoiceScene {
@@ -175,7 +188,6 @@ struct ChatSceneView: View {
 
                     // 現在タイピングアニメーションが表示されている場合、タップでテキストに切り替える
                     if let lastMessageIndex = chatMessage.indices.last, chatMessage[lastMessageIndex].isAnimating {
-                        // 次のメッセージが選択肢かどうかをチェック
                         if chatMessage[lastMessageIndex].scene.isChoice ?? false {
                             isPopupVisible = true
                             currentChoiceScene = chatMessage[lastMessageIndex].scene
@@ -203,12 +215,30 @@ struct ChatSceneView: View {
                     if last.scene.characterName != last.scene.rightCharacter && last.isAnimating {
                         return
                     }
+
+                    // ▼▼▼ ここからが修正箇所です ▼▼▼
+
                     let nextId = last.scene.nextSceneId
 
+                    // nextSceneIdが "end" の場合、isEndSceneReadyをtrueにして終了画面を表示
+                    if nextId == "end" {
+                        // 1. 親Viewに終了を通知して、スコア保存の処理を呼び出す
+                        onNextScene("end")
+
+                        // 2. このViewでも終了画面を表示する準備をする
+                        isEndSceneReady = true
+
+                        // 3. 他の処理は行わずに終了する
+                        return
+                    }
+
+                    // 次のシーンが見つからなければ、親Viewに通知
                     guard let next = branchingMap[nextId] else {
                         onNextScene(nextId)
                         return
                     }
+
+                    // ▲▲▲ ここまでが修正箇所です ▲▲▲
 
                     if next.sceneType == "chat" {
                         // 次のセリフが主人公の場合、まずアニメーション付きのメッセージを追加
@@ -592,5 +622,45 @@ struct ChatSceneView: View {
             // 続きがあるか再帰
             proceedToNextIfNeeded()
         }
+    }
+
+
+    // ChatSceneView の中にこの関数を追加してください
+    private func skipToNextChoice() {
+        guard let last = chatMessage.last else { return }
+
+        var nextId = last.scene.nextSceneId
+        var targetScene: Branching?
+
+        // 次の選択肢か、チャットの終わりを探すループ
+        while let next = branchingMap[nextId], next.sceneType == "chat" {
+            // もし次のシーンが選択肢なら、そこを目的地に設定してループを抜ける
+            if next.isChoice == true {
+                targetScene = next
+                break
+            }
+            // 次のシーンへ
+            nextId = next.nextSceneId
+        }
+
+        // ループの結果で処理を分岐
+        if let scene = targetScene {
+            // 目的地（選択肢）が見つかった場合
+            // 新しいメッセージとしてそれを追加し、アニメーションを表示
+            let newMsg = ChatMessage(scene: scene, isAnimating: true, showText: false)
+            chatMessage.append(newMsg)
+            conversationHistory.append(newMsg.scene) // 会話履歴にも追加
+            allScene = newMsg.scene
+
+            // 新しいメッセージが見えるように一番下までスクロール
+            DispatchQueue.main.async {
+                if let lastMessage = chatMessage.last {
+                    withAnimation {
+                        proxy?.scrollTo(lastMessage.id, anchor: .bottom)
+                    }
+                }
+            }
+        }
+        // メモ: 選択肢が見つからなかった場合（会話が終わる場合）は何もしません
     }
 }
