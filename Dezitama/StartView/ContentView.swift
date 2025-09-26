@@ -117,8 +117,9 @@ struct ContentView: View {
                 groupchatDialogues = loadCSV(fileName: "groupchat_ver11_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_ver9_0")
                 let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver4")
-                self.allBranchings = goodNetomoStory1
-                
+                let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver2")
+                let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver1")
+                self.allBranchings = goodNetomoStory1 + goodNetomoStory2 + goodNetomoStory3
             }
             .navigationDestination(for: ViewBuilderPath.self) { viewID in
                 switch viewID {
@@ -140,8 +141,8 @@ struct ContentView: View {
                                     allBranchings: $allBranchings,
                                     allScene: $allScene,
                                     StoryId: StoryId,
-                                    stageId: stageId, // ← stageIdを渡す
-                                    mode: mode        // ← modeを渡す
+                                    stageId: stageId,
+                                    mode: mode
                     )
                     .environmentObject(gameManager)
                     .navigationBarBackButtonHidden(true)

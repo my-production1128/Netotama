@@ -462,21 +462,23 @@ struct StoryBranchView: View {
                         .opacity(0.45)
                         .ignoresSafeArea()
 
-                    // ▼▼▼ VStack全体を置き換え ▼▼▼
                     VStack {
                         Spacer()
 
                         // finalStarsの値に応じてテキストを表示
                         switch finalStars {
                         case 1:
+                            Image("final_star1")
                             Text("星１")
                                 .font(.system(size: 100, weight: .bold))
                                 .foregroundColor(.yellow)
                         case 2:
+                            Image("final_star2")
                             Text("星２")
                                 .font(.system(size: 100, weight: .bold))
                                 .foregroundColor(.yellow)
                         case 3:
+                            Image("final_star3")
                             Text("星３")
                                 .font(.system(size: 100, weight: .bold))
                                 .foregroundColor(.yellow)
