@@ -55,11 +55,6 @@ struct ContentView: View {
     var body: some View {
         NavigationStack(path: $path) {
             ZStack{
-//                if isLottieViewVisible{
-//                    LottieView(filename: "StartAnimation")
-//                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-//                        .edgesIgnoringSafeArea(.all)
-//                }
                 
                 Image("dejitama_startbackground")
                     .resizable()
@@ -122,9 +117,6 @@ struct ContentView: View {
                 groupchatDialogues = loadCSV(fileName: "groupchat_ver11_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_ver9_0")
                 let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver4")
-                //                let netomoBranchings = loadBranchingCSV(fileName: "netomo_branch_ver23")
-                //                let groupBranchings = loadBranchingCSV(fileName: "groupchat_branch_ver14")
-                //                let kakusanBranchings = loadBranchingCSV(fileName: "kakusan_branch_ver4")
                 self.allBranchings = goodNetomoStory1
                 
             }
@@ -143,11 +135,13 @@ struct ContentView: View {
                         .environmentObject(gameManager)
                         .navigationBarBackButtonHidden(true)
                     
-                case .GoodStoryBranchView(let StoryId):
+                case .GoodStoryBranchView(let StoryId, let stageId, let mode):
                     StoryBranchView(path: $path,
                                     allBranchings: $allBranchings,
                                     allScene: $allScene,
-                                    StoryId: StoryId
+                                    StoryId: StoryId,
+                                    stageId: stageId, // ← stageIdを渡す
+                                    mode: mode        // ← modeを渡す
                     )
                     .environmentObject(gameManager)
                     .navigationBarBackButtonHidden(true)

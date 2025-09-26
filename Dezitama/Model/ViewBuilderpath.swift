@@ -13,7 +13,7 @@ enum ViewBuilderPath: Hashable {
     case MapViewHappy
     
 //    分岐ありのストーリー
-    case GoodStoryBranchView(String)
+    case GoodStoryBranchView(String, Int, GameMode)
 
     case GroupchatView
     case kakusanView

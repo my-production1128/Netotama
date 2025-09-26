@@ -120,6 +120,7 @@ final class GameManager: ObservableObject {
     func updateStageScore(stageId: Int, mode: GameMode, earnedScore: Int) {
         let clamped = min(max(earnedScore, 0), 3)
         guard let idx = index(of: stageId, in: mode) else { return }
+        print("✅ スコア更新: ステージ\(stageId) (\(mode)) に新しいハイスコア \(clamped) を保存します。")
 
         switch mode {
         case .happy:
@@ -226,11 +227,11 @@ final class GameManager: ObservableObject {
         case .happy:
             switch stageId {
             case 1:
-                path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story1"))
+                path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story1", stageId, .happy))
             case 2:
-                path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story2"))
+                path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story2", stageId, .happy))
             case 3:
-                path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story3"))
+                path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story3", stageId, .happy))
             case 4:
                 // path.append(ViewBuilderPath.HappyStage4View)
                 break
@@ -257,6 +258,20 @@ final class GameManager: ObservableObject {
         return true
     }
 
+    // MARK: - Score to Stars Conversion
+        /// 現在のスコア（0-100）を星の数（0-3）に変換する
+        func scoreToStars(score: Double) -> Int {
+            if score > 80 {
+                return 3 // 80点より大きい場合は星3
+            } else if score > 40 {
+                return 2 // 40点より大きい場合は星2
+            } else if score > 0 {
+                return 1 // 0点より大きい場合は星1
+            } else {
+                return 0 // 0点の場合は星0
+            }
+        }
+    
     // MARK: - デバッグ / リセット
     // 全解放／満点にする
     func setDebugUnlockAll() {
@@ -300,18 +315,31 @@ final class GameManager: ObservableObject {
             pointsPerChoice = 0.0
         }
         print("ストーリー開始: \(storyId), 1分岐あたりの基本ポイント: \(pointsPerChoice)")
+        print("--- スコア計算開始 ---")
+        print("ストーリーID: \(storyId)")
+        print("選択肢の数: \(choiceCount) 問")
+        print("1問あたりの基本点: \(pointsPerChoice) 点")
+        print("--------------------")
     }
 
     /// 選択肢のパーセンテージに応じてスコアを加算する
-    func addScore(percentage: Double?) {
-        guard let percentage = percentage else { return }
+    // GameManeger.swift の中
+        func addScore(percentage: Double?) {
+            guard let percentage = percentage else {
+                print("スコア加算エラー: パーセンテージがnilのため加算できませんでした。")
+                return
+            }
 
-        let scoreToAdd = pointsPerChoice * percentage
-        currentScore += scoreToAdd
+            let scoreToAdd = pointsPerChoice * percentage
+            currentScore += scoreToAdd
 
-        // スコアが0から100の範囲に収まるように調整
-        currentScore = min(max(currentScore, 0.0), 100.0)
+            // スコアが0から100の範囲に収まるように調整
+            currentScore = min(max(currentScore, 0.0), 100.0)
 
-        print("スコア加算: \(scoreToAdd) -> 現在のスコア: \(currentScore)")
-    }
+            // ▼▼▼ ここから調査用プリント ▼▼▼
+            print("--- スコア加算 ---")
+            print("加算されるスコア: \(scoreToAdd) 点")
+            print("現在の合計スコア: \(currentScore) 点")
+            print("--------------------")
+        }
 }
