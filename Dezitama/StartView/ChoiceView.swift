@@ -10,7 +10,8 @@ import SwiftUI
 struct ChoiceView: View {
     @Binding var path: NavigationPath
     @EnvironmentObject var gameManager: GameManager
-    
+    @EnvironmentObject var musicplayer: SoundPlayer
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -20,6 +21,7 @@ struct ChoiceView: View {
                 
                 VStack {
                     Button {
+                        musicplayer.playSE(fileName: "button_SE")
                         path.append(ViewBuilderPath.MapViewBad)
                     } label: {
                         Image("Bad_Button")
@@ -33,6 +35,7 @@ struct ChoiceView: View {
                     }
                     
                     Button {
+                        musicplayer.playSE(fileName: "button_SE")
                             path.append(ViewBuilderPath.MapViewHappy)
                     } label: {
                         Image("Good_Button")
@@ -48,6 +51,10 @@ struct ChoiceView: View {
                 }
             }
         }
+        .onAppear {
+            musicplayer.playBGM(fileName: "start_bgm")
+        }
     }
+
 }
 

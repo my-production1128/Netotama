@@ -21,6 +21,8 @@ struct ContentView: View {
     
     //これ使ったらgameManager使える
     @StateObject private var gameManager = GameManager.shared
+    @EnvironmentObject var musicplayer: SoundPlayer
+    @GestureState private var isPressing = false
 
     @State private var stages: [StageData] = [
         StageData(id: 1, csvFileName: "bad_netomo_story1_ver7"),
@@ -56,7 +58,7 @@ struct ContentView: View {
     )
     
     @State private var animate = false
-    
+
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -90,12 +92,29 @@ struct ContentView: View {
                         )
                     
 //                    Spacer()
-                   
-                    Image("start")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 300, height: 100)
-                    
+                    Button {
+                        musicplayer.stopAllMusic()
+                        musicplayer.playSE(fileName: "startbutton_SE") {
+                            path.append(ViewBuilderPath.ChoiceView)
+                        }
+                    } label: {
+                        Image("start")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 300, height: 100)
+                            .scaleEffect(isPressing ? 0.8 : 1.0)
+                            .shadow(color: Color.black.opacity(isPressing ? 0.2 : 0.4),
+                                    radius: isPressing ? 1 : 5,
+                                    x: isPressing ? 0 : 5,
+                                    y: isPressing ? 0 : 5)
+                            .animation(.interpolatingSpring(stiffness: 170, damping: 10), value: isPressing)
+                    }
+                    .gesture(
+                        LongPressGesture(minimumDuration: 0.01)
+                            .updating($isPressing) { currentState, gestureState, transaction in
+                                gestureState = currentState
+                            }
+                    )
                     Spacer()
                 }
             }
@@ -115,23 +134,31 @@ struct ContentView: View {
                 }
             }
             .onTapGesture {
-                path.append(ViewBuilderPath.ChoiceView)
+                musicplayer.stopAllMusic()
+                musicplayer.playSE(fileName: "startbutton_SE") {
+                    path.append(ViewBuilderPath.ChoiceView)
+                }
             }
-            //csvファイルの読み込み
+
             .onAppear {
                 for index in stages.indices {
                         stages[index].loadDialogues()
                     }
-                
-                let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver4")
+                let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver5")
                 let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver2")
                 let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver1")
                 self.allBranchings = goodNetomoStory1 + goodNetomoStory2 + goodNetomoStory3
+
+
+//                BGMの再生
+                musicplayer.stopAllMusic()
+                musicplayer.playBGM(fileName: "start_bgm")
             }
             .navigationDestination(for: ViewBuilderPath.self) { viewID in
                 switch viewID {
                 case .ContentView:
                     ContentView()
+                        .environmentObject(gameManager)
                     
                 case .MapViewBad:
                     MapView(path: $path, mode: .bad)

@@ -10,11 +10,13 @@ import SwiftUI
 @main
 struct DezitamaApp: App {
     @StateObject private var gameManager = GameManager.shared
-        
+    @StateObject private var musicplayer = SoundPlayer()
+
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(gameManager)
+                .environmentObject(musicplayer)
         }
     }
 }
