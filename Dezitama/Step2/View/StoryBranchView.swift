@@ -36,11 +36,12 @@ struct StoryBranchView: View {
 
     @State private var finalStars: Int = 0
 
-        let stageId: Int
-        let mode: GameMode
+    let stageId: Int
+    let mode: GameMode
 
-//    選択肢のポイント用
+    //    選択肢のポイント用
     @EnvironmentObject private var gameManager: GameManager
+    @EnvironmentObject var musicplayer: SoundPlayer
 
 
     let talkFont = UIFont.customFont(ofSize: 30)
@@ -80,7 +81,8 @@ struct StoryBranchView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                if let current = branchingMap[currentSceneId] {
+                let sceneToDisplay = currentChoiceScene ?? branchingMap[currentSceneId]
+                if let current = sceneToDisplay {
                     VStack {
                         Spacer()
 
@@ -134,6 +136,10 @@ struct StoryBranchView: View {
                                 conversationHistory: $conversationHistory,
                                 isEndSceneReady: $isEndSceneReady
                             )
+                            .onAppear {
+                                musicplayer.stopAllMusic()
+                                musicplayer.playBGM(fileName: current.bgm)
+                            }
 
                             //                            scenetypeがtalkの
                         case "talk":
@@ -144,53 +150,53 @@ struct StoryBranchView: View {
 
                                 // HStacをキャラクター数に応じて調整
                                 HStack(spacing: 20) {
-                                            // キャラクターが2人以下の場合は左にSpacerを配置
-                                            if characterCount <= 2 {
-                                                Spacer()
-                                            }
+                                    // キャラクターが2人以下の場合は左にSpacerを配置
+                                    if characterCount <= 2 {
+                                        Spacer()
+                                    }
 
-                                            // 左のキャラクター
-                                            if !current.leftCharacter.isEmpty {
-                                                characterImage(
-                                                    imageName: current.leftCharacter,
-                                                    speakingCharacter: current.characterName
-                                                )
-                                                .frame(width: 250, height: 450)
-                                            }
+                                    // 左のキャラクター
+                                    if !current.leftCharacter.isEmpty {
+                                        characterImage(
+                                            imageName: current.leftCharacter,
+                                            speakingCharacter: current.characterName
+                                        )
+                                        .frame(width: 250, height: 450)
+                                    }
 
-                                            // キャラクターが1人または2人の場合にSpacerを挿入
-                                            if characterCount == 2 {
-                                                Spacer()
-                                            }
+                                    // キャラクターが1人または2人の場合にSpacerを挿入
+                                    if characterCount == 2 {
+                                        Spacer()
+                                    }
 
-                                            // 中央のキャラクター
-                                            if !current.centerCharacter.isEmpty {
-                                                characterImage(
-                                                    imageName: current.centerCharacter,
-                                                    speakingCharacter: current.characterName
-                                                )
-                                                .frame(width: 250, height: 450)
-                                            }
+                                    // 中央のキャラクター
+                                    if !current.centerCharacter.isEmpty {
+                                        characterImage(
+                                            imageName: current.centerCharacter,
+                                            speakingCharacter: current.characterName
+                                        )
+                                        .frame(width: 250, height: 450)
+                                    }
 
-                                            // キャラクターが1人または2人の場合にSpacerを挿入
-                                            if characterCount == 1 || characterCount == 2 {
-                                                Spacer()
-                                            }
+                                    // キャラクターが1人または2人の場合にSpacerを挿入
+                                    if characterCount == 1 || characterCount == 2 {
+                                        Spacer()
+                                    }
 
-                                            // 右のキャラクター
-                                            if !current.rightCharacter.isEmpty {
-                                                characterImage(
-                                                    imageName: current.rightCharacter,
-                                                    speakingCharacter: current.characterName
-                                                )
-                                                .frame(width: 250, height: 450)
-                                            }
+                                    // 右のキャラクター
+                                    if !current.rightCharacter.isEmpty {
+                                        characterImage(
+                                            imageName: current.rightCharacter,
+                                            speakingCharacter: current.characterName
+                                        )
+                                        .frame(width: 250, height: 450)
+                                    }
 
-                                            // キャラクターが2人以下の場合は右にSpacerを配置
-                                            if characterCount <= 2 {
-                                                Spacer()
-                                            }
-                                        }
+                                    // キャラクターが2人以下の場合は右にSpacerを配置
+                                    if characterCount <= 2 {
+                                        Spacer()
+                                    }
+                                }
                                 .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
 
@@ -220,7 +226,7 @@ struct StoryBranchView: View {
                                             .createWideRuby(font: talkFont, color: .black), // ← 修正
                                         charInterval: 0.05,
                                         // こちらにも同じ font を渡す
-                                        font: talkFont // ← 修正
+                                        font: talkFont
                                     )
                                     .fixedSize(horizontal: false, vertical: true) // UILabelのサイズ計算を尊重させる
                                     .frame(maxWidth: 700)
@@ -252,25 +258,36 @@ struct StoryBranchView: View {
                                     return
                                 }
 
-                                if let next = branchingMap[current.nextSceneId] {
-                                    historyStack.append(currentSceneId)
-                                    // 次のシーンが選択肢の場合
-                                    if next.isChoice == true {
-                                        isPopupVisible = true
-                                        currentChoiceScene = next
-                                        // ここにprint文を追加
-                                        print("次のシーンは選択肢です。isPopupVisible: \(isPopupVisible), choiceSceneId: \(currentChoiceScene?.sceneId ?? "nil")")
-                                    } else {
-                                        currentSceneId = next.sceneId
-                                        print("次のシーンに遷移します。sceneId: \(currentSceneId)")
-                                    }
-                                    conversationHistory.append(next)
-                                }else if current.nextSceneId == "end" {
-                                    if !isEndSceneReady { // 処理が重複しないようにする
-                                        let stars = gameManager.scoreToStars(score: gameManager.currentScore)
-                                        self.finalStars = stars
-                                        gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
-                                        isEndSceneReady = true
+                                if let replyScene = currentChoiceScene {
+                                    let nextActualId = replyScene.nextSceneId
+                                    self.currentChoiceScene = nil // 一時シーンをクリア
+                                    self.currentSceneId = nextActualId // 本来の次のシーンへ
+                                    return // 以降の処理はしない
+                                }
+
+                                if !isTypingComplete {
+                                    shouldSkipTyping = true
+                                    isTypingComplete = true
+                                } else {
+                                    if let current = branchingMap[currentSceneId], let next = branchingMap[current.nextSceneId] {
+                                        historyStack.append(currentSceneId)
+
+                                        // 次のシーンが選択肢の場合
+                                        if next.isChoice == true {
+                                            isPopupVisible = true
+                                            currentChoiceScene = next
+                                        } else {
+                                            currentSceneId = next.sceneId
+                                        }
+                                        conversationHistory.append(next)
+
+                                    } else if let current = branchingMap[currentSceneId], current.nextSceneId == "end" {
+                                        if !isEndSceneReady {
+                                            let stars = gameManager.scoreToStars(score: gameManager.currentScore)
+                                            self.finalStars = stars
+                                            gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
+                                            isEndSceneReady = true
+                                        }
                                     }
                                 }
                             }
@@ -295,6 +312,7 @@ struct StoryBranchView: View {
                     VStack {
 //                        ホームボタン
                         Button {
+                            musicplayer.playSE(fileName: "button_SE")
                             path.removeLast()
                         }label: {
                             Image("home")
@@ -305,6 +323,7 @@ struct StoryBranchView: View {
                         }
 //                        会話見返し機能
                             Button(action: {
+                                musicplayer.playSE(fileName: "button_SE")
                                 isChatLogVisible.toggle()
                             }) {
                                 Image("chat") // chatボタンを流用
@@ -334,6 +353,7 @@ struct StoryBranchView: View {
                             Color.black.opacity(0.001)
                                 .edgesIgnoringSafeArea(.all)
                                 .onTapGesture {
+                                    musicplayer.playSE(fileName: "button_SE")
                                     withAnimation(.easeOut(duration: 0.3)) {
                                         isChatLogVisible = false
                                     }
@@ -398,7 +418,7 @@ struct StoryBranchView: View {
                                     }
                                     .padding()
                                 }
-                                .background(Color.black.opacity(0.7)) // スクロールビューの背景
+                                .background(Color.black.opacity(0.7))
                                 .frame(width: innerGeometry.size.width / 2)
                                 .onAppear {
                                     if let last = conversationHistory.last {
@@ -419,20 +439,21 @@ struct StoryBranchView: View {
                         isPopupVisible: $isPopupVisible,
                         allScene: .constant(choiceScene),
                         onChoiceSelected: { selectedText, nextId in
-                            // ユーザーが選択したテキストをチャット履歴に追加
+
+                            // 1. ユーザーの選択を会話履歴に追加するためのデータを作成します
                             let userChoiceScene = Branching(
                                 storyId: choiceScene.storyId,
-                                sceneId: "user_\(UUID().uuidString)", // ユニークなIDを生成
-                                sceneType: "chat",
-                                groupName: choiceScene.groupName, // 適切な値を設定
-                                icon: choiceScene.icon, // 主人公のアイコン
-                                characterName: choiceScene.rightCharacter, // 主人公の名前
-                                leftCharacter: "",
-                                centerCharacter: "",
+                                sceneId: choiceScene.sceneId,
+                                sceneType: "talk", // talkシーンの選択なのでtalk
+                                groupName: choiceScene.groupName,
+                                icon: choiceScene.icon,
+                                characterName: choiceScene.rightCharacter,
+                                leftCharacter: choiceScene.leftCharacter,
+                                centerCharacter: choiceScene.centerCharacter,
                                 rightCharacter: choiceScene.rightCharacter,
-                                text: selectedText, // 選択されたテキスト
+                                text: selectedText,
                                 nextSceneId: nextId,
-                                isChoice: false, // 選択肢としては扱わない
+                                isChoice: false,
                                 choice1Text: "",
                                 choice1Percentage: nil,
                                 choice1NextSceneId: "",
@@ -442,16 +463,18 @@ struct StoryBranchView: View {
                                 choice3Text: "",
                                 choice3Percentage: nil,
                                 choice3NextSceneId: "",
-                                bgm: "",
-                                background: ""
+                                bgm: choiceScene.bgm,
+                                background: choiceScene.background
                             )
 
-                            // 新しいメッセージとして会話履歴に追加し、画面をスクロール
-//                            chatMessage.append(ChatMessage(scene: userChoiceScene))
-//                            conversationHistory.append(userChoiceScene)
+                            // 2. 作成したデータを会話履歴（見返し機能用）に追加します
+                            conversationHistory.append(userChoiceScene)
 
-                            // 次のシーンへ遷移
-//                            onNextScene(nextId)
+                            // 3. 選択肢で決まった次のシーンIDに画面を遷移させます（これが一番重要！）
+                            self.currentChoiceScene = userChoiceScene
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                isPopupVisible = false
+                            }
                         }
                     )
                 }
@@ -468,17 +491,17 @@ struct StoryBranchView: View {
                         // finalStarsの値に応じてテキストを表示
                         switch finalStars {
                         case 1:
-                            Image("final_star1")
+                            //                            Image("final_star1")
                             Text("星１")
                                 .font(.system(size: 100, weight: .bold))
                                 .foregroundColor(.yellow)
                         case 2:
-                            Image("final_star2")
+                            //                            Image("final_star2")
                             Text("星２")
                                 .font(.system(size: 100, weight: .bold))
                                 .foregroundColor(.yellow)
                         case 3:
-                            Image("final_star3")
+                            //                            Image("final_star3")
                             Text("星３")
                                 .font(.system(size: 100, weight: .bold))
                                 .foregroundColor(.yellow)
@@ -493,6 +516,7 @@ struct StoryBranchView: View {
                         HStack {
                             Spacer()
                             Button {
+                                musicplayer.playSE(fileName: "button_SE")
                                 path.removeLast()
                             } label: {
                                 Image("back_start")
@@ -505,7 +529,6 @@ struct StoryBranchView: View {
                 }
             }
             .onAppear {
-
                 // ビューが表示されたら、GameManagerのストーリー開始処理を呼ぶ
                 gameManager.startStory(storyId: StoryId, allBranchings: allBranchings)
 
@@ -516,6 +539,9 @@ struct StoryBranchView: View {
                     conversationHistory.append(first)
                 }
             }
+        }
+        .onDisappear {
+            
         }
     }
 
@@ -545,6 +571,7 @@ struct StoryBranchView: View {
                 currentCharIndex += 1
             } else {
                 t.invalidate()
+                self.isTypingComplete = true
                 timer = nil
             }
         }

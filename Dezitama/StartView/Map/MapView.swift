@@ -11,6 +11,7 @@ import SwiftUI
 struct MapView: View {
     @Binding var path: NavigationPath
     @EnvironmentObject private var gameManager: GameManager
+    @EnvironmentObject var musicplayer: SoundPlayer
     @State private var currentMode: GameMode
     
     init(path: Binding<NavigationPath>, mode: GameMode) {
@@ -27,7 +28,6 @@ struct MapView: View {
             return gameManager.totalThunders
         }
     }
-    
     
     // 現在のモードに応じたステージ配列を取得
     private var currentStages: [Stage] {
@@ -50,7 +50,8 @@ struct MapView: View {
         CGPoint(x: 0.87, y: 0.6),    // Stage 8
         CGPoint(x: 0.79, y: 0.74)    // Stage 9
     ]
-    
+
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -68,6 +69,7 @@ struct MapView: View {
                         let position = stagePositions[index]
                         
                         StageButton(stage: stage, mode: currentMode) {
+                            musicplayer.playSE(fileName: "button_SE")
                             let unlocked = gameManager.handleStageTap(stage, path: &path, mode: currentMode)
                             
                             if !unlocked {
@@ -116,6 +118,7 @@ struct MapView: View {
                 VStack {
                     HStack {
                         Button {
+                            musicplayer.playSE(fileName: "button_SE")
                             if !path.isEmpty{
                                 path.removeLast()
                             }
@@ -138,6 +141,7 @@ struct MapView: View {
                     HStack {
                         Spacer()
                         Button(action: {
+                            musicplayer.playSE(fileName: "button_SE")
                             withAnimation(.easeInOut(duration: 0.3)) {
                                 currentMode = currentMode == .happy ? .bad : .happy
                             }
@@ -163,12 +167,15 @@ struct MapView: View {
                 }
                 .padding(75)
             }
+            
         }
         .ignoresSafeArea()
         .onAppear {
             print("MapView appeared: currentMode=\(currentMode)")
             print("GameManager happyStages count: \(gameManager.happyStages.count)")
             print("GameManager badStages count: \(gameManager.badStages.count)")
+
+            musicplayer.playBGM(fileName: "start_bgm")
         }
     }
 }
