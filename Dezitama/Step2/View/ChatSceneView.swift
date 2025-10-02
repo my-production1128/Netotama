@@ -127,12 +127,10 @@ struct ChatSceneView: View {
                             isPopupVisible: $isPopupVisible,
                             allScene: .constant(choiceScene),
                             onChoiceSelected: { selectedText, nextId in
-                                // ユーザーが選択したテキストで最後のメッセージを置き換える
                                 if let lastMessageIndex = chatMessage.indices.last {
-                                    // 既存のシーンデータを取得
+
                                     let existingScene = chatMessage[lastMessageIndex].scene
 
-                                    // 新しいデータで新しい `Branching` インスタンスを作成
                                     let newScene = Branching(
                                         storyId: existingScene.storyId,
                                         sceneId: existingScene.sceneId,
@@ -143,9 +141,9 @@ struct ChatSceneView: View {
                                         leftCharacter: existingScene.leftCharacter,
                                         centerCharacter: existingScene.centerCharacter,
                                         rightCharacter: existingScene.rightCharacter,
-                                        text: selectedText, // 選択肢のテキストで上書き
-                                        nextSceneId: nextId, // 選択肢の次のシーンIDで上書き
-                                        isChoice: false, // 選択肢ではないので false
+                                        text: selectedText,
+                                        nextSceneId: nextId,
+                                        isChoice: false,
                                         choice1Text: existingScene.choice1Text,
                                         choice1Percentage: existingScene.choice1Percentage,
                                         choice1NextSceneId: existingScene.choice1NextSceneId,
@@ -159,7 +157,6 @@ struct ChatSceneView: View {
                                         background: existingScene.background
                                     )
 
-                                    // 新しい `Branching` インスタンスでメッセージを更新
                                     chatMessage[lastMessageIndex].isAnimating = false
                                     chatMessage[lastMessageIndex].showText = true
                                     chatMessage[lastMessageIndex].scene = newScene
@@ -167,10 +164,8 @@ struct ChatSceneView: View {
                                     allScene = newScene
                                 }
 
-                                // ポップアップを閉じる
                                 isPopupVisible = false
 
-                                // 次のシーンへ遷移
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                     proceedToNextIfNeeded()
                                 }
@@ -178,7 +173,6 @@ struct ChatSceneView: View {
                         )
                     }
                 }
-//                ↓ここから送信ボタンをタップした時の処理・Zstackの範囲を全画面に広げてから.onTapGestureの処理を実行
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .contentShape(Rectangle())
                 .onTapGesture {
@@ -186,7 +180,6 @@ struct ChatSceneView: View {
                         return
                     }
 
-                    // 現在タイピングアニメーションが表示されている場合、タップでテキストに切り替える
                     if let lastMessageIndex = chatMessage.indices.last, chatMessage[lastMessageIndex].isAnimating {
                         if chatMessage[lastMessageIndex].scene.isChoice ?? false {
                             isPopupVisible = true
@@ -201,50 +194,38 @@ struct ChatSceneView: View {
                                     }
                                 }
                             }
-                             // テキスト表示後、次の自動進行をチェック
+
                              DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 proceedToNextIfNeeded()
                              }
+
                         }
                         return
                     }
 
                     guard let last = chatMessage.last else { return }
 
-                    // 最後のメッセージが相手のセリフであり、かつアニメーションが完了していない場合はタップを無効にする
                     if last.scene.characterName != last.scene.rightCharacter && last.isAnimating {
                         return
                     }
-
-                    // ▼▼▼ ここからが修正箇所です ▼▼▼
-
                     let nextId = last.scene.nextSceneId
-
-                    // nextSceneIdが "end" の場合、isEndSceneReadyをtrueにして終了画面を表示
                     if nextId == "end" {
-                        // 1. 親Viewに終了を通知して、スコア保存の処理を呼び出す
                         onNextScene("end")
-
-                        // 2. このViewでも終了画面を表示する準備をする
                         isEndSceneReady = true
-
-                        // 3. 他の処理は行わずに終了する
                         return
                     }
 
-                    // 次のシーンが見つからなければ、親Viewに通知
                     guard let next = branchingMap[nextId] else {
                         onNextScene(nextId)
                         return
                     }
 
-                    // ▲▲▲ ここまでが修正箇所です ▲▲▲
-
                     if next.sceneType == "chat" {
-                        // 次のセリフが主人公の場合、まずアニメーション付きのメッセージを追加
+
                         if next.characterName == next.rightCharacter {
+
                             if next.isChoice == true {
-                                // 選択肢の場合はタップでポップアップが表示されるように、アニメーション付きメッセージを追加
+
                                 let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
                                 chatMessage.append(newMsg)
                                 conversationHistory.append(newMsg.scene)
@@ -258,7 +239,7 @@ struct ChatSceneView: View {
                                 }
 
                             } else {
-                                // 選択肢なしの主人公のセリフはアニメーション付きで追加
+
                                 let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
                                 chatMessage.append(newMsg)
                                 conversationHistory.append(newMsg.scene)
@@ -271,11 +252,14 @@ struct ChatSceneView: View {
                                     }
                                 }
                             }
+
                         } else {
-                            // 相手のセリフの場合
+
                             proceedToNextIfNeeded()
+
                         }
                     } else {
+
                         onNextScene(nextId)
                     }
                 }
@@ -453,8 +437,6 @@ struct ChatSceneView: View {
                                 .opacity(message.textIsVisible ? 1.0 : 0.0)
                                 .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
                                 .onAppear {
-                                    
-                                    // アニメーションを無限ループで表示
                                     animationTrigger.toggle()
                                     DispatchQueue.main.async {
                                         if let last = chatMessage.last {
@@ -463,6 +445,7 @@ struct ChatSceneView: View {
                                             }
                                         }
                                     }
+
                                     // アイコンと名前のアニメーションも開始
                                     withAnimation {
                                         if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
@@ -482,7 +465,6 @@ struct ChatSceneView: View {
                                 }
                         }
 
-//                        ルビ付きでテキストを表示
                         if message.showText {
                             RubyLabelRepresentable(
                                 attributedText: scene.text
@@ -530,7 +512,7 @@ struct ChatSceneView: View {
             if scene.characterName != scene.rightCharacter { Spacer() }
         }
         .padding(.horizontal)
-        .id(message.id) // スクロールIDとして使用
+        .id(message.id)
     }
 
 //    デバック用のスキップボタン
@@ -553,7 +535,7 @@ struct ChatSceneView: View {
         }
     }
 
-//    次のチャットがネトモだった場合は自動で返信させる関数
+//自動返信の関数
     private func proceedToNextIfNeeded() {
 //        デバック用コード
         print("proceedToNextIfNeededが呼び出されました。")
@@ -564,7 +546,6 @@ struct ChatSceneView: View {
 
         let nextId = last.scene.nextSceneId
         print("次のシーンID: \(nextId)")
-//        ここ
 
         if isTyping || isPopupVisible {
             return
@@ -577,9 +558,7 @@ struct ChatSceneView: View {
             return
         }
 
-        // 選択肢の直前では自動で進まないようにする
         if next.isChoice ?? false {
-            // 3秒の遅延後にアニメーション付きのメッセージを追加
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
                 chatMessage.append(newMsg)
@@ -591,9 +570,7 @@ struct ChatSceneView: View {
             return
         }
 
-        // 次が主人公のセリフの場合、アニメーション付きのメッセージを自動で追加して停止
         if next.characterName == next.rightCharacter {
-             // 3秒の遅延後にアニメーション付きのメッセージを追加
              DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                  let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
                  chatMessage.append(newMsg)
@@ -605,12 +582,10 @@ struct ChatSceneView: View {
             return
         }
 
-        // 相手のセリフは自動で進める
         isTyping = true
         pendingMessage = next
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             if let msg = pendingMessage {
-                // 新しいメッセージをisAnimating: false, showText: trueとして追加
                 let newMsg = ChatMessage(scene: msg, isAnimating: false, showText: true)
                 chatMessage.append(newMsg)
                 conversationHistory.append(newMsg.scene)
@@ -619,40 +594,30 @@ struct ChatSceneView: View {
             pendingMessage = nil
             isTyping = false
 
-            // 続きがあるか再帰
             proceedToNextIfNeeded()
         }
     }
 
-
-    // ChatSceneView の中にこの関数を追加してください
     private func skipToNextChoice() {
         guard let last = chatMessage.last else { return }
 
         var nextId = last.scene.nextSceneId
         var targetScene: Branching?
 
-        // 次の選択肢か、チャットの終わりを探すループ
         while let next = branchingMap[nextId], next.sceneType == "chat" {
-            // もし次のシーンが選択肢なら、そこを目的地に設定してループを抜ける
             if next.isChoice == true {
                 targetScene = next
                 break
             }
-            // 次のシーンへ
             nextId = next.nextSceneId
         }
 
-        // ループの結果で処理を分岐
         if let scene = targetScene {
-            // 目的地（選択肢）が見つかった場合
-            // 新しいメッセージとしてそれを追加し、アニメーションを表示
             let newMsg = ChatMessage(scene: scene, isAnimating: true, showText: false)
             chatMessage.append(newMsg)
-            conversationHistory.append(newMsg.scene) // 会話履歴にも追加
+            conversationHistory.append(newMsg.scene)
             allScene = newMsg.scene
 
-            // 新しいメッセージが見えるように一番下までスクロール
             DispatchQueue.main.async {
                 if let lastMessage = chatMessage.last {
                     withAnimation {
@@ -661,6 +626,5 @@ struct ChatSceneView: View {
                 }
             }
         }
-        // メモ: 選択肢が見つからなかった場合（会話が終わる場合）は何もしません
     }
 }

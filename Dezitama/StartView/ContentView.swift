@@ -58,6 +58,9 @@ struct ContentView: View {
     )
     
     @State private var animate = false
+    let floatingAnimation: Animation = Animation
+        .easeInOut(duration: 2.0)
+        .repeatForever(autoreverses: true)
 
     
     var body: some View {
@@ -74,23 +77,62 @@ struct ContentView: View {
                 VStack{
                     Spacer()
                     
-                    Image("dejitama_logo")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 450, height: 450)
-                        .offset(y: animate ? 0 : -40)
+
+                    ZStack {
+                        Image("conynonettodaiboukenn")
+                            .offset(x: 70, y: animate ? -150 : -170)
+                            .animation(
+                                floatingAnimation.delay(0.7), // 💡 0.0秒の遅延
+                                value: animate
+                            )
+
+
+                        Image("startlogo")
+                            .offset(x: 280, y: animate ? -238 : -262)
+                            .animation(
+                                floatingAnimation.delay(0.7), // 💡 0.0秒の遅延
+                                value: animate
+                            )
+
+                        // Image 3: hitologo
+                        Image("hitologo")
+                            .offset(x: -410, y: animate ? -20 : -28)
+                            .animation(
+                                floatingAnimation.delay(0.0), // 💡 0.6秒の遅延
+                                value: animate
+                            )
+
+                        // Image 4: dejitamalogonomi (中央のロゴ)
+                        Image("dejitamalogonomi")
+                            .offset(y: animate ? 5 : -5)
+                            .animation(
+                                floatingAnimation.delay(0.0), // 💡 1.2秒の遅延
+                                value: animate
+                            )
+
+                        // Image 5: hurtlogo
+                        Image("hurtlogo")
+                            .offset(x: -350, y: animate ? 98 : 80)
+                            .animation(
+                                floatingAnimation.delay(0.3), // 💡 1.2秒の遅延
+                                value: animate
+                            )
+
+                        // Image 6: tamagologo
+                        Image("tamagologo")
+                            .offset(x: 270, y: animate ? 98 : 70)
+                            .animation(
+                                floatingAnimation.delay(1.0), // 💡 1.5秒の遅延
+                                value: animate
+                            )
+                    }
                         .onAppear {
                             // 最初は真ん中に配置してからアニメーションを開始
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                                 animate = true
                             }
                         }
-                        .animation(
-                            .easeInOut(duration: 1.2)
-                            .repeatForever(autoreverses: true),
-                            value: animate
-                        )
-                    
+                        .padding(80)
 //                    Spacer()
                     Button {
                         musicplayer.stopAllMusic()
@@ -148,7 +190,6 @@ struct ContentView: View {
                 let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver2")
                 let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver1")
                 self.allBranchings = goodNetomoStory1 + goodNetomoStory2 + goodNetomoStory3
-
 
 //                BGMの再生
                 musicplayer.stopAllMusic()
