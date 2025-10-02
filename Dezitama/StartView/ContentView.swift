@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct ContentView: View {
     // こいつ
     @State var netomoDialogues: [Dialogue] = []
@@ -21,6 +22,11 @@ struct ContentView: View {
     //これ使ったらgameManager使える
     @StateObject private var gameManager = GameManager.shared
 
+    @State private var stages: [StageData] = [
+        StageData(id: 1, csvFileName: "bad_netomo_story1_ver7"),
+//        StageData(id: 2, csvFileName: "stage2_groupchat"),
+    ]
+    
     // 全てのシナリオデータを保持する一つの配列
     @State var allBranchings: [Branching] = []
     @State var allScene: Branching = Branching(
@@ -113,9 +119,10 @@ struct ContentView: View {
             }
             //csvファイルの読み込み
             .onAppear {
-                netomoDialogues = loadCSV(fileName: "netomo_ver10_0")
-                groupchatDialogues = loadCSV(fileName: "groupchat_ver11_0")
-                kakusanDialogues = loadCSV(fileName: "kakusan_ver9_0")
+                for index in stages.indices {
+                        stages[index].loadDialogues()
+                    }
+                
                 let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver4")
                 let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver2")
                 let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver1")
@@ -172,6 +179,14 @@ struct ContentView: View {
                     
                 case .HowToUse:
                     HowToUse()
+                    
+                case .StoryProgressView(let stageIndex):
+                        StoryProgressView(
+                            dialogues: stages[stageIndex].dialogues,
+                            initialSceneId: "Scene0"
+                        )
+                        .environmentObject(gameManager)
+                        .navigationBarBackButtonHidden(true)
                 }
             }
         }

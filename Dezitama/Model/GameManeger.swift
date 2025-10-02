@@ -198,7 +198,7 @@ final class GameManager: ObservableObject {
         case .bad:
             switch stageId {
             case 1:
-                path.append(ViewBuilderPath.NetomoView)
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 0))
             case 2:
                 path.append(ViewBuilderPath.GroupchatView)
             case 3:
