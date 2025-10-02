@@ -21,32 +21,33 @@ struct ChatSceneView: View {
     let initialSceneId: String
     var onNextScene: (String) -> Void
 
+    @EnvironmentObject var musicplayer: SoundPlayer
+
 
     @State var isTyping = false
     @State var pendingMessage: Branching? = nil
 
-//     アニメーションの表示
+    //     アニメーションの表示
     @State var animationTrigger = true
     @State var chatMessage: [ChatMessage] = []
     @State private var triangleAnimationTrigger = false
     @State private var offsetY: CGFloat = 0.0
     @State var currentChoiceScene: Branching? = nil
 
-//    選択肢なしの主人公のセリフ用関数
+    //    選択肢なしの主人公のセリフ用関数
     @State private var noChoiceMessage: Bool = false
-
 
     @State private var isLarge = false
     @State private var proxy: ScrollViewProxy?
 
 
-//    scvファイル
+    //    scvファイル
     @Binding var allBranchings: [Branching]
     @Binding var allScene: Branching
 
-//    選択肢のポップアップを表示する
+    //    選択肢のポップアップを表示する
     @Binding var isPopupVisible: Bool
-//    会話の見返しボタン用関数
+    //    会話の見返しボタン用関数
     @Binding var conversationHistory: [Branching]
     @Binding var isEndSceneReady: Bool
 
@@ -58,135 +59,175 @@ struct ChatSceneView: View {
     var repeatCount: Int = 2
 
     var body: some View {
-            GeometryReader { geometry in
-                ZStack {
-                    Text(ChatMessage(scene: self.allScene).scene.groupName)
-                        .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.123)
-                        .font(.custom("MPLUS1-Medium", size: 24))
-                    VStack {
-//                                                 チャットの画面のスクロール部分
-                        ScrollViewReader { proxy in
-                            ScrollView {
-                                VStack(spacing: 12) {
-                                    ForEach(chatMessage) { message in
-                                        messageRow(for: message, proxy: proxy)
-                                             .id(message.id)
-                                    }
+        GeometryReader { geometry in
+            ZStack {
+                Text(ChatMessage(scene: self.allScene).scene.groupName)
+                    .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.123)
+                    .font(.custom("MPLUS1-Medium", size: 24))
+                VStack {
+                    //                                                 チャットの画面のスクロール部分
+                    ScrollViewReader { proxy in
+                        ScrollView {
+                            VStack(spacing: 12) {
+                                ForEach(chatMessage) { message in
+                                    messageRow(for: message, proxy: proxy)
+                                        .id(message.id)
                                 }
-                                .padding()
                             }
-                            .padding(.bottom, 10)
-                            .frame(width: 500, height: 450)
-                            .position(x: geometry.size.width  * 0.492,y: geometry.size.height * 0.45)
-                            .onAppear {
-                                self.proxy = proxy
-                            }
+                            .padding()
                         }
-                    }
-
-                        HStack {
-                            Image("soushin")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 80)
-                                .padding(40)
-                                .scaleEffect(isLarge ? 0.93 : 1)
-                                .onAppear {
-                                    startLoopingAnimation()
-                                }
-                                .position(x: geometry.size.width * 0.645, y: geometry.size.height * 0.805)
+                        .padding(.bottom, 10)
+                        .frame(width: 500, height: 450)
+                        .position(x: geometry.size.width  * 0.492,y: geometry.size.height * 0.45)
+                        .onAppear {
+                            self.proxy = proxy
                         }
-
-//                        Button {
-//                            skipAllChatScenes()
-//                        } label: {
-//                            Text("飛ばす")
-//                                .font(.system(size: 20, weight: .bold, design: .default))
-//                                .padding(10)
-//                                .background(Color.red)
-//                                .foregroundColor(.white)
-//                                .clipShape(Capsule())
-//                        }
-
-                    Button {
-                        skipToNextChoice()
-                    } label: {
-                        Text("選択肢までスキップ")
-                            .font(.system(size: 18, weight: .bold))
-                            .padding(12)
-                            .background(Color.blue.opacity(0.8))
-                            .foregroundColor(.white)
-                            .clipShape(Capsule())
-                            .shadow(radius: 4)
-                    }
-                    .position(x: geometry.size.width - 120, y: geometry.size.height - 50)
-
-//                    選択肢の問題を出す
-                    if isPopupVisible, let choiceScene = currentChoiceScene {
-                        isChoiceView(
-                            isPopupVisible: $isPopupVisible,
-                            allScene: .constant(choiceScene),
-                            onChoiceSelected: { selectedText, nextId in
-                                if let lastMessageIndex = chatMessage.indices.last {
-
-                                    let existingScene = chatMessage[lastMessageIndex].scene
-
-                                    let newScene = Branching(
-                                        storyId: existingScene.storyId,
-                                        sceneId: existingScene.sceneId,
-                                        sceneType: existingScene.sceneType,
-                                        groupName: existingScene.groupName,
-                                        icon: existingScene.icon,
-                                        characterName: existingScene.characterName,
-                                        leftCharacter: existingScene.leftCharacter,
-                                        centerCharacter: existingScene.centerCharacter,
-                                        rightCharacter: existingScene.rightCharacter,
-                                        text: selectedText,
-                                        nextSceneId: nextId,
-                                        isChoice: false,
-                                        choice1Text: existingScene.choice1Text,
-                                        choice1Percentage: existingScene.choice1Percentage,
-                                        choice1NextSceneId: existingScene.choice1NextSceneId,
-                                        choice2Text: existingScene.choice2Text,
-                                        choice2Percentage: existingScene.choice2Percentage,
-                                        choice2NextSceneId: existingScene.choice2NextSceneId,
-                                        choice3Text: existingScene.choice3Text,
-                                        choice3Percentage: existingScene.choice3Percentage,
-                                        choice3NextSceneId: existingScene.choice3NextSceneId,
-                                        bgm: existingScene.bgm,
-                                        background: existingScene.background
-                                    )
-
-                                    chatMessage[lastMessageIndex].isAnimating = false
-                                    chatMessage[lastMessageIndex].showText = true
-                                    chatMessage[lastMessageIndex].scene = newScene
-                                    conversationHistory[lastMessageIndex] = newScene
-                                    allScene = newScene
-                                }
-
-                                isPopupVisible = false
-
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                    proceedToNextIfNeeded()
-                                }
-                            }
-                        )
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    if isTyping || isPopupVisible {
-                        return
-                    }
 
-                    if let lastMessageIndex = chatMessage.indices.last, chatMessage[lastMessageIndex].isAnimating {
-                        if chatMessage[lastMessageIndex].scene.isChoice ?? false {
-                            isPopupVisible = true
-                            currentChoiceScene = chatMessage[lastMessageIndex].scene
-                        } else {
-                            chatMessage[lastMessageIndex].isAnimating = false
-                            chatMessage[lastMessageIndex].showText = true
+                HStack {
+                    Image("soushin")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 80)
+                        .padding(40)
+                        .scaleEffect(isLarge ? 0.93 : 1)
+                        .onAppear {
+                            startLoopingAnimation()
+                        }
+                        .position(x: geometry.size.width * 0.645, y: geometry.size.height * 0.805)
+                }
+
+                //                        Button {
+                //                            skipAllChatScenes()
+                //                        } label: {
+                //                            Text("飛ばす")
+                //                                .font(.system(size: 20, weight: .bold, design: .default))
+                //                                .padding(10)
+                //                                .background(Color.red)
+                //                                .foregroundColor(.white)
+                //                                .clipShape(Capsule())
+                //                        }
+
+                Button {
+                    skipToNextChoice()
+                } label: {
+                    Text("選択肢までスキップ")
+                        .font(.system(size: 18, weight: .bold))
+                        .padding(12)
+                        .background(Color.blue.opacity(0.8))
+                        .foregroundColor(.white)
+                        .clipShape(Capsule())
+                        .shadow(radius: 4)
+                }
+                .position(x: geometry.size.width - 120, y: geometry.size.height - 50)
+
+                //                    選択肢の問題を出す
+                if isPopupVisible, let choiceScene = currentChoiceScene {
+                    isChoiceView(
+                        isPopupVisible: $isPopupVisible,
+                        allScene: .constant(choiceScene),
+                        onChoiceSelected: { selectedText, nextId in
+                            if let lastMessageIndex = chatMessage.indices.last {
+
+                                let existingScene = chatMessage[lastMessageIndex].scene
+
+                                let newScene = Branching(
+                                    storyId: existingScene.storyId,
+                                    sceneId: existingScene.sceneId,
+                                    sceneType: existingScene.sceneType,
+                                    groupName: existingScene.groupName,
+                                    icon: existingScene.icon,
+                                    characterName: existingScene.characterName,
+                                    leftCharacter: existingScene.leftCharacter,
+                                    centerCharacter: existingScene.centerCharacter,
+                                    rightCharacter: existingScene.rightCharacter,
+                                    text: selectedText,
+                                    nextSceneId: nextId,
+                                    isChoice: false,
+                                    choice1Text: existingScene.choice1Text,
+                                    choice1Percentage: existingScene.choice1Percentage,
+                                    choice1NextSceneId: existingScene.choice1NextSceneId,
+                                    choice2Text: existingScene.choice2Text,
+                                    choice2Percentage: existingScene.choice2Percentage,
+                                    choice2NextSceneId: existingScene.choice2NextSceneId,
+                                    choice3Text: existingScene.choice3Text,
+                                    choice3Percentage: existingScene.choice3Percentage,
+                                    choice3NextSceneId: existingScene.choice3NextSceneId,
+                                    bgm: existingScene.bgm,
+                                    background: existingScene.background
+                                )
+
+                                chatMessage[lastMessageIndex].isAnimating = false
+                                chatMessage[lastMessageIndex].showText = true
+                                chatMessage[lastMessageIndex].scene = newScene
+                                conversationHistory[lastMessageIndex] = newScene
+                                allScene = newScene
+                            }
+
+                            isPopupVisible = false
+
+                                proceedToNextIfNeeded()
+                        }
+                    )
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                if isTyping || isPopupVisible {
+                    return
+                }
+
+                if let lastMessageIndex = chatMessage.indices.last, chatMessage[lastMessageIndex].isAnimating {
+                    if chatMessage[lastMessageIndex].scene.isChoice ?? false {
+                        isPopupVisible = true
+                        currentChoiceScene = chatMessage[lastMessageIndex].scene
+                    } else {
+                        chatMessage[lastMessageIndex].isAnimating = false
+                        chatMessage[lastMessageIndex].showText = true
+                        DispatchQueue.main.async {
+                            if let last = chatMessage.last {
+                                withAnimation {
+                                    self.proxy?.scrollTo(last.id, anchor: .bottom)
+                                }
+                            }
+                        }
+
+                            proceedToNextIfNeeded()
+
+                    }
+                    return
+                }
+
+                guard let last = chatMessage.last else { return }
+
+                if last.scene.characterName != last.scene.rightCharacter && last.isAnimating {
+                    return
+                }
+
+                let nextId = last.scene.nextSceneId
+                if nextId == "end" {
+                    onNextScene("end")
+                    isEndSceneReady = true
+                    return
+                }
+
+                guard let next = branchingMap[nextId] else {
+                    onNextScene(nextId)
+                    return
+                }
+
+                if next.sceneType == "chat" {
+
+                    if next.characterName == next.rightCharacter {
+
+                        if next.isChoice == true{
+
+                            let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
+                            chatMessage.append(newMsg)
+                            conversationHistory.append(newMsg.scene)
+                            allScene = newMsg.scene
                             DispatchQueue.main.async {
                                 if let last = chatMessage.last {
                                     withAnimation {
@@ -195,78 +236,36 @@ struct ChatSceneView: View {
                                 }
                             }
 
-                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                proceedToNextIfNeeded()
-                             }
+                        } else {
 
-                        }
-                        return
-                    }
-
-                    guard let last = chatMessage.last else { return }
-
-                    if last.scene.characterName != last.scene.rightCharacter && last.isAnimating {
-                        return
-                    }
-                    let nextId = last.scene.nextSceneId
-                    if nextId == "end" {
-                        onNextScene("end")
-                        isEndSceneReady = true
-                        return
-                    }
-
-                    guard let next = branchingMap[nextId] else {
-                        onNextScene(nextId)
-                        return
-                    }
-
-                    if next.sceneType == "chat" {
-
-                        if next.characterName == next.rightCharacter {
-
-                            if next.isChoice == true {
-
-                                let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
-                                chatMessage.append(newMsg)
-                                conversationHistory.append(newMsg.scene)
-                                allScene = newMsg.scene
-                                DispatchQueue.main.async {
-                                    if let last = chatMessage.last {
-                                        withAnimation {
-                                            self.proxy?.scrollTo(last.id, anchor: .bottom)
-                                        }
-                                    }
-                                }
-
-                            } else {
-
-                                let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
-                                chatMessage.append(newMsg)
-                                conversationHistory.append(newMsg.scene)
-                                allScene = newMsg.scene
-                                DispatchQueue.main.async {
-                                    if let last = chatMessage.last {
-                                        withAnimation {
-                                            self.proxy?.scrollTo(last.id, anchor: .bottom)
-                                        }
+                            let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
+                            chatMessage.append(newMsg)
+                            conversationHistory.append(newMsg.scene)
+                            allScene = newMsg.scene
+                            DispatchQueue.main.async {
+                                if let last = chatMessage.last {
+                                    withAnimation {
+                                        self.proxy?.scrollTo(last.id, anchor: .bottom)
                                     }
                                 }
                             }
-
-                        } else {
-
-                            proceedToNextIfNeeded()
-
                         }
+
                     } else {
 
-                        onNextScene(nextId)
-                    }
-                }
-//                ↑ここまでonTapGestureの処理
+                        proceedToNextIfNeeded()
 
-                .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2)  {
+                    }
+                } else {
+
+                    onNextScene(nextId)
+
+                }
+            }
+            //                ↑ここまでonTapGestureの処理
+
+            .onAppear {
+                DispatchQueue.main.async {
                     if let first = branchingMap[initialSceneId] {
                         chatMessage = [ChatMessage(scene: first, isAnimating: false, showText: true)]
                         allScene = first
@@ -277,13 +276,12 @@ struct ChatSceneView: View {
                                 }
                             }
                         }
-
                         // 最初のセリフが相手のセリフなら、自動で次のセリフを送信
                         proceedToNextIfNeeded()
-                        }
                     }
                 }
             }
+        }
     }
 
     // アニメーション終了時に状態更新する
@@ -298,10 +296,8 @@ struct ChatSceneView: View {
                     }
                 }
             }
-            // ★ アニメーション終了後、少し間を置いて次の進行をチェックする
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 proceedToNextIfNeeded()
-            }
+
         }
     }
 
@@ -334,7 +330,7 @@ struct ChatSceneView: View {
         HStack {
             if scene.characterName == scene.rightCharacter { Spacer() }
 
-//            主人公じゃない時
+            //            主人公じゃない時
             if scene.characterName != scene.rightCharacter {
                 VStack {
                     HStack(alignment: .top) {
@@ -351,37 +347,12 @@ struct ChatSceneView: View {
                                 .scaleEffect(message.imageIsVisible ? 1.0 : 0.0, anchor: .bottomLeading)
                                 .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(0.05), value: message.imageIsVisible)
 
-                            if message.isAnimating {
-                                typingAnimationView()
-                                     .padding(13)
-                                     .font(.system(size: 22))
-                                     .background(Color.white.opacity(1.0))
-                                     .cornerRadius(16)
-                                     .onAppear {
-                                         // アニメーション表示時にスクロール
-                                         DispatchQueue.main.async {
-                                             withAnimation {
-                                                 self.proxy?.scrollTo(message.id, anchor: .bottom)
-                                             }
-                                         }
-                                         animationTrigger.toggle()
-                                         DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {
-                                             animationTrigger.toggle()
-                                         }
-                                         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                                             withAnimation {
-                                                 updateMessageState(id: message.id)
-                                             }
-                                         }
-                                     }
-                            }
-
-//                            ルビつきでテキストを表示
+                            //                            ルビつきでテキストを表示
                             if message.showText {
                                 RubyLabelRepresentable(
                                     attributedText: scene.text
-                                         .replacingOccurrences(of: "<br>", with: "\n")
-                                         .createRuby(font: .customFont(ofSize: 22), color: .black),
+                                        .replacingOccurrences(of: "<br>", with: "\n")
+                                        .createRuby(font: .customFont(ofSize: 22), color: .black),
                                     font: .customFont(ofSize: 22),
                                     textColor: .black,
                                     textAlignment: .left
@@ -402,15 +373,17 @@ struct ChatSceneView: View {
                                     withAnimation {
                                         if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
                                             chatMessage[index].imageIsVisible = true
+                                            musicplayer.playSE(fileName: "icon_SE")
                                         }
+
                                     }
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                                             withAnimation {
-                                                 if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
-                                                     chatMessage[index].textIsVisible = true
-                                                 }
-                                             }
-                                         }
+                                        withAnimation {
+                                            if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                                chatMessage[index].textIsVisible = true
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -450,15 +423,16 @@ struct ChatSceneView: View {
                                     withAnimation {
                                         if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
                                             chatMessage[index].imageIsVisible = true
+                                            musicplayer.playSE(fileName: "icon_SE")
                                         }
                                     }
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                                             withAnimation {
-                                                 if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
-                                                     chatMessage[index].textIsVisible = true
-                                                 }
-                                             }
-                                         }
+                                        withAnimation {
+                                            if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                                chatMessage[index].textIsVisible = true
+                                            }
+                                        }
+                                    }
                                 }
                                 .onReceive(animationTimer) { _ in
                                     animationTrigger.toggle()
@@ -490,15 +464,16 @@ struct ChatSceneView: View {
                                 withAnimation {
                                     if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
                                         chatMessage[index].imageIsVisible = true
+                                        musicplayer.playSE(fileName: "icon_SE")
                                     }
                                 }
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                                     withAnimation {
-                                         if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
-                                             chatMessage[index].textIsVisible = true
-                                         }
-                                     }
-                                 }
+                                    withAnimation {
+                                        if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                            chatMessage[index].textIsVisible = true
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -515,7 +490,7 @@ struct ChatSceneView: View {
         .id(message.id)
     }
 
-//    デバック用のスキップボタン
+    //    デバック用のスキップボタン
     private func skipAllChatScenes() {
         guard let last = chatMessage.last else { return }
         var nextId = last.scene.nextSceneId
@@ -526,7 +501,7 @@ struct ChatSceneView: View {
     }
 
 
-//    送信ボタンのアニメーション
+    //    送信ボタンのアニメーション
     private func startLoopingAnimation() {
         Timer.scheduledTimer(withTimeInterval: 0.7, repeats: true) { _ in
             withAnimation(.easeInOut(duration: 0.7)) {
@@ -535,9 +510,9 @@ struct ChatSceneView: View {
         }
     }
 
-//自動返信の関数
+    //自動返信の関数
     private func proceedToNextIfNeeded() {
-//        デバック用コード
+        //        デバック用コード
         print("proceedToNextIfNeededが呼び出されました。")
         guard let last = chatMessage.last else {
             print("最後のチャットメッセージがありません。")
@@ -559,7 +534,7 @@ struct ChatSceneView: View {
         }
 
         if next.isChoice ?? false {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
                 chatMessage.append(newMsg)
                 conversationHistory.append(newMsg.scene)
@@ -571,14 +546,14 @@ struct ChatSceneView: View {
         }
 
         if next.characterName == next.rightCharacter {
-             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                 let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
-                 chatMessage.append(newMsg)
-                 conversationHistory.append(newMsg.scene)
-                 allScene = next
-                 isTyping = false
-             }
-             isTyping = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
+                chatMessage.append(newMsg)
+                conversationHistory.append(newMsg.scene)
+                allScene = next
+                isTyping = false
+            }
+            isTyping = true
             return
         }
 
