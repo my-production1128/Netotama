@@ -20,6 +20,8 @@ struct ContentView: View {
     
     //これ使ったらgameManager使える
     @StateObject private var gameManager = GameManager.shared
+    @EnvironmentObject var musicplayer: SoundPlayer
+    @GestureState private var isPressing = false
 
     // 全てのシナリオデータを保持する一つの配列
     @State var allBranchings: [Branching] = []
@@ -50,7 +52,7 @@ struct ContentView: View {
     )
     
     @State private var animate = false
-    
+
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -84,12 +86,29 @@ struct ContentView: View {
                         )
                     
 //                    Spacer()
-                   
-                    Image("start")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 300, height: 100)
-                    
+                    Button {
+                        musicplayer.stopAllMusic()
+                        musicplayer.playSE(fileName: "startbutton_SE") {
+                            path.append(ViewBuilderPath.ChoiceView)
+                        }
+                    } label: {
+                        Image("start")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 300, height: 100)
+                            .scaleEffect(isPressing ? 0.8 : 1.0)
+                            .shadow(color: Color.black.opacity(isPressing ? 0.2 : 0.4),
+                                    radius: isPressing ? 1 : 5,
+                                    x: isPressing ? 0 : 5,
+                                    y: isPressing ? 0 : 5)
+                            .animation(.interpolatingSpring(stiffness: 170, damping: 10), value: isPressing)
+                    }
+                    .gesture(
+                        LongPressGesture(minimumDuration: 0.01)
+                            .updating($isPressing) { currentState, gestureState, transaction in
+                                gestureState = currentState
+                            }
+                    )
                     Spacer()
                 }
             }
@@ -109,17 +128,26 @@ struct ContentView: View {
                 }
             }
             .onTapGesture {
-                path.append(ViewBuilderPath.ChoiceView)
+                musicplayer.stopAllMusic()
+                musicplayer.playSE(fileName: "startbutton_SE") {
+                    path.append(ViewBuilderPath.ChoiceView)
+                }
             }
-            //csvファイルの読み込み
+
             .onAppear {
+                //csvファイルの読み込み
                 netomoDialogues = loadCSV(fileName: "netomo_ver10_0")
                 groupchatDialogues = loadCSV(fileName: "groupchat_ver11_0")
                 kakusanDialogues = loadCSV(fileName: "kakusan_ver9_0")
-                let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver4")
+                let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver5")
                 let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver2")
                 let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver1")
                 self.allBranchings = goodNetomoStory1 + goodNetomoStory2 + goodNetomoStory3
+
+
+//                BGMの再生
+                musicplayer.stopAllMusic()
+                musicplayer.playBGM(fileName: "start_bgm")
             }
             .navigationDestination(for: ViewBuilderPath.self) { viewID in
                 switch viewID {
