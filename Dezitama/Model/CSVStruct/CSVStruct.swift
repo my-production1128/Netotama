@@ -6,6 +6,15 @@
 //
 import Foundation
 
+struct StageData: Identifiable {
+    let id: Int
+    let csvFileName: String
+    var dialogues: [Dialogue2] = []
+    
+    mutating func loadDialogues() {
+        self.dialogues = loadCSV2(fileName: csvFileName)
+    }
+}
 
 //step1の分岐なしのストーリー用
 struct Dialogue: Identifiable {
@@ -24,6 +33,39 @@ struct Dialogue: Identifiable {
     let onePerson: String?               // OnePerson
     let leftChat: String?                // LeftChat
     let rightChat: String?               // RightChat
+}
+
+struct Dialogue2: Identifiable {
+    let id = UUID()
+    let storyId: String
+    let sceneId: String
+    let viewType: ViewType
+    let characterName: String?
+    let dialogueText: String?
+    let nextSceneId: String?
+    let isChoice: Bool
+    let choice1Text: String?
+    let choice1Percentage: String?
+    let choice1NextSceneId: String?
+    let choice2Text: String?
+    let choice2Percentage: String?
+    let choice2NextSceneId: String?
+    let background: String?
+    let talkingPeople: String?           // TalkingPeople
+    let leftCharacter: String?           // LeftCharacter
+    let centerCharacter: String?         // CenterCharacter
+    let rightCharacter: String?          // RightCharacter
+    let oneCharacter: String?            // OneCharacter
+    let twoCharacter: String?            // TwoCharacter
+    let onePerson: String?               // OnePerson
+    let bgm: String?
+}
+
+enum ViewType: String {
+    case dialogue
+//    case choice
+    case chat
+    case start
 }
 
 //step2の分岐ありのストーリー
