@@ -20,6 +20,8 @@ struct ChatSceneView: View {
     let branchingMap: [String: Branching]
     let initialSceneId: String
     var onNextScene: (String) -> Void
+    var width: CGFloat
+    var height: CGFloat
 
     @EnvironmentObject var musicplayer: SoundPlayer
 
@@ -59,10 +61,9 @@ struct ChatSceneView: View {
     var repeatCount: Int = 2
 
     var body: some View {
-        GeometryReader { geometry in
             ZStack {
                 Text(ChatMessage(scene: self.allScene).scene.groupName)
-                    .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.123)
+                    .position(x: width * 0.5, y: height * 0.095)
                     .font(.custom("MPLUS1-Medium", size: 24))
                 VStack {
                     //                                                 チャットの画面のスクロール部分
@@ -76,9 +77,8 @@ struct ChatSceneView: View {
                             }
                             .padding()
                         }
-                        .padding(.bottom, 10)
-                        .frame(width: 500, height: 450)
-                        .position(x: geometry.size.width  * 0.492,y: geometry.size.height * 0.45)
+                        .frame(width: 500, height: 517)
+                        .position(x: width  * 0.492,y: height * 0.483)
                         .onAppear {
                             self.proxy = proxy
                         }
@@ -95,7 +95,7 @@ struct ChatSceneView: View {
                         .onAppear {
                             startLoopingAnimation()
                         }
-                        .position(x: geometry.size.width * 0.645, y: geometry.size.height * 0.805)
+                        .position(x: width * 0.645, y: height * 0.91)
                 }
 
                 //                        Button {
@@ -108,19 +108,6 @@ struct ChatSceneView: View {
                 //                                .foregroundColor(.white)
                 //                                .clipShape(Capsule())
                 //                        }
-
-                Button {
-                    skipToNextChoice()
-                } label: {
-                    Text("選択肢までスキップ")
-                        .font(.system(size: 18, weight: .bold))
-                        .padding(12)
-                        .background(Color.blue.opacity(0.8))
-                        .foregroundColor(.white)
-                        .clipShape(Capsule())
-                        .shadow(radius: 4)
-                }
-                .position(x: geometry.size.width - 120, y: geometry.size.height - 50)
 
                 //                    選択肢の問題を出す
                 if isPopupVisible, let choiceScene = currentChoiceScene {
@@ -281,7 +268,7 @@ struct ChatSceneView: View {
                     }
                 }
             }
-        }
+
     }
 
     // アニメーション終了時に状態更新する
@@ -360,7 +347,8 @@ struct ChatSceneView: View {
                                 .padding(13)
                                 .background(Color.white.opacity(1.0))
                                 .cornerRadius(16)
-                                .frame(maxWidth: 350, alignment: .leading)
+                                .frame(maxWidth: 450, alignment: .leading)
+                                .padding(.bottom, 8)
                                 .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomLeading)
                                 .opacity(message.textIsVisible ? 1.0 : 0.0)
                                 .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
@@ -406,6 +394,7 @@ struct ChatSceneView: View {
                                 .padding(13)
                                 .background(Color.white.opacity(1.0))
                                 .cornerRadius(16)
+                                .padding(.bottom, 8)
                                 .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomTrailing)
                                 .opacity(message.textIsVisible ? 1.0 : 0.0)
                                 .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
@@ -452,6 +441,7 @@ struct ChatSceneView: View {
                             .background(Color.white.opacity(1.0))
                             .cornerRadius(16)
                             .frame(maxWidth: 450, alignment: .bottomTrailing)
+                            .padding(.bottom, 8)
                             .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomTrailing)
                             .opacity(message.textIsVisible ? 1.0 : 0.0)
                             .animation(.easeOut(duration: 0.3), value: message.textIsVisible)

@@ -42,14 +42,14 @@ struct Gauge: View {
                             .frame(width: width * 0.675, height: height * 0.25)
                             .mask(
                                 // ゲージの幅に合わせて、左から progress の割合だけ表示する
-                                GeometryReader { geometry in
+//                                GeometryReader { geometry in
                                     HStack {
                                         Rectangle()
-                                            .frame(width: geometry.size.width * CGFloat(progress))
+                                            .frame(width: width * CGFloat(progress))
                                             .animation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.6), value: progress)
                                         Spacer(minLength: 0)
                                     }
-                                }
+//                                }
                             )
 
                         Image("step2_gauge_sen")
