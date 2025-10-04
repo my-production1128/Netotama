@@ -50,6 +50,7 @@ struct StoryBranchView: View {
     @Binding var path: NavigationPath
     @Binding var allBranchings: [Branching]
     @Binding var allScene: Branching
+    @Binding var currentMode: GameMode
 
     let StoryId: String
     // 表示に必要なデータだけを、allBranchingsからリアルタイムで絞り込む
@@ -69,13 +70,15 @@ struct StoryBranchView: View {
         return map
     }
 
-    init(path: Binding<NavigationPath>, allBranchings: Binding<[Branching]>, allScene: Binding<Branching>, StoryId: String, stageId: Int, mode: GameMode) {
+    init(path: Binding<NavigationPath>, allBranchings: Binding<[Branching]>, allScene: Binding<Branching>, StoryId: String, stageId: Int, mode: GameMode,
+    currentMode: Binding<GameMode>) {
         self._path = path
         self._allBranchings = allBranchings
         self._allScene = allScene
         self.StoryId = StoryId
         self.stageId = stageId
         self.mode = mode
+        self._currentMode = currentMode
     }
 
     var body: some View {
@@ -144,61 +147,124 @@ struct StoryBranchView: View {
                             //                            scenetypeがtalkの
                         case "talk":
                             ZStack {
-                                // MARK: - キャラクター表示部分
-                                // 表示するキャラクターの数を数える
-                                let characterCount = [current.leftCharacter, current.centerCharacter, current.rightCharacter].filter { !$0.isEmpty }.count
+                                // 元の if/else if/else ブロックを置き換える
 
-                                // HStacをキャラクター数に応じて調整
-                                HStack(spacing: 20) {
-                                    // キャラクターが2人以下の場合は左にSpacerを配置
-                                    if characterCount <= 2 {
-                                        Spacer()
-                                    }
-
-                                    // 左のキャラクター
+                                // 💡 修正後のキャラクター表示部分
+                                HStack(spacing: 0) {
+                                    // 1. 左のキャラクター
                                     if !current.leftCharacter.isEmpty {
-                                        characterImage(
-                                            imageName: current.leftCharacter,
-                                            speakingCharacter: current.characterName
-                                        )
-                                        .frame(width: 250, height: 450)
+                                        // スペースを均等に保つため、左側が空いている場合にSpacerを追加
+                                        if current.centerCharacter.isEmpty && current.rightCharacter.isEmpty {
+                                            Spacer() // 中央と右が空なら左寄せではないためSpacerが必要
+                                        }
+
+                                        // 左のキャラクター画像
+                                        Image(current.leftCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 350, height: 500) // 💡 サイズは固定せず、maxWidthで調整する方が良いが、元の指定に合わせる
+                                            // 💡 非発言時はグレーアウトなどの修飾子をここに適用できる
+                                            // .opacity(current.characterName == current.leftCharacter ? 1.0 : 0.7)
                                     }
 
-                                    // キャラクターが1人または2人の場合にSpacerを挿入
-                                    if characterCount == 2 {
-                                        Spacer()
-                                    }
-
-                                    // 中央のキャラクター
+                                    // 2. 中央のキャラクター (左・右どちらかが存在する場合、中央は自動で中央に寄る)
                                     if !current.centerCharacter.isEmpty {
-                                        characterImage(
-                                            imageName: current.centerCharacter,
-                                            speakingCharacter: current.characterName
-                                        )
-                                        .frame(width: 250, height: 450)
+                                        // 中央のみ表示の場合、Spacerで両端を挟む
+                                        if current.leftCharacter.isEmpty && current.rightCharacter.isEmpty {
+                                            Spacer()
+                                        }
+
+                                        // 中央のキャラクター画像
+                                        Image(current.centerCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 350, height: 500)
+                                            // 💡 非発言時はグレーアウト
+                                            // .opacity(current.characterName == current.centerCharacter ? 1.0 : 0.7)
+
+                                        if current.leftCharacter.isEmpty && current.rightCharacter.isEmpty {
+                                            Spacer()
+                                        }
                                     }
 
-                                    // キャラクターが1人または2人の場合にSpacerを挿入
-                                    if characterCount == 1 || characterCount == 2 {
-                                        Spacer()
-                                    }
-
-                                    // 右のキャラクター
+                                    // 3. 右のキャラクター
                                     if !current.rightCharacter.isEmpty {
-                                        characterImage(
-                                            imageName: current.rightCharacter,
-                                            speakingCharacter: current.characterName
-                                        )
-                                        .frame(width: 250, height: 450)
+                                        // 右側が空いている場合にSpacerを追加
+                                        if current.leftCharacter.isEmpty && current.centerCharacter.isEmpty {
+                                            Spacer() // 左と中央が空なら右寄せではないためSpacerが必要
+                                        }
+
+                                        // 右のキャラクター画像
+                                        Image(current.rightCharacter)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 350, height: 500)
+                                            // 💡 非発言時はグレーアウト
+                                            // .opacity(current.characterName == current.rightCharacter ? 1.0 : 0.7)
                                     }
 
-                                    // キャラクターが2人以下の場合は右にSpacerを配置
-                                    if characterCount <= 2 {
-                                        Spacer()
+                                    // 4. 左・中央・右のすべてが表示されていない場合
+                                    if current.leftCharacter.isEmpty && current.centerCharacter.isEmpty && current.rightCharacter.isEmpty {
+                                        Text("キャラクターが設定されていません")
                                     }
                                 }
-                                .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
+                                // .position の代わりに .frame(maxWidth: .infinity) を使用し、HStack内のSpacerに任せる
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+                                // MARK: - キャラクター表示部分
+                                // 表示するキャラクターの数を数える
+//                                let characterCount = [current.leftCharacter, current.centerCharacter, current.rightCharacter].filter { !$0.isEmpty }.count
+//
+//                                // HStacをキャラクター数に応じて調整
+//                                HStack(spacing: 20) {
+//                                    // キャラクターが2人以下の場合は左にSpacerを配置
+//                                    if characterCount <= 2 {
+//                                        Spacer()
+//                                    }
+//
+//                                    // 左のキャラクター
+//                                    if !current.leftCharacter.isEmpty {
+//                                        characterImage(
+//                                            imageName: current.leftCharacter,
+//                                            speakingCharacter: current.characterName
+//                                        )
+//                                        .frame(width: 250, height: 450)
+//                                    }
+//
+//                                    // キャラクターが1人または2人の場合にSpacerを挿入
+//                                    if characterCount == 2 {
+//                                        Spacer()
+//                                    }
+//
+//                                    // 中央のキャラクター
+//                                    if !current.centerCharacter.isEmpty {
+//                                        characterImage(
+//                                            imageName: current.centerCharacter,
+//                                            speakingCharacter: current.characterName
+//                                        )
+//                                        .frame(width: 250, height: 450)
+//                                    }
+//
+//                                    // キャラクターが1人または2人の場合にSpacerを挿入
+//                                    if characterCount == 1 || characterCount == 2 {
+//                                        Spacer()
+//                                    }
+//
+//                                    // 右のキャラクター
+//                                    if !current.rightCharacter.isEmpty {
+//                                        characterImage(
+//                                            imageName: current.rightCharacter,
+//                                            speakingCharacter: current.characterName
+//                                        )
+//                                        .frame(width: 250, height: 450)
+//                                    }
+//
+//                                    // キャラクターが2人以下の場合は右にSpacerを配置
+//                                    if characterCount <= 2 {
+//                                        Spacer()
+//                                    }
+//                                }
+//                                .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
+//                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
 
 
                                 Group{
@@ -338,7 +404,7 @@ struct StoryBranchView: View {
                     }
                     Spacer()
                     VStack {
-                        Gauge(width: geometry.size.width * 0.3, height: 100, score: gameManager.currentScore)
+                        Gauge(width: geometry.size.width * 0.3, height: 100, score: gameManager.currentScore, currentMode: $currentMode)
                             .padding(.trailing,2)
                         Spacer()
 

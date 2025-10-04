@@ -12,13 +12,17 @@ struct Gauge: View {
     var height: CGFloat
     var score: Double
 
+    @Binding var currentMode: GameMode
+
+
     var body: some View {
 
         let progress = score / 100.0
 
             Group {
                 ZStack {
-                    Image("step2_gauge_frame")
+//                    Image("step2_gauge_frame")
+                    Image(currentMode == .happy ? "step2_gauge_frame" : "step1_gauge_frame")
                         .resizable()
                         .scaledToFit()
                         .frame(width: width, height: height)
@@ -32,7 +36,7 @@ struct Gauge: View {
                             .brightness(0.1)
                             .frame(width: width * 0.675, height: height * 0.25)
 
-                        Image("step2_yellow")
+                        Image(currentMode == .happy ? "step2_yellow" :"step1_green")
                             .resizable()
                             .scaledToFit()
                             .frame(width: width * 0.675, height: height * 0.25)
@@ -58,9 +62,4 @@ struct Gauge: View {
             }
 //        }
     }
-}
-
-#Preview {
-    // プレビューで動作確認できるように、scoreに適当な値を入れる
-    Gauge(width: 300, height: 100, score: 75.0)
 }

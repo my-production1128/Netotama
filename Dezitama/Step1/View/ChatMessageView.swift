@@ -39,6 +39,7 @@ struct ChatMessageView: View {
     
     // 会話見返し
     @Binding var conversationHistory: [Dialogue2]
+    @Binding var currentMode: GameMode
     @State private var isChatLogVisible: Bool = false
     
     // 選択肢の状態管理
@@ -60,14 +61,16 @@ struct ChatMessageView: View {
          initialSceneId: String,
          onNextScene: @escaping (String) -> Void,
          path: Binding<NavigationPath>,
-         conversationHistory: Binding<[Dialogue2]>) {
-        
+         conversationHistory: Binding<[Dialogue2]>,
+         currentMode: Binding<GameMode>) {
+
         self.dialogues = dialogues
         self.initialSceneId = initialSceneId
         self.onNextScene = onNextScene
         self._currentSceneId = State(initialValue: initialSceneId)
         self._path = path
         self._conversationHistory = conversationHistory
+        self._currentMode = currentMode
     }
     
     @State private var animationTrigger = true
@@ -121,7 +124,7 @@ struct ChatMessageView: View {
                     VStack {
                         Gauge(width: geometry.size.width * 0.3,
                               height: 100,
-                              score: gameManager.currentScore)
+                              score: gameManager.currentScore, currentMode: $currentMode)
                         Spacer()
                     }
                 }
