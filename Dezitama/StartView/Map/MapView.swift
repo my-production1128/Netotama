@@ -85,34 +85,34 @@ struct MapView: View {
                     }
                 }
                 
-//                VStack{
-//                    Button("リセット") {
-//                        GameManager.shared.resetProgress()
-//                    }
-//                    .padding()
-//                    .background(Color.red)
-//                    .foregroundColor(.white)
-//                    .cornerRadius(8)
-//                    
-//                    Button("デバック"){
-//                        GameManager.shared.setDebugUnlockAll()
-//                    }
-//                    .padding()
-//                    .background(Color.green)
-//                    .foregroundColor(.white)
-//                    .cornerRadius(8)
-//                }
+                VStack{
+                    Button("リセット") {
+                        GameManager.shared.resetProgress()
+                    }
+                    .padding()
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                    
+                    Button("デバック"){
+                        GameManager.shared.setDebugUnlockAll()
+                    }
+                    .padding()
+                    .background(Color.green)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+                }
                 
-                Image(currentMode == .happy ? "good_kumo_03" : "bad_kumo_02")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 600, height: 600)
-                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.2) // 画面上部中央など
-                Image(currentMode == .happy ? "good_kumo_03" : "bad_kumo_02")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 500, height: 500)
-                    .position(x: geometry.size.width * 0.8, y: geometry.size.height * 0.6) // 画面上部中央など
+//                Image(currentMode == .happy ? "good_kumo_03" : "bad_kumo_02")
+//                    .resizable()
+//                    .scaledToFit()
+//                    .frame(width: 600, height: 600)
+//                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.2) // 画面上部中央など
+//                Image(currentMode == .happy ? "good_kumo_03" : "bad_kumo_02")
+//                    .resizable()
+//                    .scaledToFit()
+//                    .frame(width: 500, height: 500)
+//                    .position(x: geometry.size.width * 0.8, y: geometry.size.height * 0.6) // 画面上部中央など
                 
                 // 戻るボタン
                 VStack {

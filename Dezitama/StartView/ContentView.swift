@@ -25,8 +25,15 @@ struct ContentView: View {
     @GestureState private var isPressing = false
 
     @State private var stages: [StageData] = [
-        StageData(id: 1, csvFileName: "bad_netomo_story1_ver7"),
-//        StageData(id: 2, csvFileName: "stage2_groupchat"),
+        StageData(id: 1, csvFileName: "bad_netomo_story1_ver8"),
+        StageData(id: 2, csvFileName: "bad_netomo_story2_ver4")
+//        StageData(id: 3, csvFileName: "bad_netomo_story3_ver2"),
+//        StageData(id: 4, csvFileName: "bad_groupchat_story1_ver2"),
+//        StageData(id: 5, csvFileName: "bad_groupchat_story2_ver2"),
+//        StageData(id: 6, csvFileName: "bad_groupchat_story3_ver2"),
+//        StageData(id: 7, csvFileName: "bad_kakusan_story1_ver2"),
+//        StageData(id: 8, csvFileName: "bad_kakusan_story2_ver2"),
+//        StageData(id: 9, csvFileName: "bad_kakusan_story3_ver2")
     ]
     
     // 全てのシナリオデータを保持する一つの配列
@@ -214,6 +221,19 @@ struct ContentView: View {
                         )
                         .environmentObject(gameManager)
                         .navigationBarBackButtonHidden(true)
+
+                case .ChatMessageView(let stageIndex, let initialSceneId):
+                    ChatMessageView(
+                        dialogues: stages[stageIndex].dialogues,
+                        initialSceneId: initialSceneId,
+                        onNextScene: { nextId in
+                            // 必要な遷移処理
+                        },
+                        path: $path,
+                        conversationHistory: .constant([])
+                    )
+                    .environmentObject(gameManager)
+                    .navigationBarBackButtonHidden(true)
                 }
             }
         }
@@ -222,4 +242,9 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(SoundPlayer()) // SoundPlayerを提供
+        .onAppear {
+            // GameManagerの初期化確認
+            _ = GameManager.shared
+        }
 }
