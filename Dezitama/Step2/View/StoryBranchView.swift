@@ -162,7 +162,7 @@ struct StoryBranchView: View {
                                         Image(current.leftCharacter)
                                             .resizable()
                                             .scaledToFit()
-                                            .frame(width: 350, height: 500) // 💡 サイズは固定せず、maxWidthで調整する方が良いが、元の指定に合わせる
+                                            .frame(width: 350, height: 500)
                                             // 💡 非発言時はグレーアウトなどの修飾子をここに適用できる
                                             // .opacity(current.characterName == current.leftCharacter ? 1.0 : 0.7)
                                     }
@@ -512,13 +512,12 @@ struct StoryBranchView: View {
                 }
             }
             .onAppear {
-                // ビューが表示されたら、GameManagerのストーリー開始処理を呼ぶ
                 gameManager.startStory(storyId: StoryId, allBranchings: allBranchings)
 
                 if let first = currentStoryBranchings.first { // ★ filterされたストーリーの先頭を取得する
                     currentSceneId = first.sceneId
                     startTyping(fullText: first.text)
-                    //                    見返し機能用
+
                     conversationHistory.append(first)
                 }
             }
