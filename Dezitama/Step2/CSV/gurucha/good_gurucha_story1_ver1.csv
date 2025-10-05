@@ -1,0 +1,41 @@
+storyId,sceneId,sceneType,groupName,icon,characterName,leftCharacterName,centerCharacterName,rightCharacterName,text,nextSceneId,isChoice,choice1Text,choice1Percentage,choice1NextSceneId,choice2Text,choice2Percentage,choice2NextSceneId,choice3Text,choice3Percentage,choice3NextSceneId,bgm,background
+good_gurucha_story1,scene1,talk,,,Alec,Alec_anixiety,Cecil_smile,Cony_smile,やっと｜授業《じゅぎょう》終わった〜。,scene2,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene2,talk,,,Cecil,Alec_anixiety,Cecil_trouble,Cony_sorry,まじ｜疲《つか》れたね。,scene3,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene3,talk,,,Cony,Alec_anixiety,Cecil_trouble,Cony_sorry,先生の｜授業《じゅぎょう》って面白いけど｜内容《ないよう》｜難《むず》しいもんね。,scene4,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene4,talk,,,Alec,Alec_anixiety,Cecil_trouble,Cony_sorry,それな。<br>分からないところあったし、｜質問《しつもん》に行こうかなー。,scene5,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene5,talk,,,Cecil,Alec_anixiety,Cecil_trouble,Cony_irritation,あれ？<br>誰か先生に｜質問《しつもん》しに行ってる。,scene6,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene6,talk,,,Alec,Alec_anixiety,Cecil_smile,Cony_smile,うわ〜あれカールじゃん。<br>また先生のところ行ってるよ。,scene7,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene7,talk,,,Cecil,Alec_anixiety,Cecil_smile,Cony_smile,ほんとだね（笑）。<br>いつも｜質問《しつもん》しに行ってるよね。,scene8,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene8 ,talk,,,Cony,Alec_anixiety,Cecil_smile,Cony_suprized,,,true ,言われてみたら｜確《たし》かに！,0.3,scene9,先生に媚び売りたいんでしょ笑,0,scene9,そうだったんだ！,1,scene9,classroom＿bgm,classroom
+good_gurucha_story1,scene9,talk,,,Alec,Alec_normal,Cecil_trouble,Cony_irritation,なんかカールって変わってるよね。変な行動多いし,scene10,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene10,talk,,,Cecil,Alec_normal,Cecil_smile,Cony_irritation,いいこと思いついた！<br>｜授業《じゅぎょう》終わりいつも先生のところにいて、他の人が先生に話しかけられないじゃん？,scene11,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene11,talk,,,Cecil,Alec_normal,Cecil_smile,Cony_irritation,もうカールタイムって名前つけたらいいんじゃない？（笑）,scene12,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene12,talk,,,Alec,Alec_normal,Cecil_smile,Cony_smile,何それおもしろ（笑）。そうしよう！,scene13,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene13,talk,,,Cecil,Alec_normal,Cecil_smile,Cony_smile,仲良しグループだけの｜秘密《ひみつ》の｜呼《よ》び方にしよう！,scene14,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene14 ,talk,,,Cony,Alec_normal,Cecil_smile,Cony_smile,,,true ,いいね！3人の秘密のグループチャット作ろうよ！,0,scene17,うんそうだね…笑,0.3,Scene17,私はやめた方がいいと思うけどな,1,scene15,classroom＿bgm,classroom
+good_gurucha_story1,scene15,talk,,,Alec,Alec_normal,Cecil_smile,Cony_smile,もうコニーは真面目だな〜笑,scence16,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene16,talk,,,Cecil,Alec_normal,Cecil_smile,Cony_smile,まあいいじゃん！,scence17,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene17,talk,,,Alec,Alec_normal,Cecil_smile,Cony_smile,後でグループチャット作るね！,scence18,false ,,,,,,,,,,classroom＿bgm,classroom
+good_gurucha_story1,scene18,chat,仲良し（3）,alex_icon,Alec,,,,6年3組の仲良しグル作ったよ！,scence19,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene19,chat,仲良し（3）,cecil_icon,Cecil,,,,やったね！まじナイス！,scence20,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene20,chat,仲良し（3）,cony_icon,Cony,,,,,,true ,これで学校以外でも楽しい話ができるね！,0.3,scene21,このグルチャなら何送ってもバレないよね！,0,scene22,このグルチャでは悪口言わないってルール決めようよ！,1,scene23,chat_bgm,chat
+good_netomo_story1,scene21,chat,仲良し（3）,cecil_icon,Cecil,,,,学校じゃ話せないこともあるしね！,scene26,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene22,chat,仲良し（3）,cecil_icon,Cecil,,,,そうそう！私たちしか見れないから秘密も話せる！,scene26,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene23,chat,仲良し（3）,cecil_icon,Cecil,,,,もうコニー真面目なんだから笑,scene24,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene24,chat,仲良し（3）,cecil_icon,Cecil,,,,そんなの無くても大丈夫だって！,scene25,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene25,chat,仲良し（3）,cony_icon,Cony,,,,そうだよね！いっか！,scene26,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene26,chat,仲良し（3）,alex_icon,Alec,,,,てかさ、今日のカールまた先生に話しかけまくってて笑ちゃった。,scene27,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene27,chat,仲良し（3）,cecil_icon,Cecil,,,,先生も｜結構《けっこう》｜困《こま》ってそうだよね。<br>次の｜授業《じゅぎょう》始まるギリギリまで話しかけられてて,scene28,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene28,chat,仲良し（3）,cony_icon,Cony,,,,あれは“カールタイム”すぎ笑,scene29,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene29,chat,仲良し（3）,alex_icon,Alec,,,,次の3｜限《げん》の理科とかもう、最初の時間カールのせいでなかなか始まらなかったよね。<br>みんなの｜迷惑《めいわく》でしょ,scene30,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene30,chat,仲良し（3）,cony_icon,Cony,,,,,,true ,……いつも｜丁寧《ていねい》に聞いてるな〜とは思ってたけど……,1,scene31,カールってみんなの時間とってることに気づいてないのかな,0,scene31,（何も言わない）,0.3,scene31,chat_bgm,chat
+good_gurucha_story1,scene31,chat,仲良し（3）,cecil_icon,Cecil,,,,いやまだ聞くのはいいけどさ、1人で｜独占《どくせん》するのはズルいって〜笑,scene32,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene32,chat,仲良し（3）,cecil_icon,Cecil,,,,しかもさ、｜質問《しつもん》の内容が“電池のプラスってどっちが出てるんですか？”とか…<br>今じゃなくてよくない？笑,scene33,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene33,chat,仲良し（3）,cony_icon,Cony,,,,,,true ,タイミングってあるよね,0.3,scene35,まじ空気読めない笑,0,scene35,これって悪口になるんじゃない？？笑,1,scene34,chat_bgm,chat
+good_gurucha_story1,scene34,chat,仲良し（3）,cecil_icon,Cecil,,,,いやただのいじりだよ笑,scene35,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene35,chat,仲良し（3）,alex_icon,Alec,,,,先生も｜優《やさ》しいから、止めないんだよね〜笑,scene36,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene36,chat,仲良し（3）,cecil_icon,Cecil,,,,むしろ“いい｜質問《しつもん》だねぇ”とか言って、倍くらい長くなるやつ。,scene37,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene37,chat,仲良し（3）,cony_icon,Cony,,,,先生、話し始めると楽しそうだもんね……,scene38,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene38,chat,仲良し（3）,alex_icon,Alec,,,,もう明日も｜絶対《ぜったい》カールタイムだよ。<br>なんなら毎日あるまである笑,scene39,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene39,chat,仲良し（3）,,Cony,,,,｜観測《かんそく》日記つけよっか。<br>“本日のカールタイム：2｜限《げん》目、8分間”みたいな,scene40,false ,,,,,,,,,,chat_bgm,chat
+good_gurucha_story1,scene40,chat,仲良し（3）,,Cony,,,,,,true ,……観察するのは面白いかもね、<br>記録係になろうかな笑,0.3,,大賛成！私つける！,0,,2人ともふざけすぎだよ〜,1,,chat_bgm,chat

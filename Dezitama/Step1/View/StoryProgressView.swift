@@ -12,53 +12,64 @@ struct StoryProgressView: View {
     @State private var currentSceneId: String
     @State private var path = NavigationPath()
     @State private var conversationHistory: [Dialogue2] = []
+    @State private var chatSessionId: UUID = UUID()
     
     // ★ ビュー再描画用のキー
     @State private var viewRefreshKey: UUID = UUID()
     
     @EnvironmentObject private var gameManager: GameManager
-    
-    init(dialogues: [Dialogue2], initialSceneId: String = "Scene0") {
+    @Binding var currentMode: GameMode
+
+    init(dialogues: [Dialogue2], initialSceneId: String = "Scene0",
+          currentMode: Binding<GameMode>) {
         self.dialogues = dialogues
         self._currentSceneId = State(initialValue: initialSceneId)
+        self._currentMode = currentMode
     }
     
     var body: some View {
-        Group {
-            if let currentDialogue = currentDialogue {
-                ZStack {
-                    // ====== メインの画面 ======
-                    switch currentDialogue.viewType {
-                    case .dialogue:
-                            DialogueView(
-                                dialogue: currentDialogue,
-                                nextDialogue: getNextDialogue(), // ★ 追加
-                                onNext: handleNavigation
-                                        )
-                    case .chat:
-                        ChatMessageView(
-                            dialogues: dialogues,
-                            initialSceneId: currentSceneId,
-                            onNextScene: handleNavigation,
-                            path: $path,
-                            conversationHistory: $conversationHistory
-                        )
-                    case .start:
-                        startView(dialogue: currentDialogue, onNext: handleNavigation)
-                    }
+        if let currentDialogue = currentDialogue {
+            ZStack {
+                // ====== メインの画面 ======
+                switch currentDialogue.viewType {
+                case .dialogue:
+                    DialogueView(
+                        dialogue: currentDialogue,
+                        nextDialogue: getNextDialogue(),
+                        onNext: handleNavigation
+                    )
+                case .chat:
+                    ChatMessageView(
+                        dialogues: dialogues,
+                        initialSceneId: currentSceneId,
+                        onNextScene: handleNavigation,
+                        path: $path,
+                        conversationHistory: $conversationHistory,
+                        currentMode: $currentMode
+                    )
+                    .id(chatSessionId)
+                case .start:
+                    startView(dialogue: currentDialogue, onNext: handleNavigation)
                 }
-                .id(viewRefreshKey) // すべてのビューに共通のキーを適用
-                .transition(.opacity) // スムーズな遷移
-            } else {
-                Text("シーンが見つかりません: \(currentSceneId)")
-                    .foregroundColor(.red)
+                
+                // ====== Choice のオーバーレイ ======
+                // isChoiceがtrueの場合にBadChoiceViewを重ねて表示
+//                if currentDialogue.isChoice == true {
+//                    BadChoiceView(dialogue: currentDialogue, onChoice: handleNavigation)
+//                        .transition(.opacity)
+//                        .zIndex(10) // 最前面
+//                }
             }
-        }
-        .animation(.easeInOut(duration: 0.3), value: viewRefreshKey)
-        .onChange(of: currentSceneId) { oldValue, newValue in
-            if let newDialogue = dialogues.first(where: { $0.sceneId == newValue }) {
-                conversationHistory.append(newDialogue)
+            .id(viewRefreshKey)
+            .transition(.opacity)
+            .onChange(of: currentSceneId) { oldValue, newValue in
+                if let newDialogue = dialogues.first(where: { $0.sceneId == newValue }) {
+                    conversationHistory.append(newDialogue)
+                }
             }
+        } else {
+            Text("シーンが見つかりません: \(currentSceneId)")
+                .foregroundColor(.red)
         }
     }
     
