@@ -274,7 +274,7 @@ struct ContentView: View {
 
 //            グルチャ
             let goodGuruchaStory1 = loadBranchingCSV(fileName: "good_gurucha_story1_ver5")
-            let goodGuruchaStory2 = loadBranchingCSV(fileName: "good_gurucha_story2_ver4")
+            let goodGuruchaStory2 = loadBranchingCSV(fileName: "good_gurucha_story2_ver6")
             let goodGuruchaStory3 = loadBranchingCSV(fileName: "good_gurucha_story3_ver2")
             self.allBranchings = goodNetomoStory1
                 + goodNetomoStory2

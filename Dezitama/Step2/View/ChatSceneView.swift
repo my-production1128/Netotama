@@ -1,5 +1,5 @@
 //
-//  testScrollView.swift
+//  ChatSceneView.swift
 //  Dezitama
 //
 //  Created by 濱松未波 on 2025/06/13.
@@ -14,6 +14,7 @@ struct ChatMessage: Identifiable {
     var showText: Bool = false
     var imageIsVisible: Bool = false
     var textIsVisible: Bool = false
+    var isPicture: Bool = false
 }
 
 struct ChatSceneView: View {
@@ -97,16 +98,16 @@ struct ChatSceneView: View {
                         .position(x: width * 0.645, y: height * 0.91)
                 }
 
-                //                        Button {
-                //                            skipAllChatScenes()
-                //                        } label: {
-                //                            Text("飛ばす")
-                //                                .font(.system(size: 20, weight: .bold, design: .default))
-                //                                .padding(10)
-                //                                .background(Color.red)
-                //                                .foregroundColor(.white)
-                //                                .clipShape(Capsule())
-                //                        }
+//                                        Button {
+//                                            skipAllChatScenes()
+//                                        } label: {
+//                                            Text("飛ばす")
+//                                                .font(.system(size: 20, weight: .bold, design: .default))
+//                                                .padding(10)
+//                                                .background(Color.red)
+//                                                .foregroundColor(.white)
+//                                                .clipShape(Capsule())
+//                                        }
 
                 //                    選択肢の問題を出す
                 if isPopupVisible, let choiceScene = currentChoiceScene {
@@ -169,6 +170,22 @@ struct ChatSceneView: View {
                     if chatMessage[lastMessageIndex].scene.isChoice ?? false {
                         isPopupVisible = true
                         currentChoiceScene = chatMessage[lastMessageIndex].scene
+                    } else if chatMessage[lastMessageIndex].isPicture {
+                        chatMessage[lastMessageIndex].isAnimating = true
+                        chatMessage[lastMessageIndex].showText = false
+                        chatMessage[lastMessageIndex].imageIsVisible = true
+                        chatMessage[lastMessageIndex].textIsVisible = false
+                        DispatchQueue.main.async {
+                            if let last = chatMessage.last {
+                                withAnimation {
+                                    self.proxy?.scrollTo(last.id, anchor: .bottom)
+                                }
+                            }
+                        }
+                        if chatMessage[lastMessageIndex].scene.characterName != chatMessage[lastMessageIndex].scene.rightCharacter {
+                            proceedToNextIfNeeded()
+                        }
+
                     } else {
                         chatMessage[lastMessageIndex].isAnimating = false
                         chatMessage[lastMessageIndex].showText = true
@@ -179,9 +196,7 @@ struct ChatSceneView: View {
                                 }
                             }
                         }
-
-                            proceedToNextIfNeeded()
-
+                        proceedToNextIfNeeded()
                     }
                     return
                 }
@@ -238,14 +253,87 @@ struct ChatSceneView: View {
                         }
 
                     } else {
-
                         proceedToNextIfNeeded()
-
                     }
+                } else if next.sceneType == "chat_picture" {
+//                    // 画像メッセージの作成
+//                    let newMsg = ChatMessage(
+//                        scene: next,
+//                        isAnimating: false,
+//                        showText: true,
+//                        imageIsVisible: true,
+//                        isPicture: true
+//                    )
+//                    chatMessage.append(newMsg)
+//                    allScene = newMsg.scene
+//
+//                    DispatchQueue.main.async {
+//                        if let last = chatMessage.last {
+//                            withAnimation {
+//                                self.proxy?.scrollTo(last.id, anchor: .bottom)
+//                            }
+//                        }
+//                    }
+//
+//                    // 相手の画像メッセージの場合、自動で次のセリフに進む
+//                    if next.characterName != next.rightCharacter {
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { // 1.5秒待機
+//                            proceedToNextIfNeeded()
+//                        }
+//                    }
+                    // 💡 修正点 1: 主人公からの画像メッセージを自動進行の仕組みに委譲する
+                    if next.characterName == next.rightCharacter {
+
+                        // 主人公の画像メッセージの場合、自動進行のロジックを使用
+                        isTyping = true
+                        pendingMessage = next
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            if let msg = pendingMessage {
+                                // isAnimating: false, showText: true で作成し、すぐに画像を表示させる
+                                let newMsg = ChatMessage(scene: msg, isAnimating: false, showText: true, imageIsVisible: true, textIsVisible: true, isPicture: true)
+
+                                chatMessage.append(newMsg)
+                                // conversationHistoryへの追加は不要
+                                allScene = msg
+                            }
+                            pendingMessage = nil
+                            isTyping = false
+
+                            // 💡 次の進行チェックへ進む (次のメッセージが相手の自動返信でないかチェック)
+                            proceedToNextIfNeeded()
+                        }
+                        return // 主人公メッセージはタップではなくタイマーで進行するため、タップ処理を終了
+
+                    } else {
+                        // 相手からの画像メッセージ (既存のロジック - タップでロード、自動で次の進行へ)
+                        let newMsg = ChatMessage(
+                            scene: next,
+                            isAnimating: false,
+                            showText: true,
+                            imageIsVisible: true,
+                            isPicture: true
+                        )
+                        chatMessage.append(newMsg)
+                        allScene = newMsg.scene
+
+                        DispatchQueue.main.async {
+                            if let last = chatMessage.last {
+                                withAnimation {
+                                    self.proxy?.scrollTo(last.id, anchor: .bottom)
+                                }
+                            }
+                        }
+
+                        // 相手の画像メッセージの場合、1.5秒待機後に次のセリフに進む
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                            proceedToNextIfNeeded()
+                        }
+                    }
+
+
                 } else {
-
                     onNextScene(nextId)
-
                 }
             }
             //                ↑ここまでonTapGestureの処理
@@ -334,7 +422,42 @@ struct ChatSceneView: View {
                                 .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(0.05), value: message.imageIsVisible)
 
                             //                            ルビつきでテキストを表示
-                            if message.showText {
+                            if message.isPicture {
+                                // 画像メッセージの場合
+                                Image(scene.text) // 💡 画像ファイル名は scene.text に格納されている
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 250, height: 250) // 💡 適切なサイズに調整してください
+                                    .cornerRadius(16)
+                                    .padding(.bottom, 8)
+                                    .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomLeading) // textIsVisibleで拡大アニメーション
+                                    .opacity(message.textIsVisible ? 1.0 : 0.0) // textIsVisibleでフェードイン
+                                    .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
+                                    .onAppear {
+                                        DispatchQueue.main.async {
+                                            withAnimation {
+                                                proxy.scrollTo(message.id, anchor: .bottom)
+                                            }
+                                        }
+                                        withAnimation {
+                                            if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                                chatMessage[index].imageIsVisible = true
+                                                musicplayer.playSE(fileName: "icon_SE")
+                                            }
+                                        }
+
+                                        // 💡 修正点 2: 0.8秒後に画像を表示させる (タイピングアニメーションの代わりに遅延を入れる)
+                                        // 相手の画像メッセージの場合、この遅延の後に画像が表示される
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                                            withAnimation {
+                                                if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                                    chatMessage[index].textIsVisible = true // 💡 画像を表示させる
+                                                }
+                                            }
+                                        }
+                                    }
+
+                            } else if message.showText {
                                 RubyLabelRepresentable(
                                     attributedText: scene.text
                                         .replacingOccurrences(of: "<br>", with: "\n")
@@ -426,8 +549,41 @@ struct ChatSceneView: View {
                                     animationTrigger.toggle()
                                 }
                         }
+                        if message.isPicture {
+                            // 画像メッセージの場合
+                            Image(scene.text) // 💡 画像ファイル名は scene.text に格納されている
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 250, height: 250) // 💡 適切なサイズに調整してください
+                                .cornerRadius(16)
+                                .padding(.bottom, 8)
+                                .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomLeading) // textIsVisibleで拡大アニメーション
+                                .opacity(message.textIsVisible ? 1.0 : 0.0) // textIsVisibleでフェードイン
+                                .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
+                                .onAppear {
+                                    DispatchQueue.main.async {
+                                        withAnimation {
+                                            proxy.scrollTo(message.id, anchor: .bottom)
+                                        }
+                                    }
+                                    withAnimation {
+                                        if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                            chatMessage[index].imageIsVisible = true
+                                            musicplayer.playSE(fileName: "icon_SE")
+                                        }
+                                    }
 
-                        if message.showText {
+                                    // 💡 修正点 2: 0.8秒後に画像を表示させる (タイピングアニメーションの代わりに遅延を入れる)
+                                    // 相手の画像メッセージの場合、この遅延の後に画像が表示される
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                                        withAnimation {
+                                            if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
+                                                chatMessage[index].textIsVisible = true // 💡 画像を表示させる
+                                            }
+                                        }
+                                    }
+                                }
+                        } else if message.showText {
                             RubyLabelRepresentable(
                                 attributedText: scene.text
                                     .replacingOccurrences(of: "<br>", with: "\n")
@@ -520,6 +676,41 @@ struct ChatSceneView: View {
         if next.sceneType != "chat" {
             onNextScene(nextId)
             return
+        }
+
+        if next.sceneType == "chat" || next.sceneType == "chat_picture" {
+
+            if !(next.isChoice ?? false) && next.characterName == next.rightCharacter {
+
+                isTyping = true
+                pendingMessage = next
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    if let msg = pendingMessage {
+                        // 画像かテキストかによってメッセージを構成
+                        let isPic = msg.sceneType == "chat_picture"
+                        let newMsg = ChatMessage(
+                            scene: msg,
+                            isAnimating: false,
+                            showText: true,
+                            imageIsVisible: isPic, // 画像ならアイコンを即表示
+                            textIsVisible: isPic, // 画像なら画像を即表示
+                            isPicture: isPic
+                        )
+
+                        chatMessage.append(newMsg)
+                        // 画像メッセージの見返し機能への追加は不要
+                        if !isPic {
+                            conversationHistory.append(newMsg.scene)
+                        }
+                        allScene = msg
+                    }
+                    pendingMessage = nil
+                    isTyping = false
+                    proceedToNextIfNeeded() // 連続する自動返信をチェック
+                }
+                return
+            }
         }
 
         if next.isChoice ?? false {
