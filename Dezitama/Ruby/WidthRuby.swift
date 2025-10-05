@@ -203,11 +203,6 @@ struct WideRubyLabelRepresentable: UIViewRepresentable {
         uiView.textAlignment = textAlignment  // 既存のプロパティを使用
     }
 
-//    extension UIFont {
-//        static func customFont(ofSize size: CGFloat) -> UIFont {
-//            return UIFont(name: "MPLUS1-Regular", size: size) ?? UIFont.systemFont(ofSize: size)
-//        }
-//    }
 }
 
 

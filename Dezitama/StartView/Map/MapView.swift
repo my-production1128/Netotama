@@ -12,11 +12,12 @@ struct MapView: View {
     @Binding var path: NavigationPath
     @EnvironmentObject private var gameManager: GameManager
     @EnvironmentObject var musicplayer: SoundPlayer
-    @State private var currentMode: GameMode
-    
-    init(path: Binding<NavigationPath>, mode: GameMode) {
+    @Binding var currentMode: GameMode
+
+    init(path: Binding<NavigationPath>, mode: GameMode,currentMode: Binding<GameMode>) {
         self._path = path
-        self._currentMode = State(initialValue: mode)
+        self._currentMode = currentMode
+//        self._currentMode = State(initialValue: mode)
         print("MapView init: mode=\(mode)")
     }
     
@@ -182,6 +183,6 @@ struct MapView: View {
 
 // MARK: - Preview
 #Preview {
-    MapView(path: .constant(NavigationPath()), mode: .happy)
-        .environmentObject(GameManager.shared)
+//    MapView(path: .constant(NavigationPath()), mode: .happy, currentMode: $currentMode)
+//        .environmentObject(GameManager.shared)
 }

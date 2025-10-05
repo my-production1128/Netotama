@@ -59,6 +59,12 @@ struct ContentView: View {
     
     @State private var animate = false
 
+    @State private var currentMode: GameMode = .happy
+
+    let floatingAnimation: Animation = Animation
+        .easeInOut(duration: 2.0)
+        .repeatForever(autoreverses: true)
+
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -74,24 +80,58 @@ struct ContentView: View {
                 VStack{
                     Spacer()
                     
-                    Image("dejitama_logo")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 450, height: 450)
-                        .offset(y: animate ? 0 : -40)
+
+                    ZStack {
+                        Image("conynonettodaiboukenn")
+                            .offset(x: animate ? 70: 75, y: animate ? -150 : -165)
+                            .animation(
+                                floatingAnimation.delay(-0.7),
+                                value: animate
+                            )
+
+
+                        Image("startlogo")
+                            .offset(x: animate ? 278: 287, y: animate ? -238 : -262)
+                            .animation(
+                                floatingAnimation.delay(-0.7),
+                                value: animate
+                            )
+
+                        Image("hitologo")
+                            .offset(x: animate ? -410: -408, y: animate ? -20 : -28)
+                            .animation(
+                                floatingAnimation.delay(0.0),
+                                value: animate
+                            )
+
+                        Image("dejitamalogonomi")
+                            .offset(y: animate ? -9 : -14)
+                            .animation(
+                                floatingAnimation.delay(0.0),
+                                value: animate
+                            )
+
+                        Image("hurtlogo")
+                            .offset(x: animate ? -350: -346, y: animate ? 98 : 80)
+                            .animation(
+                                floatingAnimation.delay(0.3),
+                                value: animate
+                            )
+
+                        Image("tamagologo")
+                            .offset(x: animate ? 270: 267, y: animate ? 98 : 65)
+                            .animation(
+                                floatingAnimation.delay(-1.0),
+                                value: animate
+                            )
+                    }
                         .onAppear {
-                            // 最初は真ん中に配置してからアニメーションを開始
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                                 animate = true
                             }
                         }
-                        .animation(
-                            .easeInOut(duration: 1.2)
-                            .repeatForever(autoreverses: true),
-                            value: animate
-                        )
-                    
-//                    Spacer()
+                        .padding(80)
+
                     Button {
                         musicplayer.stopAllMusic()
                         musicplayer.playSE(fileName: "startbutton_SE") {
@@ -145,10 +185,12 @@ struct ContentView: View {
                         stages[index].loadDialogues()
                     }
                 let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver5")
-                let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver2")
-                let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver1")
-                self.allBranchings = goodNetomoStory1 + goodNetomoStory2 + goodNetomoStory3
-
+                let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver3")
+                let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver2")
+                let goodGuruchaStory1 = loadBranchingCSV(fileName: "good_gurucha_story1_ver1")
+                let goodGuruchaStory2 = loadBranchingCSV(fileName: "good_gurucha_story2_ver1")
+                let goodGuruchaStory3 = loadBranchingCSV(fileName: "good_gurucha_story3_ver1")
+                self.allBranchings = goodNetomoStory1 + goodNetomoStory2 + goodNetomoStory3 + goodGuruchaStory1 + goodGuruchaStory2 + goodGuruchaStory3
 
 //                BGMの再生
                 musicplayer.stopAllMusic()
@@ -161,12 +203,12 @@ struct ContentView: View {
                         .environmentObject(gameManager)
                     
                 case .MapViewBad:
-                    MapView(path: $path, mode: .bad)
+                    MapView(path: $path, mode: .bad,currentMode: $currentMode)
                         .environmentObject(gameManager)
                         .navigationBarBackButtonHidden(true)
                     
                 case .MapViewHappy:
-                    MapView(path: $path, mode: .happy)
+                    MapView(path: $path, mode: .happy,currentMode: $currentMode)
                         .environmentObject(gameManager)
                         .navigationBarBackButtonHidden(true)
                     
@@ -176,7 +218,8 @@ struct ContentView: View {
                                     allScene: $allScene,
                                     StoryId: StoryId,
                                     stageId: stageId,
-                                    mode: mode
+                                    mode: mode,
+                                    currentMode: $currentMode
                     )
                     .environmentObject(gameManager)
                     .navigationBarBackButtonHidden(true)
@@ -210,7 +253,7 @@ struct ContentView: View {
                 case .StoryProgressView(let stageIndex):
                         StoryProgressView(
                             dialogues: stages[stageIndex].dialogues,
-                            initialSceneId: "Scene0"
+                            initialSceneId: "Scene0", currentMode: $currentMode
                         )
                         .environmentObject(gameManager)
                         .navigationBarBackButtonHidden(true)
@@ -221,5 +264,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+//    ContentView()
 }

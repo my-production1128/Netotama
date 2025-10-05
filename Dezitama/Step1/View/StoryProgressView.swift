@@ -18,10 +18,13 @@ struct StoryProgressView: View {
     @State private var isInChatSession: Bool = false
     
     @EnvironmentObject private var gameManager: GameManager
-    
-    init(dialogues: [Dialogue2], initialSceneId: String = "Scene0") {
+    @Binding var currentMode: GameMode
+
+    init(dialogues: [Dialogue2], initialSceneId: String = "Scene0",
+          currentMode: Binding<GameMode>) {
         self.dialogues = dialogues
         self._currentSceneId = State(initialValue: initialSceneId)
+        self._currentMode = currentMode
     }
     
     var body: some View {
@@ -37,7 +40,8 @@ struct StoryProgressView: View {
                         initialSceneId: currentSceneId,
                         onNextScene: handleNavigation,
                         path: $path,
-                        conversationHistory: $conversationHistory
+                        conversationHistory: $conversationHistory,
+                        currentMode: $currentMode
                     )
                     .id(chatSessionId)
                 case .start:
