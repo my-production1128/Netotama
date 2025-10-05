@@ -42,9 +42,9 @@ struct ChatMessageView: View {
     @Binding var currentMode: GameMode
     @State private var isChatLogVisible: Bool = false
     
-    // 選択肢の状態管理
-    @State private var selectedChoice: Int? = nil
-    @State private var isChoiceMade = false
+    // ★ 選択肢のポップアップ管理
+    @State private var isPopupVisible: Bool = false
+    @State private var currentChoiceDialogue: Dialogue2? = nil
     
     // dialoguesをマップ化
     private var dialogueMap: [String: Dialogue2] {
@@ -96,25 +96,13 @@ struct ChatMessageView: View {
                     VStack {
                         // ホームボタン
                         Button(action: {
-                            path.removeLast()
+//                            path.removeLast()
                         }) {
                             Image("home")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 100, height: 100)
                         }
-                        
-                        // 会話見返し
-                        Button(action: {
-                            isChatLogVisible.toggle()
-                        }) {
-                            Image("chat")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 60, height: 60)
-                                .padding(20)
-                        }
-                        
                         Spacer()
                     }
                     
@@ -122,9 +110,29 @@ struct ChatMessageView: View {
                     
                     // スコアゲージ
                     VStack {
+
+                        HStack{
+                            Spacer()
+                        }
+                        HStack{
+                            Spacer()
+                            
+                            // 会話見返し
+                            Button(action: {
+                                isChatLogVisible.toggle()
+                            }) {
+                                Image("chat")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 80, height: 80)
+                                    .padding(20)
+                            }
+                        }
+
                         Gauge(width: geometry.size.width * 0.3,
                               height: 100,
                               score: gameManager.currentScore, currentMode: $currentMode)
+
                         Spacer()
                     }
                 }
@@ -160,7 +168,7 @@ struct ChatMessageView: View {
                     .onAppear {
                         startLoopingAnimation()
                     }
-                    .position(x: geometry.size.width * 0.7,
+                    .position(x: geometry.size.width * 0.68,
                               y: geometry.size.height * 0.9)
                 
                 // スキップボタン
@@ -177,6 +185,21 @@ struct ChatMessageView: View {
                 }
                 .position(x: geometry.size.width - 120,
                           y: geometry.size.height - 50)
+                
+                // Body の ZStack 内
+                if isPopupVisible, let choiceDialogue = currentChoiceDialogue {
+                    BadChoiceView(
+                        dialogue: choiceDialogue,
+                        isPopupVisible: $isPopupVisible,
+                        onChoiceSelected: { selectedText, nextId, percentage in
+                            handleChoiceSelected(selectedText: selectedText,
+                                               nextId: nextId,
+                                               percentage: percentage)
+                        }
+                    )
+                    .transition(.opacity)
+                    .zIndex(100)
+                }
             }
             .onAppear {
                 initializeChat()
@@ -193,86 +216,8 @@ extension ChatMessageView {
     
     @ViewBuilder
     func messageRow(for message: ChatMessage2) -> some View {
-        let dialogue = message.dialogue
-        
-        // 選択肢の場合
-        if dialogue.isChoice == true {
-            choiceView(for: message)
-        } else {
-            // 通常のメッセージ
-            normalMessageView(for: message)
-        }
-    }
-    
-    @ViewBuilder
-    private func choiceView(for message: ChatMessage2) -> some View {
-        let dialogue = message.dialogue
-        
-        VStack(spacing: 20) {
-            Text("あなたなら何て言う?")
-                .font(.custom("MPLUS1-Bold", size: 28))
-                .foregroundColor(.white)
-                .padding(.top, 10)
-            
-            VStack(spacing: 15) {
-                // 選択肢1
-                if let choice1Text = dialogue.choice1Text {
-                    Button(action: {
-                        handleChoice(1, for: message)
-                    }) {
-                        RubyLabelRepresentable(
-                            attributedText: choice1Text
-                                .replacingOccurrences(of: "<br>", with: "\n")
-                                .createRuby(font: .customFont(ofSize: 24), color: .black),
-                            font: .customFont(ofSize: 24),
-                            textColor: .black,
-                            textAlignment: .left
-                        )
-                        .frame(width: 400)
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 10)
-                    }
-                    .buttonStyle(ChoiceButtonStyle(isSelected: selectedChoice == 1))
-                    .disabled(isChoiceMade)
-                }
-                
-                // 選択肢2
-                if let choice2Text = dialogue.choice2Text {
-                    Button(action: {
-                        handleChoice(2, for: message)
-                    }) {
-                        RubyLabelRepresentable(
-                            attributedText: choice2Text
-                                .replacingOccurrences(of: "<br>", with: "\n")
-                                .createRuby(font: .customFont(ofSize: 24), color: .black),
-                            font: .customFont(ofSize: 24),
-                            textColor: .black,
-                            textAlignment: .left
-                        )
-                        .frame(width: 400)
-                        .padding(.horizontal, 20)
-                        .padding(.vertical, 10)
-                    }
-                    .buttonStyle(ChoiceButtonStyle(isSelected: selectedChoice == 2))
-                    .disabled(isChoiceMade)
-                }
-            }
-        }
-        .padding()
-        .background(Color.black.opacity(0.3))
-        .cornerRadius(20)
-        .padding(.horizontal)
-        .scaleEffect(message.imageIsVisible ? 1.0 : 0.8)
-        .opacity(message.imageIsVisible ? 1.0 : 0.0)
-        .animation(.easeOut(duration: 0.3), value: message.imageIsVisible)
-        .onAppear {
-            if let index = chatMessages.firstIndex(where: { $0.id == message.id }) {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                    chatMessages[index].imageIsVisible = true
-                    scrollToBottom()
-                }
-            }
-        }
+        // 選択肢のときもここでは描画しない
+        normalMessageView(for: message)
     }
     
     @ViewBuilder
@@ -401,71 +346,36 @@ extension ChatMessageView {
         }
     }
     
-    // 選択肢処理
-    private func handleChoice(_ choiceNumber: Int, for message: ChatMessage2) {
-        isChoiceMade = true
-        selectedChoice = choiceNumber
-        
-        let dialogue = message.dialogue
-        let nextId: String?
-        let choiceText: String?
-        let percentage: String?
-        
-        switch choiceNumber {
-        case 1:
-            nextId = dialogue.choice1NextSceneId
-            choiceText = dialogue.choice1Text
-            percentage = dialogue.choice1Percentage
-        case 2:
-            nextId = dialogue.choice2NextSceneId
-            choiceText = dialogue.choice2Text
-            percentage = dialogue.choice2Percentage
-        default:
-            return
+    private func handleChoiceSelected(selectedText: String, nextId: String, percentage: String?) {
+        // 1. スコア加算
+        if let percentageStr = percentage, let percentageValue = Double(percentageStr) {
+            gameManager.addScore(percentage: percentageValue)
         }
         
-        print("🔵 選択肢\(choiceNumber)を選びました！パーセンテージ: \(percentage ?? "nil")")
+        // 2. 最後のメッセージを選択したテキストで置き換え（即表示）
+        if let lastMessageIndex = chatMessages.indices.last {
+            let newDialogue = Dialogue2(
+                characterName: "コニー", // 主人公のセリフに変更
+                dialogueText: selectedText, // 選択したテキスト
+                nextSceneId: nextId,        // 次のシーンID
+                isChoice: false             // もう選択肢ではない
+            )
+            
+            chatMessages[lastMessageIndex] = ChatMessage2(
+                dialogue: newDialogue,
+                isAnimating: false,    // ← アニメーションなし
+                showText: true,        // ← すぐ表示
+                imageIsVisible: true,
+                textIsVisible: true
+            )
+        }
         
-        // 選択したテキストをコニーのメッセージとして追加
-        if let text = choiceText, let next = nextId {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-//                // 選択したメッセージを追加
-//                let chosenDialogue = Dialogue2(
-//                    sceneId: "choice_\(UUID())",
-//                    viewType: .chat,
-//                    characterName: "コニー",
-//                    dialogueText: text,
-//                    nextSceneId: next
-//                )
-//                let chosenMsg = ChatMessage2(
-//                    dialogue: chosenDialogue,
-//                    isAnimating: false,
-//                    showText: true,
-//                    imageIsVisible: true,
-//                    textIsVisible: true
-//                )
-//                self.chatMessages.append(chosenMsg)
-//                self.conversationHistory.append(chosenDialogue)
-//                self.scrollToBottom()
-//                
-//                // 次のシーンへ
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-//                    self.currentSceneId = next
-//                    self.isChoiceMade = false
-//                    self.selectedChoice = nil
-//                    
-//                    // 次のシーンが chat なら続行
-//                    if let nextDialogue = self.dialogueMap[next] {
-//                        if nextDialogue.viewType == .chat {
-//                            self.proceedToNextIfNeeded()
-//                        } else {
-//                            self.onNextScene(next)
-//                        }
-//                    } else {
-//                        self.onNextScene(next)
-//                    }
-//                }
-//            }
+        // 3. ポップアップを閉じる
+        isPopupVisible = false
+        
+        // 4. 次のシーンへ進む（今まで通りの進行ルールを適用）
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            proceedToNextIfNeeded()
         }
     }
     
@@ -510,19 +420,29 @@ extension ChatMessageView {
         // 選択肢の場合は表示して停止
         if next.isChoice == true {
             isTyping = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                let newMsg = ChatMessage2(dialogue: next,
-                                          isAnimating: false,
-                                          showText: true,
-                                          imageIsVisible: false,
-                                          textIsVisible: false)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                // チャットに選択肢メッセージを追加
+                let newMsg = ChatMessage2(
+                    dialogue: next,
+                    isAnimating: false,  // アニメーション不要
+                    showText: true,      // すぐ表示
+                    imageIsVisible: true,
+                    textIsVisible: true
+                )
                 chatMessages.append(newMsg)
                 conversationHistory.append(next)
-                scrollToBottom()
                 isTyping = false
+                
+                
+                // 数秒後にポップアップを自動表示
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    currentChoiceDialogue = next
+                    isPopupVisible = true
+                }
             }
-            return
+            return // ここで停止！
         }
+
         
         // chat じゃない場合は親へ
         if next.viewType != .chat {
@@ -588,15 +508,22 @@ extension ChatMessageView {
     
     /// タップで次に進む
     func handleTap() {
+        if isPopupVisible { return }
+        
         guard let last = chatMessages.last else { return }
+        
+        // ★ 選択肢のアニメーション中ならポップアップを表示
+        if last.dialogue.isChoice == true && last.isAnimating {
+            isPopupVisible = true
+            currentChoiceDialogue = last.dialogue
+            return
+        }
         
         // コニーのアニメーション中ならテキストを表示
         if last.dialogue.characterName == "コニー", last.isAnimating {
             updateMessageState(id: last.id)
             return
         }
-        
-        // それ以外は何もしない（自動進行に任せる）
     }
     
     // 選択肢までスキップ
@@ -646,18 +573,3 @@ extension ChatMessageView {
     }
 }
 
-// MARK: - 選択肢ボタンスタイル
-struct ChoiceButtonStyle: ButtonStyle {
-    var isSelected: Bool
-    
-    let defaultBackgroundColor = Color(red: 0.992, green: 0.925, blue: 0.824)
-    let selectedBackgroundColor = Color(red: 1.0, green: 0.737, blue: 0.251)
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .background(isSelected || configuration.isPressed ? selectedBackgroundColor : defaultBackgroundColor)
-            .clipShape(Capsule())
-            .scaleEffect(configuration.isPressed ? 0.95 : 1)
-            .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
-    }
-}

@@ -25,4 +25,5 @@ enum ViewBuilderPath: Hashable {
     case ChoiceView
     
     case StoryProgressView(stageIndex: Int)
+    case ChatMessageView(stageIndex: Int, initialSceneId: String)
 }

@@ -200,26 +200,26 @@ final class GameManager: ObservableObject {
             case 1:
                 path.append(ViewBuilderPath.StoryProgressView(stageIndex: 0))
             case 2:
-                path.append(ViewBuilderPath.GroupchatView)
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 1))
             case 3:
-                path.append(ViewBuilderPath.kakusanView)
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 2))
             case 4:
-                // path.append(ViewBuilderPath.BadStage4View)
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 3))
                 break
             case 5:
-                // path.append(ViewBuilderPath.BadStage5View)
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 4))
                 break
             case 6:
-                // path.append(ViewBuilderPath.BadStage6View)
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 5))
                 break
             case 7:
-                // path.append(ViewBuilderPath.BadStage7View)
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 6))
                 break
             case 8:
-                // path.append(ViewBuilderPath.BadStage8View)
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 7))
                 break
             case 9:
-                // path.append(ViewBuilderPath.BadStage9View)
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 8))
                 break
             default:
                 print("Unhandled Bad stage: \(stageId)")

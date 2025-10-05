@@ -37,29 +37,30 @@ struct Dialogue: Identifiable {
 
 struct Dialogue2: Identifiable {
     let id = UUID()
-    let storyId: String
-    let sceneId: String
-    let viewType: ViewType
-    let characterName: String?
-    let dialogueText: String?
-    let nextSceneId: String?
-    let isChoice: Bool
-    let choice1Text: String?
-    let choice1Percentage: String?
-    let choice1NextSceneId: String?
-    let choice2Text: String?
-    let choice2Percentage: String?
-    let choice2NextSceneId: String?
-    let background: String?
-    let talkingPeople: String?           // TalkingPeople
-    let leftCharacter: String?           // LeftCharacter
-    let centerCharacter: String?         // CenterCharacter
-    let rightCharacter: String?          // RightCharacter
-    let oneCharacter: String?            // OneCharacter
-    let twoCharacter: String?            // TwoCharacter
-    let onePerson: String?               // OnePerson
-    let bgm: String?
+    var storyId: String = ""
+    var sceneId: String = ""
+    var viewType: ViewType = .chat
+    var characterName: String? = nil
+    var dialogueText: String? = nil
+    var nextSceneId: String? = nil
+    var isChoice: Bool = false
+    var choice1Text: String? = nil
+    var choice1Percentage: String? = nil
+    var choice1NextSceneId: String? = nil
+    var choice2Text: String? = nil
+    var choice2Percentage: String? = nil
+    var choice2NextSceneId: String? = nil
+    var background: String? = nil
+    var talkingPeople: String? = nil
+    var leftCharacter: String? = nil
+    var centerCharacter: String? = nil
+    var rightCharacter: String? = nil
+    var oneCharacter: String? = nil
+    var twoCharacter: String? = nil
+    var onePerson: String? = nil
+    var bgm: String? = nil
 }
+
 
 enum ViewType: String {
     case dialogue

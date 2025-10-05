@@ -12,10 +12,10 @@ struct StoryProgressView: View {
     @State private var currentSceneId: String
     @State private var path = NavigationPath()
     @State private var conversationHistory: [Dialogue2] = []
-    
-    // ★ チャットセッションを管理
     @State private var chatSessionId: UUID = UUID()
-    @State private var isInChatSession: Bool = false
+    
+    // ★ ビュー再描画用のキー
+    @State private var viewRefreshKey: UUID = UUID()
     
     @EnvironmentObject private var gameManager: GameManager
     @Binding var currentMode: GameMode
@@ -33,7 +33,11 @@ struct StoryProgressView: View {
                 // ====== メインの画面 ======
                 switch currentDialogue.viewType {
                 case .dialogue:
-                    DialogueView(dialogue: currentDialogue, onNext: handleNavigation)
+                    DialogueView(
+                        dialogue: currentDialogue,
+                        nextDialogue: getNextDialogue(),
+                        onNext: handleNavigation
+                    )
                 case .chat:
                     ChatMessageView(
                         dialogues: dialogues,
@@ -56,12 +60,25 @@ struct StoryProgressView: View {
 //                        .zIndex(10) // 最前面
 //                }
             }
+            .id(viewRefreshKey)
+            .transition(.opacity)
             .onChange(of: currentSceneId) { oldValue, newValue in
                 if let newDialogue = dialogues.first(where: { $0.sceneId == newValue }) {
                     conversationHistory.append(newDialogue)
                 }
             }
+        } else {
+            Text("シーンが見つかりません: \(currentSceneId)")
+                .foregroundColor(.red)
         }
+    }
+    
+    private func getNextDialogue() -> Dialogue2? {
+        guard let current = currentDialogue,
+              let nextId = current.nextSceneId else {
+            return nil
+        }
+        return dialogues.first(where: { $0.sceneId == nextId })
     }
     
     private func handleNavigation(nextSceneId: String) {
@@ -69,18 +86,17 @@ struct StoryProgressView: View {
             return
         }
         
-        if currentDialogue?.viewType == .chat && nextDialogue.viewType == .chat {
-            currentSceneId = nextSceneId
-        } else if nextDialogue.viewType == .chat {
-            isInChatSession = true
-            currentSceneId = nextSceneId
-        } else {
-            if currentDialogue?.viewType == .chat {
-                isInChatSession = false
-                chatSessionId = UUID()
-            }
-            currentSceneId = nextSceneId
+        let currentViewType = currentDialogue?.viewType
+        let nextViewType = nextDialogue.viewType
+        
+        // すべての遷移パターンに対応
+        // viewTypeが変わる場合は必ず新しいキーを生成して完全に再描画
+        if currentViewType != nextViewType {
+            viewRefreshKey = UUID()
         }
+        
+        // シーンIDを更新（常に実行）
+        currentSceneId = nextSceneId
     }
     
     private var currentDialogue: Dialogue2? {
@@ -99,6 +115,7 @@ struct startView: View {
             Image("sky")
                 .resizable()
                 .scaledToFill()
+                .ignoresSafeArea()
             
             VStack(spacing: 40) {
                 Spacer()
@@ -137,6 +154,7 @@ struct startView: View {
     }
     
     private func handleTap() {
+        print("startView tapped, nextSceneId: \(dialogue.nextSceneId ?? "nil")")
         if let nextSceneId = dialogue.nextSceneId {
             onNext(nextSceneId)
         }
