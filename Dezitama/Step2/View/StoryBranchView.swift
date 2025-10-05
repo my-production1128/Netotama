@@ -71,8 +71,12 @@ struct StoryBranchView: View {
         return map
     }
 
-    init(path: Binding<NavigationPath>, allBranchings: Binding<[Branching]>, allScene: Binding<Branching>, StoryId: String, stageId: Int, mode: GameMode,
-    currentMode: Binding<GameMode>) {
+    init(path: Binding<NavigationPath>,
+         allBranchings: Binding<[Branching]>,
+         allScene: Binding<Branching>,
+         StoryId: String, stageId: Int,
+         mode: GameMode,
+         currentMode: Binding<GameMode>) {
         self._path = path
         self._allBranchings = allBranchings
         self._allScene = allScene
@@ -367,10 +371,10 @@ struct StoryBranchView: View {
                         Button {
                             isBackMap = true
                         }label: {
-                            Image("home")
+                            Image("home_good")
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 100, height: 100)
+                                .frame(width: 180, height: 180)
                                 .padding(.top, 0)
                         }
 //                        会話見返し機能

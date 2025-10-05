@@ -19,6 +19,7 @@ struct ChatMessage: Identifiable {
 struct ChatSceneView: View {
     let branchingMap: [String: Branching]
     let initialSceneId: String
+    let animationTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
     var onNextScene: (String) -> Void
     var width: CGFloat
     var height: CGFloat
@@ -52,8 +53,6 @@ struct ChatSceneView: View {
     //    会話の見返しボタン用関数
     @Binding var conversationHistory: [Branching]
     @Binding var isEndSceneReady: Bool
-
-    let animationTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
 
     var color: Color = .gray
     var dotSize: CGFloat = 30

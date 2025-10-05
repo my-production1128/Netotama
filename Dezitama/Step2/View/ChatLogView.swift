@@ -7,11 +7,10 @@
 import SwiftUI
 
 struct ChatLogView: View {
+    @EnvironmentObject var musicplayer: SoundPlayer
     @Binding var isChatLogVisible: Bool
-
     let conversationHistory: [Branching]
 
-    @EnvironmentObject var musicplayer: SoundPlayer
 
     var body: some View {
         GeometryReader { innerGeometry in
