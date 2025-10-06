@@ -205,13 +205,17 @@ struct startView: View {
     var body: some View {
         ZStack {
             // 背景
-            Image("sky")
+            Image("arasuzi_background")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
             
-            VStack(spacing: 40) {
-                Spacer()
+            ZStack{
+                Image("arasuzi_speechbubble")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 700, height: 300)
+                    .offset(y: -150)
                 
                 // テキスト
                 if let dialogueText = dialogue.dialogueText {
@@ -222,12 +226,12 @@ struct startView: View {
                         charInterval: 0.05,
                         font: UIFont.customFont(ofSize: 30)
                     )
-                    .frame(maxWidth: 700)
+                    .frame(maxWidth: 500)
                     .padding(.horizontal, 20)
                     .id(dialogueText)
+                    .offset(y: -150)
                 }
                 
-                Spacer()
                 
                 // 次へボタン
                 Button(action: handleTap) {
@@ -236,8 +240,10 @@ struct startView: View {
                         .scaledToFit()
                         .frame(width: 35)
                 }
-                .padding(.bottom, 40)
+                .offset(x: 300, y: -90)
             }
+                
+                
         }
         .contentShape(Rectangle())
         .onTapGesture {

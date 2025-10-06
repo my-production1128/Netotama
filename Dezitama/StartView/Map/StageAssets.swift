@@ -36,8 +36,6 @@ struct StageButton: View {
                 imageName = "botann\(stage.id)_thunder\(clampedScore)"
             }
         }
-        // print文で、どの画像を表示しようとしているか確認
-        print("▶️ ステージ\(stage.id)に表示しようとしている画像名: \(imageName)")
         return imageName
     }
 }
@@ -65,15 +63,47 @@ struct ScoreDisplayView: View {
     }
 }
 
-
-// MARK: - Kumo
-struct KumoView: View {
+struct StageIntroOverlay: View {
+    let stage: Stage
+    let mode: GameMode
+    let onClose: () -> Void
+    let onStart: () -> Void
+    
+    @EnvironmentObject var musicplayer: SoundPlayer
+    
     var body: some View {
-        Image("kumo")
+        // ステージ紹介画像を中央に配置
+        Image(sheetImageName)
             .resizable()
             .scaledToFit()
-            .frame(width: 100, height: 100)
+            .frame(maxWidth: UIScreen.main.bounds.width * 0.9)
+            .overlay(
+                // スタートボタンを画像の上に配置
+                VStack {
+                    Spacer()
+                    
+                    Button(action: {
+                        musicplayer.playSE(fileName: "button_SE")
+                        onStart()
+                    }) {
+                         Image("sheet_start")
+                             .resizable()
+                             .scaledToFit()
+                             .frame(width: 200, height: 100)
+                    }
+                    .offset(x:140,y:-180)
+                }
+            )
+    }
+    
+    private var sheetImageName: String {
+        let imageName: String
+        switch mode {
+        case .bad:
+            imageName = "sheet_bad\(stage.id)"
+        case .happy:
+            imageName = "sheet_good\(stage.id)"
+        }
+        return imageName
     }
 }
-
-
