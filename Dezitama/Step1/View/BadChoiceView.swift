@@ -9,8 +9,8 @@ import SwiftUI
 struct BadChoiceView: View {
     let dialogue: Dialogue2
     @Binding var isPopupVisible: Bool
-    var onChoiceSelected: (String, String, String?) -> Void
-    
+    var onChoiceSelected: (String, String, Double?) -> Void
+
     @State private var selectedChoice: Int? = nil
     @State private var isChoiceMade = false
     
@@ -87,8 +87,8 @@ struct BadChoiceView: View {
         
         let nextId: String?
         let choiceText: String?
-        let percentage: String?
-        
+        let percentage: Double?
+
         switch choiceNumber {
         case 1:
             nextId = dialogue.choice1NextSceneId
@@ -106,7 +106,7 @@ struct BadChoiceView: View {
         print("選択肢\(choiceNumber)を選びました")
         print("  テキスト: \(choiceText ?? "nil")")
         print("  次のID: \(nextId ?? "nil")")
-        print("  パーセンテージ: \(percentage ?? "nil")")
+//        print("  パーセンテージ: \(percentage ?? "nil")")
         
         if let text = choiceText, let id = nextId {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {

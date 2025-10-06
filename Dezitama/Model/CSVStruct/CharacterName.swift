@@ -74,6 +74,8 @@ enum CharacterName: String {
     case Robbie
     case Robbie_irritaion
 
+    case Kevin
+
 
 
     var displayName: String {
@@ -142,6 +144,8 @@ enum CharacterName: String {
 //            ロビー
         case .Robbie: return "ロビー"
         case .Robbie_irritaion: return "ロビー"
+
+        case .Kevin: return "ケビン"
         }
     }
 }

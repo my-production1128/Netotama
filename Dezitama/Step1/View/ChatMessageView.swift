@@ -124,7 +124,7 @@ struct ChatMessageView: View {
                         onChoiceSelected: { selectedText, nextId, percentage in
                             handleChoiceSelected(selectedText: selectedText,
                                                nextId: nextId,
-                                               percentage: percentage)
+                                                 percentage: percentage)
                         }
                     )
                     .transition(.opacity)
@@ -276,10 +276,10 @@ extension ChatMessageView {
         }
     }
     
-    private func handleChoiceSelected(selectedText: String, nextId: String, percentage: String?) {
+    private func handleChoiceSelected(selectedText: String, nextId: String, percentage: Double?) {
         // 1. スコア加算
-        if let percentageStr = percentage, let percentageValue = Double(percentageStr) {
-            gameManager.addScore(percentage: percentageValue)
+        if let v = percentage {
+            gameManager.addScore(percentage: percentage)
         }
         
         // 2. 最後のメッセージを選択したテキストで置き換え（即表示）
