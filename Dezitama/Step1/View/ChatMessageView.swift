@@ -93,6 +93,8 @@ struct ChatMessageView: View {
                 
                 // チャット本文
                 VStack {
+                    Spacer() // 上の余白（中央寄せに重要）
+
                     ScrollViewReader { proxy in
                         ScrollView {
                             VStack(spacing: 12) {
@@ -103,14 +105,16 @@ struct ChatMessageView: View {
                             }
                             .padding()
                         }
-                        .frame(width: 500, height: 450)
-                        .position(x: geometry.size.width * 0.5,
-                                  y: geometry.size.height * 0.5)
+                        .frame(width: 430, height: 545)
+                        .background(Color.clear)
                         .onAppear {
                             self.proxy = proxy
                         }
                     }
+
+                    Spacer() // 下の余白（中央寄せに重要）
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
                 // Body の ZStack 内
                 if isPopupVisible, let choiceDialogue = currentChoiceDialogue {

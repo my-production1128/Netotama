@@ -16,25 +16,6 @@ struct StageData: Identifiable {
     }
 }
 
-//step1の分岐なしのストーリー用
-struct Dialogue: Identifiable {
-    let id = UUID()
-    let storyId: String
-    let sceneId: String
-    let characterName: String
-    let dialogueText: String
-    let background: String
-    let talkingPeople: String?           // TalkingPeople
-    let leftCharacter: String?           // LeftCharacter
-    let centerCharacter: String?         // CenterCharacter
-    let rightCharacter: String?          // RightCharacter
-    let oneCharacter: String?            // OneCharacter
-    let twoCharacter: String?            // TwoCharacter
-    let onePerson: String?               // OnePerson
-    let leftChat: String?                // LeftChat
-    let rightChat: String?               // RightChat
-}
-
 struct Dialogue2: Identifiable {
     let id = UUID()
     var storyId: String = ""
