@@ -5,6 +5,7 @@
 //  Created by 濱松未波 on 2025/06/06.
 //
 
+import Lottie
 import SwiftUI
 
 struct StoryBranchView: View {
@@ -84,6 +85,24 @@ struct StoryBranchView: View {
         self.stageId = stageId
         self.mode = mode
         self._currentMode = currentMode
+
+
+        print("--- StoryBranchView 初期化 ---")
+        print("受け取ったStoryId: \(StoryId)")
+
+        // このストーリーIDに関連するデータだけを抽出
+        let storyData = allBranchings.wrappedValue.filter { $0.storyId == StoryId }
+
+        if storyData.isEmpty {
+            print("🚨 エラー: StoryId「\(StoryId)」に一致するデータが allBranchings に見つかりませんでした。")
+            print("allBranchings に含まれる storyId の一覧:")
+            // 重複を除いたstoryIdの一覧を表示
+            let availableStoryIds = Set(allBranchings.wrappedValue.map { $0.storyId })
+            print(availableStoryIds)
+        } else {
+            print("✅ OK: \(storyData.count)件のシーンデータをこのストーリー用に抽出しました。")
+        }
+        print("---------------------------\n")
     }
 
     var body: some View {
@@ -93,7 +112,6 @@ struct StoryBranchView: View {
                 if let current = sceneToDisplay {
                     VStack {
                         Spacer()
-
                         switch current.sceneType {
                         case "screen":
                             ZStack {
@@ -114,8 +132,33 @@ struct StoryBranchView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                if let next = branchingMap[current.nextSceneId]{
-                                    currentSceneId = next.sceneId
+                                if current.nextSceneId == "end" {
+                                    if !isEndSceneReady {
+                                        let stars = gameManager.scoreToStars(score: gameManager.currentScore)
+                                        self.finalStars = stars
+                                        gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
+                                        isEndSceneReady = true
+                                    }
+                                    return // ここで処理を終了
+                                }
+
+                                // 2. "end" でなければ、これまで通りの処理を続けます
+                                guard let nextScene = branchingMap[current.nextSceneId] else {
+                                    print("🚨 Error: 次のシーンIDが見つかりません: \(current.nextSceneId)")
+                                    return
+                                }
+
+                                if nextScene.isChoice == true {
+                                    isPopupVisible = true
+                                    currentChoiceScene = nextScene
+                                } else {
+                                    currentSceneId = nextScene.sceneId
+                                }
+                            }
+                            .onAppear {
+                                if let current = sceneToDisplay {
+                                    musicplayer.stopAllMusic()
+                                    musicplayer.playBGM(fileName: current.bgm)
                                 }
                             }
 
@@ -148,6 +191,47 @@ struct StoryBranchView: View {
                             .onAppear {
                                 musicplayer.stopAllMusic()
                                 musicplayer.playBGM(fileName: current.bgm)
+                            }
+
+                        case "talk_AE":
+                            ZStack {
+                                LottieView(name: current.text, loopMode: .playOnce)
+                                    .edgesIgnoringSafeArea(.all)
+                                Color.clear
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        guard let nextScene = branchingMap[current.nextSceneId] else {
+                                            if current.nextSceneId == "end" || current.nextSceneId.isEmpty {
+                                                gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: 0)
+                                                isEndSceneReady = true
+                                            }
+                                            return
+                                        }
+                                        if nextScene.isChoice == true {
+                                            isPopupVisible = true
+                                            currentChoiceScene = nextScene
+                                        } else {
+                                            currentSceneId = nextScene.sceneId
+                                        }
+                                    }
+                                HStack {
+                                    Image("next_button")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 35)
+                                        .position(x: geometry.size.width * 0.85, y: geometry.size.height * 0.905)
+                                        .offset(y: offsetY)
+                                        .onAppear {
+                                            startLoopingAnimation()
+                                        }
+                                }
+                                .allowsHitTesting(false)
+                            }
+                            .onAppear {
+                                if let current = sceneToDisplay {
+                                    musicplayer.stopAllMusic()
+                                    musicplayer.playBGM(fileName: current.bgm)
+                                }
                             }
 
                         case "talk":
@@ -211,62 +295,6 @@ struct StoryBranchView: View {
                                 .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.5)
                                 // .position の代わりに .frame(maxWidth: .infinity) を使用し、HStack内のSpacerに任せる
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                                // MARK: - キャラクター表示部分
-                                // 表示するキャラクターの数を数える
-//                                let characterCount = [current.leftCharacter, current.centerCharacter, current.rightCharacter].filter { !$0.isEmpty }.count
-//
-//                                // HStacをキャラクター数に応じて調整
-//                                HStack(spacing: 20) {
-//                                    // キャラクターが2人以下の場合は左にSpacerを配置
-//                                    if characterCount <= 2 {
-//                                        Spacer()
-//                                    }
-//
-//                                    // 左のキャラクター
-//                                    if !current.leftCharacter.isEmpty {
-//                                        characterImage(
-//                                            imageName: current.leftCharacter,
-//                                            speakingCharacter: current.characterName
-//                                        )
-//                                        .frame(width: 250, height: 450)
-//                                    }
-//
-//                                    // キャラクターが1人または2人の場合にSpacerを挿入
-//                                    if characterCount == 2 {
-//                                        Spacer()
-//                                    }
-//
-//                                    // 中央のキャラクター
-//                                    if !current.centerCharacter.isEmpty {
-//                                        characterImage(
-//                                            imageName: current.centerCharacter,
-//                                            speakingCharacter: current.characterName
-//                                        )
-//                                        .frame(width: 250, height: 450)
-//                                    }
-//
-//                                    // キャラクターが1人または2人の場合にSpacerを挿入
-//                                    if characterCount == 1 || characterCount == 2 {
-//                                        Spacer()
-//                                    }
-//
-//                                    // 右のキャラクター
-//                                    if !current.rightCharacter.isEmpty {
-//                                        characterImage(
-//                                            imageName: current.rightCharacter,
-//                                            speakingCharacter: current.characterName
-//                                        )
-//                                        .frame(width: 250, height: 450)
-//                                    }
-//
-//                                    // キャラクターが2人以下の場合は右にSpacerを配置
-//                                    if characterCount <= 2 {
-//                                        Spacer()
-//                                    }
-//                                }
-//                                .position(x: geometry.size.width/2,y: geometry.size.height * 0.5)
-//                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-
 
                                 Group{
                                     //                                     吹き出し背景
@@ -337,31 +365,59 @@ struct StoryBranchView: View {
                                     return
                                 }
 
+                                print("--- 🔵 talkシーンがタップされました ---")
+                                print("文字の表示完了フラグ (isTypingComplete): \(isTypingComplete)")
+
                                 if !isTypingComplete {
                                     shouldSkipTyping = true
                                     isTypingComplete = true
+                                    print("文字表示をスキップします。")
                                 } else {
-                                    if let current = branchingMap[currentSceneId], let next = branchingMap[current.nextSceneId] {
-                                        historyStack.append(currentSceneId)
+                                    guard let current = branchingMap[currentSceneId] else {
+                                        print("🚨【エラー】現在のシーンID「\(currentSceneId)」がマップ内に見つかりません。")
+                                        return
+                                    }
 
-                                        // 次のシーンが選択肢の場合
-                                        if next.isChoice == true {
-                                            isPopupVisible = true
-                                            currentChoiceScene = next
+                                    let nextId = current.nextSceneId
+                                    print("次のシーンID「\(nextId)」へ進もうとしています。")
+
+                                    guard let nextScene = branchingMap[nextId] else {
+                                        if nextId == "end" || nextId.isEmpty {
+                                            print("物語の終点です。終了処理を開始します。")
+                                            if !isEndSceneReady {
+                                                let stars = gameManager.scoreToStars(score: gameManager.currentScore)
+                                                self.finalStars = stars
+                                                gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
+                                                isEndSceneReady = true
+                                            }
                                         } else {
-                                            currentSceneId = next.sceneId
+                                            print("🚨【エラー】次のシーンID「\(nextId)」がマップ内に見つかりません。CSVのIDが正しいか確認してください。")
                                         }
-                                        conversationHistory.append(next)
+                                        return
+                                    }
 
-                                    } else if let current = branchingMap[currentSceneId], current.nextSceneId == "end" {
-                                        if !isEndSceneReady {
-                                            let stars = gameManager.scoreToStars(score: gameManager.currentScore)
-                                            self.finalStars = stars
-                                            gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
-                                            isEndSceneReady = true
+                                    print("✅ 次のシーン「\(nextId)」が見つかりました。タイプは「\(nextScene.sceneType)」です。")
+
+                                    historyStack.append(currentSceneId)
+                                    conversationHistory.append(nextScene)
+
+                                    if nextScene.sceneType == "talk" {
+                                        print("➡️ 次も talk シーンです。")
+                                        if nextScene.isChoice == true {
+                                            print("選択肢なのでポップアップを表示します。")
+                                            isPopupVisible = true
+                                            currentChoiceScene = nextScene
+                                        } else {
+                                            print("通常のtalkシーンなので、IDを「\(nextScene.sceneId)」に更新します。")
+                                            currentSceneId = nextScene.sceneId
                                         }
+                                    } else {
+                                        print("➡️ talk 以外のシーン（\(nextScene.sceneType)）に切り替わります。")
+                                        print("IDを「\(nextScene.sceneId)」に更新します。")
+                                        currentSceneId = nextScene.sceneId
                                     }
                                 }
+                                print("-------------------------------------\n")
                             }
 
                         default:
@@ -520,6 +576,19 @@ struct StoryBranchView: View {
             }
             .onAppear {
                 gameManager.startStory(storyId: StoryId, allBranchings: allBranchings)
+
+                // --- ✅ デバッグコードここから ---
+                print("--- branchingMap の内容チェック ---")
+                if branchingMap.isEmpty {
+                    print("🚨 エラー: branchingMapが空です。シーンデータが正しくマップに変換されていません。")
+                } else {
+                    print("✅ OK: branchingMap に \(branchingMap.count)件のシーンが格納されました。")
+                    print("マップに含まれる全シーンID:")
+                    // sceneIdを昇順にソートして見やすく表示
+                    let sortedSceneIds = branchingMap.keys.sorted()
+                    print(sortedSceneIds)
+                }
+                print("--------------------------------\n")
 
                 if let first = currentStoryBranchings.first { // ★ filterされたストーリーの先頭を取得する
                     currentSceneId = first.sceneId

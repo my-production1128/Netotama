@@ -182,9 +182,9 @@ struct ChatSceneView: View {
                                 }
                             }
                         }
-                        if chatMessage[lastMessageIndex].scene.characterName != chatMessage[lastMessageIndex].scene.rightCharacter {
+//                        if chatMessage[lastMessageIndex].scene.characterName != chatMessage[lastMessageIndex].scene.rightCharacter {
                             proceedToNextIfNeeded()
-                        }
+//                        }
                     }
                     return
                 }
@@ -569,81 +569,70 @@ struct ChatSceneView: View {
     }
 
     //自動返信の関数
+    // ▼▼▼ この関数を以下のコードで丸ごと置き換えしてください ▼▼▼
     private func proceedToNextIfNeeded() {
-        //        デバック用コード
-        print("proceedToNextIfNeededが呼び出されました。")
-        guard let last = chatMessage.last else {
+        guard let last = chatMessage.last, !isTyping, !isPopupVisible else {
             return
         }
 
         let nextId = last.scene.nextSceneId
-
-        if isTyping || isPopupVisible {
+        guard let next = branchingMap[nextId] else {
+            if nextId != "end" { onNextScene(nextId) }
             return
         }
 
-        guard let next = branchingMap[nextId] else { return }
+        if next.sceneType != last.scene.sceneType {
+            // ただし、'chat'と'chat_picture'は同じチャット画面の仲間として扱う
+            let isCurrentChat = last.scene.sceneType == "chat" || last.scene.sceneType == "chat_picture"
+            let isNextChat = next.sceneType == "chat" || next.sceneType == "chat_picture"
 
-        if next.sceneType != "chat" {
+            // チャット形式 ⇔ 非チャット形式 のように種類が切り替わる場合は、何もしない（タップを待つ）
+            if isCurrentChat != isNextChat {
+                 return
+            }
+        }
+
+        if next.sceneType != "chat" && next.sceneType != "chat_picture" {
             onNextScene(nextId)
             return
         }
 
-        if next.sceneType == "chat_picture" {
-            if next.characterName == next.rightCharacter {
-                pendingMessage = next
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    let newMsg = ChatMessage(
-                        scene: next,
-                        isAnimating: true,
-                        isPicture: true
-                    )
-                        chatMessage.append(newMsg)
-                        allScene = next
-                    isTyping = true
-                    proceedToNextIfNeeded()
-                }
-                return
-            }
-        }
+        // --- ここからが自動メッセージ追加のロジック ---
 
-        if next.isChoice ?? false {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
-                chatMessage.append(newMsg)
-                conversationHistory.append(newMsg.scene)
-                allScene = next
-                isTyping = false
-            }
-            isTyping = true
-            return
-        }
-
+        // ✅ 修正点: 次が「主人公のセリフ」の場合に自動処理を行う
         if next.characterName == next.rightCharacter {
+            isTyping = true
+            // 1.5秒後に、主人公のメッセージを「アニメーションしている状態」で自動的に追加する
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
+                let isPic = next.sceneType == "chat_picture"
+                let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false, isPicture: isPic)
+
                 chatMessage.append(newMsg)
                 conversationHistory.append(newMsg.scene)
                 allScene = next
                 isTyping = false
             }
-            isTyping = true
+            // ここで処理は一旦終了。次のタップはユーザーが行う。
             return
         }
 
-        isTyping = true
-        pendingMessage = next
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            if let msg = pendingMessage {
-                let newMsg = ChatMessage(scene: msg, isAnimating: false, showText: true)
-                chatMessage.append(newMsg)
-                conversationHistory.append(newMsg.scene)
-                allScene = msg
-            }
-            pendingMessage = nil
-            isTyping = false
+        // 相手のテキストメッセージは、以前と同様に完全に表示されるまで自動で進む
+        if next.characterName != next.rightCharacter && next.sceneType == "chat" {
+             isTyping = true
+             pendingMessage = next
+             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                 if let msg = pendingMessage {
+                     let newMsg = ChatMessage(scene: msg, isAnimating: false, showText: true)
+                     chatMessage.append(newMsg)
+                     conversationHistory.append(newMsg.scene)
+                     allScene = msg
+                 }
+                 pendingMessage = nil
+                 isTyping = false
 
-            proceedToNextIfNeeded()
+                 // 相手のセリフを表示後、さらに次のセリフ（主人公の番）をチェックするために再度呼び出す
+                 proceedToNextIfNeeded()
+             }
         }
     }
 

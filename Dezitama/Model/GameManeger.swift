@@ -242,7 +242,7 @@ final class GameManager: ObservableObject {
                 path.append(ViewBuilderPath.GoodStoryBranchView("good_gurucha_story3", stageId, .happy))
                 break
             case 7:
-                // path.append(ViewBuilderPath.HappyStage7View)
+                path.append(ViewBuilderPath.GoodStoryBranchView("good_kakusan_story1", stageId, .happy))
                 break
             case 8:
                 // path.append(ViewBuilderPath.HappyStage8View)
