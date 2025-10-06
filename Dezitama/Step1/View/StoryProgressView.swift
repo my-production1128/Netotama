@@ -64,7 +64,7 @@ struct StoryProgressView: View {
                             dialogue: currentDialogue,
                             isPopupVisible: .constant(true),
                             onChoiceSelected: { selectedText, nextId, percentage in
-                                if let p = percentage, let v = Double(p) {
+                                if let v = percentage {
                                     gameManager.addScore(percentage: v)
                                 }
                                 handleNavigation(nextSceneId: nextId)

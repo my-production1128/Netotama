@@ -63,7 +63,7 @@ struct ChatSceneView: View {
     var body: some View {
             ZStack {
                 Text(ChatMessage(scene: self.allScene).scene.groupName)
-                    .position(x: width * 0.5, y: height * 0.095)
+                    .position(x: width * 0.51, y: height * 0.15)
                     .font(.custom("MPLUS1-Medium", size: 24))
                 VStack {
                     //                                                 チャットの画面のスクロール部分
@@ -77,8 +77,8 @@ struct ChatSceneView: View {
                             }
                             .padding()
                         }
-                        .frame(width: 500, height: 517)
-                        .position(x: width  * 0.492,y: height * 0.483)
+                        .frame(width: 450, height: 450)
+                        .position(x: width  * 0.51,y: height * 0.49)
                         .onAppear {
                             self.proxy = proxy
                         }
@@ -95,7 +95,7 @@ struct ChatSceneView: View {
                         .onAppear {
                             startLoopingAnimation()
                         }
-                        .position(x: width * 0.645, y: height * 0.91)
+                        .position(x: width * 0.645, y: height * 0.87)
                 }
 
 //                                        Button {

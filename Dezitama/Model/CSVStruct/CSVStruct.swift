@@ -26,10 +26,10 @@ struct Dialogue2: Identifiable {
     var nextSceneId: String? = nil
     var isChoice: Bool = false
     var choice1Text: String? = nil
-    var choice1Percentage: String? = nil
+    var choice1Percentage: Double?
     var choice1NextSceneId: String? = nil
     var choice2Text: String? = nil
-    var choice2Percentage: String? = nil
+    var choice2Percentage: Double?
     var choice2NextSceneId: String? = nil
     var background: String? = nil
     var talkingPeople: String? = nil

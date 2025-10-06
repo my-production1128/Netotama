@@ -245,11 +245,10 @@ final class GameManager: ObservableObject {
                 path.append(ViewBuilderPath.GoodStoryBranchView("good_kakusan_story1", stageId, .happy))
                 break
             case 8:
-                // path.append(ViewBuilderPath.HappyStage8View)
+                path.append(ViewBuilderPath.GoodStoryBranchView("good_kakusan_story2", stageId, .happy))
                 break
             case 9:
-                // path.append(ViewBuilderPath.HappyStage9View)
-                break
+                path.append(ViewBuilderPath.GoodStoryBranchView("good_kakusan_story3", stageId, .happy))
             default:
                 print("Unhandled Happy stage: \(stageId)")
             }

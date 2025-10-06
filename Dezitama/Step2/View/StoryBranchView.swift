@@ -85,24 +85,6 @@ struct StoryBranchView: View {
         self.stageId = stageId
         self.mode = mode
         self._currentMode = currentMode
-
-
-        print("--- StoryBranchView 初期化 ---")
-        print("受け取ったStoryId: \(StoryId)")
-
-        // このストーリーIDに関連するデータだけを抽出
-        let storyData = allBranchings.wrappedValue.filter { $0.storyId == StoryId }
-
-        if storyData.isEmpty {
-            print("🚨 エラー: StoryId「\(StoryId)」に一致するデータが allBranchings に見つかりませんでした。")
-            print("allBranchings に含まれる storyId の一覧:")
-            // 重複を除いたstoryIdの一覧を表示
-            let availableStoryIds = Set(allBranchings.wrappedValue.map { $0.storyId })
-            print(availableStoryIds)
-        } else {
-            print("✅ OK: \(storyData.count)件のシーンデータをこのストーリー用に抽出しました。")
-        }
-        print("---------------------------\n")
     }
 
     var body: some View {
@@ -144,7 +126,6 @@ struct StoryBranchView: View {
 
                                 // 2. "end" でなければ、これまで通りの処理を続けます
                                 guard let nextScene = branchingMap[current.nextSceneId] else {
-                                    print("🚨 Error: 次のシーンIDが見つかりません: \(current.nextSceneId)")
                                     return
                                 }
 
@@ -604,6 +585,7 @@ struct StoryBranchView: View {
                 Image(current.background)
                     .resizable()
                     .scaledToFill()
+                    .edgesIgnoringSafeArea(.all)
             }
         }
     }
