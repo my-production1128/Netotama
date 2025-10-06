@@ -42,7 +42,8 @@ struct MapView: View {
         }
     }
     
-    private let stagePositions: [CGPoint] = [
+    // Happy モード用の位置
+    private let happyStagePositions: [CGPoint] = [
         CGPoint(x: 0.173, y: 0.68),  // Stage 1
         CGPoint(x: 0.28, y: 0.59),   // Stage 2
         CGPoint(x: 0.23, y: 0.47),   // Stage 3
@@ -53,7 +54,29 @@ struct MapView: View {
         CGPoint(x: 0.87, y: 0.6),    // Stage 8
         CGPoint(x: 0.79, y: 0.74)    // Stage 9
     ]
-
+    
+    // Bad モード用の位置
+    private let badStagePositions: [CGPoint] = [
+        CGPoint(x: 0.25, y: 0.098),     // Stage 1
+        CGPoint(x: 0.38, y: 0.18),    // Stage 2
+        CGPoint(x: 0.25, y: 0.3),    // Stage 3
+        CGPoint(x: 0.22, y: 0.59),   // Stage 4
+        CGPoint(x: 0.33, y: 0.7),    // Stage 5
+        CGPoint(x: 0.45, y: 0.6),    // Stage 6
+        CGPoint(x: 0.68, y: 0.46),    // Stage 7
+        CGPoint(x: 0.87, y: 0.48),   // Stage 8
+        CGPoint(x: 0.8, y: 0.63)    // Stage 9
+    ]
+    
+    // 現在のモードに応じた位置配列を取得
+    private var currentStagePositions: [CGPoint] {
+        switch currentMode {
+        case .happy:
+            return happyStagePositions
+        case .bad:
+            return badStagePositions
+        }
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -67,9 +90,9 @@ struct MapView: View {
                 // ステージボタンを配置
                 ForEach(currentStages.indices, id: \.self) { index in
                     // 安全性チェック
-                    if index < stagePositions.count {
+                    if index < currentStagePositions.count {
                         let stage = currentStages[index]
-                        let position = stagePositions[index]
+                        let position = currentStagePositions[index]
                         
                         StageButton(stage: stage, mode: currentMode) {
                             musicplayer.playSE(fileName: "button_SE")
@@ -106,17 +129,6 @@ struct MapView: View {
                     .cornerRadius(8)
                 }
                 
-//                Image(currentMode == .happy ? "good_kumo_03" : "bad_kumo_02")
-//                    .resizable()
-//                    .scaledToFit()
-//                    .frame(width: 600, height: 600)
-//                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.2) // 画面上部中央など
-//                Image(currentMode == .happy ? "good_kumo_03" : "bad_kumo_02")
-//                    .resizable()
-//                    .scaledToFit()
-//                    .frame(width: 500, height: 500)
-//                    .position(x: geometry.size.width * 0.8, y: geometry.size.height * 0.6) // 画面上部中央など
-                
                 // 戻るボタン
                 VStack {
                     HStack {
@@ -131,12 +143,12 @@ struct MapView: View {
                                 .scaledToFill()
                                 .frame(width: 100, height: 100)
                         }
-                        .padding()
+                        .padding(5)
                         Spacer()
                     }
                     Spacer()
                 }
-                .padding()
+                .padding(5)
                 
                 // モード切り替えボタン
                 VStack {
@@ -154,10 +166,12 @@ struct MapView: View {
                                 .scaledToFill()
                                 .frame(width: 100, height: 100)
                         }
+                        .padding(8)
                     }
-                    .padding()
+                    .padding(8)
                 }
-                .padding()
+                .padding(8)
+                
                 
                 //総数表示
                 VStack {
@@ -182,9 +196,13 @@ struct MapView: View {
         }
     }
 }
-
-// MARK: - Preview
-#Preview {
-//    MapView(path: .constant(NavigationPath()), mode: .happy, currentMode: $currentMode)
+//
+//// MARK: - Preview
+//#Preview {
+//    @Previewable @State var path = NavigationPath()
+//    @Previewable @State var currentMode: GameMode = .bad
+//    
+//    MapView(path: $path, mode: .happy, currentMode: $currentMode)
 //        .environmentObject(GameManager.shared)
-}
+//        .environmentObject(SoundPlayer())
+//}

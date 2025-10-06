@@ -38,14 +38,6 @@ struct DialogueView: View {
                 handleTap()
             }
         }
-        .onAppear {
-            if dialogue.isChoice != true {
-                startLoopingAnimation()
-            }
-        }
-        .onDisappear {
-            stopLoopingAnimation()
-        }
     }
     
     // MARK: - キャラクター配置
@@ -149,13 +141,11 @@ struct DialogueView: View {
             Spacer()
             
             ZStack {
-                // 吹き出し背景
                 Image("speech_bubble_beige")
                     .resizable()
                     .frame(width: 1000, height: 300)
                 
                 VStack(alignment: .leading, spacing: 10) {
-                    // キャラ名
                     if let characterName = dialogue.characterName {
                         Text(characterName)
                             .font(Font(UIFont.customFont(ofSize: 30)))
@@ -164,7 +154,6 @@ struct DialogueView: View {
                             .padding(.top, 20)
                     }
                     
-                    // セリフテキスト
                     if let dialogueText = dialogue.dialogueText {
                         TypingRubyLabelRepresentable(
                             attributedText: dialogueText
@@ -175,33 +164,19 @@ struct DialogueView: View {
                         )
                         .frame(maxWidth: 700, alignment: .leading)
                         .padding(.horizontal, 60)
-                        .id(dialogueText)
                     }
                     Spacer()
                 }
                 .frame(width: 1000, height: 300)
                 
-                VStack {
-                    Spacer()
-                    HStack {
-                        Spacer()
-                        Button(action: handleTap) {
-                            Image("next_button")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 35)
-                        }
-                        .offset(y: offsetY)
-                        .padding(.trailing, 60)
-                        .padding(.bottom, 30)
-                    }
-                }
-                .frame(width: 1000, height: 300)
+                // アニメーションはここに独立して置く
+                AnimatedNextButton(action: handleTap)
+                    .frame(width: 1000, height: 300)
             }
             .padding(.bottom, 150)
         }
     }
-    
+
     // MARK: - ヘルパー関数
     private func isCharacterSpeaking(_ imageName: String) -> Bool {
         let characterName = getCharacterNameFromImage(imageName)
@@ -255,31 +230,44 @@ struct DialogueView: View {
         }
     }
     
-    // MARK: - アニメーション管理
-    private func startLoopingAnimation() {
-        stopLoopingAnimation()
-        animationTimer = Timer.scheduledTimer(withTimeInterval: 0.7, repeats: true) { _ in
-            withAnimation(.easeInOut(duration: 0.7)) {
-                offsetY = offsetY == 0 ? -10 : 0
-            }
-        }
-    }
-    
-    private func stopLoopingAnimation() {
-        animationTimer?.invalidate()
-        animationTimer = nil
-        offsetY = 0
-    }
-    
     // MARK: - イベント処理
     private func handleTap() {
-        // すでに選択肢表示中なら無視（現在は不要だが将来のため残す）
-        // if isPopupVisible { return }
-        
         // 通常の進行
         if let nextSceneId = dialogue.nextSceneId {
-            stopLoopingAnimation()
             onNext(nextSceneId)
+        }
+    }
+}
+
+
+// MARK: - 「次へ」ボタンのゆらゆらアニメーション
+struct AnimatedNextButton: View {
+    var action: () -> Void
+    @State private var offsetY: CGFloat = 0.0
+    
+    var body: some View {
+        VStack {
+            Spacer()
+            HStack {
+                Spacer()
+                Button(action: action) {
+                    Image("next_button")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 35)
+                        .offset(y: offsetY)
+                        .onAppear {
+                            withAnimation(
+                                .easeInOut(duration: 0.7)
+                                .repeatForever(autoreverses: true)
+                            ) {
+                                offsetY = -10
+                            }
+                        }
+                }
+                .padding(.trailing, 60)
+                .padding(.bottom, 30)
+            }
         }
     }
 }
