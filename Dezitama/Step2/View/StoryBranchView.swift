@@ -120,7 +120,7 @@ struct StoryBranchView: View {
                             }
 
 
-                        case "chat":
+                        case "chat", "chat_picture":
                             ChatSceneView(
                                 branchingMap: branchingMap,
                                 initialSceneId: currentSceneId,
@@ -313,6 +313,13 @@ struct StoryBranchView: View {
                                     }
                                 }
                                 .offset(y: 20)
+                            }
+                            .onAppear {
+                                let sceneToDisplay = currentChoiceScene ?? branchingMap[currentSceneId]
+                                if let current = sceneToDisplay {
+                                    musicplayer.stopAllMusic()
+                                    musicplayer.playBGM(fileName: current.bgm)
+                                }
                             }
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .contentShape(Rectangle())
