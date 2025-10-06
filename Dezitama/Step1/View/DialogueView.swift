@@ -9,17 +9,10 @@ import SwiftUI
 
 struct DialogueView: View {
     let dialogue: Dialogue2
-    let nextDialogue: Dialogue2?
     var onNext: (String) -> Void
     
     @State private var offsetY: CGFloat = 0.0
     @State private var animationTimer: Timer?
-    @State private var isTypingComplete: Bool = false
-    @State private var hasAutoProgressed: Bool = false
-    @State private var hasAppeared: Bool = false // ★ 初回表示フラグ
-    
-    @State private var isPopupVisible: Bool = false
-    @State private var currentChoiceDialogue: Dialogue2? = nil
     
     @EnvironmentObject private var gameManager: GameManager
     
@@ -39,21 +32,6 @@ struct DialogueView: View {
                 
                 // ダイアログコンポーネント
                 dialogueComponentsGroup(geometry: geometry)
-                
-                // ★ 選択肢ポップアップ
-                if isPopupVisible, let choiceDialogue = currentChoiceDialogue {
-                    BadChoiceView(
-                        dialogue: choiceDialogue,
-                        isPopupVisible: $isPopupVisible,
-                        onChoiceSelected: { selectedText, nextId, percentage in
-                            handleChoiceSelected(selectedText: selectedText,
-                                                 nextId: nextId,
-                                                 percentage: percentage)
-                        }
-                    )
-                    .transition(.opacity)
-                    .zIndex(100)
-                }
             }
             .contentShape(Rectangle())
             .onTapGesture {
@@ -61,53 +39,12 @@ struct DialogueView: View {
             }
         }
         .onAppear {
-            // ★ 初回表示時のみアニメーション開始
             if dialogue.isChoice != true {
                 startLoopingAnimation()
             }
-            
-            hasAutoProgressed = false
-            
-            // ★ 現在のシーンが選択肢の場合
-            if dialogue.isChoice == true {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    withAnimation {
-                        isPopupVisible = true
-                    }
-                }
-            }
-            // ★ 次が選択肢の場合は自動遷移
-            else if let next = nextDialogue, next.isChoice == true {
-                autoProgressToChoice()
-            }
         }
         .onDisappear {
-            // ★ 画面が消える時にアニメーション停止
             stopLoopingAnimation()
-            hasAppeared = false
-        }
-    }
-    
-    // MARK: - 選択肢への自動遷移
-    private func autoProgressToChoice() {
-        guard !hasAutoProgressed else {
-            return
-        }
-        
-        // タイピング時間を計算
-        let text = dialogue.dialogueText ?? ""
-        let typingTime = Double(text.count) * 0.05 + 1.5
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + typingTime) {
-            guard !self.hasAutoProgressed else {
-                return
-            }
-            self.hasAutoProgressed = true
-            
-            if let nextId = self.dialogue.nextSceneId {
-                self.stopLoopingAnimation()
-                self.onNext(nextId)
-            }
         }
     }
     
@@ -223,65 +160,45 @@ struct DialogueView: View {
                         Text(characterName)
                             .font(Font(UIFont.customFont(ofSize: 30)))
                             .foregroundColor(.black)
-                            .padding(.leading, 60)
+                            .padding(.leading, 40)
                             .padding(.top, 20)
                     }
                     
                     // セリフテキスト
                     if let dialogueText = dialogue.dialogueText {
-                        if dialogue.isChoice == true {
-                            // 選択肢の場合はタイピングなしで即表示
-                            RubyLabelRepresentable(
-                                attributedText: dialogueText
-                                    .replacingOccurrences(of: "<br>", with: "\n")
-                                    .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black),
-                                font: UIFont.customFont(ofSize: 30),
-                                textColor: .black,
-                                textAlignment: .left
-                            )
-                            .frame(maxWidth: 700, alignment: .leading)
-                            .padding(.horizontal, 60)
-                            .id(dialogueText)
-                        } else {
-                            // 通常はタイピングアニメーション
-                            TypingRubyLabelRepresentable(
-                                attributedText: dialogueText
-                                    .replacingOccurrences(of: "<br>", with: "\n")
-                                    .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black),
-                                charInterval: 0.05,
-                                font: UIFont.customFont(ofSize: 30)
-                            )
-                            .frame(maxWidth: 700, alignment: .leading)
-                            .padding(.horizontal, 60)
-                            .id(dialogueText)
-                        }
+                        TypingRubyLabelRepresentable(
+                            attributedText: dialogueText
+                                .replacingOccurrences(of: "<br>", with: "\n")
+                                .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black),
+                            charInterval: 0.05,
+                            font: UIFont.customFont(ofSize: 30)
+                        )
+                        .frame(maxWidth: 700, alignment: .leading)
+                        .padding(.horizontal, 60)
+                        .id(dialogueText)
                     }
-                    
                     Spacer()
                 }
                 .frame(width: 1000, height: 300)
                 
-                // 次へボタン(選択肢の時、または次が選択肢の時は非表示)
-                if dialogue.isChoice != true, nextDialogue?.isChoice != true {
-                    VStack {
+                VStack {
+                    Spacer()
+                    HStack {
                         Spacer()
-                        HStack {
-                            Spacer()
-                            Button(action: handleTap) {
-                                Image("next_button")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 35)
-                            }
-                            .offset(y: offsetY)
-                            .padding(.trailing, 60)
-                            .padding(.bottom, 30)
+                        Button(action: handleTap) {
+                            Image("next_button")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 35)
                         }
+                        .offset(y: offsetY)
+                        .padding(.trailing, 60)
+                        .padding(.bottom, 30)
                     }
-                    .frame(width: 1000, height: 300)
                 }
+                .frame(width: 1000, height: 300)
             }
-            .padding(.bottom, 50)
+            .padding(.bottom, 150)
         }
     }
     
@@ -308,7 +225,7 @@ struct DialogueView: View {
         switch baseCharacterName {
         case "Alec": return (250, 650)
         case "Cecil": return (250, 450)
-        case "Cony": return (250, 450)
+        case "Cony": return (300, 500)
         case "Curl": return (250, 550)
         case "Teacher": return (300, 450)
         case "Brian": return (300, 450)
@@ -356,47 +273,13 @@ struct DialogueView: View {
     
     // MARK: - イベント処理
     private func handleTap() {
-        // すでに選択肢表示中なら無視
-        if isPopupVisible { return }
+        // すでに選択肢表示中なら無視（現在は不要だが将来のため残す）
+        // if isPopupVisible { return }
         
-        // 現在のdialogueが選択肢の場合
-        if dialogue.isChoice == true {
-            withAnimation {
-                isPopupVisible = true
-                currentChoiceDialogue = dialogue
-            }
-            return
-        }
-
-        // 通常の進行（次へ）
+        // 通常の進行
         if let nextSceneId = dialogue.nextSceneId {
-            hasAutoProgressed = true
             stopLoopingAnimation()
             onNext(nextSceneId)
         }
     }
-
-    // MARK: - 選択肢選択時の処理
-    private func handleChoiceSelected(selectedText: String, nextId: String, percentage: String?) {
-        if let percentageStr = percentage, let percentageValue = Double(percentageStr) {
-            gameManager.addScore(percentage: percentageValue)
-        }
-        
-        isPopupVisible = false
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-            onNext(nextId)
-        }
-    }
-}
-
-// MARK: - Dialogue2 Extension
-extension Dialogue2 {
-    var safeLeftCharacter: String { self.leftCharacter ?? "" }
-    var safeCenterCharacter: String { self.centerCharacter ?? "" }
-    var safeRightCharacter: String { self.rightCharacter ?? "" }
-    var safeOneCharacter: String { self.oneCharacter ?? "" }
-    var safeTwoCharacter: String { self.twoCharacter ?? "" }
-    var safeOnePerson: String { self.onePerson ?? "" }
-    var safeTalkingPeople: String { self.talkingPeople ?? "" }
 }

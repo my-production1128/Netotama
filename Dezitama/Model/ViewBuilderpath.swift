@@ -15,9 +15,6 @@ enum ViewBuilderPath: Hashable {
 //    分岐ありのストーリー
     case GoodStoryBranchView(String, Int, GameMode)
 
-    case GroupchatView
-    case kakusanView
-    case NetomoView
     case Credit
 //    チュートリアル画面
     case HowToUse

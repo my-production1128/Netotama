@@ -91,52 +91,6 @@ struct ChatMessageView: View {
                         .ignoresSafeArea()
                 }
                 
-                // 上部のUI
-                HStack {
-                    VStack {
-                        // ホームボタン
-                        Button(action: {
-//                            path.removeLast()
-                        }) {
-                            Image("home")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 100, height: 100)
-                        }
-                        Spacer()
-                    }
-                    
-                    Spacer()
-                    
-                    // スコアゲージ
-                    VStack {
-
-                        HStack{
-                            Spacer()
-                        }
-                        HStack{
-                            Spacer()
-                            
-                            // 会話見返し
-                            Button(action: {
-                                isChatLogVisible.toggle()
-                            }) {
-                                Image("chat")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 80, height: 80)
-                                    .padding(20)
-                            }
-                        }
-
-                        Gauge(width: geometry.size.width * 0.3,
-                              height: 100,
-                              score: gameManager.currentScore, currentMode: $currentMode)
-
-                        Spacer()
-                    }
-                }
-                
                 // チャット本文
                 VStack {
                     ScrollViewReader { proxy in
@@ -157,34 +111,6 @@ struct ChatMessageView: View {
                         }
                     }
                 }
-                
-                // 送信ボタン（アニメーション）
-                Image("soushin")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 80)
-                    .padding(40)
-                    .scaleEffect(isLarge ? 0.93 : 1)
-                    .onAppear {
-                        startLoopingAnimation()
-                    }
-                    .position(x: geometry.size.width * 0.68,
-                              y: geometry.size.height * 0.9)
-                
-                // スキップボタン
-                Button(action: {
-                    skipToNextChoice()
-                }) {
-                    Text("選択肢までスキップ")
-                        .font(.system(size: 18, weight: .bold))
-                        .padding(12)
-                        .background(Color.blue.opacity(0.8))
-                        .foregroundColor(.white)
-                        .clipShape(Capsule())
-                        .shadow(radius: 4)
-                }
-                .position(x: geometry.size.width - 120,
-                          y: geometry.size.height - 50)
                 
                 // Body の ZStack 内
                 if isPopupVisible, let choiceDialogue = currentChoiceDialogue {
@@ -565,6 +491,30 @@ extension ChatMessageView {
         }
     }
     
+    func characterIcon(for name: String, size: CGFloat) -> some View {
+            Image(getCharacterImageName(for: name))
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: size, height: size)
+                .clipShape(Circle())
+        }
+
+        private func getCharacterImageName(for name: String) -> String {
+            switch name {
+            case "アレック": return "alec_icon"
+            case "セシル": return "cecil_icon"
+            case "コニー": return "cony_icon"
+            case "ブライアン": return "brian_icon"
+            case "カール": return "curl_icon"
+            case "ケビン": return "kevin_icon"
+            case "ロビー": return "robby_icon"
+            case "サンドラ": return "sandra_icon"
+            case "先生": return "teacher_icon"
+            case "ニック": return "nick_icon"
+            default: return "default_icon"
+            }
+        }
+    
     /// 送信ボタンのアニメーション
     private func startLoopingAnimation() {
         withAnimation(.easeInOut(duration: 0.7).repeatForever(autoreverses: true)) {
@@ -572,4 +522,3 @@ extension ChatMessageView {
         }
     }
 }
-
