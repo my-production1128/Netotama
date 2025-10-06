@@ -26,7 +26,7 @@ struct ContentView: View {
 
     @State private var stages: [StageData] = [
         StageData(id: 1, csvFileName: "bad_netomo_story1_ver8"),
-        StageData(id: 2, csvFileName: "bad_netomo_story2_ver4")
+        StageData(id: 2, csvFileName: "bad_netomo_story2_ver7")
 //        StageData(id: 3, csvFileName: "bad_netomo_story3_ver2"),
 //        StageData(id: 4, csvFileName: "bad_groupchat_story1_ver2"),
 //        StageData(id: 5, csvFileName: "bad_groupchat_story2_ver2"),
@@ -218,18 +218,6 @@ struct ContentView: View {
                 )
                 .environmentObject(gameManager)
                 .navigationBarBackButtonHidden(true)
-            case .GroupchatView:
-                GroupchatView(path: $path, groupchatDialogues: $groupchatDialogues)
-                    .environmentObject(gameManager)
-                    .navigationBarBackButtonHidden(true)
-            case .kakusanView:
-                KakusanView(path: $path, kakusanDialogues: $kakusanDialogues)
-                    .environmentObject(gameManager)
-                    .navigationBarBackButtonHidden(true)
-            case .NetomoView:
-                NetomoView(path: $path, netomoDialogues: $netomoDialogues)
-                    .environmentObject(gameManager)
-                    .navigationBarBackButtonHidden(true)
             case .ChoiceView:
                 ChoiceView(path: $path)
                     .environmentObject(gameManager)
@@ -242,7 +230,8 @@ struct ContentView: View {
                 StoryProgressView(
                     dialogues: stages[stageIndex].dialogues,
                     initialSceneId: "Scene0",
-                    currentMode: $currentMode
+                    currentMode: $currentMode,
+                    path: $path
                 )
                 .environmentObject(gameManager)
                 .navigationBarBackButtonHidden(true)
@@ -253,7 +242,7 @@ struct ContentView: View {
                     onNextScene: { _ in },
                     path: $path,
                     conversationHistory: .constant([]),
-                    currentMode: $currentMode        // ← これを追加！
+                    currentMode: $currentMode
                 )
                 .environmentObject(gameManager)
                 .navigationBarBackButtonHidden(true)

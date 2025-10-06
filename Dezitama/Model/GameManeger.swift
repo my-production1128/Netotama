@@ -120,7 +120,7 @@ final class GameManager: ObservableObject {
     func updateStageScore(stageId: Int, mode: GameMode, earnedScore: Int) {
         let clamped = min(max(earnedScore, 0), 3)
         guard let idx = index(of: stageId, in: mode) else { return }
-        print("✅ スコア更新: ステージ\(stageId) (\(mode)) に新しいハイスコア \(clamped) を保存します。")
+        print("スコア更新: ステージ\(stageId) (\(mode)) に新しいハイスコア \(clamped) を保存します。")
 
         switch mode {
         case .happy:
