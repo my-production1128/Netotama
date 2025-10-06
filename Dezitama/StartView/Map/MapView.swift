@@ -13,15 +13,18 @@ struct MapView: View {
     @EnvironmentObject private var gameManager: GameManager
     @EnvironmentObject var musicplayer: SoundPlayer
     @Binding var currentMode: GameMode
-
+    
+    @State private var showStageSheet = false
+    @State private var selectedStage: Stage?
+    
     init(path: Binding<NavigationPath>, mode: GameMode, currentMode: Binding<GameMode>) {
         self._path = path
         self._currentMode = currentMode
         self._currentMode.wrappedValue = mode
-
+        
         print("MapView init: mode=\(mode)")
     }
-
+    
     
     private var currentTotalScore: Int {
         switch currentMode {
@@ -77,7 +80,7 @@ struct MapView: View {
             return badStagePositions
         }
     }
-
+    
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -96,10 +99,10 @@ struct MapView: View {
                         
                         StageButton(stage: stage, mode: currentMode) {
                             musicplayer.playSE(fileName: "button_SE")
-                            let unlocked = gameManager.handleStageTap(stage, path: &path, mode: currentMode)
-                            
-                            if !unlocked {
-                                // 未解除ならフィードバック
+                            if stage.isUnlocked {
+                                selectedStage = stage
+                                showStageSheet = true
+                            } else {
                                 let impact = UIImpactFeedbackGenerator(style: .light)
                                 impact.impactOccurred()
                             }
@@ -183,26 +186,41 @@ struct MapView: View {
                     Spacer()
                 }
                 .padding(75)
+                if showStageSheet, let stage = selectedStage {
+                    Color.black.opacity(0.4)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            // 背景タップでステージに遷移
+                            musicplayer.playSE(fileName: "button_SE")
+                            showStageSheet = false
+                            _ = gameManager.handleStageTap(stage, path: &path, mode: currentMode)
+                            selectedStage = nil
+                        }
+                    
+                    StageIntroOverlay(
+                        stage: stage,
+                        mode: currentMode,
+                        onClose: {
+                            showStageSheet = false
+                            selectedStage = nil
+                        },
+                        onStart: {
+                            showStageSheet = false
+                            _ = gameManager.handleStageTap(stage, path: &path, mode: currentMode)
+                            selectedStage = nil
+                        }
+                    )
+                    .environmentObject(musicplayer)
+                    .transition(.scale.combined(with: .opacity))
+                }
             }
-            
         }
         .ignoresSafeArea()
         .onAppear {
             print("MapView appeared: currentMode=\(currentMode)")
             print("GameManager happyStages count: \(gameManager.happyStages.count)")
             print("GameManager badStages count: \(gameManager.badStages.count)")
-
             musicplayer.playBGM(fileName: "start_bgm")
         }
     }
 }
-//
-//// MARK: - Preview
-//#Preview {
-//    @Previewable @State var path = NavigationPath()
-//    @Previewable @State var currentMode: GameMode = .bad
-//    
-//    MapView(path: $path, mode: .happy, currentMode: $currentMode)
-//        .environmentObject(GameManager.shared)
-//        .environmentObject(SoundPlayer())
-//}
