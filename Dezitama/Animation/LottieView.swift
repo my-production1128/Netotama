@@ -8,14 +8,22 @@ import SwiftUI
 import Lottie
 
 struct LottieView: UIViewRepresentable {
-    var filename: String
-    var animationView = LottieAnimationView()
+    // ✅ 修正点1: 引数名をfilenameからnameに変更
+    var name: String
+    // ✅ 修正点2: ループ方法を指定するプロパティを追加
+    var loopMode: LottieLoopMode = .playOnce
 
     func makeUIView(context: UIViewRepresentableContext<LottieView>) -> UIView {
         let view = UIView(frame: .zero)
         let animationView = LottieAnimationView()
-        animationView.animation = LottieAnimation.named(filename)
+
+        // ファイル名（name）でアニメーションを読み込み
+        animationView.animation = LottieAnimation.named(name)
         animationView.contentMode = .scaleAspectFill
+
+        // ✅ 修正点3: 指定されたloopModeを設定
+        animationView.loopMode = loopMode
+
         animationView.play()
 
         animationView.translatesAutoresizingMaskIntoConstraints = false
