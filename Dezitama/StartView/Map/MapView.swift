@@ -14,12 +14,14 @@ struct MapView: View {
     @EnvironmentObject var musicplayer: SoundPlayer
     @Binding var currentMode: GameMode
 
-    init(path: Binding<NavigationPath>, mode: GameMode,currentMode: Binding<GameMode>) {
+    init(path: Binding<NavigationPath>, mode: GameMode, currentMode: Binding<GameMode>) {
         self._path = path
         self._currentMode = currentMode
-//        self._currentMode = State(initialValue: mode)
+        self._currentMode.wrappedValue = mode
+
         print("MapView init: mode=\(mode)")
     }
+
     
     private var currentTotalScore: Int {
         switch currentMode {

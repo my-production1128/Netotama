@@ -7,13 +7,7 @@
 
 import SwiftUI
 
-
 struct ContentView: View {
-    // こいつ
-    @State var netomoDialogues: [Dialogue] = []
-    @State var groupchatDialogues: [Dialogue] = []
-    @State private var kakusanDialogues: [Dialogue] = []
-    
     @State var isMenuOpen = false
     // LottieViewの表示管理
     @State var isLottieViewVisible: Bool = true
@@ -25,10 +19,10 @@ struct ContentView: View {
     @GestureState private var isPressing = false
 
     @State private var stages: [StageData] = [
-        StageData(id: 1, csvFileName: "bad_netomo_story1_ver8"),
-        StageData(id: 2, csvFileName: "bad_netomo_story2_ver7")
-//        StageData(id: 3, csvFileName: "bad_netomo_story3_ver2"),
-//        StageData(id: 4, csvFileName: "bad_groupchat_story1_ver2"),
+        StageData(id: 1, csvFileName: "bad_netomo_story1_ver9"),
+        StageData(id: 2, csvFileName: "bad_netomo_story2_ver8"),
+        StageData(id: 3, csvFileName: "bad_netomo_story3_ver2"),
+        StageData(id: 4, csvFileName: "bad_groupchat_story1_ver3")
 //        StageData(id: 5, csvFileName: "bad_groupchat_story2_ver2"),
 //        StageData(id: 6, csvFileName: "bad_groupchat_story3_ver2"),
 //        StageData(id: 7, csvFileName: "bad_kakusan_story1_ver2"),

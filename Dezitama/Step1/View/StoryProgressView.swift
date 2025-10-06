@@ -86,17 +86,17 @@ struct StoryProgressView: View {
                     // ====== 共通UI（ホーム・スコア・ログ） ======
                     VStack {
                         HStack {
-                            // 🏠 ホームボタン
+                            // ホームボタン
                             VStack {
                                 Button(action: {
                                     withAnimation(.easeInOut) {
                                         isBackMap = true // ← アラート表示
                                     }
                                 }) {
-                                    Image("home")
+                                    Image("home_bad")
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 100, height: 100)
+                                        .frame(width: 200, height: 200)
                                 }
                                 Spacer()
                             }
