@@ -409,43 +409,6 @@ struct StoryBranchView: View {
                     Text("ストーリーが読み込めませんでした")
                 }
 
-                HStack {
-                    VStack {
-//                        ホームボタン
-                        Button {
-                            isBackMap = true
-                        }label: {
-                            Image("home_good")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 180, height: 180)
-                                .padding(.top, 0)
-                        }
-//                        会話見返し機能
-                            Button(action: {
-                                musicplayer.playSE(fileName: "button_SE")
-                                isChatLogVisible.toggle()
-                            }) {
-                                Image("chat") // chatボタンを流用
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 60, height: 60)
-                                    .padding(20)
-                            }
-                            .zIndex(0)
-                            Spacer()
-
-                    }
-                    Spacer()
-                    VStack {
-                        Gauge(width: geometry.size.width * 0.3, height: 100,
-                              score: gameManager.currentScore,
-                              currentMode: $currentMode)
-                            .padding(.trailing,2)
-                        Spacer()
-
-                    }
-                }
 
                 if isPopupVisible, let choiceScene = currentChoiceScene {
                     isChoiceView(
@@ -490,6 +453,43 @@ struct StoryBranchView: View {
                             }
                         }
                     )
+                }
+
+                HStack {
+                    VStack {
+//                        ホームボタン
+                        Button {
+                            isBackMap = true
+                        }label: {
+                            Image("home_good")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 180, height: 180)
+                                .padding(.top, 0)
+                        }
+//                        会話見返し機能
+                            Button(action: {
+                                musicplayer.playSE(fileName: "button_SE")
+                                isChatLogVisible.toggle()
+                            }) {
+                                Image("chat") // chatボタンを流用
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 60, height: 60)
+                                    .padding(20)
+                            }
+                            .zIndex(0)
+                            Spacer()
+
+                    }
+                    Spacer()
+                    VStack {
+                        Gauge(width: geometry.size.width * 0.3, height: 100,
+                              score: gameManager.currentScore,
+                              currentMode: $currentMode)
+                            .padding(.trailing,2)
+                        Spacer()
+                    }
                 }
 
                 if isChatLogVisible {
