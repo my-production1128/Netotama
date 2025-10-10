@@ -54,11 +54,13 @@ struct ScoreDisplayView: View {
 
     // 表示テキスト
     private var displayText: String {
+        let formattedScore = String(format: "%02d", totalScore)
+
         switch mode {
         case .happy:
-            return "\(totalScore)/\(maxScore)"
+            return "\(formattedScore)/\(maxScore)"
         case .bad:
-            return "\(totalScore)/\(maxScore)"
+            return "\(formattedScore)/\(maxScore)"
         }
     }
 }
