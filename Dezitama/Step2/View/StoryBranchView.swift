@@ -406,7 +406,7 @@ struct StoryBranchView: View {
                         }
                     }
                 } else {
-                    Text("ストーリーが読み込めませんでしたnetomoBranchView")
+                    Text("ストーリーが読み込めませんでした")
                 }
 
                 HStack {
