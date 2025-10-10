@@ -27,11 +27,12 @@ struct ChoiceView: View {
                         Image("Bad_Button")
                             .resizable()
                             .scaledToFit()
-                            .frame(height: geometry.size.height * 0.35)
-                            .position(
-                                x: geometry.size.width * 0.5,
-                                y: geometry.size.height * 0.35
-                            )
+                            .frame(height: geometry.size.height * 0.4)
+                            .offset(y: -10)
+//                            .position(
+//                                x: geometry.size.width * 0.5,
+//                                y: geometry.size.height * 0.35
+//                            )
                     }
                     
                     Button {
@@ -42,10 +43,11 @@ struct ChoiceView: View {
                             .resizable()
                             .scaledToFit()
                             .frame(height: geometry.size.height * 0.4)
-                            .position(
-                                x: geometry.size.width * 0.5,
-                                y: geometry.size.height * 0.25
-                            )
+                            .offset(y: -10)
+//                            .position(
+//                                x: geometry.size.width * 0.5,
+//                                y: geometry.size.height * 0.25
+//                            )
                     }
 //                    .disabled(!gameManager.isHappyUnlocked)
                 }
