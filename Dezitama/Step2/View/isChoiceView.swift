@@ -30,7 +30,7 @@ struct isChoiceView: View {
             ZStack {
                 Color.black
                     .opacity(0.5)
-                    .ignoresSafeArea()
+                    .edgesIgnoringSafeArea(.all)
 
                 VStack(spacing: 30) {
                     Text("あなたなら何て言う？")
@@ -47,7 +47,7 @@ struct isChoiceView: View {
                             font: .customFont(ofSize: 30),
                             textColor: .black,
                             textAlignment: .left,
-                            targetWidth: 400
+                            targetWidth: 500
                         )
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(width: 430, height: 120)
@@ -67,7 +67,7 @@ struct isChoiceView: View {
                             font: .customFont(ofSize: 30),
                             textColor: .black,
                             textAlignment: .left,
-                            targetWidth: 400
+                            targetWidth: 500
                         )
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(width: 530, height: 120)
@@ -87,7 +87,7 @@ struct isChoiceView: View {
                             font: .customFont(ofSize: 30),
                             textColor: .black,
                             textAlignment: .left,
-                            targetWidth: 400
+                            targetWidth: 500
                         )
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(width: 430, height: 120)

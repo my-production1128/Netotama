@@ -336,7 +336,6 @@ struct StoryBranchView: View {
                             .onTapGesture {
                                 // ポップアップ表示中はタップを無効にする
                                 if isPopupVisible {
-                                    print("ポップアップ表示中のためタップを無効にします。")
                                     return
                                 }
 
@@ -381,7 +380,9 @@ struct StoryBranchView: View {
                                     print("✅ 次のシーン「\(nextId)」が見つかりました。タイプは「\(nextScene.sceneType)」です。")
 
                                     historyStack.append(currentSceneId)
-                                    conversationHistory.append(nextScene)
+                                    if nextScene.isChoice != true {
+                                        conversationHistory.append(nextScene)
+                                    }
 
                                     if nextScene.sceneType == "talk" {
                                         print("➡️ 次も talk シーンです。")
@@ -518,22 +519,19 @@ struct StoryBranchView: View {
                         // finalStarsの値に応じてテキストを表示
                         switch finalStars {
                         case 1:
-                            //                            Image("final_star1")
                             Text("星１")
                                 .font(.system(size: 100, weight: .bold))
                                 .foregroundColor(.yellow)
                         case 2:
-                            //                            Image("final_star2")
                             Text("星２")
                                 .font(.system(size: 100, weight: .bold))
                                 .foregroundColor(.yellow)
                         case 3:
-                            //                            Image("final_star3")
                             Text("星３")
                                 .font(.system(size: 100, weight: .bold))
                                 .foregroundColor(.yellow)
                         default:
-                            Text("もう少し！") // 星0個の場合
+                            Text("もう少し！")
                                 .font(.system(size: 80, weight: .bold))
                                 .foregroundColor(.white)
                         }
@@ -571,7 +569,7 @@ struct StoryBranchView: View {
                 }
                 print("--------------------------------\n")
 
-                if let first = currentStoryBranchings.first { // ★ filterされたストーリーの先頭を取得する
+                if let first = currentStoryBranchings.first {
                     currentSceneId = first.sceneId
                     startTyping(fullText: first.text)
 
@@ -592,9 +590,7 @@ struct StoryBranchView: View {
 
     //    三角形アニメーションがループする用の関数
     private func startLoopingAnimation() {
-        // 一旦アニメーションをリセット
         offsetY = 0.0
-        // 新たにアニメーション
         let animation = Animation
             .easeInOut(duration: 0.6)
             .repeatForever(autoreverses: true)
@@ -626,14 +622,14 @@ struct StoryBranchView: View {
 @ViewBuilder
 private func characterImage(imageName: String, speakingCharacter: String) -> some View {
     let isSpeaking = (speakingCharacter == imageName)
-    let speakingScale: CGFloat = isSpeaking ? 1.1 : 1.0 // 話し手は1.1倍に拡大
+    let speakingScale: CGFloat = isSpeaking ? 1.1 : 1.0
 
     Image(imageName)
         .resizable()
         .scaledToFit()
         .scaleEffect(speakingScale)
-        .saturation(isSpeaking ? 1.0 : 0.7) // 彩度を30%に下げる
-        .brightness(isSpeaking ? 0.0 : -0.2) // 明るさを20%下げる
+        .saturation(isSpeaking ? 1.0 : 0.7)
+        .brightness(isSpeaking ? 0.0 : -0.2)
         .animation(.easeInOut(duration: 0.3), value: isSpeaking)
 }
 
