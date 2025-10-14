@@ -81,7 +81,7 @@ class CLTypingRubyLabel: WideRubyLabel {
 
 //         ルビがある場合は上部に余白を追加
         if let attributedText = attributedText, attributedText.containsWideRubyAnnotation() {
-            let rubyExtraHeight: CGFloat = 40 // ルビ用の追加高さ
+            let rubyExtraHeight: CGFloat = 40
             return CGSize(width: originalSize.width, height: originalSize.height + rubyExtraHeight)
         }
         return originalSize
@@ -96,18 +96,20 @@ struct TypingRubyLabelRepresentable: UIViewRepresentable {
     let attributedText: NSAttributedString
     let charInterval: Double
     let font: UIFont
+    let targetWidth: CGFloat
 
     func makeUIView(context: Context) -> CLTypingRubyLabel {
         let label = CLTypingRubyLabel()
         label.charInterval = charInterval
-        label.textAlignment = .left// ここでも設定
+        label.textAlignment = .left
         label.numberOfLines = 0
         label.font = font
         return label
     }
     func updateUIView(_ uiView: CLTypingRubyLabel, context: Context) {
         uiView.font = font
-        uiView.frame.size.width = 10
+        uiView.maxLayoutWidth = targetWidth
+        uiView.preferredMaxLayoutWidth = targetWidth
         uiView.attributedText = attributedText
     }
 }

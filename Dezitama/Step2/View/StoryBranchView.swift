@@ -302,7 +302,8 @@ struct StoryBranchView: View {
                                             .createWideRuby(font: talkFont, color: .black), // ← 修正
                                         charInterval: 0.05,
                                         // こちらにも同じ font を渡す
-                                        font: talkFont
+                                        font: talkFont,
+                                        targetWidth: 500
                                     )
                                     .fixedSize(horizontal: false, vertical: true) // UILabelのサイズ計算を尊重させる
                                     .frame(maxWidth: 700)
@@ -467,27 +468,26 @@ struct StoryBranchView: View {
                                 .frame(width: 180, height: 180)
                                 .padding(.top, 0)
                         }
-//                        会話見返し機能
-                            Button(action: {
-                                musicplayer.playSE(fileName: "button_SE")
-                                isChatLogVisible.toggle()
-                            }) {
-                                Image("chat") // chatボタンを流用
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 60, height: 60)
-                                    .padding(20)
-                            }
-                            .zIndex(0)
                             Spacer()
-
                     }
                     Spacer()
                     VStack {
                         Gauge(width: geometry.size.width * 0.3, height: 100,
                               score: gameManager.currentScore,
                               currentMode: $currentMode)
-                            .padding(.trailing,2)
+                        .padding(.trailing,2)
+                        //                        会話見返し機能
+                        Button(action: {
+                            musicplayer.playSE(fileName: "button_SE")
+                            isChatLogVisible.toggle()
+                        }) {
+                            Image("chat") // chatボタンを流用
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 60, height: 60)
+//                                .padding()
+                        }
+                        .zIndex(0)
                         Spacer()
                     }
                 }

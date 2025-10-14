@@ -224,7 +224,8 @@ struct startView: View {
                             .replacingOccurrences(of: "<br>", with: "\n")
                             .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black),
                         charInterval: 0.05,
-                        font: UIFont.customFont(ofSize: 30)
+                        font: UIFont.customFont(ofSize: 30),
+                        targetWidth: 500
                     )
                     .frame(maxWidth: 500)
                     .padding(.horizontal, 20)

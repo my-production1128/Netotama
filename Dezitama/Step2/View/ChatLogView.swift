@@ -68,7 +68,8 @@ struct ChatLogView: View {
                                                                 color: .black),
                                                 font: .systemFont(ofSize: 20),
                                                 textColor: .black,
-                                                textAlignment: .left
+                                                textAlignment: .left,
+                                                targetWidth: 270
                                             )
                                             .padding(.horizontal, 12)
                                             .padding(.vertical, 8)

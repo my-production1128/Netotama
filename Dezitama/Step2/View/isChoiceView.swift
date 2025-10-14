@@ -46,7 +46,8 @@ struct isChoiceView: View {
                                 .createRuby(font: .customFont(ofSize: 30), color: .black),
                             font: .customFont(ofSize: 30),
                             textColor: .black,
-                            textAlignment: .left
+                            textAlignment: .left,
+                            targetWidth: 400
                         )
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(width: 430, height: 120)
@@ -65,10 +66,11 @@ struct isChoiceView: View {
                                 .createRuby(font: .customFont(ofSize: 30), color: .black),
                             font: .customFont(ofSize: 30),
                             textColor: .black,
-                            textAlignment: .left
+                            textAlignment: .left,
+                            targetWidth: 400
                         )
                         .fixedSize(horizontal: false, vertical: true)
-                        .frame(width: 430, height: 120)
+                        .frame(width: 530, height: 120)
                         .padding(.horizontal, 20)
                     }
                     .buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice2))
@@ -84,7 +86,8 @@ struct isChoiceView: View {
                                 .createRuby(font: .customFont(ofSize: 30), color: .black),
                             font: .customFont(ofSize: 30),
                             textColor: .black,
-                            textAlignment: .left
+                            textAlignment: .left,
+                            targetWidth: 400
                         )
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(width: 430, height: 120)

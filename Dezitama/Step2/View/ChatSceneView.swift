@@ -85,18 +85,18 @@ struct ChatSceneView: View {
                     }
                 }
 
-                HStack {
-                    Image("soushin")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 80)
-                        .padding(40)
-                        .scaleEffect(isLarge ? 0.93 : 1)
-                        .onAppear {
-                            startLoopingAnimation()
-                        }
-                        .position(x: width * 0.645, y: height * 0.87)
-                }
+//                HStack {
+//                    Image("soushin")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .frame(width: 80)
+//                        .padding(40)
+//                        .scaleEffect(isLarge ? 0.93 : 1)
+//                        .onAppear {
+//                            startLoopingAnimation()
+//                        }
+//                        .position(x: width * 0.645, y: height * 0.87)
+//                }
 
 //                                        Button {
 //                                            skipAllChatScenes()
@@ -377,7 +377,8 @@ struct ChatSceneView: View {
                                         .createRuby(font: .customFont(ofSize: 22), color: .black),
                                     font: .customFont(ofSize: 22),
                                     textColor: .black,
-                                    textAlignment: .left
+                                    textAlignment: .left,
+                                    targetWidth: 270
                                 )
                                 .padding(13)
                                 .background(Color.white.opacity(1.0))
@@ -502,7 +503,8 @@ struct ChatSceneView: View {
                                         .createRuby(font: .customFont(ofSize: 22), color: .black),
                                     font: .customFont(ofSize: 22),
                                     textColor: .black,
-                                    textAlignment: .left
+                                    textAlignment: .left,
+                                    targetWidth: 270
                                 )
                                 .padding(13)
                                 .background(Color.white.opacity(1.0))
