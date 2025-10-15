@@ -26,11 +26,11 @@ struct isChoiceView: View {
 
 
     var body: some View {
-        GeometryReader { geometry in
+//        GeometryReader { geometry in
             ZStack {
                 Color.black
                     .opacity(0.5)
-                    .edgesIgnoringSafeArea(.all)
+                    .ignoresSafeArea()
 
                 VStack(spacing: 30) {
                     Text("あなたなら何て言う？")
@@ -99,15 +99,19 @@ struct isChoiceView: View {
             }
 
             //                丸を出す関数
-            if showCorrectMark {
-                Image("circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 150, height: 150)
-                    .transition(.scale)
-                    .animation(.easeInOut(duration: 0.3), value: showCorrectMark)
-            }
-        }
+            .overlay( // .overlay を使って上に重ねる
+                ZStack {
+                    if showCorrectMark {
+                        Image("circle")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 150, height: 150)
+                            .transition(.scale)
+                            .animation(.easeInOut(duration: 0.3), value: showCorrectMark)
+                    }
+                }
+            )
+//        }
     }
 
 

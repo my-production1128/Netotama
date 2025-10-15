@@ -145,6 +145,8 @@ struct ChatSceneView: View {
                             proceedToNextIfNeeded()
                         }
                     )
+                    .ignoresSafeArea()
+
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

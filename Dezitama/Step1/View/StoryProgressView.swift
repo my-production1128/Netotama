@@ -71,7 +71,7 @@ struct StoryProgressView: View {
                             }
                         )
                         .transition(.opacity)
-                        .zIndex(100)
+                        .zIndex(200)
                     }
                     
                     // ====== Chatログ表示 ======
@@ -132,13 +132,13 @@ struct StoryProgressView: View {
                         }
                         Spacer()
                     }
-                    .zIndex(50)
-                    
+                    .zIndex(150)
+
                     // ====== HomeAlert（上に重ねる） ======
                     if isBackMap {
                         HomeAlert(path: $path, isBackMap: $isBackMap)
                             .transition(.opacity)
-                            .zIndex(200)
+                            .zIndex(250)
                     }
                 }
                 .id(viewRefreshKey)
@@ -173,7 +173,7 @@ struct StoryProgressView: View {
             
             // MapViewに戻る（全階層削除）
             if !path.isEmpty {
-                path.removeLast(path.count)
+                path.removeLast()
             }
             return
         }

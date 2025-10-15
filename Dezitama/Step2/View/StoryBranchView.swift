@@ -173,6 +173,7 @@ struct StoryBranchView: View {
                                 musicplayer.stopAllMusic()
                                 musicplayer.playBGM(fileName: current.bgm)
                             }
+                            .ignoresSafeArea()
 
                         case "talk_AE":
                             ZStack {
