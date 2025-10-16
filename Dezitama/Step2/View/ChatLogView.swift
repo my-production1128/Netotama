@@ -10,7 +10,7 @@ struct ChatLogView: View {
     @EnvironmentObject var musicplayer: SoundPlayer
     @Binding var isChatLogVisible: Bool
     let conversationHistory: [Branching]
-
+    
 
     var body: some View {
         GeometryReader { innerGeometry in
@@ -68,7 +68,8 @@ struct ChatLogView: View {
                                                                 color: .black),
                                                 font: .systemFont(ofSize: 20),
                                                 textColor: .black,
-                                                textAlignment: .left
+                                                textAlignment: .left,
+                                                targetWidth: 270
                                             )
                                             .padding(.horizontal, 12)
                                             .padding(.vertical, 8)

@@ -85,19 +85,6 @@ struct ChatSceneView: View {
                     }
                 }
 
-                HStack {
-                    Image("soushin")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 80)
-                        .padding(40)
-                        .scaleEffect(isLarge ? 0.93 : 1)
-                        .onAppear {
-                            startLoopingAnimation()
-                        }
-                        .position(x: width * 0.645, y: height * 0.87)
-                }
-
 //                                        Button {
 //                                            skipAllChatScenes()
 //                                        } label: {
@@ -148,15 +135,18 @@ struct ChatSceneView: View {
                                 chatMessage[lastMessageIndex].isAnimating = false
                                 chatMessage[lastMessageIndex].showText = true
                                 chatMessage[lastMessageIndex].scene = newScene
-                                conversationHistory[lastMessageIndex] = newScene
+//                                conversationHistory[lastMessageIndex] = newScene
                                 allScene = newScene
+
+                                conversationHistory.append(newScene)
                             }
 
                             isPopupVisible = false
-
-                                proceedToNextIfNeeded()
+                            proceedToNextIfNeeded()
                         }
                     )
+                    .ignoresSafeArea()
+
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -166,7 +156,6 @@ struct ChatSceneView: View {
                     return
                 }
 
-                // ▼▼▼ 変更後 ▼▼▼
                 if let lastMessageIndex = chatMessage.indices.last, chatMessage[lastMessageIndex].isAnimating {
                     if chatMessage[lastMessageIndex].scene.isChoice ?? false {
                         isPopupVisible = true
@@ -175,6 +164,8 @@ struct ChatSceneView: View {
                         chatMessage[lastMessageIndex].isAnimating = false
                         chatMessage[lastMessageIndex].showText = true
 
+                        conversationHistory.append(chatMessage[lastMessageIndex].scene)
+
                         DispatchQueue.main.async {
                             if let last = chatMessage.last {
                                 withAnimation {
@@ -182,9 +173,7 @@ struct ChatSceneView: View {
                                 }
                             }
                         }
-//                        if chatMessage[lastMessageIndex].scene.characterName != chatMessage[lastMessageIndex].scene.rightCharacter {
                             proceedToNextIfNeeded()
-//                        }
                     }
                     return
                 }
@@ -377,7 +366,8 @@ struct ChatSceneView: View {
                                         .createRuby(font: .customFont(ofSize: 22), color: .black),
                                     font: .customFont(ofSize: 22),
                                     textColor: .black,
-                                    textAlignment: .left
+                                    textAlignment: .left,
+                                    targetWidth: 270
                                 )
                                 .padding(13)
                                 .background(Color.white.opacity(1.0))
@@ -502,7 +492,8 @@ struct ChatSceneView: View {
                                         .createRuby(font: .customFont(ofSize: 22), color: .black),
                                     font: .customFont(ofSize: 22),
                                     textColor: .black,
-                                    textAlignment: .left
+                                    textAlignment: .left,
+                                    targetWidth: 270
                                 )
                                 .padding(13)
                                 .background(Color.white.opacity(1.0))
@@ -558,18 +549,7 @@ struct ChatSceneView: View {
         onNextScene(nextId)
     }
 
-
-    //    送信ボタンのアニメーション
-    private func startLoopingAnimation() {
-        Timer.scheduledTimer(withTimeInterval: 0.7, repeats: true) { _ in
-            withAnimation(.easeInOut(duration: 0.7)) {
-                isLarge.toggle()
-            }
-        }
-    }
-
     //自動返信の関数
-    // ▼▼▼ この関数を以下のコードで丸ごと置き換えしてください ▼▼▼
     private func proceedToNextIfNeeded() {
         guard let last = chatMessage.last, !isTyping, !isPopupVisible else {
             return
@@ -582,11 +562,8 @@ struct ChatSceneView: View {
         }
 
         if next.sceneType != last.scene.sceneType {
-            // ただし、'chat'と'chat_picture'は同じチャット画面の仲間として扱う
             let isCurrentChat = last.scene.sceneType == "chat" || last.scene.sceneType == "chat_picture"
             let isNextChat = next.sceneType == "chat" || next.sceneType == "chat_picture"
-
-            // チャット形式 ⇔ 非チャット形式 のように種類が切り替わる場合は、何もしない（タップを待つ）
             if isCurrentChat != isNextChat {
                  return
             }
@@ -597,26 +574,19 @@ struct ChatSceneView: View {
             return
         }
 
-        // --- ここからが自動メッセージ追加のロジック ---
-
-        // ✅ 修正点: 次が「主人公のセリフ」の場合に自動処理を行う
         if next.characterName == next.rightCharacter {
             isTyping = true
-            // 1.5秒後に、主人公のメッセージを「アニメーションしている状態」で自動的に追加する
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 let isPic = next.sceneType == "chat_picture"
                 let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false, isPicture: isPic)
 
                 chatMessage.append(newMsg)
-                conversationHistory.append(newMsg.scene)
                 allScene = next
                 isTyping = false
             }
-            // ここで処理は一旦終了。次のタップはユーザーが行う。
             return
         }
 
-        // 相手のテキストメッセージは、以前と同様に完全に表示されるまで自動で進む
         if next.characterName != next.rightCharacter && next.sceneType == "chat" {
              isTyping = true
              pendingMessage = next
@@ -629,40 +599,8 @@ struct ChatSceneView: View {
                  }
                  pendingMessage = nil
                  isTyping = false
-
-                 // 相手のセリフを表示後、さらに次のセリフ（主人公の番）をチェックするために再度呼び出す
                  proceedToNextIfNeeded()
              }
-        }
-    }
-
-    private func skipToNextChoice() {
-        guard let last = chatMessage.last else { return }
-
-        var nextId = last.scene.nextSceneId
-        var targetScene: Branching?
-
-        while let next = branchingMap[nextId], next.sceneType == "chat" {
-            if next.isChoice == true {
-                targetScene = next
-                break
-            }
-            nextId = next.nextSceneId
-        }
-
-        if let scene = targetScene {
-            let newMsg = ChatMessage(scene: scene, isAnimating: true, showText: false)
-            chatMessage.append(newMsg)
-            conversationHistory.append(newMsg.scene)
-            allScene = newMsg.scene
-
-            DispatchQueue.main.async {
-                if let lastMessage = chatMessage.last {
-                    withAnimation {
-                        proxy?.scrollTo(lastMessage.id, anchor: .bottom)
-                    }
-                }
-            }
         }
     }
 }

@@ -173,6 +173,7 @@ struct StoryBranchView: View {
                                 musicplayer.stopAllMusic()
                                 musicplayer.playBGM(fileName: current.bgm)
                             }
+                            .ignoresSafeArea()
 
                         case "talk_AE":
                             ZStack {
@@ -302,7 +303,8 @@ struct StoryBranchView: View {
                                             .createWideRuby(font: talkFont, color: .black), // ← 修正
                                         charInterval: 0.05,
                                         // こちらにも同じ font を渡す
-                                        font: talkFont
+                                        font: talkFont,
+                                        targetWidth: 500
                                     )
                                     .fixedSize(horizontal: false, vertical: true) // UILabelのサイズ計算を尊重させる
                                     .frame(maxWidth: 700)
@@ -335,7 +337,6 @@ struct StoryBranchView: View {
                             .onTapGesture {
                                 // ポップアップ表示中はタップを無効にする
                                 if isPopupVisible {
-                                    print("ポップアップ表示中のためタップを無効にします。")
                                     return
                                 }
 
@@ -380,7 +381,9 @@ struct StoryBranchView: View {
                                     print("✅ 次のシーン「\(nextId)」が見つかりました。タイプは「\(nextScene.sceneType)」です。")
 
                                     historyStack.append(currentSceneId)
-                                    conversationHistory.append(nextScene)
+                                    if nextScene.isChoice != true {
+                                        conversationHistory.append(nextScene)
+                                    }
 
                                     if nextScene.sceneType == "talk" {
                                         print("➡️ 次も talk シーンです。")
@@ -467,27 +470,26 @@ struct StoryBranchView: View {
                                 .frame(width: 180, height: 180)
                                 .padding(.top, 0)
                         }
-//                        会話見返し機能
-                            Button(action: {
-                                musicplayer.playSE(fileName: "button_SE")
-                                isChatLogVisible.toggle()
-                            }) {
-                                Image("chat") // chatボタンを流用
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 60, height: 60)
-                                    .padding(20)
-                            }
-                            .zIndex(0)
                             Spacer()
-
                     }
                     Spacer()
                     VStack {
                         Gauge(width: geometry.size.width * 0.3, height: 100,
                               score: gameManager.currentScore,
                               currentMode: $currentMode)
-                            .padding(.trailing,2)
+                        .padding(.trailing,2)
+                        //                        会話見返し機能
+                        Button(action: {
+                            musicplayer.playSE(fileName: "button_SE")
+                            isChatLogVisible.toggle()
+                        }) {
+                            Image("chat") // chatボタンを流用
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 60, height: 60)
+//                                .padding()
+                        }
+                        .zIndex(0)
                         Spacer()
                     }
                 }
@@ -518,22 +520,19 @@ struct StoryBranchView: View {
                         // finalStarsの値に応じてテキストを表示
                         switch finalStars {
                         case 1:
-                            //                            Image("final_star1")
                             Text("星１")
                                 .font(.system(size: 100, weight: .bold))
                                 .foregroundColor(.yellow)
                         case 2:
-                            //                            Image("final_star2")
                             Text("星２")
                                 .font(.system(size: 100, weight: .bold))
                                 .foregroundColor(.yellow)
                         case 3:
-                            //                            Image("final_star3")
                             Text("星３")
                                 .font(.system(size: 100, weight: .bold))
                                 .foregroundColor(.yellow)
                         default:
-                            Text("もう少し！") // 星0個の場合
+                            Text("もう少し！")
                                 .font(.system(size: 80, weight: .bold))
                                 .foregroundColor(.white)
                         }
@@ -571,7 +570,7 @@ struct StoryBranchView: View {
                 }
                 print("--------------------------------\n")
 
-                if let first = currentStoryBranchings.first { // ★ filterされたストーリーの先頭を取得する
+                if let first = currentStoryBranchings.first {
                     currentSceneId = first.sceneId
                     startTyping(fullText: first.text)
 
@@ -592,9 +591,7 @@ struct StoryBranchView: View {
 
     //    三角形アニメーションがループする用の関数
     private func startLoopingAnimation() {
-        // 一旦アニメーションをリセット
         offsetY = 0.0
-        // 新たにアニメーション
         let animation = Animation
             .easeInOut(duration: 0.6)
             .repeatForever(autoreverses: true)
@@ -626,14 +623,14 @@ struct StoryBranchView: View {
 @ViewBuilder
 private func characterImage(imageName: String, speakingCharacter: String) -> some View {
     let isSpeaking = (speakingCharacter == imageName)
-    let speakingScale: CGFloat = isSpeaking ? 1.1 : 1.0 // 話し手は1.1倍に拡大
+    let speakingScale: CGFloat = isSpeaking ? 1.1 : 1.0
 
     Image(imageName)
         .resizable()
         .scaledToFit()
         .scaleEffect(speakingScale)
-        .saturation(isSpeaking ? 1.0 : 0.7) // 彩度を30%に下げる
-        .brightness(isSpeaking ? 0.0 : -0.2) // 明るさを20%下げる
+        .saturation(isSpeaking ? 1.0 : 0.7)
+        .brightness(isSpeaking ? 0.0 : -0.2)
         .animation(.easeInOut(duration: 0.3), value: isSpeaking)
 }
 

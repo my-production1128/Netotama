@@ -39,7 +39,8 @@ struct BadChoiceView: View {
                                     .createRuby(font: .customFont(ofSize: 30), color: .black),
                                 font: .customFont(ofSize: 30),
                                 textColor: .black,
-                                textAlignment: .left
+                                textAlignment: .left,
+                                targetWidth: 270
                             )
                             .fixedSize(horizontal: false, vertical: true)
                             .frame(width: 430, height: 120)
@@ -62,7 +63,8 @@ struct BadChoiceView: View {
                                     .createRuby(font: .customFont(ofSize: 30), color: .black),
                                 font: .customFont(ofSize: 30),
                                 textColor: .black,
-                                textAlignment: .left
+                                textAlignment: .left,
+                                targetWidth: 270
                             )
                             .fixedSize(horizontal: false, vertical: true)
                             .frame(width: 430, height: 120)

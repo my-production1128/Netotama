@@ -26,7 +26,7 @@ struct isChoiceView: View {
 
 
     var body: some View {
-        GeometryReader { geometry in
+//        GeometryReader { geometry in
             ZStack {
                 Color.black
                     .opacity(0.5)
@@ -46,7 +46,8 @@ struct isChoiceView: View {
                                 .createRuby(font: .customFont(ofSize: 30), color: .black),
                             font: .customFont(ofSize: 30),
                             textColor: .black,
-                            textAlignment: .left
+                            textAlignment: .left,
+                            targetWidth: 500
                         )
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(width: 430, height: 120)
@@ -65,10 +66,11 @@ struct isChoiceView: View {
                                 .createRuby(font: .customFont(ofSize: 30), color: .black),
                             font: .customFont(ofSize: 30),
                             textColor: .black,
-                            textAlignment: .left
+                            textAlignment: .left,
+                            targetWidth: 500
                         )
                         .fixedSize(horizontal: false, vertical: true)
-                        .frame(width: 430, height: 120)
+                        .frame(width: 530, height: 120)
                         .padding(.horizontal, 20)
                     }
                     .buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice2))
@@ -84,7 +86,8 @@ struct isChoiceView: View {
                                 .createRuby(font: .customFont(ofSize: 30), color: .black),
                             font: .customFont(ofSize: 30),
                             textColor: .black,
-                            textAlignment: .left
+                            textAlignment: .left,
+                            targetWidth: 500
                         )
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(width: 430, height: 120)
@@ -96,15 +99,19 @@ struct isChoiceView: View {
             }
 
             //                丸を出す関数
-            if showCorrectMark {
-                Image("circle")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 150, height: 150)
-                    .transition(.scale)
-                    .animation(.easeInOut(duration: 0.3), value: showCorrectMark)
-            }
-        }
+            .overlay( // .overlay を使って上に重ねる
+                ZStack {
+                    if showCorrectMark {
+                        Image("circle")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 150, height: 150)
+                            .transition(.scale)
+                            .animation(.easeInOut(duration: 0.3), value: showCorrectMark)
+                    }
+                }
+            )
+//        }
     }
 
 
