@@ -10,7 +10,7 @@ struct ChatLogView: View {
     @EnvironmentObject var musicplayer: SoundPlayer
     @Binding var isChatLogVisible: Bool
     let conversationHistory: [Branching]
-
+    
 
     var body: some View {
         GeometryReader { innerGeometry in
