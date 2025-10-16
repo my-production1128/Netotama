@@ -19,15 +19,15 @@ struct ContentView: View {
     @GestureState private var isPressing = false
 
     @State private var stages: [StageData] = [
-        StageData(id: 1, csvFileName: "bad_groupchat_story1_ver3"),
-        StageData(id: 2, csvFileName: "bad_groupchat_story2_ver3"),
-        StageData(id: 3, csvFileName: "bad_groupchat_story3_ver1"),
-        StageData(id: 4, csvFileName: "bad_netomo_story1_ver9"),
-        StageData(id: 5, csvFileName: "bad_netomo_story2_ver8"),
-        StageData(id: 6, csvFileName: "bad_netomo_story3_ver5"),
-        StageData(id: 7, csvFileName: "bad_kakusan_story1_ver4")
-//        StageData(id: 8, csvFileName: "bad_kakusan_story2_ver2"),
-//        StageData(id: 9, csvFileName: "bad_kakusan_story3_ver2")
+        StageData(id: 1, csvFileName: "bad_groupchat_story1_ver7"),
+        StageData(id: 2, csvFileName: "bad_groupchat_story2_ver7"),
+        StageData(id: 3, csvFileName: "bad_groupchat_story3_ver5"),
+        StageData(id: 4, csvFileName: "bad_netomo_story1_ver12"),
+        StageData(id: 5, csvFileName: "bad_netomo_story2_ver12"),
+        StageData(id: 6, csvFileName: "bad_netomo_story3_ver9"),
+        StageData(id: 7, csvFileName: "bad_kakusan_story1_ver8"),
+        StageData(id: 8, csvFileName: "bad_kakusan_story2_ver2"),
+        StageData(id: 9, csvFileName: "bad_kakusan_story3_ver2")
     ]
     
     // 全てのシナリオデータを保持する一つの配列
