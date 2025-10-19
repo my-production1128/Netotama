@@ -64,14 +64,10 @@ struct StoryProgressView: View {
                             dialogue: currentDialogue,
                             isPopupVisible: .constant(true),
                             onChoiceSelected: { selectedText, nextId, percentage in
-                                if let v = percentage {
-                                    gameManager.addScore(percentage: v)
-                                }
                                 handleNavigation(nextSceneId: nextId)
                             }
                         )
                         .transition(.opacity)
-                        .zIndex(200)
                     }
                     
                     // ====== Chatログ表示 ======
@@ -80,7 +76,6 @@ struct StoryProgressView: View {
                             isChatLogVisible: $isChatLogVisible,
                             conversationHistory: conversationHistory
                         )
-                        .zIndex(150)
                     }
 
                     // ====== 共通UI（ホーム・スコア・ログ） ======
@@ -90,7 +85,7 @@ struct StoryProgressView: View {
                             VStack {
                                 Button(action: {
                                     withAnimation(.easeInOut) {
-                                        isBackMap = true // ← アラート表示
+                                        isBackMap = true
                                     }
                                 }) {
                                     Image("home_bad")
@@ -132,13 +127,11 @@ struct StoryProgressView: View {
                         }
                         Spacer()
                     }
-                    .zIndex(150)
 
                     // ====== HomeAlert（上に重ねる） ======
                     if isBackMap {
                         HomeAlert(path: $path, isBackMap: $isBackMap)
                             .transition(.opacity)
-                            .zIndex(250)
                     }
                 }
                 .id(viewRefreshKey)
@@ -147,6 +140,11 @@ struct StoryProgressView: View {
                     if let newDialogue = dialogues.first(where: { $0.sceneId == newValue }) {
                         conversationHistory.append(newDialogue)
                     }
+                }
+                .onAppear {
+                    // ストーリーが開始されたら、GameManagerのスコア計算を初期化
+                    // (このViewが持つ全てのdialogueデータを渡して、選択肢の数を数えさせる)
+                    gameManager.startStory(dialogues: dialogues)
                 }
             } else {
                 Text("シーンが見つかりません: \(currentSceneId)")
