@@ -13,8 +13,16 @@ struct Gauge: View {
     var score: Double
 
     @State private var scale: CGFloat = 1.0
-    @State private var animatedProgress: Double = 0.0
+    @State private var animatedProgress: Double
     @Binding var currentMode: GameMode
+
+    init(width: CGFloat, height: CGFloat, score: Double, currentMode: Binding<GameMode>) {
+        self.width = width
+        self.height = height
+        self.score = score
+        self._currentMode = currentMode
+        self._animatedProgress = State(initialValue: score / 100.0)
+    }
 
 
     var body: some View {
@@ -55,7 +63,12 @@ struct Gauge: View {
         }
         .scaleEffect(scale, anchor: .topTrailing)
         .onChange(of: score) {
-            guard score > 0 else { return }
+            guard progress > 0 else {
+                if animatedProgress != 0.0 {
+                    animatedProgress = 0.0
+                }
+                return
+            }
             withAnimation(.spring(response: 0.4, dampingFraction: 0.5)) {
                 scale = 1.2
             }completion: {

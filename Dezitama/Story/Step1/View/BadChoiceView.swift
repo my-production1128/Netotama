@@ -10,6 +10,7 @@ struct BadChoiceView: View {
     let dialogue: Dialogue2
     @Binding var isPopupVisible: Bool
     var onChoiceSelected: (String, String, Double?) -> Void
+    @EnvironmentObject private var gameManager: GameManager
 
     @State private var selectedChoice: Int? = nil
     @State private var isChoiceMade = false
@@ -40,10 +41,11 @@ struct BadChoiceView: View {
                                 font: .customFont(ofSize: 30),
                                 textColor: .black,
                                 textAlignment: .left,
-                                targetWidth: 270
+                                targetWidth: 500
                             )
                             .fixedSize(horizontal: false, vertical: true)
-                            .frame(width: 430, height: 120)
+                            .padding()
+                            .frame(width: 530, height: 120)
                             .padding(.horizontal, 20)
                         }
                         .buttonStyle(ChoiceButtonStyle(isSelected: selectedChoice == 1))
@@ -64,10 +66,10 @@ struct BadChoiceView: View {
                                 font: .customFont(ofSize: 30),
                                 textColor: .black,
                                 textAlignment: .left,
-                                targetWidth: 270
+                                targetWidth: 500
                             )
                             .fixedSize(horizontal: false, vertical: true)
-                            .frame(width: 430, height: 120)
+                            .frame(width: 530, height: 120)
                             .padding(.horizontal, 20)
                         }
                         .buttonStyle(ChoiceButtonStyle(isSelected: selectedChoice == 2))
@@ -104,12 +106,10 @@ struct BadChoiceView: View {
             print("無効な選択肢番号: \(choiceNumber)")
             return
         }
-        
-        print("選択肢\(choiceNumber)を選びました")
-        print("  テキスト: \(choiceText ?? "nil")")
-        print("  次のID: \(nextId ?? "nil")")
+        print("🔵 選択肢を選びました！読み込んだパーセンテージ: \(percentage ?? -1.0)")
 //        print("  パーセンテージ: \(percentage ?? "nil")")
-        
+
+        gameManager.addScore(percentage: percentage)
         if let text = choiceText, let id = nextId {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 onChoiceSelected(text, id, percentage)
@@ -130,7 +130,7 @@ struct ChoiceButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .background(isSelected || configuration.isPressed ? selectedBackgroundColor : defaultBackgroundColor)
-            .clipShape(Capsule())
+            .cornerRadius(35)
             .scaleEffect(configuration.isPressed ? 0.95 : 1)
             .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
     }

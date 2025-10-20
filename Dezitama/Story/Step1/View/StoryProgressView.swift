@@ -19,18 +19,25 @@ struct StoryProgressView: View {
     @State private var isChatLogVisible: Bool = false
     // ホームアラート表示
     @State private var isBackMap: Bool = false
-    
+
+    @State private var isEndSceneReady: Bool = false
+    @State private var finalThunders: Int = 0
+    let stageId: Int
+
     @EnvironmentObject private var gameManager: GameManager
+    @EnvironmentObject var musicplayer: SoundPlayer
     @Binding var currentMode: GameMode
 
     init(dialogues: [Dialogue2],
          initialSceneId: String = "Scene0",
          currentMode: Binding<GameMode>,
-         path: Binding<NavigationPath>) {
+         path: Binding<NavigationPath>,
+         stageId: Int) {
         self.dialogues = dialogues
         self._currentSceneId = State(initialValue: initialSceneId)
         self._currentMode = currentMode
         self._path = path
+        self.stageId = stageId
     }
     
     var body: some View {
@@ -64,14 +71,10 @@ struct StoryProgressView: View {
                             dialogue: currentDialogue,
                             isPopupVisible: .constant(true),
                             onChoiceSelected: { selectedText, nextId, percentage in
-                                if let v = percentage {
-                                    gameManager.addScore(percentage: v)
-                                }
                                 handleNavigation(nextSceneId: nextId)
                             }
                         )
                         .transition(.opacity)
-                        .zIndex(200)
                     }
                     
                     // ====== Chatログ表示 ======
@@ -80,7 +83,6 @@ struct StoryProgressView: View {
                             isChatLogVisible: $isChatLogVisible,
                             conversationHistory: conversationHistory
                         )
-                        .zIndex(150)
                     }
 
                     // ====== 共通UI（ホーム・スコア・ログ） ======
@@ -90,7 +92,7 @@ struct StoryProgressView: View {
                             VStack {
                                 Button(action: {
                                     withAnimation(.easeInOut) {
-                                        isBackMap = true // ← アラート表示
+                                        isBackMap = true
                                     }
                                 }) {
                                     Image("home_bad")
@@ -132,13 +134,19 @@ struct StoryProgressView: View {
                         }
                         Spacer()
                     }
-                    .zIndex(150)
 
                     // ====== HomeAlert（上に重ねる） ======
                     if isBackMap {
                         HomeAlert(path: $path, isBackMap: $isBackMap)
                             .transition(.opacity)
-                            .zIndex(250)
+                    }
+
+                    if isEndSceneReady {
+                        finalThundersView(
+                            finalThunders: self.finalThunders,
+                            path: $path
+                        )
+                        .environmentObject(musicplayer)
                     }
                 }
                 .id(viewRefreshKey)
@@ -147,6 +155,9 @@ struct StoryProgressView: View {
                     if let newDialogue = dialogues.first(where: { $0.sceneId == newValue }) {
                         conversationHistory.append(newDialogue)
                     }
+                }
+                .onAppear {
+                    gameManager.startStory(dialogues: dialogues)
                 }
             } else {
                 Text("シーンが見つかりません: \(currentSceneId)")
@@ -169,15 +180,29 @@ struct StoryProgressView: View {
         // ストーリー終了処理
         if nextSceneId.lowercased() == "end" {
             print("ストーリー終了")
-            let _ = gameManager.scoreToStars(score: gameManager.currentScore)
-            
-            // MapViewに戻る（全階層削除）
-            if !path.isEmpty {
-                path.removeLast()
+
+            // 既に終了処理済みなら何もしない
+            if isEndSceneReady {
+                return
             }
+
+            // 1. スコアを雷の数（0〜3）に変換
+            let thunders = gameManager.scoreToStars(score: gameManager.currentScore)
+            self.finalThunders = thunders
+
+            // 2. GameManager にスコアを保存
+            gameManager.completeStage(
+                stageId: self.stageId,
+                mode: self.currentMode,
+                earnedScore: thunders
+            )
+
+            // 3. 結果画面を表示
+            isEndSceneReady = true
+
             return
         }
-        
+
         // 次のシーン取得
         guard let nextDialogue = dialogues.first(where: { $0.sceneId == nextSceneId }) else {
             print("次のシーンが見つかりません: \(nextSceneId)")
