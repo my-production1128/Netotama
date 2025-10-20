@@ -182,7 +182,7 @@ struct ChatSceneView: View {
                     return
                 }
                 let nextId = last.scene.nextSceneId
-                if nextId == "end" {
+                if nextId.lowercased() == "end" {
                     onNextScene("end")
                     isEndSceneReady = true
                     return
@@ -191,7 +191,7 @@ struct ChatSceneView: View {
                     onNextScene(nextId)
                     return
                 }
-                if next.sceneType == "chat" {
+                if next.sceneType.lowercased() == "chat" {
                     if next.characterName == next.rightCharacter {
                             let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false)
                             chatMessage.append(newMsg)
@@ -207,7 +207,7 @@ struct ChatSceneView: View {
                     } else {
                         proceedToNextIfNeeded()
                     }
-                } else if next.sceneType == "chat_picture" {
+                } else if next.sceneType.lowercased() == "chat_picture" {
                     if next.characterName == next.rightCharacter {
                         let newMsg = ChatMessage(scene: next, isAnimating: true, showText: false, isPicture: true)
                                 chatMessage.append(newMsg)
@@ -557,24 +557,24 @@ struct ChatSceneView: View {
 
         let nextId = last.scene.nextSceneId
         guard let next = branchingMap[nextId] else {
-            if nextId != "end" { onNextScene(nextId) }
+            if nextId.lowercased() != "end" { onNextScene(nextId) }
             return
         }
 
         if next.sceneType != last.scene.sceneType {
-            let isCurrentChat = last.scene.sceneType == "chat" || last.scene.sceneType == "chat_picture"
-            let isNextChat = next.sceneType == "chat" || next.sceneType == "chat_picture"
+            let isCurrentChat = last.scene.sceneType.lowercased() == "chat" || last.scene.sceneType.lowercased() == "chat_picture"
+            let isNextChat = next.sceneType.lowercased() == "chat" || next.sceneType.lowercased() == "chat_picture"
             if isCurrentChat != isNextChat {
                  return
             }
         }
 
-        if next.sceneType != "chat" && next.sceneType != "chat_picture" {
+        if next.sceneType.lowercased() != "chat" && next.sceneType.lowercased() != "chat_picture" {
             onNextScene(nextId)
             return
         }
 
-        if next.characterName == next.rightCharacter {
+        if next.characterName.lowercased() == next.rightCharacter.lowercased() {
             isTyping = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                 let isPic = next.sceneType == "chat_picture"
@@ -587,7 +587,7 @@ struct ChatSceneView: View {
             return
         }
 
-        if next.characterName != next.rightCharacter && next.sceneType == "chat" {
+        if next.characterName != next.rightCharacter.lowercased() && next.sceneType.lowercased() == "chat" {
              isTyping = true
              pendingMessage = next
              DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {

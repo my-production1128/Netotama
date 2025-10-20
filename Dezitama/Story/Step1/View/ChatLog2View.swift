@@ -15,7 +15,6 @@ struct ChatLog2View: View {
     var body: some View {
         GeometryReader { innerGeometry in
             ZStack(alignment: .leading) {
-                // 半透明背景（タップで閉じる）
                 Color.black.opacity(0.001)
                     .edgesIgnoringSafeArea(.all)
                     .onTapGesture {

@@ -198,28 +198,28 @@ final class GameManager: ObservableObject {
         case .bad:
             switch stageId {
             case 1:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 0))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 0, stageId: 1))
             case 2:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 1))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 1, stageId: 2))
             case 3:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 2))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 2, stageId: 3))
             case 4:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 3))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 3, stageId: 4))
                 break
             case 5:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 4))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 4, stageId: 5))
                 break
             case 6:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 5))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 5, stageId: 6))
                 break
             case 7:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 6))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 6, stageId: 7))
                 break
             case 8:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 7))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 7, stageId: 8))
                 break
             case 9:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 8))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 8, stageId: 9))
                 break
             default:
                 print("Unhandled Bad stage: \(stageId)")
@@ -339,6 +339,37 @@ final class GameManager: ObservableObject {
             print("--- スコア加算 ---")
             print("加算されるスコア: \(scoreToAdd) 点")
             print("現在の合計スコア: \(currentScore) 点")
+            print("--------------------")
+        }
+
+    // MARK: - Score Management Methods
+    // GameManeger.swift の中、
+    // 既存の startStory(storyId: String, allBranchings: [Branching]) 関数の下あたりに追加
+
+        /// ストーリー開始時にスコアを初期化し、分岐ごとの基本ポイントを計算する (Dialogue2 / Bad Mode版)
+        func startStory(dialogues: [Dialogue2]) {
+            // スコアをリセット
+            currentScore = 0.0
+
+            // このストーリーに含まれる選択肢の数を数える
+            // (isChoiceがtrueのものをカウント)
+            let choiceCount = dialogues.filter { $0.isChoice == true }.count
+
+            // 選択肢が1つ以上あれば、1回あたりの基本ポイントを計算
+            if choiceCount > 0 {
+                pointsPerChoice = 100.0 / Double(choiceCount)
+            } else {
+                pointsPerChoice = 0.0
+            }
+
+            // --- ログ ---
+            // ログ表示用に、配列の最初の要素からstoryIdを拝借
+            let storyId = dialogues.first?.storyId ?? "Unknown"
+
+            print("--- スコア計算開始 (Bad Mode) ---")
+            print("ストーリーID: \(storyId)")
+            print("選択肢の数: \(choiceCount) 問")
+            print("1問あたりの基本点: \(pointsPerChoice) 点")
             print("--------------------")
         }
 }

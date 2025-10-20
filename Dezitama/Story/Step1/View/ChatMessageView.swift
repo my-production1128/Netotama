@@ -278,9 +278,6 @@ extension ChatMessageView {
     
     private func handleChoiceSelected(selectedText: String, nextId: String, percentage: Double?) {
         
-            gameManager.addScore(percentage: percentage)
-
-        
         // 2. 最後のメッセージを選択したテキストで置き換え（即表示）
         if let lastMessageIndex = chatMessages.indices.last {
             let newDialogue = Dialogue2(

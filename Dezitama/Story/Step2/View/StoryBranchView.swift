@@ -114,7 +114,7 @@ struct StoryBranchView: View {
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                             .contentShape(Rectangle())
                             .onTapGesture {
-                                if current.nextSceneId == "end" {
+                                if current.nextSceneId.lowercased() == "end" {
                                     if !isEndSceneReady {
                                         let stars = gameManager.scoreToStars(score: gameManager.currentScore)
                                         self.finalStars = stars
@@ -364,7 +364,7 @@ struct StoryBranchView: View {
                                     print("次のシーンID「\(nextId)」へ進もうとしています。")
 
                                     guard let nextScene = branchingMap[nextId] else {
-                                        if nextId == "end" || nextId.isEmpty {
+                                        if nextId.lowercased() == "end" || nextId.isEmpty {
                                             print("物語の終点です。終了処理を開始します。")
                                             if !isEndSceneReady {
                                                 let stars = gameManager.scoreToStars(score: gameManager.currentScore)
@@ -385,7 +385,7 @@ struct StoryBranchView: View {
                                         conversationHistory.append(nextScene)
                                     }
 
-                                    if nextScene.sceneType == "talk" {
+                                    if nextScene.sceneType.lowercased() == "talk" {
                                         print("➡️ 次も talk シーンです。")
                                         if nextScene.isChoice == true {
                                             print("選択肢なのでポップアップを表示します。")
@@ -510,48 +510,11 @@ struct StoryBranchView: View {
 
                 // StoryBranchView.swift の body の最後の方
                 if isEndSceneReady {
-                    Color.black
-                        .opacity(0.45)
-                        .ignoresSafeArea()
-
-                    VStack {
-                        Spacer()
-
-                        // finalStarsの値に応じてテキストを表示
-                        switch finalStars {
-                        case 1:
-                            Text("星１")
-                                .font(.system(size: 100, weight: .bold))
-                                .foregroundColor(.yellow)
-                        case 2:
-                            Text("星２")
-                                .font(.system(size: 100, weight: .bold))
-                                .foregroundColor(.yellow)
-                        case 3:
-                            Text("星３")
-                                .font(.system(size: 100, weight: .bold))
-                                .foregroundColor(.yellow)
-                        default:
-                            Text("もう少し！")
-                                .font(.system(size: 80, weight: .bold))
-                                .foregroundColor(.white)
-                        }
-
-                        Spacer()
-
-                        HStack {
-                            Spacer()
-                            Button {
-                                musicplayer.playSE(fileName: "button_SE")
-                                path.removeLast()
-                            } label: {
-                                Image("back_start")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 500, height: 100)
-                            }
-                        }
-                    }
+                    finalStarsView(
+                        finalStars: self.finalStars,
+                        path: $path
+                    )
+                    .environmentObject(musicplayer)
                 }
             }
             .onAppear {

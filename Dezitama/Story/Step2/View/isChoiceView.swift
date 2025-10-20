@@ -26,12 +26,7 @@ struct isChoiceView: View {
 
 
     var body: some View {
-//        GeometryReader { geometry in
             ZStack {
-                Color.black
-                    .opacity(0.5)
-                    .ignoresSafeArea()
-
                 VStack(spacing: 30) {
                     Text("あなたなら何て言う？")
                         .font(.custom("MPLUS1-Bold", size: 40))
@@ -97,21 +92,11 @@ struct isChoiceView: View {
                     .disabled(isChoiceMade)
                 }
             }
-
-            //                丸を出す関数
-            .overlay( // .overlay を使って上に重ねる
-                ZStack {
-                    if showCorrectMark {
-                        Image("circle")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 150, height: 150)
-                            .transition(.scale)
-                            .animation(.easeInOut(duration: 0.3), value: showCorrectMark)
-                    }
-                }
-            )
-//        }
+            .background {
+                Color.black
+                    .opacity(0.5)
+                    .ignoresSafeArea()
+            }
     }
 
 
@@ -165,7 +150,7 @@ struct isChoiceView: View {
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
                 .background(isSelected || configuration.isPressed ? selectedBackgroundColor : defaultBackgroundColor)
-                .clipShape(Capsule())
+                .cornerRadius(35)
                 .scaleEffect(configuration.isPressed ? 0.95 : 1)
                 .animation(.easeOut(duration: 0.1), value: configuration.isPressed)
         }
