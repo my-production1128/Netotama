@@ -23,7 +23,6 @@ struct StageButton: View {
     }
 
     private var buttonImageName: String {
-        // ▼▼▼ このブロックをまるごと置き換え ▼▼▼
         var imageName = "" // 表示する画像名を入れる変数
         if !stage.isUnlocked {
             imageName = "botann_unlocked_\(stage.id)"
@@ -74,7 +73,6 @@ struct StageIntroOverlay: View {
     @EnvironmentObject var musicplayer: SoundPlayer
     
     var body: some View {
-        // ステージ紹介画像を中央に配置
         Image(sheetImageName)
             .resizable()
             .scaledToFit()

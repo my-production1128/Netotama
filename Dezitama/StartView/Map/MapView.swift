@@ -21,7 +21,6 @@ struct MapView: View {
         self._path = path
         self._currentMode = currentMode
         self._currentMode.wrappedValue = mode
-        
         print("MapView init: mode=\(mode)")
     }
     
@@ -164,16 +163,16 @@ struct MapView: View {
                                 currentMode = currentMode == .happy ? .bad : .happy
                             }
                         }) {
-                            Image("turn_iland")
+                            Image("stage_turn")
                                 .resizable()
                                 .scaledToFill()
-                                .frame(width: 100, height: 100)
+                                .frame(width: 200, height: 100)
                         }
-                        .padding(8)
+                        .padding(10)
                     }
-                    .padding(8)
+                    .padding(10)
                 }
-                .padding(8)
+                .padding(10)
                 
                 
                 //総数表示
@@ -187,9 +186,11 @@ struct MapView: View {
                 }
                 .padding(75)
                 if showStageSheet, let stage = selectedStage {
-                    Color.black.opacity(0.4)
+                    Color.white.opacity(0.6)
                         .ignoresSafeArea()
                         .onTapGesture {
+                            
+                            //怪しい
                             // 背景タップでステージに遷移
                             musicplayer.playSE(fileName: "button_SE")
                             showStageSheet = false

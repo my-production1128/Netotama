@@ -19,12 +19,15 @@ struct ContentView: View {
     @GestureState private var isPressing = false
 
     @State private var stages: [StageData] = [
+        //グループチャット
         StageData(id: 1, csvFileName: "bad_groupchat_story1_ver7"),
         StageData(id: 2, csvFileName: "bad_groupchat_story2_ver7"),
         StageData(id: 3, csvFileName: "bad_groupchat_story3_ver5"),
+        //ネトモ
         StageData(id: 4, csvFileName: "bad_netomo_story1_ver12"),
         StageData(id: 5, csvFileName: "bad_netomo_story2_ver12"),
         StageData(id: 6, csvFileName: "bad_netomo_story3_ver9"),
+        //拡散
         StageData(id: 7, csvFileName: "bad_kakusan_story1_ver8"),
         StageData(id: 8, csvFileName: "bad_kakusan_story2_ver2"),
         StageData(id: 9, csvFileName: "bad_kakusan_story3_ver2")
@@ -90,7 +93,7 @@ struct ContentView: View {
                     value: animate
                 )
 
-            Image("dejitamalogonomi")
+            Image("netotama_logo")
                 .offset(y: animate ? -9 : -14)
                 .animation(
                     floatingAnimation.delay(0.0),
@@ -216,10 +219,16 @@ struct ContentView: View {
                 ChoiceView(path: $path)
                     .environmentObject(gameManager)
                     .navigationBarBackButtonHidden(true)
+                
             case .Credit:
                 Credit()
+                
             case .HowToUse:
                 HowToUse()
+                
+            case .ButtonExample:
+                ButtonExample()
+            
             case .StoryProgressView(let stageIndex, let stageId):
                 StoryProgressView(
                     dialogues: stages[stageIndex].dialogues,

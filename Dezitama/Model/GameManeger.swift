@@ -158,24 +158,95 @@ final class GameManager: ObservableObject {
     //- これ1回で score 更新・isPlayed 設定・次ステージ解放・特殊解放判定・保存 まで行います
     func completeStage(stageId: Int, mode: GameMode, earnedScore: Int) {
         updateStageScore(stageId: stageId, mode: mode, earnedScore: earnedScore)
-//        setStagePlayed(stageId: stageId, mode: mode)
+        setStagePlayed(stageId: stageId, mode: mode)
         unlockNextStage(after: stageId, mode: mode)
         checkSpecialUnlocks(completedStage: stageId, mode: mode)
         recalcTotals()
         saveProgress()
     }
 
-    // MARK: - 特殊解放のロジック（ここを増やしていく）
-    //解放条件をここにまとめる
+    // MARK: - 特殊解放のロジック
     func checkSpecialUnlocks(completedStage: Int, mode: GameMode) {
-        // 「Badのステージ3が終了していて、雷が合計で5以上集まったら Happy を解放する」
-//        if mode == .bad, completedStage == 3 {
-//            if totalThunders >= 5 {
-//                isHappyUnlocked = true
-//            }
-//        }
+        var unlockedSomething = false
 
+        // ------------------------------
+        // Badモード関連の特殊解放
+        // ------------------------------
+        if mode == .bad {
+            // 条件1: Bad3まで終了 & 雷5以上 → Bad4 + Happy1解放
+            let bad3Cleared = badStages[0...2].allSatisfy { $0.isPlayed } // 1〜3すべてプレイ済み
+            if bad3Cleared, totalThunders >= 5 {
+                // Bad4解放
+                if let idx4 = index(of: 4, in: .bad) {
+                    if !badStages[idx4].isUnlocked {
+                        badStages[idx4].isUnlocked = true
+                        print("特殊解放: Bad4ステージ解放！")
+                        unlockedSomething = true
+                    }
+                }
+                // Happyモード解放
+                if !isHappyUnlocked {
+                    isHappyUnlocked = true
+                    print("特殊解放: Happyモード解放！（Bad3終了 & 雷5以上）")
+                    unlockedSomething = true
+                }
+                // Happy1解放
+                if let idxH1 = index(of: 1, in: .happy) {
+                    if !happyStages[idxH1].isUnlocked {
+                        happyStages[idxH1].isUnlocked = true
+                        print("特殊解放: Happyステージ1解放！")
+                        unlockedSomething = true
+                    }
+                }
+            }
+
+            // 条件2: Bad6まで終了 & 雷12以上 → Bad7解放
+            let bad6Cleared = badStages[0...5].allSatisfy { $0.isPlayed }
+            if bad6Cleared, totalThunders >= 12 {
+                if let idx7 = index(of: 7, in: .bad) {
+                    if !badStages[idx7].isUnlocked {
+                        badStages[idx7].isUnlocked = true
+                        print("特殊解放: Bad7ステージ解放！（6まで終了 & 雷12以上）")
+                        unlockedSomething = true
+                    }
+                }
+            }
+        }
+
+        // ------------------------------
+        // Happyモード関連の特殊解放
+        // ------------------------------
+        if mode == .happy {
+            // 条件3: Happy3まで終了 & 星5以上 → Happy4解放
+            let happy3Cleared = happyStages[0...2].allSatisfy { $0.isPlayed }
+            if happy3Cleared, totalStars >= 5 {
+                if let idx4 = index(of: 4, in: .happy) {
+                    if !happyStages[idx4].isUnlocked {
+                        happyStages[idx4].isUnlocked = true
+                        print("特殊解放: Happy4ステージ解放！（3まで終了 & 星5以上）")
+                        unlockedSomething = true
+                    }
+                }
+            }
+
+            // 条件4: Happy6まで終了 & 星12以上 → Happy7解放
+            let happy6Cleared = happyStages[0...5].allSatisfy { $0.isPlayed }
+            if happy6Cleared, totalStars >= 12 {
+                if let idx7 = index(of: 7, in: .happy) {
+                    if !happyStages[idx7].isUnlocked {
+                        happyStages[idx7].isUnlocked = true
+                        print("特殊解放: Happy7ステージ解放！（6まで終了 & 星12以上）")
+                        unlockedSomething = true
+                    }
+                }
+            }
+        }
+
+        if unlockedSomething {
+            saveProgress()
+        }
     }
+
 
     // MARK: - ハンドルタップ（ナビゲーション用）
     /// MapView 等からステージをタップしたときに呼ぶ

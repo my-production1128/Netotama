@@ -13,8 +13,8 @@ struct MenuView: View {
 
     var body: some View {
         ZStack {
-            Color.black
-                .edgesIgnoringSafeArea(.all)
+            // 背景のタップ領域（白の透過）
+            Color.white
                 .opacity(isOpen ? 0.7 : 0)
                 .onTapGesture {
                     withAnimation(.easeInOut(duration: 0.3)) {
@@ -22,6 +22,7 @@ struct MenuView: View {
                     }
                 }
 
+            // サイドバー本体
             HStack {
                 Spacer()
 
@@ -32,7 +33,7 @@ struct MenuView: View {
                         ZStack {
                             Image("AboutApp")
                                 .resizable()
-                                .scaledToFill()
+                                .scaledToFit()
                                 .frame(width: maxWidth * 0.25)
                                 .clipped()
 
@@ -63,21 +64,33 @@ struct MenuView: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding()
                                 }
+                                
+                                Button {
+                                    path.append(ViewBuilderPath.ButtonExample)
+                                    isOpen = false
+                                } label: {
+                                    Text("・ボタンの説明")
+                                        .foregroundColor(.black)
+                                        .font(Font(UIFont.customFont(ofSize: 25)))
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding()
+                                }
 
                                 Spacer()
                             }
                             .padding(.top, 100)
                         }
+                        .offset(x: isOpen ? 15 : maxWidth)
                         .frame(width: maxWidth * 0.25)
-                        .offset(x: isOpen ? 0 : maxWidth)
                         .animation(.easeInOut(duration: 0.3), value: isOpen)
-
                     }
                 }
             }
         }
+        .ignoresSafeArea()
     }
 }
+
 
 struct Credit : View {
     var body: some View {
@@ -102,7 +115,7 @@ struct HowToUse : View {
                            height: UIScreen.main.bounds.height)
                 .ignoresSafeArea()
 
-            let imageNames = ["tutrial_01", "tutrial_02", "tutrial_03", "tutrial_04"]
+            let imageNames = ["tutrial_01", "tutrial_02", "tutrial_03"]
 
             ScrollView(.vertical) {
                 VStack(spacing: 0) {
@@ -115,6 +128,56 @@ struct HowToUse : View {
                             .clipped()
                     }
                 }
+            }
+        }
+    }
+}
+
+
+struct ButtonExample : View {
+    var body: some View {
+        
+        ZStack{
+            Image("button_background")
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+            
+                VStack(spacing:5){
+                    Image("button_title")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 500, height: 100)
+                    
+                    Image("button_imark")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 700, height: 100)
+                    
+                    Image("button_iland")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 700, height: 100)
+                    
+                    Image("button_talk")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 700, height: 100)
+                    
+                    Image("button_home")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 700, height: 100)
+                    
+                    Image("button_badend")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 700, height: 100)
+                    
+                    Image("button_master")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 700, height: 100)
             }
         }
     }
