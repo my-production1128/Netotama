@@ -220,12 +220,13 @@ struct ContentView: View {
                 Credit()
             case .HowToUse:
                 HowToUse()
-            case .StoryProgressView(let stageIndex):
+            case .StoryProgressView(let stageIndex, let stageId):
                 StoryProgressView(
                     dialogues: stages[stageIndex].dialogues,
                     initialSceneId: "Scene0",
                     currentMode: $currentMode,
-                    path: $path
+                    path: $path,
+                    stageId: stageId
                 )
                 .environmentObject(gameManager)
                 .navigationBarBackButtonHidden(true)

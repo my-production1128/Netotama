@@ -198,28 +198,28 @@ final class GameManager: ObservableObject {
         case .bad:
             switch stageId {
             case 1:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 0))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 0, stageId: 1))
             case 2:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 1))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 1, stageId: 2))
             case 3:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 2))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 2, stageId: 3))
             case 4:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 3))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 3, stageId: 4))
                 break
             case 5:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 4))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 4, stageId: 5))
                 break
             case 6:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 5))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 5, stageId: 6))
                 break
             case 7:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 6))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 6, stageId: 7))
                 break
             case 8:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 7))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 7, stageId: 8))
                 break
             case 9:
-                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 8))
+                path.append(ViewBuilderPath.StoryProgressView(stageIndex: 8, stageId: 9))
                 break
             default:
                 print("Unhandled Bad stage: \(stageId)")
