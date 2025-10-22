@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		06D22EBA2EA7F1E100117CF6 /* CloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D22EB92EA7F1E100117CF6 /* CloudView.swift */; };
 		8A24DCE32EA5510900DE6E95 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DC8C2EA5510800DE6E95 /* LottieView.swift */; };
 		8A24DCE42EA5510900DE6E95 /* CSVReader_ver2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DC992EA5510800DE6E95 /* CSVReader_ver2.swift */; };
 		8A24DCE52EA5510900DE6E95 /* loadBranchingCSV.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DC9A2EA5510800DE6E95 /* loadBranchingCSV.swift */; };
@@ -91,6 +92,7 @@
 
 /* Begin PBXFileReference section */
 		0661A04D2DDB941700016B1C /* Dezitama.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dezitama.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		06D22EB92EA7F1E100117CF6 /* CloudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudView.swift; sourceTree = "<group>"; };
 		8A24DC8A2EA5510800DE6E95 /* cecil_pants.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = cecil_pants.json; sourceTree = "<group>"; };
 		8A24DC8B2EA5510800DE6E95 /* egg_start_ver5_0.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = egg_start_ver5_0.json; sourceTree = "<group>"; };
 		8A24DC8C2EA5510800DE6E95 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
@@ -309,6 +311,7 @@
 			children = (
 				8A24DCAC2EA5510800DE6E95 /* MapView.swift */,
 				8A24DCAD2EA5510800DE6E95 /* StageAssets.swift */,
+				06D22EB92EA7F1E100117CF6 /* CloudView.swift */,
 			);
 			path = Map;
 			sourceTree = "<group>";
@@ -612,6 +615,7 @@
 				8A24DCEC2EA5510900DE6E95 /* WidthRuby.swift in Sources */,
 				8A24DCED2EA5510900DE6E95 /* WidthRubyExtention.swift in Sources */,
 				8A24DD2F2EA5F24700DE6E95 /* finalThundersView.swift in Sources */,
+				06D22EBA2EA7F1E100117CF6 /* CloudView.swift in Sources */,
 				8A24DCEE2EA5510900DE6E95 /* CLTypingRubyLabel.swift in Sources */,
 				8A24DCEF2EA5510900DE6E95 /* SoundPlayer.swift in Sources */,
 				8A24DCF02EA5510900DE6E95 /* MapView.swift in Sources */,

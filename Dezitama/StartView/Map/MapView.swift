@@ -113,6 +113,23 @@ struct MapView: View {
                     }
                 }
                 
+                ForEach(currentStages) { stage in
+                    if let cloudName = gameManager.cloudImageName(for: stage.id, mode: currentMode),
+                       let cloudPosition = cloudPosition(for: stage.id, in: geometry, mode: currentMode) {
+                        
+                        CloudView(
+                            id: stage.id,
+                            imageName: cloudName,
+                            position: cloudPosition,
+                            geometry: geometry,
+                            mode: currentMode
+                        )
+                    }
+                }
+
+
+                
+                //デバックボタン
                 VStack{
                     Button("リセット") {
                         GameManager.shared.resetProgress()
@@ -181,10 +198,12 @@ struct MapView: View {
                         Spacer()
                         ScoreDisplayView(mode: currentMode, totalScore: currentTotalScore)
                     }
-                    .padding(.top, 25)
+                    .padding(.top, 20)
                     Spacer()
                 }
                 .padding(75)
+                
+                //シート
                 if showStageSheet, let stage = selectedStage {
                     Color.white.opacity(0.6)
                         .ignoresSafeArea()
@@ -222,6 +241,34 @@ struct MapView: View {
             print("GameManager happyStages count: \(gameManager.happyStages.count)")
             print("GameManager badStages count: \(gameManager.badStages.count)")
             musicplayer.playBGM(fileName: "start_bgm")
+        }
+    }
+    
+    // 各ステージIDごとに雲の座標の関数
+    // 各雲の表示位置をステージごとに指定
+    private func cloudPosition(for stageId: Int, in geometry: GeometryProxy, mode: GameMode) -> CGPoint? {
+        switch mode {
+        case .bad:
+            switch stageId {
+            case 4:
+                return CGPoint(x: geometry.size.width * 0.3, y: geometry.size.height * 0.65)
+            case 7:
+                return CGPoint(x: geometry.size.width * 0.76, y: geometry.size.height * 0.54)
+            default:
+                return nil
+            }
+
+        case .happy:
+            switch stageId {
+            case 1:
+                return CGPoint(x: geometry.size.width * 0.23, y: geometry.size.height * 0.6)
+            case 4:
+                return CGPoint(x: geometry.size.width * 0.5, y: geometry.size.height * 0.24)
+            case 7:
+                return CGPoint(x: geometry.size.width * 0.77, y: geometry.size.height * 0.65)
+            default:
+                return nil
+            }
         }
     }
 }
