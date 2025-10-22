@@ -45,7 +45,7 @@ struct isChoiceView: View {
                             targetWidth: 500
                         )
                         .fixedSize(horizontal: false, vertical: true)
-                        .frame(width: 430, height: 120)
+                        .frame(width: 530, height: 120)
                         .padding(.horizontal, 20)
                     }
                     .buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice1))
@@ -85,17 +85,17 @@ struct isChoiceView: View {
                             targetWidth: 500
                         )
                         .fixedSize(horizontal: false, vertical: true)
-                        .frame(width: 430, height: 120)
+                        .frame(width: 530, height: 120)
                         .padding(.horizontal, 20)
                     }
                     .buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice3))
                     .disabled(isChoiceMade)
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background {
-                Color.black
-                    .opacity(0.5)
-                    .ignoresSafeArea()
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea(.all)
             }
     }
 

@@ -298,19 +298,19 @@ final class GameManager: ObservableObject {
         case .happy:
             switch stageId {
             case 1:
-                path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story1", stageId, .happy))
-            case 2:
-                path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story2", stageId, .happy))
-            case 3:
-                path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story3", stageId, .happy))
-            case 4:
                 path.append(ViewBuilderPath.GoodStoryBranchView("good_gurucha_story1", stageId, .happy))
+            case 2:
+                path.append(ViewBuilderPath.GoodStoryBranchView("good_gurucha_story2", stageId, .happy))
+            case 3:
+                path.append(ViewBuilderPath.GoodStoryBranchView("good_gurucha_story3", stageId, .happy))
+            case 4:
+                path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story1", stageId, .happy))
                 break
             case 5:
-                path.append(ViewBuilderPath.GoodStoryBranchView("good_gurucha_story2", stageId, .happy))
+                path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story2", stageId, .happy))
                 break
             case 6:
-                path.append(ViewBuilderPath.GoodStoryBranchView("good_gurucha_story3", stageId, .happy))
+                path.append(ViewBuilderPath.GoodStoryBranchView("good_netomo_story3", stageId, .happy))
                 break
             case 7:
                 path.append(ViewBuilderPath.GoodStoryBranchView("good_kakusan_story1", stageId, .happy))

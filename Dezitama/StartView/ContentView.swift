@@ -259,16 +259,15 @@ struct ContentView: View {
             for index in stages.indices {
                 stages[index].loadDialogues()
             }
+//            グルチャ
+            let goodGuruchaStory1 = loadBranchingCSV(fileName: "good_gurucha_story1_ver6")
+            let goodGuruchaStory2 = loadBranchingCSV(fileName: "good_gurucha_story2_ver7")
+            let goodGuruchaStory3 = loadBranchingCSV(fileName: "good_gurucha_story3_ver6")
 //            ネトモ
             let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver5")
             let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver3")
             let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver4")
-
-//            グルチャ
-            let goodGuruchaStory1 = loadBranchingCSV(fileName: "good_gurucha_story1_ver5")
-            let goodGuruchaStory2 = loadBranchingCSV(fileName: "good_gurucha_story2_ver7")
-            let goodGuruchaStory3 = loadBranchingCSV(fileName: "good_gurucha_story3_ver6")
-
+//            拡散
             let goodKakusanStory1 = loadBranchingCSV(fileName: "good_kakusan_story1_ver3")
             let goodKakusanStory2 = loadBranchingCSV(fileName: "good_kakusan_story2_ver3")
             let goodKakusanStory3 = loadBranchingCSV(fileName: "good_kakusan_story3_ver5")

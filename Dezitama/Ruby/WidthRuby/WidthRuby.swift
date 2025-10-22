@@ -85,25 +85,48 @@ struct WideRubyLabelRepresentable: UIViewRepresentable {
     let font: UIFont
     let textColor: UIColor
     let textAlignment: NSTextAlignment
+    // 1. 外部から折り返し幅を指定するためのプロパティを追加
+    let targetWidth: CGFloat
 
-    func makeUIView(context: Context) -> WideRubyLabel {
-        let style = NSMutableParagraphStyle()
-        style.alignment = .center
-        let label = WideRubyLabel()
+    func makeUIView(context: Context) -> UILabel {
+        let label = UILabel()
+        label.attributedText = attributedText
+        label.font = font
+        label.textColor = textColor
+        label.textAlignment = textAlignment
+        // 2. 指定された幅で折り返すように設定
+        label.preferredMaxLayoutWidth = targetWidth
         label.numberOfLines = 0
-        label.textAlignment = .left
-        label.setContentHuggingPriority(.required, for: .horizontal)
-        label.setContentHuggingPriority(.required, for: .vertical)
+        label.lineBreakMode = .byWordWrapping
         return label
     }
 
-    func updateUIView(_ uiView: WideRubyLabel, context: Context) {
+    func updateUIView(_ uiView: UILabel, context: Context) {
         uiView.attributedText = attributedText
         uiView.font = font
         uiView.textColor = textColor
         uiView.textAlignment = textAlignment
+        // 3. update時にも折り返し幅を再設定
+        uiView.preferredMaxLayoutWidth = targetWidth
     }
 
+    // 高さの自動計算 (これは変更なし)
+    static func sizeThatFits(
+        _ proposal: ProposedViewSize,
+        attributedText: NSAttributedString,
+        font: UIFont,
+        textAlignment: NSTextAlignment
+    ) -> CGSize {
+        let label = UILabel()
+        label.attributedText = attributedText
+        label.font = font
+        label.textAlignment = textAlignment
+        label.numberOfLines = 0
+
+        let targetSize = CGSize(width: proposal.width ?? 0, height: 0)
+        let newSize = label.sizeThatFits(targetSize)
+        return newSize
+    }
 }
 
 

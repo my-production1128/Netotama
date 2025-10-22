@@ -75,6 +75,7 @@
 		8A24DD242EA5510900DE6E95 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCDF2EA5510800DE6E95 /* Assets.xcassets */; };
 		8A24DD272EA5523A00DE6E95 /* finalStarsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DD262EA5523500DE6E95 /* finalStarsView.swift */; };
 		8A24DD2F2EA5F24700DE6E95 /* finalThundersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DD2E2EA5F24400DE6E95 /* finalThundersView.swift */; };
+		8A24DE292EA7FDF700DE6E95 /* good_gurucha_story1_ver6.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DE282EA7FDF700DE6E95 /* good_gurucha_story1_ver6.csv */; };
 		8A7AD33C2E1F6AD600BF4664 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 8A7AD33B2E1F6AD600BF4664 /* Lottie */; };
 /* End PBXBuildFile section */
 
@@ -159,6 +160,7 @@
 		8A24DD262EA5523500DE6E95 /* finalStarsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = finalStarsView.swift; sourceTree = "<group>"; };
 		8A24DD2A2EA5DD9A00DE6E95 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8A24DD2E2EA5F24400DE6E95 /* finalThundersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = finalThundersView.swift; sourceTree = "<group>"; };
+		8A24DE282EA7FDF700DE6E95 /* good_gurucha_story1_ver6.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_gurucha_story1_ver6.csv; sourceTree = "<group>"; };
 		8A7AD2EA2E1E929400BF4664 /* DezitamaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DezitamaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -365,6 +367,7 @@
 			isa = PBXGroup;
 			children = (
 				8A24DCC52EA5510800DE6E95 /* good_gurucha_story1_ver5.csv */,
+				8A24DE282EA7FDF700DE6E95 /* good_gurucha_story1_ver6.csv */,
 				8A24DCC62EA5510800DE6E95 /* good_gurucha_story2_ver7.csv */,
 				8A24DCC72EA5510800DE6E95 /* good_gurucha_story3_ver2.csv */,
 				8A24DCC82EA5510800DE6E95 /* good_gurucha_story3_ver4.csv */,
@@ -576,6 +579,7 @@
 				8A24DD1F2EA5510900DE6E95 /* good_kakusan_story3_ver5.csv in Resources */,
 				8A24DD202EA5510900DE6E95 /* good_netomo_story1_ver5.csv in Resources */,
 				8A24DD212EA5510900DE6E95 /* good_netomo_story2_ver3.csv in Resources */,
+				8A24DE292EA7FDF700DE6E95 /* good_gurucha_story1_ver6.csv in Resources */,
 				8A24DD222EA5510900DE6E95 /* good_netomo_story3_ver3.csv in Resources */,
 				8A24DD232EA5510900DE6E95 /* good_netomo_story3_ver4.csv in Resources */,
 				8A24DD242EA5510900DE6E95 /* Assets.xcassets in Resources */,
