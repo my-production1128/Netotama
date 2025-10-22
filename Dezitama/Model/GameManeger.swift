@@ -63,8 +63,12 @@ final class GameManager: ObservableObject {
     }
 
     // MARK: - 初期化 / デフォルト生成
-    private func defaultStages() -> [Stage] {
-        (1...9).map { Stage(id: $0, score: 0, isUnlocked: $0 == 1, isPlayed: false) }
+    private func defaultStages(mode: GameMode) -> [Stage] {
+        (1...9).map { stageId in
+            // Badモードのステージ1のみ最初から解放
+            let isUnlocked = (mode == .bad && stageId == 1)
+            return Stage(id: stageId, score: 0, isUnlocked: isUnlocked, isPlayed: false)
+        }
     }
 
     // MARK: - 保存 / 読み込み
@@ -83,8 +87,8 @@ final class GameManager: ObservableObject {
         }
 
         // 保存がなければデフォルト
-        self.happyStages = defaultStages()
-        self.badStages = defaultStages()
+        self.happyStages = defaultStages(mode: .happy)
+        self.badStages = defaultStages(mode: .bad)
         self.isHappyUnlocked = false
         recalcTotals()
     }
@@ -154,14 +158,19 @@ final class GameManager: ObservableObject {
         saveProgress()
     }
 
-    //ストーリー終了時に StoryView から呼ぶ総合処理
-    //- これ1回で score 更新・isPlayed 設定・次ステージ解放・特殊解放判定・保存 まで行います
     func completeStage(stageId: Int, mode: GameMode, earnedScore: Int) {
         updateStageScore(stageId: stageId, mode: mode, earnedScore: earnedScore)
         setStagePlayed(stageId: stageId, mode: mode)
-        unlockNextStage(after: stageId, mode: mode)
-        checkSpecialUnlocks(completedStage: stageId, mode: mode)
         recalcTotals()
+        
+        // 通常の次ステージ解放（Badモードの4と7はスキップ）
+        if !((mode == .bad && (stageId == 3 || stageId == 6)) ||
+             (mode == .happy && (stageId == 3 || stageId == 6))) {
+            unlockNextStage(after: stageId, mode: mode)
+        }
+
+        
+        checkSpecialUnlocks(completedStage: stageId, mode: mode)
         saveProgress()
     }
 
@@ -174,20 +183,28 @@ final class GameManager: ObservableObject {
         // ------------------------------
         if mode == .bad {
             // 条件1: Bad3まで終了 & 雷5以上 → Bad4 + Happy1解放
-            let bad3Cleared = badStages[0...2].allSatisfy { $0.isPlayed } // 1〜3すべてプレイ済み
-            if bad3Cleared, totalThunders >= 5 {
+            // ステージID 1, 2, 3 がすべてプレイ済みかチェック
+            let bad3Cleared = (1...3).allSatisfy { stageId in
+                guard let idx = index(of: stageId, in: .bad) else { return false }
+                return badStages[idx].isPlayed
+            }
+            
+            print("Bad1-3クリア済み: \(bad3Cleared)")
+            print("雷5以上: \(totalThunders >= 5)")
+            
+            if bad3Cleared && totalThunders >= 5 {
                 // Bad4解放
                 if let idx4 = index(of: 4, in: .bad) {
                     if !badStages[idx4].isUnlocked {
                         badStages[idx4].isUnlocked = true
-                        print("特殊解放: Bad4ステージ解放！")
+                        print("✅ 特殊解放: Bad4ステージ解放！")
                         unlockedSomething = true
                     }
                 }
                 // Happyモード解放
                 if !isHappyUnlocked {
                     isHappyUnlocked = true
-                    print("特殊解放: Happyモード解放！（Bad3終了 & 雷5以上）")
+                    print("特殊解放: Happyモード解放（Bad3終了 & 雷5以上）")
                     unlockedSomething = true
                 }
                 // Happy1解放
@@ -198,18 +215,29 @@ final class GameManager: ObservableObject {
                         unlockedSomething = true
                     }
                 }
+            } else {
+                print("Bad4解放条件未達成（Bad1-3全クリア & 雷5以上が必要）")
             }
 
             // 条件2: Bad6まで終了 & 雷12以上 → Bad7解放
-            let bad6Cleared = badStages[0...5].allSatisfy { $0.isPlayed }
-            if bad6Cleared, totalThunders >= 12 {
+            let bad6Cleared = (1...6).allSatisfy { stageId in
+                guard let idx = index(of: stageId, in: .bad) else { return false }
+                return badStages[idx].isPlayed
+            }
+            
+            print("Bad1-6クリア済み: \(bad6Cleared)")
+            print("雷12以上: \(totalThunders >= 12)")
+            
+            if bad6Cleared && totalThunders >= 12 {
                 if let idx7 = index(of: 7, in: .bad) {
                     if !badStages[idx7].isUnlocked {
                         badStages[idx7].isUnlocked = true
-                        print("特殊解放: Bad7ステージ解放！（6まで終了 & 雷12以上）")
+                        print("特殊解放: Bad7ステージ解放（6まで終了 & 雷12以上）")
                         unlockedSomething = true
                     }
                 }
+            } else {
+                print("Bad7解放条件未達成（Bad1-6全クリア & 雷12以上が必要）")
             }
         }
 
@@ -218,27 +246,45 @@ final class GameManager: ObservableObject {
         // ------------------------------
         if mode == .happy {
             // 条件3: Happy3まで終了 & 星5以上 → Happy4解放
-            let happy3Cleared = happyStages[0...2].allSatisfy { $0.isPlayed }
-            if happy3Cleared, totalStars >= 5 {
+            let happy3Cleared = (1...3).allSatisfy { stageId in
+                guard let idx = index(of: stageId, in: .happy) else { return false }
+                return happyStages[idx].isPlayed
+            }
+            
+            print("Happy1-3クリア済み: \(happy3Cleared)")
+            print("星5以上: \(totalStars >= 5)")
+            
+            if happy3Cleared && totalStars >= 5 {
                 if let idx4 = index(of: 4, in: .happy) {
                     if !happyStages[idx4].isUnlocked {
                         happyStages[idx4].isUnlocked = true
-                        print("特殊解放: Happy4ステージ解放！（3まで終了 & 星5以上）")
+                        print("特殊解放: Happy4ステージ解放（3まで終了 & 星5以上）")
                         unlockedSomething = true
                     }
                 }
+            } else {
+                print("Happy4解放条件未達成（Happy1-3全クリア & 星5以上が必要）")
             }
 
             // 条件4: Happy6まで終了 & 星12以上 → Happy7解放
-            let happy6Cleared = happyStages[0...5].allSatisfy { $0.isPlayed }
-            if happy6Cleared, totalStars >= 12 {
+            let happy6Cleared = (1...6).allSatisfy { stageId in
+                guard let idx = index(of: stageId, in: .happy) else { return false }
+                return happyStages[idx].isPlayed
+            }
+            
+            print("Happy1-6クリア済み: \(happy6Cleared)")
+            print("星12以上: \(totalStars >= 12)")
+            
+            if happy6Cleared && totalStars >= 12 {
                 if let idx7 = index(of: 7, in: .happy) {
                     if !happyStages[idx7].isUnlocked {
                         happyStages[idx7].isUnlocked = true
-                        print("特殊解放: Happy7ステージ解放！（6まで終了 & 星12以上）")
+                        print("特殊解放: Happy7ステージ解放（6まで終了 & 星12以上）")
                         unlockedSomething = true
                     }
                 }
+            } else {
+                print("Happy7解放条件未達成（Happy1-6全クリア & 星12以上が必要）")
             }
         }
 
@@ -329,18 +375,18 @@ final class GameManager: ObservableObject {
     }
 
     // MARK: - Score to Stars Conversion
-        /// 現在のスコア（0-100）を星の数（0-3）に変換する
-        func scoreToStars(score: Double) -> Int {
-            if score > 80 {
-                return 3 // 80点より大きい場合は星3
-            } else if score > 40 {
-                return 2 // 40点より大きい場合は星2
-            } else if score > 0 {
-                return 1 // 0点より大きい場合は星1
-            } else {
-                return 0 // 0点の場合は星0
-            }
+    /// 現在のスコア（0-100）を星の数（0-3）に変換する
+    func scoreToStars(score: Double) -> Int {
+        if score > 80 {
+            return 3 // 80点より大きい場合は星3
+        } else if score > 40 {
+            return 2 // 40点より大きい場合は星2
+        } else if score > 0 {
+            return 1 // 0点より大きい場合は星1
+        } else {
+            return 0 // 0点の場合は星0
         }
+    }
     
     // MARK: - デバッグ / リセット
     // 全解放／満点にする
@@ -362,8 +408,8 @@ final class GameManager: ObservableObject {
 
     /// 進行リセット（初期状態に戻す）
     func resetProgress() {
-        happyStages = defaultStages()
-        badStages = defaultStages()
+        happyStages = defaultStages(mode: .happy)
+        badStages = defaultStages(mode: .bad)
         isHappyUnlocked = false
         recalcTotals()
         saveProgress()
@@ -393,54 +439,105 @@ final class GameManager: ObservableObject {
     }
 
     /// 選択肢のパーセンテージに応じてスコアを加算する
-    // GameManeger.swift の中
-        func addScore(percentage: Double?) {
-            guard let percentage = percentage else {
-                print("スコア加算エラー: パーセンテージがnilのため加算できませんでした。")
-                return
-            }
-
-            let scoreToAdd = pointsPerChoice * percentage
-            currentScore += scoreToAdd
-
-            // スコアが0から100の範囲に収まるように調整
-            currentScore = min(max(currentScore, 0.0), 100.0)
-
-            // ▼▼▼ ここから調査用プリント ▼▼▼
-            print("--- スコア加算 ---")
-            print("加算されるスコア: \(scoreToAdd) 点")
-            print("現在の合計スコア: \(currentScore) 点")
-            print("--------------------")
+    func addScore(percentage: Double?) {
+        guard let percentage = percentage else {
+            print("スコア加算エラー: パーセンテージがnilのため加算できませんでした。")
+            return
         }
 
-    // MARK: - Score Management Methods
-    // GameManeger.swift の中、
-    // 既存の startStory(storyId: String, allBranchings: [Branching]) 関数の下あたりに追加
+        let scoreToAdd = pointsPerChoice * percentage
+        currentScore += scoreToAdd
 
-        /// ストーリー開始時にスコアを初期化し、分岐ごとの基本ポイントを計算する (Dialogue2 / Bad Mode版)
-        func startStory(dialogues: [Dialogue2]) {
-            // スコアをリセット
-            currentScore = 0.0
+        // スコアが0から100の範囲に収まるように調整
+        currentScore = min(max(currentScore, 0.0), 100.0)
 
-            // このストーリーに含まれる選択肢の数を数える
-            // (isChoiceがtrueのものをカウント)
-            let choiceCount = dialogues.filter { $0.isChoice == true }.count
+        print("--- スコア加算 ---")
+        print("加算されるスコア: \(scoreToAdd) 点")
+        print("現在の合計スコア: \(currentScore) 点")
+        print("--------------------")
+    }
 
-            // 選択肢が1つ以上あれば、1回あたりの基本ポイントを計算
-            if choiceCount > 0 {
-                pointsPerChoice = 100.0 / Double(choiceCount)
-            } else {
-                pointsPerChoice = 0.0
-            }
+    /// ストーリー開始時にスコアを初期化し、分岐ごとの基本ポイントを計算する (Dialogue2 / Bad Mode版)
+    func startStory(dialogues: [Dialogue2]) {
+        // スコアをリセット
+        currentScore = 0.0
 
-            // --- ログ ---
-            // ログ表示用に、配列の最初の要素からstoryIdを拝借
-            let storyId = dialogues.first?.storyId ?? "Unknown"
+        // このストーリーに含まれる選択肢の数を数える
+        // (isChoiceがtrueのものをカウント)
+        let choiceCount = dialogues.filter { $0.isChoice == true }.count
 
-            print("--- スコア計算開始 (Bad Mode) ---")
-            print("ストーリーID: \(storyId)")
-            print("選択肢の数: \(choiceCount) 問")
-            print("1問あたりの基本点: \(pointsPerChoice) 点")
-            print("--------------------")
+        // 選択肢が1つ以上あれば、1回あたりの基本ポイントを計算
+        if choiceCount > 0 {
+            pointsPerChoice = 100.0 / Double(choiceCount)
+        } else {
+            pointsPerChoice = 0.0
         }
+
+        // --- ログ ---
+        // ログ表示用に、配列の最初の要素からstoryIdを拝借
+        let storyId = dialogues.first?.storyId ?? "Unknown"
+
+        print("--- スコア計算開始 (Bad Mode) ---")
+        print("ストーリーID: \(storyId)")
+        print("選択肢の数: \(choiceCount) 問")
+        print("1問あたりの基本点: \(pointsPerChoice) 点")
+        print("--------------------")
+    }
+}
+
+// MARK: - UIヘルパー（雲制御）
+extension GameManager {
+    /// ステージを雲で隠すべきか、および使う画像名を返す
+    func cloudImageName(for stageId: Int, mode: GameMode) -> String? {
+        // 条件1: Bad4 & Happy1 共通（Bad3まで + 雷5以上）
+        let bad3Cleared = (1...3).allSatisfy { id in
+            guard let idx = index(of: id, in: .bad) else { return false }
+            return badStages[idx].isPlayed
+        }
+        let bad4ConditionUnlocked = bad3Cleared && totalThunders >= 5
+
+        if !bad4ConditionUnlocked {
+            if (mode == .bad && stageId == 4) {
+                return "bad_kumo_02"   // Bad4を覆う雲
+            }
+            if (mode == .happy && stageId == 1) {
+                return "good_kumo_01"  // Happy1を覆う雲（まだ解放されていない）
+            }
+        }
+
+        // 条件2: Bad7（Bad1〜6終了 & 雷12以上）
+        let bad6Cleared = (1...6).allSatisfy { id in
+            guard let idx = index(of: id, in: .bad) else { return false }
+            return badStages[idx].isPlayed
+        }
+        if !(bad6Cleared && totalThunders >= 12) {
+            if mode == .bad && stageId == 7 {
+                return "bad_kumo_03"
+            }
+        }
+
+        // 条件3: Happy4（Happy1〜3終了 & 星5以上）
+        let happy3Cleared = (1...3).allSatisfy { id in
+            guard let idx = index(of: id, in: .happy) else { return false }
+            return happyStages[idx].isPlayed
+        }
+        if !(happy3Cleared && totalStars >= 5) {
+            if mode == .happy && stageId == 4 {
+                return "good_kumo_03"
+            }
+        }
+
+        // 🌀 条件4: Happy7（Happy1〜6終了 & 星12以上）
+        let happy6Cleared = (1...6).allSatisfy { id in
+            guard let idx = index(of: id, in: .happy) else { return false }
+            return happyStages[idx].isPlayed
+        }
+        if !(happy6Cleared && totalStars >= 12) {
+            if mode == .happy && stageId == 7 {
+                return "good_kumo_01"
+            }
+        }
+        // 条件を満たしていれば雲なし
+        return nil
+    }
 }
