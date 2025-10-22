@@ -69,7 +69,7 @@ struct ChatSceneView: View {
                     //                                                 チャットの画面のスクロール部分
                     ScrollViewReader { proxy in
                         ScrollView {
-                            VStack(spacing: 12) {
+                            VStack{
                                 ForEach(chatMessage) { message in
                                     messageRow(for: message, proxy: proxy)
                                         .id(message.id)
@@ -77,24 +77,14 @@ struct ChatSceneView: View {
                             }
                             .padding()
                         }
-                        .frame(width: 450, height: 450)
-                        .position(x: width  * 0.51,y: height * 0.49)
+                        .frame(width: 450, height: 550)
+                        .offset(x: 10, y: 30)
                         .onAppear {
                             self.proxy = proxy
                         }
                     }
                 }
 
-//                                        Button {
-//                                            skipAllChatScenes()
-//                                        } label: {
-//                                            Text("飛ばす")
-//                                                .font(.system(size: 20, weight: .bold, design: .default))
-//                                                .padding(10)
-//                                                .background(Color.red)
-//                                                .foregroundColor(.white)
-//                                                .clipShape(Capsule())
-//                                        }
 
                 //                    選択肢の問題を出す
                 if isPopupVisible, let choiceScene = currentChoiceScene {
@@ -145,8 +135,6 @@ struct ChatSceneView: View {
                             proceedToNextIfNeeded()
                         }
                     )
-                    .ignoresSafeArea()
-
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

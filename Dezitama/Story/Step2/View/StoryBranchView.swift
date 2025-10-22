@@ -9,7 +9,7 @@ import Lottie
 import SwiftUI
 
 struct StoryBranchView: View {
-    @State private var currentSceneId: String = ""
+    @State private var currentSceneId: String
     @State private var historyStack: [String] = []
     @State private var showSpecialView: Bool = false
     @State private var offsetY: CGFloat = 0.0
@@ -30,13 +30,16 @@ struct StoryBranchView: View {
 
     //    会話の見返しボタン用関数
     @State var isChatLogVisible: Bool = false
-    @State private var conversationHistory: [Branching] = []
+    @State private var conversationHistory: [Branching]
 
     //    ストーリーが終了した場合セリフを最後まで読んだあとにタップしたか判別する
     @State var isEndSceneReady: Bool = false
 
     @State private var finalStars: Int = 0
     @State var isBackMap: Bool = false
+
+    @State private var storylineOpacity: Double = 0.0
+    @State private var isStorylineInteractable: Bool = false
 
     let stageId: Int
     let mode: GameMode
@@ -73,19 +76,39 @@ struct StoryBranchView: View {
     }
 
     init(path: Binding<NavigationPath>,
-         allBranchings: Binding<[Branching]>,
-         allScene: Binding<Branching>,
-         StoryId: String, stageId: Int,
-         mode: GameMode,
-         currentMode: Binding<GameMode>) {
-        self._path = path
-        self._allBranchings = allBranchings
-        self._allScene = allScene
-        self.StoryId = StoryId
-        self.stageId = stageId
-        self.mode = mode
-        self._currentMode = currentMode
-    }
+             allBranchings: Binding<[Branching]>,
+             allScene: Binding<Branching>,
+             StoryId: String, stageId: Int,
+             mode: GameMode,
+             currentMode: Binding<GameMode>) {
+
+            // 既存の代入処理
+            self._path = path
+            self._allBranchings = allBranchings
+            self._allScene = allScene
+            self.StoryId = StoryId
+            self.stageId = stageId
+            self.mode = mode
+            self._currentMode = currentMode
+
+            let firstScene: Branching? = allBranchings.wrappedValue
+                .filter { $0.storyId == StoryId }
+                .first
+
+            let firstSceneId = firstScene?.sceneId ?? "scene1"
+
+            self._currentSceneId = State(initialValue: firstSceneId)
+
+            // 4. もし最初のシーンが存在し、かつタイプが "talk" か "chat" なら
+            if let first = firstScene, (first.sceneType == "talk" || first.sceneType == "chat") {
+                // 5. conversationHistory を最初のシーンが入った配列で初期化
+                self._conversationHistory = State(initialValue: [first])
+            } else {
+                // 6. それ以外の場合は空の配列で初期化
+                self._conversationHistory = State(initialValue: [])
+            }
+            // ▲▲▲ 修正ここまで ▲▲▲
+        }
 
     var body: some View {
         GeometryReader { geometry in
@@ -95,6 +118,109 @@ struct StoryBranchView: View {
                     VStack {
                         Spacer()
                         switch current.sceneType {
+                        case "storyline":
+                            ZStack {
+                                // 1. WideRubyLabelRepresentable を設定
+                                WideRubyLabelRepresentable(
+                                    attributedText: current.text
+                                        .replacingOccurrences(of: "<br>", with: "\n")
+                                        .createWideRuby(font: talkFont, color: .black), //
+                                    font: talkFont, //
+                                    textColor: .black,
+                                    textAlignment: .center, // 中央揃え
+                                    targetWidth: 700 // 表示幅 (お好みで調整してください)
+                                )
+                                .frame(maxWidth: 750) // ビュー自体のフレーム
+                                .padding(.bottom, 100) // 少し上に配置
+                                .opacity(storylineOpacity)
+                                .onAppear {
+                                    storylineOpacity = 0.0
+                                    isStorylineInteractable = false
+                                    let animationDuration = 1.0
+
+                                    withAnimation(.easeIn(duration: animationDuration)) {
+                                        storylineOpacity = 1.0
+                                    }completion: {
+                                        if branchingMap[currentSceneId]?.sceneType == "storyline" {
+                                            isStorylineInteractable = true
+                                            print("Storylineのタップが可能になりました。")
+                                        }
+                                    }
+                                }
+                                .onChange(of: currentSceneId) { _, newSceneId in
+                                    if let newScene = branchingMap[newSceneId] {
+                                        if newScene.sceneType == "storyline" {
+                                            storylineOpacity = 0.0
+                                            isStorylineInteractable = false
+                                            let animationDuration = 1.0
+
+                                            withAnimation(.easeIn(duration: animationDuration)) { //
+                                                storylineOpacity = 1.0 //
+                                            }
+
+                                            // ★アニメーション時間後にタップ可能にする
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration) {
+                                                // 念のため、現在表示されているのが本当にstorylineか再確認
+                                                if branchingMap[currentSceneId]?.sceneType == "storyline" {
+                                                    isStorylineInteractable = true
+                                                    print("Storylineのタップが可能になりました。")
+                                                }
+                                            }
+                                            // ▲▲▲ 修正ここまで ▲▲▲
+                                        } else {
+                                            storylineOpacity = 1.0
+                                            isStorylineInteractable = true
+                                        }
+                                    }
+                                }
+
+                                // 2. "次へ" のアニメーションボタン (case "screen" からコピー)
+                                HStack {
+                                    Image("next_button")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 35)
+                                        .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
+                                        .offset(y: offsetY)
+                                        .onAppear {
+                                            startLoopingAnimation() //
+                                        }
+                                }
+                            }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                guard isStorylineInteractable else {
+                                    print("Storylineアニメーション中のためタップを無視しました。")
+                                    return
+                                }
+                                // 終了シーンの場合
+                                if current.nextSceneId.lowercased() == "end" {
+                                    if !isEndSceneReady {
+                                        let stars = gameManager.scoreToStars(score: gameManager.currentScore)
+                                        self.finalStars = stars
+                                        gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
+                                        isEndSceneReady = true
+                                    }
+                                    return
+                                }
+
+                                // 次のシーンを取得
+                                guard let nextScene = branchingMap[current.nextSceneId] else {
+                                    return
+                                }
+
+                                // 次のシーンへ遷移
+                                if nextScene.isChoice == true {
+                                    isPopupVisible = true
+                                    currentChoiceScene = nextScene
+                                } else {
+                                    if nextScene.sceneType == "talk" || nextScene.sceneType == "chat" {
+                                        conversationHistory.append(nextScene)
+                                    }
+                                    currentSceneId = nextScene.sceneId
+                                }
+                            }
                         case "screen":
                             ZStack {
                                 HStack {
@@ -121,10 +247,10 @@ struct StoryBranchView: View {
                                         gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
                                         isEndSceneReady = true
                                     }
-                                    return // ここで処理を終了
+                                    return
                                 }
 
-                                // 2. "end" でなければ、これまで通りの処理を続けます
+
                                 guard let nextScene = branchingMap[current.nextSceneId] else {
                                     return
                                 }
@@ -133,6 +259,9 @@ struct StoryBranchView: View {
                                     isPopupVisible = true
                                     currentChoiceScene = nextScene
                                 } else {
+                                    if nextScene.sceneType == "talk" || nextScene.sceneType == "chat" {
+                                        conversationHistory.append(nextScene)
+                                    }
                                     currentSceneId = nextScene.sceneId
                                 }
                             }
@@ -193,6 +322,9 @@ struct StoryBranchView: View {
                                             isPopupVisible = true
                                             currentChoiceScene = nextScene
                                         } else {
+                                            if nextScene.sceneType == "talk" || nextScene.sceneType == "chat" {
+                                                conversationHistory.append(nextScene)
+                                            }
                                             currentSceneId = nextScene.sceneId
                                         }
                                     }
@@ -224,49 +356,39 @@ struct StoryBranchView: View {
                                             Spacer()
                                         }
 
-                                        // 左のキャラクター画像
-                                        Image(current.leftCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 350, height: 500)
-                                            // 💡 非発言時はグレーアウトなどの修飾子をここに適用できる
-                                            // .opacity(current.characterName == current.leftCharacter ? 1.0 : 0.7)
+                                        characterImage(
+                                            imageName: current.leftCharacter,
+                                            speakingCharacter: current.characterName
+                                        )
+                                        .frame(width: 350, height: 500)
                                     }
 
-                                    // 2. 中央のキャラクター (左・右どちらかが存在する場合、中央は自動で中央に寄る)
                                     if !current.centerCharacter.isEmpty {
-                                        // 中央のみ表示の場合、Spacerで両端を挟む
                                         if current.leftCharacter.isEmpty && current.rightCharacter.isEmpty {
                                             Spacer()
                                         }
 
-                                        // 中央のキャラクター画像
-                                        Image(current.centerCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 350, height: 500)
-                                            // 💡 非発言時はグレーアウト
-                                            // .opacity(current.characterName == current.centerCharacter ? 1.0 : 0.7)
+                                        characterImage(
+                                            imageName: current.centerCharacter,
+                                            speakingCharacter: current.characterName
+                                        )
+                                        .frame(width: 350, height: 500)
 
                                         if current.leftCharacter.isEmpty && current.rightCharacter.isEmpty {
                                             Spacer()
                                         }
                                     }
 
-                                    // 3. 右のキャラクター
                                     if !current.rightCharacter.isEmpty {
-                                        // 右側が空いている場合にSpacerを追加
                                         if current.leftCharacter.isEmpty && current.centerCharacter.isEmpty {
-                                            Spacer() // 左と中央が空なら右寄せではないためSpacerが必要
+                                            Spacer()
                                         }
 
-                                        // 右のキャラクター画像
-                                        Image(current.rightCharacter)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: 350, height: 500)
-                                            // 💡 非発言時はグレーアウト
-                                            // .opacity(current.characterName == current.rightCharacter ? 1.0 : 0.7)
+                                        characterImage(
+                                            imageName: current.rightCharacter,
+                                            speakingCharacter: current.characterName
+                                        )
+                                        .frame(width: 350, height: 500)
                                     }
 
                                     // 4. 左・中央・右のすべてが表示されていない場合
@@ -275,7 +397,6 @@ struct StoryBranchView: View {
                                     }
                                 }
                                 .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.5)
-                                // .position の代わりに .frame(maxWidth: .infinity) を使用し、HStack内のSpacerに任せる
                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
 
                                 Group{
@@ -297,12 +418,10 @@ struct StoryBranchView: View {
 
                                     //                                    テキスト（会話文）
                                     TypingRubyLabelRepresentable(
-                                        // createWideRuby に font を渡す
                                         attributedText: current.text
                                             .replacingOccurrences(of: "<br>", with: "\n")
-                                            .createWideRuby(font: talkFont, color: .black), // ← 修正
+                                            .createWideRuby(font: talkFont, color: .black),
                                         charInterval: 0.05,
-                                        // こちらにも同じ font を渡す
                                         font: talkFont,
                                         targetWidth: 500
                                     )
@@ -533,12 +652,11 @@ struct StoryBranchView: View {
                 }
                 print("--------------------------------\n")
 
-                if let first = currentStoryBranchings.first {
-                    currentSceneId = first.sceneId
-                    startTyping(fullText: first.text)
-
-                    conversationHistory.append(first)
-                }
+//                if let first = currentStoryBranchings.first {
+//                    if first.sceneType == "talk" || first.sceneType == "chat" {
+//                        conversationHistory.append(first)
+//                    }
+//                }
             }
         }
         .background {
@@ -583,17 +701,21 @@ struct StoryBranchView: View {
     }
 }
 
+
+
 @ViewBuilder
 private func characterImage(imageName: String, speakingCharacter: String) -> some View {
+
     let isSpeaking = (speakingCharacter == imageName)
-    let speakingScale: CGFloat = isSpeaking ? 1.1 : 1.0
+
+    let speakingScale: CGFloat = isSpeaking ? 1.1 : 1.0 
 
     Image(imageName)
         .resizable()
         .scaledToFit()
-        .scaleEffect(speakingScale)
-        .saturation(isSpeaking ? 1.0 : 0.7)
-        .brightness(isSpeaking ? 0.0 : -0.2)
+        .scaleEffect(speakingScale) // ★ここで大きさが変わります
+        .saturation(isSpeaking ? 1.0 : 0.7) // ★ここで彩度が変わります
+        .brightness(isSpeaking ? 0.0 : -0.2) // ★ここで明るさが変わります
         .animation(.easeInOut(duration: 0.3), value: isSpeaking)
 }
 
