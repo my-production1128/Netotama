@@ -164,6 +164,14 @@ struct StoryProgressView: View {
                     .foregroundColor(.red)
             }
         }
+        .background {
+            if let currentDialogue = currentDialogue{
+                Image(currentDialogue.background ?? "背景が設定されていません")
+                    .resizable()
+                    .scaledToFill()
+                    .edgesIgnoringSafeArea(.all)
+            }
+        }
     }
     
     // MARK: - 次のシーン取得

@@ -528,14 +528,14 @@ struct ChatSceneView: View {
     }
 
     //    デバック用のスキップボタン
-    private func skipAllChatScenes() {
-        guard let last = chatMessage.last else { return }
-        var nextId = last.scene.nextSceneId
-        while let next = branchingMap[nextId], next.sceneType == "chat" {
-            nextId = next.nextSceneId
-        }
-        onNextScene(nextId)
-    }
+//    private func skipAllChatScenes() {
+//        guard let last = chatMessage.last else { return }
+//        var nextId = last.scene.nextSceneId
+//        while let next = branchingMap[nextId], next.sceneType == "chat" {
+//            nextId = next.nextSceneId
+//        }
+//        onNextScene(nextId)
+//    }
 
     //自動返信の関数
     private func proceedToNextIfNeeded() {
