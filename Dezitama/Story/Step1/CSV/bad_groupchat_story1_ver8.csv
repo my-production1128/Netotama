@@ -9,7 +9,7 @@ bad_grucya_story1,Scene6,dialogue,アレック,これさ、カールタイムっ
 bad_grucya_story1,Scene7,dialogue,セシル,これは｜私《わたし》たちだけの｜秘密《ひみつ》の｜呼《よ》び方にしよ｜笑《わら》,Scene8,FALSE,,,,,,,classroom,Three,Alec_smile,Cecil_smile,Cony_smile,,,,
 bad_grucya_story1,Scene8,dialogue,コニー,,,TRUE,じゃあさこの3｜人《にん》でグループチャット｜作《つ》ろうよ！,0,Scene9,｜秘密《ひみつ》の｜話《はなし》ができるグルチャ｜欲《ほ》しい！,1,Scene9,classroom,Three,Alec_smile,Cecil_smile,Cony_smile,,,,
 bad_grucya_story1,Scene9,chat,セシル,｜仲良《なかよ》しグル｜作《つく》ったよ！,Scene10,FALSE,,,,,,,chatBackground_04,,,,,,,,
-bad_grucya_story1,Scene10,chat,コニー,,,TRUE,これで｜学校《がっこう》｜以外《いがい》でも3｜人《にん》だけで話｜《はな》せるね！,0,Scene11,このグルチャなら｜何《なに》を｜送《お》ってもバレないよね！,1,Scene12,chatBackground_04,,,,,,,,
+bad_grucya_story1,Scene10,chat,コニー,,,TRUE,これで｜学校《がっこう》｜以外《いがい》でも3｜人《にん》だけで｜話《はな》せるね！,0,Scene11,このグルチャなら｜何《なに》を｜送《お》ってもバレないよね！,1,Scene12,chatBackground_04,,,,,,,,
 bad_grucya_story1,Scene11,chat,アレック,｜学校《がっこう》じゃ｜話《はな》せないこともあるしね,Scene13,FALSE,,,,,,,chatBackground_04,,,,,,,,
 bad_grucya_story1,Scene12,chat,セシル,｜私《わたし》たちしか｜見《み》れないから｜秘密《ひみつ》も｜話《はな》せるね！,Scene13,FALSE,,,,,,,chatBackground_04,,,,,,,,
 bad_grucya_story1,Scene13,chat,アレック,てかカールってほんとやばいよね,Scene14,FALSE,,,,,,,chatBackground_04,,,,,,,,
