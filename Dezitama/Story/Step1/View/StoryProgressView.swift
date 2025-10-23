@@ -9,36 +9,31 @@ import SwiftUI
 
 struct StoryProgressView: View {
     let dialogues: [Dialogue2]
-    @State private var currentSceneId: String
-    @Binding var path: NavigationPath
-    @State private var conversationHistory: [Dialogue2] = []
-    @State private var chatSessionId: UUID = UUID()
-    
-    @State private var viewRefreshKey: UUID = UUID()
-    // 会話見返し
-    @State private var isChatLogVisible: Bool = false
-    // ホームアラート表示
-    @State private var isBackMap: Bool = false
+        @State private var currentSceneId: String
+        @Binding var path: NavigationPath
+        @State private var conversationHistory: [Dialogue2] = []
+        @State private var chatSessionId: UUID = UUID()
+        @State private var viewRefreshKey: UUID = UUID()
+        @State private var isChatLogVisible: Bool = false
+        @State private var isBackMap: Bool = false
+        @State private var isEndSceneReady: Bool = false
+        @State private var finalThunders: Int = 0
+        let stageId: Int
 
-    @State private var isEndSceneReady: Bool = false
-    @State private var finalThunders: Int = 0
-    let stageId: Int
+        @EnvironmentObject private var gameManager: GameManager
+        @EnvironmentObject var musicplayer: SoundPlayer
 
-    @EnvironmentObject private var gameManager: GameManager
-    @EnvironmentObject var musicplayer: SoundPlayer
-    @Binding var currentMode: GameMode
+        init(dialogues: [Dialogue2],
+             initialSceneId: String = "Scene0",
+             path: Binding<NavigationPath>,
+             stageId: Int) {
+            self.dialogues = dialogues
+            self._currentSceneId = State(initialValue: initialSceneId)
+            self._path = path
+            self.stageId = stageId
+        }
 
-    init(dialogues: [Dialogue2],
-         initialSceneId: String = "Scene0",
-         currentMode: Binding<GameMode>,
-         path: Binding<NavigationPath>,
-         stageId: Int) {
-        self.dialogues = dialogues
-        self._currentSceneId = State(initialValue: initialSceneId)
-        self._currentMode = currentMode
-        self._path = path
-        self.stageId = stageId
-    }
+
     
     var body: some View {
         GeometryReader { geometry in
@@ -57,10 +52,10 @@ struct StoryProgressView: View {
                             initialSceneId: currentSceneId,
                             onNextScene: handleNavigation,
                             path: $path,
-                            conversationHistory: $conversationHistory,
-                            currentMode: $currentMode
+                            conversationHistory: $conversationHistory
                         )
                         .id(chatSessionId)
+                        .environmentObject(gameManager)
                     case .start:
                         startView(dialogue: currentDialogue, onNext: handleNavigation)
                     }
@@ -112,9 +107,9 @@ struct StoryProgressView: View {
                                     Gauge(
                                         width: geometry.size.width * 0.3,
                                         height: 100,
-                                        score: gameManager.currentScore,
-                                        currentMode: $currentMode
+                                        score: gameManager.currentScore
                                     )
+                                    .environmentObject(gameManager)
                                 }
                                 
                                 HStack {
@@ -201,7 +196,7 @@ struct StoryProgressView: View {
             // 2. GameManager にスコアを保存
             gameManager.completeStage(
                 stageId: self.stageId,
-                mode: self.currentMode,
+                mode: self.gameManager.currentMode,
                 earnedScore: thunders
             )
 

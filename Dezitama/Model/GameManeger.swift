@@ -49,6 +49,14 @@ final class GameManager: ObservableObject {
     // 合計
     @Published private(set) var totalStars: Int = 0
     @Published private(set) var totalThunders: Int = 0
+    
+    // 現在のモード（Happy / Bad）
+    @Published var currentMode: GameMode = .bad {
+        didSet {
+            print("モード切替: \(oldValue) → \(currentMode)")
+        }
+    }
+
 
     // MARK: - Score Management Properties
     @Published var currentScore: Double = 0.0
@@ -197,7 +205,7 @@ final class GameManager: ObservableObject {
                 if let idx4 = index(of: 4, in: .bad) {
                     if !badStages[idx4].isUnlocked {
                         badStages[idx4].isUnlocked = true
-                        print("✅ 特殊解放: Bad4ステージ解放！")
+                        print(" 特殊解放: Bad4ステージ解放")
                         unlockedSomething = true
                     }
                 }
@@ -211,7 +219,7 @@ final class GameManager: ObservableObject {
                 if let idxH1 = index(of: 1, in: .happy) {
                     if !happyStages[idxH1].isUnlocked {
                         happyStages[idxH1].isUnlocked = true
-                        print("特殊解放: Happyステージ1解放！")
+                        print("特殊解放: Happyステージ1解放")
                         unlockedSomething = true
                     }
                 }
@@ -406,7 +414,7 @@ final class GameManager: ObservableObject {
         saveProgress()
     }
 
-    /// 進行リセット（初期状態に戻す）
+    // 進行リセット（初期状態に戻す）
     func resetProgress() {
         happyStages = defaultStages(mode: .happy)
         badStages = defaultStages(mode: .bad)

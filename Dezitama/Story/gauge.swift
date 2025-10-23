@@ -9,20 +9,21 @@ import SwiftUI
 
 struct Gauge: View {
     var width: CGFloat
-    var height: CGFloat
-    var score: Double
+        var height: CGFloat
+        var score: Double
 
-    @State private var scale: CGFloat = 1.0
-    @State private var animatedProgress: Double
-    @Binding var currentMode: GameMode
+        @State private var scale: CGFloat = 1.0
+        @State private var animatedProgress: Double
+        @EnvironmentObject var gameManager: GameManager
 
-    init(width: CGFloat, height: CGFloat, score: Double, currentMode: Binding<GameMode>) {
-        self.width = width
-        self.height = height
-        self.score = score
-        self._currentMode = currentMode
-        self._animatedProgress = State(initialValue: score / 100.0)
-    }
+        // initから currentMode を削除
+        init(width: CGFloat, height: CGFloat, score: Double) {
+            self.width = width
+            self.height = height
+            self.score = score
+            self._animatedProgress = State(initialValue: score / 100.0)
+        }
+
 
 
     var body: some View {
@@ -30,7 +31,7 @@ struct Gauge: View {
         let progress = score / 100.0
 
         ZStack {
-            Image(currentMode == .happy ? "step2_gauge_frame" : "step1_gauge_frame")
+            Image(gameManager.currentMode == .happy ? "step2_gauge_frame" : "step1_gauge_frame")
                 .resizable()
                 .scaledToFit()
                 .frame(width: width, height: height)
@@ -43,7 +44,7 @@ struct Gauge: View {
                     .brightness(0.1)
                     .frame(width: width * 0.59, height: height * 0.25)
 
-                Image(currentMode == .happy ? "step2_yellow" :"step1_green")
+                Image(gameManager.currentMode == .happy ? "step2_yellow" :"step1_green")
                     .resizable()
                     .frame(width: width * 0.59, height: height * 0.25)
                     .mask(
