@@ -498,10 +498,10 @@ extension GameManager {
 
         if !bad4ConditionUnlocked {
             if (mode == .bad && stageId == 4) {
-                return "bad_kumo_02"   // Bad4を覆う雲
+                return "bad_kumo_02"
             }
             if (mode == .happy && stageId == 1) {
-                return "good_kumo_01"  // Happy1を覆う雲（まだ解放されていない）
+                return "good_kumo_01"
             }
         }
 
@@ -527,7 +527,7 @@ extension GameManager {
             }
         }
 
-        // 🌀 条件4: Happy7（Happy1〜6終了 & 星12以上）
+        // 条件4: Happy7（Happy1〜6終了 & 星12以上）
         let happy6Cleared = (1...6).allSatisfy { id in
             guard let idx = index(of: id, in: .happy) else { return false }
             return happyStages[idx].isPlayed

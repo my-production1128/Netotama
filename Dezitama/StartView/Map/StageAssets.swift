@@ -73,27 +73,27 @@ struct StageIntroOverlay: View {
     @EnvironmentObject var musicplayer: SoundPlayer
     
     var body: some View {
-        Image(sheetImageName)
-            .resizable()
-            .scaledToFit()
-            .frame(maxWidth: UIScreen.main.bounds.width * 0.9)
-            .overlay(
-                // スタートボタンを画像の上に配置
-                VStack {
-                    Spacer()
-                    
-                    Button(action: {
-                        musicplayer.playSE(fileName: "button_SE")
-                        onStart()
-                    }) {
-                         Image("sheet_start")
-                             .resizable()
-                             .scaledToFit()
-                             .frame(width: 200, height: 100)
+        GeometryReader { geometry in
+            Image(sheetImageName)
+                .resizable()
+                .scaledToFit()
+                .frame(
+                    width: geometry.size.width * 0.5)
+                .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
+                .overlay(alignment: .bottomTrailing) {
+                        Button(action: {
+                            musicplayer.playSE(fileName: "button_SE")
+                            onStart()
+                        }) {
+                            Image("sheet_start")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: geometry.size.width * 0.15)
+                        }
+                        .padding(.trailing, geometry.size.width * 0.31)
+                        .padding(.bottom, geometry.size.height * 0.18)
                     }
-                    .offset(x:140,y:-180)
-                }
-            )
+        }
     }
     
     private var sheetImageName: String {
