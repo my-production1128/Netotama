@@ -200,6 +200,20 @@ struct ChatMessageView: View {
                             }
                         }
                         return // ★ コニーのタップ処理が完了したのでここで終了 ★
+                    }    else if !lastMessage.isAnimating {
+                        print("タップ検知: アニメーション中でないため、'end' チェックを行います。")
+
+                        // ★ 最後のメッセージの nextSceneId が "end" かどうかをチェック
+                        if lastMessage.dialogue.nextSceneId?.lowercased() == "end" {
+                            print("タップ検知: 'end' が検出されたため、終了処理を呼び出します。")
+
+                            // ★ 'end' だった場合のみ、親に通知する
+                            onNextScene("end")
+                        } else {
+                            print("タップ検知: 'end' ではありません。 (nextId: \(lastMessage.dialogue.nextSceneId ?? "nil"))")
+                            // 'end' でなければ、タップしても何もしない
+                            // (自動進行は proceedToNextIfNeeded が担当するため)
+                        }
                     }
                     // -------------------- 修正ここまで --------------------
 
@@ -505,14 +519,25 @@ extension ChatMessageView {
             }
             let nextId = last.dialogue.nextSceneId ?? "" //
 
-            guard let next = dialogueMap[nextId] else { //
-                if !nextId.isEmpty { //
+            guard let next = dialogueMap[nextId] else {
+                // ★★★ 修正箇所（ここから） ★★★
+
+                // "end" を検出
+                if nextId.lowercased() == "end" {
+                    print("proceedToNextIfNeeded: 'end' に到達しました。ユーザーのタップを待ちます。")
+                    // ★ onNextScene("end") を呼ばずに、ここで進行を停止する
+                    return
+                }
+
+                // "end" 以外で nextId があり、マップにない場合 (viewTypeの変更など)
+                if !nextId.isEmpty {
                     print("proceedToNextIfNeeded: 次のシーンID \(nextId) がマップにないため、親に通知します。")
-                    onNextScene(nextId) //
+                    onNextScene(nextId)
                 } else {
                      print("proceedToNextIfNeeded: nextSceneIdが空です。")
                 }
-                return //
+                // ★★★ 修正箇所（ここまで） ★★★
+                return
             }
 
             // -------------------- 修正点 --------------------
