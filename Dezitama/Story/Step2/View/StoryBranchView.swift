@@ -15,54 +15,52 @@ struct StoryBranchView: View {
     @State private var offsetY: CGFloat = 0.0
     @State var isPopupVisible: Bool = false
     @State var nextChat: Bool = false
-
-
+    
+    
     @State private var displayedText = ""
     @State private var currentCharIndex = 0
     @State private var timer: Timer? = nil
-
+    
     @State private var isTypingComplete: Bool = false
     @State private var shouldSkipTyping: Bool = false
-
-
+    
+    
     // 選択肢のシーンを一時的に保持する新しいState変数
     @State private var currentChoiceScene: Branching? = nil
-
+    
     //    会話の見返しボタン用関数
     @State var isChatLogVisible: Bool = false
     @State private var conversationHistory: [Branching]
-
+    
     //    ストーリーが終了した場合セリフを最後まで読んだあとにタップしたか判別する
     @State var isEndSceneReady: Bool = false
-
+    
     @State private var finalStars: Int = 0
     @State var isBackMap: Bool = false
-
+    
     @State private var storylineOpacity: Double = 0.0
     @State private var isStorylineInteractable: Bool = false
-
+    
     let stageId: Int
-    let mode: GameMode
-
+    
     //    選択肢のポイント用
     @EnvironmentObject private var gameManager: GameManager
     @EnvironmentObject var musicplayer: SoundPlayer
-
-
+    
+    
     let talkFont = UIFont.customFont(ofSize: 30)
     let charaNameFont = UIFont.customFont(ofSize: 35)
-
+    
     @Binding var path: NavigationPath
     @Binding var allBranchings: [Branching]
     @Binding var allScene: Branching
-    @Binding var currentMode: GameMode
-
+    
     let StoryId: String
     // 表示に必要なデータだけを、allBranchingsからリアルタイムで絞り込む
     private var currentStoryBranchings: [Branching] {
         return allBranchings.filter { $0.storyId == StoryId }
     }
-
+    
     private var branchingMap: [String: Branching] {
         var map: [String: Branching] = [:]
         for b in currentStoryBranchings {
@@ -74,41 +72,32 @@ struct StoryBranchView: View {
         }
         return map
     }
-
+    
     init(path: Binding<NavigationPath>,
              allBranchings: Binding<[Branching]>,
              allScene: Binding<Branching>,
-             StoryId: String, stageId: Int,
-             mode: GameMode,
-             currentMode: Binding<GameMode>) {
+             StoryId: String, stageId: Int) {
 
-            // 既存の代入処理
             self._path = path
             self._allBranchings = allBranchings
             self._allScene = allScene
             self.StoryId = StoryId
             self.stageId = stageId
-            self.mode = mode
-            self._currentMode = currentMode
 
             let firstScene: Branching? = allBranchings.wrappedValue
                 .filter { $0.storyId == StoryId }
                 .first
 
             let firstSceneId = firstScene?.sceneId ?? "scene1"
-
             self._currentSceneId = State(initialValue: firstSceneId)
 
-            // 4. もし最初のシーンが存在し、かつタイプが "talk" か "chat" なら
             if let first = firstScene, (first.sceneType == "talk" || first.sceneType == "chat") {
-                // 5. conversationHistory を最初のシーンが入った配列で初期化
                 self._conversationHistory = State(initialValue: [first])
             } else {
-                // 6. それ以外の場合は空の配列で初期化
                 self._conversationHistory = State(initialValue: [])
             }
-            // ▲▲▲ 修正ここまで ▲▲▲
         }
+
 
     var body: some View {
         GeometryReader { geometry in
@@ -199,7 +188,7 @@ struct StoryBranchView: View {
                                     if !isEndSceneReady {
                                         let stars = gameManager.scoreToStars(score: gameManager.currentScore)
                                         self.finalStars = stars
-                                        gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
+                                        gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
                                         isEndSceneReady = true
                                     }
                                     return
@@ -244,7 +233,7 @@ struct StoryBranchView: View {
                                     if !isEndSceneReady {
                                         let stars = gameManager.scoreToStars(score: gameManager.currentScore)
                                         self.finalStars = stars
-                                        gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
+                                        gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
                                         isEndSceneReady = true
                                     }
                                     return
@@ -282,7 +271,7 @@ struct StoryBranchView: View {
                                         if !isEndSceneReady {
                                             let stars = gameManager.scoreToStars(score: gameManager.currentScore)
                                             self.finalStars = stars
-                                            gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
+                                            gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
                                             isEndSceneReady = true
                                         }
                                     } else {
@@ -312,8 +301,10 @@ struct StoryBranchView: View {
                                     .contentShape(Rectangle())
                                     .onTapGesture {
                                         guard let nextScene = branchingMap[current.nextSceneId] else {
-                                            if current.nextSceneId == "end" || current.nextSceneId.isEmpty {
-                                                gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: 0)
+                                            if !isEndSceneReady {
+                                                let stars = gameManager.scoreToStars(score: gameManager.currentScore)
+                                                self.finalStars = stars
+                                                gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
                                                 isEndSceneReady = true
                                             }
                                             return
@@ -488,7 +479,7 @@ struct StoryBranchView: View {
                                             if !isEndSceneReady {
                                                 let stars = gameManager.scoreToStars(score: gameManager.currentScore)
                                                 self.finalStars = stars
-                                                gameManager.completeStage(stageId: self.stageId, mode: self.mode, earnedScore: stars)
+                                                gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
                                                 isEndSceneReady = true
                                             }
                                         } else {
@@ -593,10 +584,12 @@ struct StoryBranchView: View {
                     }
                     Spacer()
                     VStack {
-                        Gauge(width: geometry.size.width * 0.3, height: 100,
-                              score: gameManager.currentScore,
-                              currentMode: $currentMode)
-                        .padding(.trailing,2)
+                        Gauge(
+                            width: geometry.size.width * 0.3,
+                            height: 100,
+                            score: gameManager.currentScore
+                        )
+                        .environmentObject(gameManager)
                         //                        会話見返し機能
                         Button(action: {
                             musicplayer.playSE(fileName: "button_SE")

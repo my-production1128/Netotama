@@ -195,23 +195,18 @@ struct ContentView: View {
             switch viewID {
             case .ContentView:
                 ContentView().environmentObject(gameManager)
-            case .MapViewBad:
-                MapView(path: $path, mode: .bad, currentMode: $currentMode)
+            case .MapViewBad, .MapViewHappy:
+                MapView(path: $path)
                     .environmentObject(gameManager)
                     .navigationBarBackButtonHidden(true)
-            case .MapViewHappy:
-                MapView(path: $path, mode: .happy, currentMode: $currentMode)
-                    .environmentObject(gameManager)
-                    .navigationBarBackButtonHidden(true)
-            case .GoodStoryBranchView(let storyId, let stageId, let mode):
+
+            case .GoodStoryBranchView(let storyId, let stageId,_):
                 StoryBranchView(
                     path: $path,
                     allBranchings: $allBranchings,
                     allScene: $allScene,
                     StoryId: storyId,
-                    stageId: stageId,
-                    mode: mode,
-                    currentMode: $currentMode
+                    stageId: stageId
                 )
                 .environmentObject(gameManager)
                 .navigationBarBackButtonHidden(true)
@@ -233,7 +228,6 @@ struct ContentView: View {
                 StoryProgressView(
                     dialogues: stages[stageIndex].dialogues,
                     initialSceneId: "Scene0",
-                    currentMode: $currentMode,
                     path: $path,
                     stageId: stageId
                 )
@@ -245,8 +239,7 @@ struct ContentView: View {
                     initialSceneId: initialSceneId,
                     onNextScene: { _ in },
                     path: $path,
-                    conversationHistory: .constant([]),
-                    currentMode: $currentMode
+                    conversationHistory: .constant([])
                 )
                 .environmentObject(gameManager)
                 .navigationBarBackButtonHidden(true)

@@ -47,7 +47,7 @@ struct ScoreDisplayView: View {
 
     var body: some View {
         Text(displayText)
-            .font(Font(UIFont.customFont(ofSize: 43)))
+            .font(Font(UIFont.customFont(ofSize: 40)))
             .foregroundColor(.black)
     }
 

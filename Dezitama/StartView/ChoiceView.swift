@@ -34,6 +34,7 @@ struct ChoiceView: View {
                 VStack {
                     Button {
                         musicplayer.playSE(fileName: "button_SE")
+                        gameManager.currentMode = .bad
                         path.append(ViewBuilderPath.MapViewBad)
                     } label: {
                         Image("Bad_Button")
@@ -42,9 +43,10 @@ struct ChoiceView: View {
                             .frame(height: geometry.size.height * 0.4)
                             .offset(y: -10)
                     }
-                    
+
                     Button {
                         musicplayer.playSE(fileName: "button_SE")
+                        gameManager.currentMode = .happy 
                         path.append(ViewBuilderPath.MapViewHappy)
                     } label: {
                         Image("Good_Button")
@@ -74,9 +76,9 @@ struct ChoiceView: View {
                     Spacer()
                 }
 
-                // MenuView の統合（あなたのオリジナル版）
+                // MenuView の統合
                 MenuView(isOpen: $isMenuVisible, path: $path)
-                    .zIndex(2) // 最前面に表示
+                    .zIndex(2)
             }
         }
         .onAppear {

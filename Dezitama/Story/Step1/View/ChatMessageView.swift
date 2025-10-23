@@ -21,66 +21,57 @@ struct ChatMessage2: Identifiable {
 // MARK: - チャットビュー本体
 struct ChatMessageView: View {
     let dialogues: [Dialogue2]
-    let initialSceneId: String
-    var onNextScene: (String) -> Void
+        let initialSceneId: String
+        var onNextScene: (String) -> Void
 
-    @State private var currentSceneId: String
-    @EnvironmentObject private var gameManager: GameManager
-    @EnvironmentObject var musicplayer: SoundPlayer
+        @State private var currentSceneId: String
+        @EnvironmentObject private var gameManager: GameManager
+        @EnvironmentObject var musicplayer: SoundPlayer
 
-    // Path（ホーム戻る用）
-    @Binding var path: NavigationPath
+        @Binding var path: NavigationPath
+        @Binding var conversationHistory: [Dialogue2]
 
-    // 状態管理
-    @State private var chatMessages: [ChatMessage2] = []
-    @State private var proxy: ScrollViewProxy?
+        @State private var chatMessages: [ChatMessage2] = []
+        @State private var proxy: ScrollViewProxy?
 
-    // アニメーション用
-    @State private var isLarge = false
-    @State private var isTyping = false
+        @State private var isLarge = false
+        @State private var isTyping = false
 
-    // 会話見返し
-    @Binding var conversationHistory: [Dialogue2]
-    @Binding var currentMode: GameMode
-    @State private var isChatLogVisible: Bool = false
+        @State private var isChatLogVisible: Bool = false
+        @State private var isPopupVisible: Bool = false
+        @State private var currentChoiceDialogue: Dialogue2? = nil
 
-    // ★ 選択肢のポップアップ管理
-    @State private var isPopupVisible: Bool = false
-    @State private var currentChoiceDialogue: Dialogue2? = nil
+        @State private var animationTrigger = true
+        let animationTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
 
-    // dialoguesをマップ化
-    private var dialogueMap: [String: Dialogue2] {
-        Dictionary(uniqueKeysWithValues: dialogues.map { ($0.sceneId, $0) })
-    }
+        var color: Color = .gray
+        var dotSize: CGFloat = 30
+        var bounceHeight: CGFloat = 90
 
-    // 現在のdialogue
-    private var dialogue: Dialogue2? {
-        dialogues.first(where: { $0.sceneId == currentSceneId })
-    }
+        //　dialogues を辞書に変換
+        private var dialogueMap: [String: Dialogue2] {
+            Dictionary(uniqueKeysWithValues: dialogues.map { ($0.sceneId, $0) })
+        }
 
-    // init
-    init(dialogues: [Dialogue2],
-         initialSceneId: String,
-         onNextScene: @escaping (String) -> Void,
-         path: Binding<NavigationPath>,
-         conversationHistory: Binding<[Dialogue2]>,
-         currentMode: Binding<GameMode>) {
+        //現在の dialogue
+        private var dialogue: Dialogue2? {
+            dialogues.first(where: { $0.sceneId == currentSceneId })
+        }
 
-        self.dialogues = dialogues
-        self.initialSceneId = initialSceneId
-        self.onNextScene = onNextScene
-        self._currentSceneId = State(initialValue: initialSceneId)
-        self._path = path
-        self._conversationHistory = conversationHistory
-        self._currentMode = currentMode
-    }
+        init(dialogues: [Dialogue2],
+             initialSceneId: String,
+             onNextScene: @escaping (String) -> Void,
+             path: Binding<NavigationPath>,
+             conversationHistory: Binding<[Dialogue2]>) {
 
-    @State private var animationTrigger = true
-    let animationTimer = Timer.publish(every: 1.5, on: .main, in: .common).autoconnect()
-    var color: Color = .gray
-    var dotSize: CGFloat = 30
-    var bounceHeight: CGFloat = 90
-
+            self.dialogues = dialogues
+            self.initialSceneId = initialSceneId
+            self.onNextScene = onNextScene
+            self._currentSceneId = State(initialValue: initialSceneId)
+            self._path = path
+            self._conversationHistory = conversationHistory
+        }
+    
     // MARK: - Body
     var body: some View {
         //        GeometryReader { geometry in
