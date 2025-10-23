@@ -83,70 +83,45 @@ struct MapView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // 背景切り替え
-                Image(currentMode == .happy ? "Good_background" : "Bad_background")
-                    .resizable()
-                    .scaledToFill()
-                    .ignoresSafeArea()
-                
-                // ステージボタンを配置
-                ForEach(currentStages.indices, id: \.self) { index in
-                    // 安全性チェック
-                    if index < currentStagePositions.count {
-                        let stage = currentStages[index]
-                        let position = currentStagePositions[index]
-                        
-                        StageButton(stage: stage, mode: currentMode) {
-                            musicplayer.playSE(fileName: "button_SE")
-                            if stage.isUnlocked {
-                                selectedStage = stage
-                                showStageSheet = true
-                            } else {
-                                let impact = UIImpactFeedbackGenerator(style: .light)
-                                impact.impactOccurred()
-                            }
-                        }
-                        .position(
-                            x: geometry.size.width * position.x,
-                            y: geometry.size.height * position.y
+                // currentMode ごとに別Viewとして扱う
+                if currentMode == .happy {
+                    modeGroupView(geometry: geometry, mode: .happy)
+                        .transition(
+                            .asymmetric(
+                                insertion: .opacity.combined(with: .scale(scale: 0.95)),
+                                removal: .opacity.combined(with: .scale(scale: 1.05))
+                            )
                         )
-                    }
-                }
-                
-                ForEach(currentStages) { stage in
-                    if let cloudName = gameManager.cloudImageName(for: stage.id, mode: currentMode),
-                       let cloudPosition = cloudPosition(for: stage.id, in: geometry, mode: currentMode) {
-                        
-                        CloudView(
-                            id: stage.id,
-                            imageName: cloudName,
-                            position: cloudPosition,
-                            geometry: geometry,
-                            mode: currentMode
+                        .id(currentMode)
+                } else {
+                    modeGroupView(geometry: geometry, mode: .bad)
+                        .transition(
+                            .asymmetric(
+                                insertion: .opacity.combined(with: .scale(scale: 0.95)),
+                                removal: .opacity.combined(with: .scale(scale: 1.05))
+                            )
                         )
-                    }
+                        .id(currentMode)
                 }
 
-
-                
                 //デバックボタン
-                VStack{
-                    Button("リセット") {
-                        GameManager.shared.resetProgress()
-                    }
-                    .padding()
-                    .background(Color.red)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    
-                    Button("デバック"){
-                        GameManager.shared.setDebugUnlockAll()
-                    }
-                    .padding()
-                    .background(Color.green)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                }
+//                VStack{
+//                    Button("リセット") {
+//                        GameManager.shared.resetProgress()
+//                    }
+//                    .padding()
+//                    .background(Color.red)
+//                    .foregroundColor(.white)
+//                    .cornerRadius(8)
+//                    
+//                    Button("デバック"){
+//                        GameManager.shared.setDebugUnlockAll()
+//                    }
+//                    .padding()
+//                    .background(Color.green)
+//                    .foregroundColor(.white)
+//                    .cornerRadius(8)
+//                }
                 
                 // 戻るボタン
                 VStack {
@@ -176,9 +151,10 @@ struct MapView: View {
                         Spacer()
                         Button(action: {
                             musicplayer.playSE(fileName: "button_SE")
-                            withAnimation(.easeInOut(duration: 0.3)) {
+                            withAnimation(.easeInOut(duration: 0.8)) {
                                 currentMode = currentMode == .happy ? .bad : .happy
                             }
+
                         }) {
                             Image("stage_turn")
                                 .resizable()
@@ -191,49 +167,43 @@ struct MapView: View {
                 }
                 .padding(10)
                 
-                
-                //総数表示
-                VStack {
-                    HStack {
-                        Spacer()
-                        ScoreDisplayView(mode: currentMode, totalScore: currentTotalScore)
-                    }
-                    .padding(.top, 20)
-                    Spacer()
-                }
-                .padding(75)
-                
                 //シート
                 if showStageSheet, let stage = selectedStage {
-                    Color.white.opacity(0.6)
-                        .ignoresSafeArea()
-                        .onTapGesture {
-                            
-                            //怪しい
-                            // 背景タップでステージに遷移
-                            musicplayer.playSE(fileName: "button_SE")
-                            showStageSheet = false
-                            _ = gameManager.handleStageTap(stage, path: &path, mode: currentMode)
-                            selectedStage = nil
-                        }
-                    
-                    StageIntroOverlay(
-                        stage: stage,
-                        mode: currentMode,
-                        onClose: {
-                            showStageSheet = false
-                            selectedStage = nil
-                        },
-                        onStart: {
-                            showStageSheet = false
-                            _ = gameManager.handleStageTap(stage, path: &path, mode: currentMode)
-                            selectedStage = nil
-                        }
-                    )
-                    .environmentObject(musicplayer)
-                    .transition(.scale.combined(with: .opacity))
+                    ZStack {
+                        // 背景（タップで閉じる）
+                        Color.white.opacity(0.6)
+                            .ignoresSafeArea()
+                            .contentShape(Rectangle()) // ← タップ判定を明確に
+                            .onTapGesture {
+                                musicplayer.playSE(fileName: "button_SE")
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    showStageSheet = false
+                                    selectedStage = nil
+                                }
+                            }
+
+                        // 前面のシート（StageIntroOverlay）
+                        StageIntroOverlay(
+                            stage: stage,
+                            mode: currentMode,
+                            onClose: {
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    showStageSheet = false
+                                    selectedStage = nil
+                                }
+                            },
+                            onStart: {
+                                showStageSheet = false
+                                _ = gameManager.handleStageTap(stage, path: &path, mode: currentMode)
+                                selectedStage = nil
+                            }
+                        )
+                        .environmentObject(musicplayer)
+                        .transition(.scale.combined(with: .opacity))
+                    }
                 }
             }
+            .animation(.easeInOut(duration: 0.8), value: currentMode)
         }
         .ignoresSafeArea()
         .onAppear {
@@ -257,7 +227,7 @@ struct MapView: View {
             default:
                 return nil
             }
-
+            
         case .happy:
             switch stageId {
             case 1:
@@ -269,6 +239,87 @@ struct MapView: View {
             default:
                 return nil
             }
+        }
+    }
+    
+    
+    @ViewBuilder
+    private func modeGroupView(geometry: GeometryProxy, mode: GameMode) -> some View {
+        Group {
+            // 背景
+            Image(mode == .happy ? "Good_background" : "Bad_background")
+                .resizable()
+                .scaledToFill()
+                .ignoresSafeArea()
+            
+            // ステージボタン
+            ForEach(currentStages(for: mode).indices, id: \.self) { index in
+                if index < stagePositions(for: mode).count {
+                    let stage = currentStages(for: mode)[index]
+                    let position = stagePositions(for: mode)[index]
+                    
+                    StageButton(stage: stage, mode: mode) {
+                        musicplayer.playSE(fileName: "button_SE")
+                        if stage.isUnlocked {
+                            selectedStage = stage
+                            showStageSheet = true
+                        } else {
+                            let impact = UIImpactFeedbackGenerator(style: .light)
+                            impact.impactOccurred()
+                        }
+                    }
+                    .position(
+                        x: geometry.size.width * position.x,
+                        y: geometry.size.height * position.y
+                    )
+                }
+            }
+            
+            // CloudView
+            ForEach(currentStages(for: mode)) { stage in
+                if let cloudName = gameManager.cloudImageName(for: stage.id, mode: mode),
+                   let cloudPosition = cloudPosition(for: stage.id, in: geometry, mode: mode) {
+                    CloudView(
+                        id: stage.id,
+                        imageName: cloudName,
+                        position: cloudPosition,
+                        geometry: geometry,
+                        mode: mode
+                    )
+                }
+            }
+            
+            // スコア表示
+            VStack {
+                HStack {
+                    Spacer()
+                    ScoreDisplayView(mode: mode, totalScore: totalScore(for: mode))
+                }
+                .padding(.top, 20)
+                Spacer()
+            }
+            .padding(75)
+        }
+    }
+    
+    private func currentStages(for mode: GameMode) -> [Stage] {
+        switch mode {
+        case .happy: return gameManager.happyStages
+        case .bad: return gameManager.badStages
+        }
+    }
+
+    private func stagePositions(for mode: GameMode) -> [CGPoint] {
+        switch mode {
+        case .happy: return happyStagePositions
+        case .bad: return badStagePositions
+        }
+    }
+
+    private func totalScore(for mode: GameMode) -> Int {
+        switch mode {
+        case .happy: return gameManager.totalStars
+        case .bad: return gameManager.totalThunders
         }
     }
 }

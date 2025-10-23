@@ -25,7 +25,6 @@
 		8A24DCF12EA5510900DE6E95 /* StageAssets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCAD2EA5510800DE6E95 /* StageAssets.swift */; };
 		8A24DCF22EA5510900DE6E95 /* ChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCAF2EA5510800DE6E95 /* ChoiceView.swift */; };
 		8A24DCF32EA5510900DE6E95 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCB02EA5510800DE6E95 /* ContentView.swift */; };
-		8A24DCF42EA5510900DE6E95 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCB12EA5510800DE6E95 /* MenuView.swift */; };
 		8A24DCF52EA5510900DE6E95 /* TutrialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCB22EA5510800DE6E95 /* TutrialView.swift */; };
 		8A24DCF62EA5510900DE6E95 /* BadChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCBE2EA5510800DE6E95 /* BadChoiceView.swift */; };
 		8A24DCF72EA5510900DE6E95 /* ChatLog2View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCBF2EA5510800DE6E95 /* ChatLog2View.swift */; };
@@ -123,7 +122,6 @@
 		8A24DCAD2EA5510800DE6E95 /* StageAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageAssets.swift; sourceTree = "<group>"; };
 		8A24DCAF2EA5510800DE6E95 /* ChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceView.swift; sourceTree = "<group>"; };
 		8A24DCB02EA5510800DE6E95 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		8A24DCB12EA5510800DE6E95 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
 		8A24DCB22EA5510800DE6E95 /* TutrialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutrialView.swift; sourceTree = "<group>"; };
 		8A24DCB42EA5510800DE6E95 /* bad_groupchat_story1_ver7.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_groupchat_story1_ver7.csv; sourceTree = "<group>"; };
 		8A24DCB52EA5510800DE6E95 /* bad_groupchat_story2_ver7.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_groupchat_story2_ver7.csv; sourceTree = "<group>"; };
@@ -169,6 +167,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		06373CCB2EA92E1A00519FAB /* AboutApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = AboutApp;
+			sourceTree = "<group>";
+		};
 		8A7AD2EB2E1E929400BF4664 /* DezitamaUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = DezitamaUITests;
@@ -321,10 +324,10 @@
 		8A24DCB32EA5510800DE6E95 /* StartView */ = {
 			isa = PBXGroup;
 			children = (
+				06373CCB2EA92E1A00519FAB /* AboutApp */,
 				8A24DCAE2EA5510800DE6E95 /* Map */,
 				8A24DCAF2EA5510800DE6E95 /* ChoiceView.swift */,
 				8A24DCB02EA5510800DE6E95 /* ContentView.swift */,
-				8A24DCB12EA5510800DE6E95 /* MenuView.swift */,
 				8A24DCB22EA5510800DE6E95 /* TutrialView.swift */,
 			);
 			path = StartView;
@@ -474,6 +477,9 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				06373CCB2EA92E1A00519FAB /* AboutApp */,
 			);
 			name = Dezitama;
 			packageProductDependencies = (
@@ -627,7 +633,6 @@
 				8A24DCF22EA5510900DE6E95 /* ChoiceView.swift in Sources */,
 				8A24DD272EA5523A00DE6E95 /* finalStarsView.swift in Sources */,
 				8A24DCF32EA5510900DE6E95 /* ContentView.swift in Sources */,
-				8A24DCF42EA5510900DE6E95 /* MenuView.swift in Sources */,
 				8A24DCF52EA5510900DE6E95 /* TutrialView.swift in Sources */,
 				8A24DCF62EA5510900DE6E95 /* BadChoiceView.swift in Sources */,
 				8A24DCF72EA5510900DE6E95 /* ChatLog2View.swift in Sources */,
