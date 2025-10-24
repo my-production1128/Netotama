@@ -15,52 +15,54 @@ struct StoryBranchView: View {
     @State private var offsetY: CGFloat = 0.0
     @State var isPopupVisible: Bool = false
     @State var nextChat: Bool = false
-    
-    
+
+
     @State private var displayedText = ""
     @State private var currentCharIndex = 0
     @State private var timer: Timer? = nil
-    
+
     @State private var isTypingComplete: Bool = false
     @State private var shouldSkipTyping: Bool = false
-    
-    
+
+
     // 選択肢のシーンを一時的に保持する新しいState変数
     @State private var currentChoiceScene: Branching? = nil
-    
+
     //    会話の見返しボタン用関数
     @State var isChatLogVisible: Bool = false
     @State private var conversationHistory: [Branching]
-    
+
     //    ストーリーが終了した場合セリフを最後まで読んだあとにタップしたか判別する
     @State var isEndSceneReady: Bool = false
-    
+
     @State private var finalStars: Int = 0
     @State var isBackMap: Bool = false
-    
+
     @State private var storylineOpacity: Double = 0.0
     @State private var isStorylineInteractable: Bool = false
-    
+
+    @State private var screenTextOffset: CGFloat = 0.0
+
     let stageId: Int
-    
+
     //    選択肢のポイント用
     @EnvironmentObject private var gameManager: GameManager
     @EnvironmentObject var musicplayer: SoundPlayer
-    
-    
+
+
     let talkFont = UIFont.customFont(ofSize: 30)
     let charaNameFont = UIFont.customFont(ofSize: 35)
-    
+
     @Binding var path: NavigationPath
     @Binding var allBranchings: [Branching]
     @Binding var allScene: Branching
-    
+
     let StoryId: String
     // 表示に必要なデータだけを、allBranchingsからリアルタイムで絞り込む
     private var currentStoryBranchings: [Branching] {
         return allBranchings.filter { $0.storyId == StoryId }
     }
-    
+
     private var branchingMap: [String: Branching] {
         var map: [String: Branching] = [:]
         for b in currentStoryBranchings {
@@ -72,31 +74,31 @@ struct StoryBranchView: View {
         }
         return map
     }
-    
+
     init(path: Binding<NavigationPath>,
-             allBranchings: Binding<[Branching]>,
-             allScene: Binding<Branching>,
-             StoryId: String, stageId: Int) {
+         allBranchings: Binding<[Branching]>,
+         allScene: Binding<Branching>,
+         StoryId: String, stageId: Int) {
 
-            self._path = path
-            self._allBranchings = allBranchings
-            self._allScene = allScene
-            self.StoryId = StoryId
-            self.stageId = stageId
+        self._path = path
+        self._allBranchings = allBranchings
+        self._allScene = allScene
+        self.StoryId = StoryId
+        self.stageId = stageId
 
-            let firstScene: Branching? = allBranchings.wrappedValue
-                .filter { $0.storyId == StoryId }
-                .first
+        let firstScene: Branching? = allBranchings.wrappedValue
+            .filter { $0.storyId == StoryId }
+            .first
 
-            let firstSceneId = firstScene?.sceneId ?? "scene1"
-            self._currentSceneId = State(initialValue: firstSceneId)
+        let firstSceneId = firstScene?.sceneId ?? "scene1"
+        self._currentSceneId = State(initialValue: firstSceneId)
 
-            if let first = firstScene, (first.sceneType == "talk" || first.sceneType == "chat") {
-                self._conversationHistory = State(initialValue: [first])
-            } else {
-                self._conversationHistory = State(initialValue: [])
-            }
+        if let first = firstScene, (first.sceneType == "talk" || first.sceneType == "chat") {
+            self._conversationHistory = State(initialValue: [first])
+        } else {
+            self._conversationHistory = State(initialValue: [])
         }
+    }
 
 
     var body: some View {
@@ -107,6 +109,7 @@ struct StoryBranchView: View {
                     VStack {
                         Spacer()
                         switch current.sceneType {
+//                            あらすじ
                         case "storyline":
                             ZStack {
                                 // 1. WideRubyLabelRepresentable を設定
@@ -210,57 +213,94 @@ struct StoryBranchView: View {
                                     currentSceneId = nextScene.sceneId
                                 }
                             }
+
+                            // StoryBranchView.swift の body 内
                         case "screen":
                             ZStack {
-                                HStack {
-                                    Image("next_button")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 35)
-                                        .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
-                                        .offset(y: offsetY)
-                                        .onAppear {
-                                            startLoopingAnimation()
-                                        }
-                                }
+                                // オフセットアニメーションを適用したテキスト
                                 Text(current.text)
                                     .font(.custom("MPLUS1-Regular", size: 35))
+                                    .offset(x: screenTextOffset) // ★ アニメーション用のオフセットを適用
                             }
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .clipped() // ★ 画面の外にはみ出たテキストを隠します
                             .contentShape(Rectangle())
-                            .onTapGesture {
-                                if current.nextSceneId.lowercased() == "end" {
-                                    if !isEndSceneReady {
-                                        let stars = gameManager.scoreToStars(score: gameManager.currentScore)
-                                        self.finalStars = stars
-                                        gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
-                                        isEndSceneReady = true
-                                    }
-                                    return
-                                }
-
-
-                                guard let nextScene = branchingMap[current.nextSceneId] else {
-                                    return
-                                }
-
-                                if nextScene.isChoice == true {
-                                    isPopupVisible = true
-                                    currentChoiceScene = nextScene
-                                } else {
-                                    if nextScene.sceneType == "talk" || nextScene.sceneType == "chat" {
-                                        conversationHistory.append(nextScene)
-                                    }
-                                    currentSceneId = nextScene.sceneId
-                                }
-                            }
+                            // ⚠️ .onTapGesture は削除
                             .onAppear {
+                                // 1. BGM再生 (既存の処理)
                                 if let current = sceneToDisplay {
                                     musicplayer.stopAllMusic()
                                     musicplayer.playBGM(fileName: current.bgm)
                                 }
-                            }
 
+                                // 2. テキストアニメーション (シーケンスに変更)
+
+                                // --- アニメーションの時間を定義 ---
+                                let totalDuration: TimeInterval = 3.0   // 合計時間 (この時間で次に進む)
+                                let moveInDuration: TimeInterval = 0.8  // 1. 左外 -> 中央 にかかる時間
+                                let waitDuration: TimeInterval = 1.4    // 2. 中央で停止する時間
+                                let moveOutDuration: TimeInterval = totalDuration - moveInDuration - waitDuration // 3. 中央 -> 右外 にかかる時間 (計算結果: 0.8秒)
+                                // ---
+
+                                // (A) 初期位置を画面左外（画面幅ぶん左）に設定
+                                let startOffset = -geometry.size.width
+                                screenTextOffset = startOffset
+
+                                // (B) 0.8秒かけて真ん中に移動 (アニメーション1)
+                                // ※少し(0.1秒)遅らせて、onAppear直後の描画ズレを防ぎます
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    withAnimation(.easeOut(duration: moveInDuration)) {
+                                        screenTextOffset = 0 // 画面中央
+                                    }
+                                }
+
+                                // (C) 停止時間(1.4秒)が経過した後、0.8秒かけて右外へ移動 (アニメーション2)
+                                //    (開始タイミング: 0.1 + 0.8 + 1.4 = 2.3秒後)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1 + moveInDuration + waitDuration) {
+                                    let endOffset = geometry.size.width
+                                    withAnimation(.easeIn(duration: moveOutDuration)) {
+                                        screenTextOffset = endOffset // 画面右外
+                                    }
+                                }
+                                // --- アニメーションシーケンスここまで ---
+
+
+                                // 3. 自動進行 (合計3秒後に実行)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + totalDuration) {
+
+                                    // 3秒後に、まだこの "screen" シーンにいるか確認
+                                    guard branchingMap[currentSceneId]?.sceneType == "screen" else {
+                                        print("Scene changed before 3s timer. Aborting automatic 'screen' transition.")
+                                        return
+                                    }
+
+                                    // --- 以前 .onTapGesture にあった処理をここに移動 ---
+                                    if current.nextSceneId.lowercased() == "end" {
+                                        if !isEndSceneReady {
+                                            let stars = gameManager.scoreToStars(score: gameManager.currentScore)
+                                            self.finalStars = stars
+                                            gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
+                                            isEndSceneReady = true
+                                        }
+                                        return
+                                    }
+
+                                    guard let nextScene = branchingMap[current.nextSceneId] else {
+                                        return
+                                    }
+
+                                    if nextScene.isChoice == true {
+                                        isPopupVisible = true
+                                        currentChoiceScene = nextScene
+                                    } else {
+                                        if nextScene.sceneType == "talk" || nextScene.sceneType == "chat" {
+                                            conversationHistory.append(nextScene)
+                                        }
+                                        currentSceneId = nextScene.sceneId
+                                    }
+                                    // --- 処理の移動ここまで ---
+                                }
+                            }
 
                         case "chat", "chat_picture":
                             ChatSceneView(
@@ -570,7 +610,6 @@ struct StoryBranchView: View {
 
                 HStack {
                     VStack {
-//                        ホームボタン
                         Button {
                             isBackMap = true
                         }label: {
@@ -580,31 +619,76 @@ struct StoryBranchView: View {
                                 .frame(width: 180, height: 180)
                                 .padding(.top, 0)
                         }
-                            Spacer()
+                        Spacer()
                     }
                     Spacer()
                     VStack {
-                        Gauge(
-                            width: geometry.size.width * 0.3,
-                            height: 100,
-                            score: gameManager.currentScore
-                        )
-                        .environmentObject(gameManager)
-                        //                        会話見返し機能
-                        Button(action: {
-                            musicplayer.playSE(fileName: "button_SE")
-                            isChatLogVisible.toggle()
-                        }) {
-                            Image("chat") // chatボタンを流用
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 60, height: 60)
-//                                .padding()
+                        HStack {
+                            Spacer()
+                            Gauge(
+                                width: geometry.size.width * 0.3,
+                                height: 100,
+                                score: gameManager.currentScore
+                            )
+                            .padding()
+                            .environmentObject(gameManager)
                         }
-                        .zIndex(0)
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                musicplayer.playSE(fileName: "button_SE")
+                                isChatLogVisible.toggle()
+                            }) {
+                                Image("chat")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 60, height: 60)
+                                    .padding(.trailing, 30)
+                            }
+                            .zIndex(0)
+                        }
+                        .padding(.trailing, 10)
                         Spacer()
                     }
                 }
+
+//                HStack {
+//                    VStack {
+//                        //                        ホームボタン
+//                        Button {
+//                            isBackMap = true
+//                        }label: {
+//                            Image("home_good")
+//                                .resizable()
+//                                .scaledToFit()
+//                                .frame(width: 180, height: 180)
+//                                .padding(.top, 0)
+//                        }
+//                        Spacer()
+//                    }
+//                    Spacer()
+//                    VStack {
+//                        Gauge(
+//                            width: geometry.size.width * 0.3,
+//                            height: 100,
+//                            score: gameManager.currentScore
+//                        )
+//                        .environmentObject(gameManager)
+//                        //                        会話見返し機能
+//                        Button(action: {
+//                            musicplayer.playSE(fileName: "button_SE")
+//                            isChatLogVisible.toggle()
+//                        }) {
+//                            Image("chat") // chatボタンを流用
+//                                .resizable()
+//                                .scaledToFill()
+//                                .frame(width: 60, height: 60)
+//                            //                                .padding()
+//                        }
+//                        .zIndex(0)
+//                        Spacer()
+//                    }
+//                }
 
                 if isChatLogVisible {
                     ChatLogView(
@@ -632,7 +716,7 @@ struct StoryBranchView: View {
             .onAppear {
                 gameManager.startStory(storyId: StoryId, allBranchings: allBranchings)
 
-                // --- ✅ デバッグコードここから ---
+                // デバッグコード
                 print("--- branchingMap の内容チェック ---")
                 if branchingMap.isEmpty {
                     print("🚨 エラー: branchingMapが空です。シーンデータが正しくマップに変換されていません。")
@@ -644,12 +728,6 @@ struct StoryBranchView: View {
                     print(sortedSceneIds)
                 }
                 print("--------------------------------\n")
-
-//                if let first = currentStoryBranchings.first {
-//                    if first.sceneType == "talk" || first.sceneType == "chat" {
-//                        conversationHistory.append(first)
-//                    }
-//                }
             }
         }
         .background {
@@ -701,14 +779,14 @@ private func characterImage(imageName: String, speakingCharacter: String) -> som
 
     let isSpeaking = (speakingCharacter == imageName)
 
-    let speakingScale: CGFloat = isSpeaking ? 1.1 : 1.0 
+    let speakingScale: CGFloat = isSpeaking ? 1.1 : 1.0
 
     Image(imageName)
         .resizable()
         .scaledToFit()
-        .scaleEffect(speakingScale) // ★ここで大きさが変わります
-        .saturation(isSpeaking ? 1.0 : 0.7) // ★ここで彩度が変わります
-        .brightness(isSpeaking ? 0.0 : -0.2) // ★ここで明るさが変わります
+        .scaleEffect(speakingScale) // 大きさ
+        .saturation(isSpeaking ? 1.0 : 0.7) // 彩度
+        .brightness(isSpeaking ? 0.0 : -0.2) // 明るさ
         .animation(.easeInOut(duration: 0.3), value: isSpeaking)
 }
 

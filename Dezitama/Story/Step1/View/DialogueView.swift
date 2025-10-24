@@ -14,6 +14,7 @@ struct DialogueView: View {
     @State private var offsetY: CGFloat = 0.0
     @State private var animationTimer: Timer?
     
+
     @EnvironmentObject private var gameManager: GameManager
     
     var body: some View {

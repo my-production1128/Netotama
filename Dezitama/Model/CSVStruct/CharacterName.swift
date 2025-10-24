@@ -55,6 +55,7 @@ enum CharacterName: String {
     case Cecil_sorry
     case Cecil_surprised
     case Cecil_trouble
+    case Cecil_fun
 
 //    先生
     case Teacher
@@ -75,6 +76,8 @@ enum CharacterName: String {
     case Robbie_irritaion
 
     case Kevin
+    case Kevin_sorry
+    case Kevin_normal
 
 
 
@@ -127,6 +130,7 @@ enum CharacterName: String {
         case .Cecil_sorry: return "セシル"
         case .Cecil_surprised: return "セシル"
         case .Cecil_trouble: return "セシル"
+        case .Cecil_fun: return "セシル"
 
 //            先生
         case .Teacher: return "先生"
@@ -146,6 +150,8 @@ enum CharacterName: String {
         case .Robbie_irritaion: return "ロビー"
 
         case .Kevin: return "ケビン"
+        case .Kevin_sorry: return "ケビン"
+        case .Kevin_normal: return "ケビン"
         }
     }
 }

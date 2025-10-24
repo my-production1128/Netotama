@@ -9,13 +9,18 @@ import SwiftUI
 
 struct StoryProgressView: View {
     let dialogues: [Dialogue2]
-        @State private var currentSceneId: String
-        @Binding var path: NavigationPath
-        @State private var conversationHistory: [Dialogue2] = []
-        @State private var chatSessionId: UUID = UUID()
-        @State private var viewRefreshKey: UUID = UUID()
-        @State private var isChatLogVisible: Bool = false
-        @State private var isBackMap: Bool = false
+    @State private var currentSceneId: String
+    @Binding var path: NavigationPath
+    @State private var conversationHistory: [Dialogue2] = []
+    @State private var chatSessionId: UUID = UUID()
+    @State private var viewRefreshKey: UUID = UUID()
+    @State private var isChatLogVisible: Bool = false
+    @State private var isBackMap: Bool = false
+
+    @State private var pendingChoiceDialogue: Dialogue2? = nil // (1) 次に表示する選択肢データを一時保持
+    @State private var isChoicePopupVisible: Bool = false      // (2) 選択肢ポップアップの表示フラグ
+    @State private var userChoiceReply: Dialogue2? = nil       // (3) ユーザーが選んだセリフを一時表示
+
         @State private var isEndSceneReady: Bool = false
         @State private var finalThunders: Int = 0
         let stageId: Int
@@ -37,15 +42,34 @@ struct StoryProgressView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            if let currentDialogue = currentDialogue {
+            if let currentDialogue = userChoiceReply ?? self.currentDialogue {
                 ZStack {
                     // ====== メイン画面 ======
                     switch currentDialogue.viewType {
-                    case .dialogue:
-                        DialogueView(
-                            dialogue: currentDialogue,
-                            onNext: handleNavigation
-                        )
+//                        会話・まとめ
+                        // StoryProgressView.swift (body)
+
+                                            case .dialogue:
+                                                DialogueView(
+                                                    dialogue: currentDialogue,
+                                                    // ▼▼▼ onNextクロージャを修正 ▼▼▼
+                                                    onNext: { nextSceneId in
+                                                        // (A) もし一時的な返信シーンを表示中なら
+                                                        if self.userChoiceReply != nil {
+                                                            // 返信シーンが持っている「本当の次のID」を取得
+                                                            let realNextId = self.userChoiceReply!.nextSceneId!
+                                                            // 返信シーンをクリア
+                                                            self.userChoiceReply = nil
+                                                            // 本当の次のシーンへ進む
+                                                            handleNavigation(nextSceneId: realNextId)
+                                                        } else {
+                                                            // (B) 通常のシーンなら、そのままhandleNavigationを呼ぶ
+                                                            handleNavigation(nextSceneId: nextSceneId)
+                                                        }
+                                                    }
+                                                )
+                        // ...
+//                        チャット画面
                     case .chat:
                         ChatMessageView(
                             dialogues: dialogues,
@@ -56,22 +80,53 @@ struct StoryProgressView: View {
                         )
                         .id(chatSessionId)
                         .environmentObject(gameManager)
+//                        あらすじ
                     case .start:
                         startView(dialogue: currentDialogue, onNext: handleNavigation)
                     }
                     
-                    // ====== 選択肢オーバーレイ ======
-                    if currentDialogue.isChoice == true {
-                        BadChoiceView(
-                            dialogue: currentDialogue,
-                            isPopupVisible: .constant(true),
-                            onChoiceSelected: { selectedText, nextId, percentage in
-                                handleNavigation(nextSceneId: nextId)
-                            }
-                        )
-                        .transition(.opacity)
-                    }
-                    
+                    // StoryProgressView.swift (body)
+
+                                        // ====== 選択肢オーバーレイ (新) ======
+                                        if isChoicePopupVisible, let choiceDialogue = pendingChoiceDialogue {
+                                            BadChoiceView(
+                                                dialogue: choiceDialogue,
+                                                isPopupVisible: $isChoicePopupVisible, // .constant(true) から $isChoicePopupVisible に変更
+                                                onChoiceSelected: { selectedText, nextId, percentage in
+
+                                                    // 1. ユーザーが選んだセリフを一時的に表示するシーンを作成
+                                                    // (ChatMessageViewやStoryBranchViewと同様のロジック)
+                                                    let replyScene = Dialogue2(
+                                                        storyId: choiceDialogue.storyId,
+                                                        sceneId: "user_reply_\(UUID())", // 一意のID
+                                                        viewType: .dialogue,
+                                                        characterName: "コニー", // ユーザー
+                                                        dialogueText: selectedText,
+                                                        nextSceneId: nextId, // タップしたら次に進むID
+                                                        isChoice: false,
+                                                        // 背景やキャラクターは、選択肢シーンのものを引き継ぐ
+                                                        background: choiceDialogue.background,
+                                                        talkingPeople: choiceDialogue.talkingPeople,
+                                                        leftCharacter: choiceDialogue.leftCharacter,
+                                                        centerCharacter: choiceDialogue.centerCharacter,
+                                                        rightCharacter: choiceDialogue.rightCharacter,
+                                                        oneCharacter: choiceDialogue.oneCharacter,
+                                                        twoCharacter: choiceDialogue.twoCharacter,
+                                                        onePerson: choiceDialogue.onePerson,
+                                                        bgm: choiceDialogue.bgm
+                                                    )
+
+                                                    // 2. Stateを更新
+                                                    self.userChoiceReply = replyScene     // 一時的な返信シーンをセット
+                                                    self.isChoicePopupVisible = false   // ポップアップを閉じる
+                                                    self.pendingChoiceDialogue = nil  // 待機中の選択肢をクリア
+                                                }
+                                            )
+                                            .transition(.opacity)
+                                            .zIndex(100) // 念のため一番上に
+                                        }
+                    // ...
+
                     // ====== Chatログ表示 ======
                     if isChatLogVisible {
                         ChatLog2View(
@@ -211,7 +266,14 @@ struct StoryProgressView: View {
             print("次のシーンが見つかりません: \(nextSceneId)")
             return
         }
-        
+
+        if nextDialogue.isChoice == true {
+                    // 画面遷移せず、ポップアップの準備をする
+                    self.pendingChoiceDialogue = nextDialogue
+                    self.isChoicePopupVisible = true
+                    return // ★ここで処理を中断★
+                }
+
         // ViewType変化でリフレッシュ
         if currentDialogue?.viewType != nextDialogue.viewType {
             viewRefreshKey = UUID()
@@ -225,64 +287,4 @@ struct StoryProgressView: View {
     }
 }
 
-// MARK: - あらすじ画面
-struct startView: View {
-    let dialogue: Dialogue2
-    var onNext: (String) -> Void
-    
-    var body: some View {
-        ZStack {
-            // 背景
-            Image("arasuzi_background")
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
-            
-            ZStack{
-                Image("arasuzi_speechbubble")
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 700, height: 300)
-                    .offset(y: -150)
-                
-                // テキスト
-                if let dialogueText = dialogue.dialogueText {
-                    TypingRubyLabelRepresentable(
-                        attributedText: dialogueText
-                            .replacingOccurrences(of: "<br>", with: "\n")
-                            .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black),
-                        charInterval: 0.05,
-                        font: UIFont.customFont(ofSize: 30),
-                        targetWidth: 500
-                    )
-                    .frame(maxWidth: 500)
-                    .padding(.horizontal, 20)
-                    .id(dialogueText)
-                    .offset(y: -150)
-                }
-                
-                
-                // 次へボタン
-                Button(action: handleTap) {
-                    Image("next_button")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 35)
-                }
-                .offset(x: 300, y: -90)
-            }
-                
-                
-        }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            handleTap()
-        }
-    }
-    
-    private func handleTap() {
-        if let nextSceneId = dialogue.nextSceneId {
-            onNext(nextSceneId)
-        }
-    }
-}
+
