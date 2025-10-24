@@ -38,6 +38,9 @@ private struct SaveContainer: Codable {
 
 final class GameManager: ObservableObject {
     static let shared = GameManager() // シングルトン
+    
+    @Published var showStageUnlockTutorial1 = false  // ネトモ島開放
+    @Published var showStageUnlockTutorial2 = false  // シェア島開放
 
     // モードごとのステージ配列（Published -> View に反映）
     @Published var happyStages: [Stage] = []
@@ -185,70 +188,80 @@ final class GameManager: ObservableObject {
     // MARK: - 特殊解放のロジック
     func checkSpecialUnlocks(completedStage: Int, mode: GameMode) {
         var unlockedSomething = false
-
+        
         // ------------------------------
         // Badモード関連の特殊解放
         // ------------------------------
-        if mode == .bad {
-            // 条件1: Bad3まで終了 & 雷5以上 → Bad4 + Happy1解放
-            // ステージID 1, 2, 3 がすべてプレイ済みかチェック
-            let bad3Cleared = (1...3).allSatisfy { stageId in
-                guard let idx = index(of: stageId, in: .bad) else { return false }
-                return badStages[idx].isPlayed
-            }
-            
-            print("Bad1-3クリア済み: \(bad3Cleared)")
-            print("雷5以上: \(totalThunders >= 5)")
-            
-            if bad3Cleared && totalThunders >= 5 {
-                // Bad4解放
-                if let idx4 = index(of: 4, in: .bad) {
-                    if !badStages[idx4].isUnlocked {
-                        badStages[idx4].isUnlocked = true
-                        print(" 特殊解放: Bad4ステージ解放")
-                        unlockedSomething = true
+        // 条件1: Bad3まで終了 & 雷5以上 → Bad4 + Happy1解放
+        let bad3Cleared = (1...3).allSatisfy { stageId in
+            guard let idx = index(of: stageId, in: .bad) else { return false }
+            return badStages[idx].isPlayed
+        }
+        
+        print("Bad1-3クリア済み: \(bad3Cleared)")
+        print("雷5以上: \(totalThunders >= 5)")
+        
+        if bad3Cleared && totalThunders >= 5 {
+            // Bad4解放
+            if let idx4 = index(of: 4, in: .bad) {
+                if !badStages[idx4].isUnlocked {
+                    badStages[idx4].isUnlocked = true
+                    print(" 特殊解放: Bad4ステージ解放")
+                    
+                    // ネトモ島開放チュートリアル表示フラグを立てる
+                    if !TutorialManager.shared.hasSeenTutorial(for: "stage_unlock_1") {
+                        showStageUnlockTutorial1 = true
                     }
-                }
-                // Happyモード解放
-                if !isHappyUnlocked {
-                    isHappyUnlocked = true
-                    print("特殊解放: Happyモード解放（Bad3終了 & 雷5以上）")
+                    
                     unlockedSomething = true
                 }
-                // Happy1解放
-                if let idxH1 = index(of: 1, in: .happy) {
-                    if !happyStages[idxH1].isUnlocked {
-                        happyStages[idxH1].isUnlocked = true
-                        print("特殊解放: Happyステージ1解放")
-                        unlockedSomething = true
-                    }
+            }
+            // Happyモード解放
+            if !isHappyUnlocked {
+                isHappyUnlocked = true
+                print("特殊解放: Happyモード解放（Bad3終了 & 雷5以上）")
+                unlockedSomething = true
+            }
+            // Happy1解放
+            if let idxH1 = index(of: 1, in: .happy) {
+                if !happyStages[idxH1].isUnlocked {
+                    happyStages[idxH1].isUnlocked = true
+                    print("特殊解放: Happyステージ1解放")
+                    unlockedSomething = true
                 }
-            } else {
-                print("Bad4解放条件未達成（Bad1-3全クリア & 雷5以上が必要）")
             }
-
-            // 条件2: Bad6まで終了 & 雷12以上 → Bad7解放
-            let bad6Cleared = (1...6).allSatisfy { stageId in
-                guard let idx = index(of: stageId, in: .bad) else { return false }
-                return badStages[idx].isPlayed
-            }
-            
-            print("Bad1-6クリア済み: \(bad6Cleared)")
-            print("雷12以上: \(totalThunders >= 12)")
-            
-            if bad6Cleared && totalThunders >= 12 {
-                if let idx7 = index(of: 7, in: .bad) {
-                    if !badStages[idx7].isUnlocked {
-                        badStages[idx7].isUnlocked = true
-                        print("特殊解放: Bad7ステージ解放（6まで終了 & 雷12以上）")
-                        unlockedSomething = true
-                    }
-                }
-            } else {
-                print("Bad7解放条件未達成（Bad1-6全クリア & 雷12以上が必要）")
-            }
+        } else {
+            print("Bad4解放条件未達成（Bad1-3全クリア & 雷5以上が必要）")
         }
-
+        
+        // 条件2: Bad6まで終了 & 雷12以上 → Bad7解放
+        let bad6Cleared = (1...6).allSatisfy { stageId in
+            guard let idx = index(of: stageId, in: .bad) else { return false }
+            return badStages[idx].isPlayed
+        }
+        
+        print("Bad1-6クリア済み: \(bad6Cleared)")
+        print("雷12以上: \(totalThunders >= 12)")
+        
+        if bad6Cleared && totalThunders >= 12 {
+            if let idx7 = index(of: 7, in: .bad) {
+                if !badStages[idx7].isUnlocked {
+                    badStages[idx7].isUnlocked = true
+                    print("特殊解放: Bad7ステージ解放（6まで終了 & 雷12以上）")
+                    
+                    // シェア島開放チュートリアル表示フラグを立てる
+                    if !TutorialManager.shared.hasSeenTutorial(for: "stage_unlock_2") {
+                        showStageUnlockTutorial2 = true
+                    }
+                    
+                    unlockedSomething = true
+                }
+            }
+        } else {
+            print("Bad7解放条件未達成（Bad1-6全クリア & 雷12以上が必要）")
+        }
+        
+        
         // ------------------------------
         // Happyモード関連の特殊解放
         // ------------------------------

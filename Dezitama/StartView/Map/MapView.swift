@@ -98,23 +98,23 @@ struct MapView: View {
                             .id(gameManager.currentMode)
                     }
                     //デバックボタン
-                    VStack{
-                        Button("リセット") {
-                            GameManager.shared.resetProgress()
-                        }
-                        .padding()
-                        .background(Color.red)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                        
-                        Button("デバック"){
-                            GameManager.shared.setDebugUnlockAll()
-                        }
-                        .padding()
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(8)
-                    }
+//                    VStack{
+//                        Button("リセット") {
+//                            GameManager.shared.resetProgress()
+//                        }
+//                        .padding()
+//                        .background(Color.red)
+//                        .foregroundColor(.white)
+//                        .cornerRadius(8)
+//                        
+//                        Button("デバック"){
+//                            GameManager.shared.setDebugUnlockAll()
+//                        }
+//                        .padding()
+//                        .background(Color.green)
+//                        .foregroundColor(.white)
+//                        .cornerRadius(8)
+//                    }
                     
                     // 戻るボタン
                     VStack {
@@ -195,16 +195,32 @@ struct MapView: View {
                         }
                     }
                 }
-                .opacity(showTutorial ? 0 : 1) // チュートリアル表示中は非表示
-                
-                // チュートリアルを全画面表示（完全に独立）
-                if showTutorial {
-                    MapTutorialView(isPresented: $showTutorial)
-                        .transition(.opacity)
-                        .zIndex(999) // 最前面に表示
-                        .ignoresSafeArea()
-                }
-            }
+                .opacity(showTutorial || gameManager.showStageUnlockTutorial1 || gameManager.showStageUnlockTutorial2 ? 0 : 1)
+                                
+                                // 通常のMapチュートリアル
+                                if showTutorial {
+                                    MapTutorialView(isPresented: $showTutorial)
+                                        .transition(.opacity)
+                                        .zIndex(999)
+                                        .ignoresSafeArea()
+                                }
+                                
+                                // ステージ開放チュートリアル1（ネトモ島）
+                                if gameManager.showStageUnlockTutorial1 {
+                                    StageUnlockTutorialView1(isPresented: $gameManager.showStageUnlockTutorial1)
+                                        .transition(.opacity)
+                                        .zIndex(999)
+                                        .ignoresSafeArea()
+                                }
+                                
+                                // ステージ開放チュートリアル2（シェア島）
+                                if gameManager.showStageUnlockTutorial2 {
+                                    StageUnlockTutorialView2(isPresented: $gameManager.showStageUnlockTutorial2)
+                                        .transition(.opacity)
+                                        .zIndex(999)
+                                        .ignoresSafeArea()
+                                }
+                            }
             .animation(.easeInOut(duration: 0.8), value: gameManager.currentMode)
         }
         .ignoresSafeArea()
