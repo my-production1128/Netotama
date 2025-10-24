@@ -74,36 +74,54 @@ struct StageIntroOverlay: View {
     
     var body: some View {
         GeometryReader { geometry in
-            Image(sheetImageName)
-                .resizable()
-                .scaledToFit()
-                .frame(
-                    width: geometry.size.width * 0.5)
-                .position(x: geometry.size.width / 2, y: geometry.size.height / 2)
-                .overlay(alignment: .bottomTrailing) {
-                        Button(action: {
-                            musicplayer.playSE(fileName: "button_SE")
-                            onStart()
-                        }) {
-                            Image("sheet_start")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: geometry.size.width * 0.15)
-                        }
-                        .padding(.trailing, geometry.size.width * 0.31)
-                        .padding(.bottom, geometry.size.height * 0.18)
-                    }
+            ZStack {
+                // メインのシート画像
+                Image(sheetImageName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: geometry.size.width * 0.45)
+                    .position(x: geometry.size.width / 2,
+                              y: geometry.size.height / 2)
+                
+                // 星 or 雷マーク
+                Image(scoreImageName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: geometry.size.width * 0.3)
+                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.44)
+                
+                // スタートボタン
+                Button(action: {
+                    musicplayer.playSE(fileName: "button_SE")
+                    onStart()
+                }) {
+                    Image("sheet_start")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: geometry.size.width * 0.3)
+                }
+                .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.9)
+            }
         }
     }
     
+    // シート画像の名前
     private var sheetImageName: String {
-        let imageName: String
         switch mode {
         case .bad:
-            imageName = "sheet_bad\(stage.id)"
+            return "sheet_bad\(stage.id)"
         case .happy:
-            imageName = "sheet_good\(stage.id)"
+            return "sheet_good\(stage.id)"
         }
-        return imageName
+    }
+
+    // スコア画像（星 or 雷）
+    private var scoreImageName: String {
+        switch mode {
+        case .happy:
+            return "star_\(min(stage.score, 4))"
+        case .bad:
+            return "thunder_\(min(stage.score, 4))"
+        }
     }
 }

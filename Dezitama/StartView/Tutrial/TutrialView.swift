@@ -114,21 +114,27 @@ struct MapTutorialView: View {
     
     let steps = [
         TutorialStep(
-            description: "前の島のストーリーを全部体験したら、\n次の島に進めるようになってるよ！",
+            description: "前の島のストーリーを体験したら、\n次の島に進めるようになってるよ！",
             viewType: .type2,
-            backgroundImageName: "kaihou",
+            backgroundImageName: "maeoki2",
             cony: ""
         ),
         TutorialStep(
-            description: "全部の島で集めた星・雷の数はここで確認できるよ！",
+            description: "全部の島で集めた星・雷の数は右上で確認できるよ！",
             viewType: .type2,
-            backgroundImageName: "kaihou",
+            backgroundImageName: "maeoki2",
+            cony: ""
+        ),
+        TutorialStep(
+            description: "グルチャ島では、グループチャットでの悪口が\nきっかけに起きるトラブルの物語だよ！",
+            viewType: .type2,
+            backgroundImageName: "maeoki_groupchat",
             cony: ""
         ),
         TutorialStep(
             description: "早速ストーリーを始めてみよう！",
             viewType: .type2,
-            backgroundImageName: "kaihou",
+            backgroundImageName: "maeoki_groupchat",
             cony: ""
         )
     ]
@@ -146,27 +152,77 @@ struct MapTutorialView: View {
 }
 
 // MARK: - 3. ステージ開放時のチュートリアル（将来用）
-struct StageUnlockTutorialView: View {
+struct StageUnlockTutorialView1: View {
     let steps: [TutorialStep] = [
         // 後で島ごとのチュートリアルを追加
-//        TutorialStep(
-//            description: "グルチャ島では、グループチャットでの悪口が\nきっかけに起きるトラブルの物語だよ！",
-//            viewType: .type2,
-//            backgroundImageName: "maeoki2",
-//            cony: ""
-//        ),
+        TutorialStep(
+            description: "君の頑張りによって、ネトモ島が開放されたよ！",
+            viewType: .type2,
+            backgroundImageName: "maeoki_netomo",
+            cony: ""
+        ),
+        TutorialStep(
+            description: "ネトモ島は、ネットで知り合った”ネトモ”とのトラブルの物語だよ！",
+            viewType: .type2,
+            backgroundImageName: "maeoki_netomo",
+            cony: ""
+        ),
+        TutorialStep(
+            description: "ネトモ島に行ってみよう！",
+            viewType: .type2,
+            backgroundImageName: "maeoki_netomo",
+            cony: ""
+        )
     ]
     
     @State private var currentIndex = 0
-    @Environment(\.dismiss) var dismiss
+    @Binding var isPresented: Bool
     
     var body: some View {
         TutorialContentView(steps: steps, currentIndex: $currentIndex, onComplete: {
-            dismiss()
+            TutorialManager.shared.setTutorialSeen(for: "stage_unlock_1")
+            withAnimation {
+                isPresented = false
+            }
         })
     }
 }
 
+// MARK: - 4. ステージ開放時のチュートリアル（将来用）
+struct StageUnlockTutorialView2: View {
+    let steps: [TutorialStep] = [
+        TutorialStep(
+            description: "君の頑張りでシェア島が開放されたよ！",
+            viewType: .type2,
+            backgroundImageName: "maeoki_share",
+            cony: ""
+        ),
+        TutorialStep(
+            description: "シェア島は、軽い気持ちで動画をみんなに\n共有したことから始まるトラブルの物語だよ！",
+            viewType: .type2,
+            backgroundImageName: "maeoki_share",
+            cony: ""
+        ),
+        TutorialStep(
+            description: "シェア島に行ってみよう！",
+            viewType: .type2,
+            backgroundImageName: "maeoki_share",
+            cony: ""
+        )
+    ]
+    
+    @State private var currentIndex = 0
+    @Binding var isPresented: Bool
+    
+    var body: some View {
+            TutorialContentView(steps: steps, currentIndex: $currentIndex, onComplete: {
+                TutorialManager.shared.setTutorialSeen(for: "stage_unlock_2")
+                withAnimation {
+                    isPresented = false
+                }
+            })
+        }
+}
 // MARK: - 共通のチュートリアル表示コンポーネント
 struct TutorialContentView: View {
     let steps: [TutorialStep]
@@ -340,10 +396,18 @@ struct SpeechBubbleView: View {
 }
 
 // プレビュー
-#Preview("Choice Tutorial") {
+#Preview("Choice_Tutorial") {
     ChoiceTutorialView(isPresented: .constant(true))
 }
 
-#Preview("Map Tutorial") {
+#Preview("Map_Tutorial") {
     MapTutorialView(isPresented: .constant(true))
+}
+
+#Preview("Stage_Unlock_Tutorial1") {
+    StageUnlockTutorialView1(isPresented: .constant(true))
+}
+
+#Preview("Stage_Unlock_Tutorial2") {
+    StageUnlockTutorialView2(isPresented: .constant(true))
 }
