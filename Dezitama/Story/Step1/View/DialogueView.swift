@@ -190,7 +190,7 @@ struct DialogueView: View {
     private func getCharacterSize(for imageName: String) -> CGFloat { // (width: CGFloat, height: CGFloat) から CGFloat へ
             let isSpeaking = isCharacterSpeaking(imageName)
             let baseHeight = getBaseCharacterSize(for: imageName) // baseSize から baseHeight へ
-            let multiplier: CGFloat = isSpeaking ? 1.2 : 1.0
+            let multiplier: CGFloat = isSpeaking ? 1.1 : 1.0
 
             return baseHeight * multiplier // height だけを返す
         }
