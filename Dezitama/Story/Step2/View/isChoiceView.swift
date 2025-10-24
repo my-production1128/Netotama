@@ -46,7 +46,7 @@ struct isChoiceView: View {
                         )
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(width: 530, height: 120)
-                        .padding(.horizontal, 20)
+                        .padding()
                     }
                     .buttonStyle(CustomButtonStyle(isSelected: selectedChoice == .choice1))
                     .disabled(isChoiceMade)
