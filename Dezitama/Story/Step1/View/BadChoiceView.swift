@@ -23,7 +23,7 @@ struct BadChoiceView: View {
                     .ignoresSafeArea()
                 
                 VStack(spacing: 30) {
-                    Text("あなたなら何て言う?")
+                    Text("悪い選択肢を選ぼう！")
                         .font(.custom("MPLUS1-Bold", size: 40))
                         .foregroundColor(.white)
                     

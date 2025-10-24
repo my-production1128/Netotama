@@ -34,6 +34,7 @@ private struct SaveContainer: Codable {
     var happyStages: [Stage]
     var badStages: [Stage]
     var isHappyUnlocked: Bool
+    var didShowChatTapHint: Bool?
 }
 
 final class GameManager: ObservableObject {
@@ -56,6 +57,8 @@ final class GameManager: ObservableObject {
             print("モード切替: \(oldValue) → \(currentMode)")
         }
     }
+
+    @Published var didShowChatTapHint: Bool = false
 
 
     // MARK: - Score Management Properties
@@ -87,6 +90,8 @@ final class GameManager: ObservableObject {
                 self.happyStages = container.happyStages
                 self.badStages = container.badStages
                 self.isHappyUnlocked = container.isHappyUnlocked
+                self.didShowChatTapHint = container.didShowChatTapHint ?? false
+                print("<<< loadProgress: didShowChatTapHint を読み込みました. 値: \(self.didShowChatTapHint)")
                 recalcTotals()
                 return
             } else {
@@ -98,11 +103,15 @@ final class GameManager: ObservableObject {
         self.happyStages = defaultStages(mode: .happy)
         self.badStages = defaultStages(mode: .bad)
         self.isHappyUnlocked = false
+        self.didShowChatTapHint = false // デフォルトは false
+        print("<<< loadProgress: 保存データがないため、didShowChatTapHint をデフォルト値 (false) に設定しました。")
         recalcTotals()
     }
 
     func saveProgress() {
-        let container = SaveContainer(happyStages: happyStages, badStages: badStages, isHappyUnlocked: isHappyUnlocked)
+        print(">>> saveProgress: didShowChatTapHint (\(self.didShowChatTapHint)) を保存します。")
+        let container = SaveContainer(happyStages: happyStages, badStages: badStages, isHappyUnlocked: isHappyUnlocked,
+                                      didShowChatTapHint: self.didShowChatTapHint)
         let encoder = JSONEncoder()
         if let data = try? encoder.encode(container) {
             userDefaults.set(data, forKey: saveKey)
@@ -415,12 +424,24 @@ final class GameManager: ObservableObject {
     }
 
     // 進行リセット（初期状態に戻す）
+    // GameManeger.swift
+
+    // GameManeger.swift (resetProgress() の中)
     func resetProgress() {
+        print("--- resetProgress() が呼ばれました ---")
+        print("リセット前の didShowChatTapHint: \(didShowChatTapHint)")
+
         happyStages = defaultStages(mode: .happy)
         badStages = defaultStages(mode: .bad)
         isHappyUnlocked = false
+        didShowChatTapHint = false // ← ここで false に設定
+        print("★★★ resetProgress: didShowChatTapHint を false に設定しました。 ★★★") // ← ログ追加
+
         recalcTotals()
-        saveProgress()
+        saveProgress() // ← この中で保存時のログが出るはず
+
+        print("リセット後の didShowChatTapHint (保存後): \(didShowChatTapHint)")
+        print("---------------------------------")
     }
 
     // MARK: - Score Management Methods

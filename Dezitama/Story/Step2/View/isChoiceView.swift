@@ -28,7 +28,7 @@ struct isChoiceView: View {
     var body: some View {
             ZStack {
                 VStack(spacing: 30) {
-                    Text("あなたなら何て言う？")
+                    Text("いい選択肢を選ぼう！")
                         .font(.custom("MPLUS1-Bold", size: 40))
                         .foregroundColor(.white)
                     //                    選択肢１のボタン

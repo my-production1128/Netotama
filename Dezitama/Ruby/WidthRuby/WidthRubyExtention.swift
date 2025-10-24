@@ -12,12 +12,17 @@ import CoreText
 extension String {
     func createWideRuby(font: UIFont, color: UIColor = .black) -> NSAttributedString {
 
-//        改行の間隔を全部統一
-        let generalLineSpacing: CGFloat = 15.0
-        let rubyLineSpacing: CGFloat = font.pointSize * -1.0
+        // 改行の間隔を全部統一
+        let generalLineSpacing: CGFloat = 40
+        // ★ 削除： rubyLineSpacing の定義は不要になります
+        // let rubyLineSpacing: CGFloat = font.pointSize * -1.0
 
         let generalParagraphStyle = NSMutableParagraphStyle()
         generalParagraphStyle.lineSpacing = generalLineSpacing
+
+        // ★ 削除： rubyParagraphStyle の定義は不要になります
+        // let rubyParagraphStyle = NSMutableParagraphStyle()
+        // rubyParagraphStyle.lineSpacing = rubyLineSpacing
 
         let textWithRuby = replacingOccurrences(of: "(｜.+?《.+?》)", with: ",$1,", options: .regularExpression)
             .components(separatedBy: ",")
@@ -25,9 +30,6 @@ extension String {
                 if let _ = component.range(of: "｜(.+?)《(.+?)》", options: .regularExpression) {
                     let baseText = component.replacingOccurrences(of: "｜(.+?)《.+?》", with: "$1", options: .regularExpression)
                     let rubyText = component.replacingOccurrences(of: "｜.+?《(.+?)》", with: "$1", options: .regularExpression)
-
-                    let rubyParagraphStyle = NSMutableParagraphStyle()
-                    rubyParagraphStyle.lineSpacing = rubyLineSpacing
 
                     let rubyAttribute: [CFString: Any] = [
                         kCTRubyAnnotationSizeFactorAttributeName: 0.5,
@@ -44,7 +46,9 @@ extension String {
                         kCTRubyAnnotationAttributeName as NSAttributedString.Key: rubyAnnotation,
                         .font: font,
                         .foregroundColor: color,
-                        .paragraphStyle: rubyParagraphStyle // ルビ用の狭い行間を適用
+                        // ★★★ 修正箇所 ★★★
+                        // rubyParagraphStyle ではなく、generalParagraphStyle を適用します
+                        .paragraphStyle: generalParagraphStyle
                     ]
 
                     return NSAttributedString(string: baseText, attributes: attributes)
