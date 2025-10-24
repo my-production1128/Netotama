@@ -125,16 +125,18 @@ struct DialogueView: View {
     }
     
     // MARK: - キャラクター画像
-    private func characterImage(_ imageName: String, size: (width: CGFloat, height: CGFloat), isSpeaking: Bool) -> some View {
-        Image(imageName)
-            .resizable()
-            .frame(width: size.width, height: size.height)
-            .saturation(isSpeaking ? 1.0 : 0.7)
-            .brightness(isSpeaking ? 0.0 : -0.2)
-            .scaleEffect(isSpeaking ? 1.0 : 0.95)
-            .animation(.easeInOut(duration: 0.3), value: isSpeaking)
-    }
-    
+    private func characterImage(_ imageName: String, size height: CGFloat, isSpeaking: Bool) -> some View { // size: (width: CGFloat, height: CGFloat) から size height: CGFloat へ
+            Image(imageName)
+                .resizable()
+                .scaledToFit() // ← .scaledToFit() を追加
+                .frame(height: height) // ← .frame で height だけを指定
+                .saturation(isSpeaking ? 1.0 : 0.7)
+                .brightness(isSpeaking ? 0.0 : -0.2)
+                .scaleEffect(isSpeaking ? 1.0 : 0.95) // ← scaleEffect は isSpeaking 判定後に適用した方が良いかも？
+                                                     //    (ただし、元のコードの意図を尊重してこのままにします)
+                .animation(.easeInOut(duration: 0.3), value: isSpeaking)
+        }
+
     // MARK: - ダイアログコンポーネント
     @ViewBuilder
     private func dialogueComponentsGroup(geometry: GeometryProxy) -> some View {
@@ -185,33 +187,30 @@ struct DialogueView: View {
         return characterName == dialogue.characterName
     }
     
-    private func getCharacterSize(for imageName: String) -> (width: CGFloat, height: CGFloat) {
-        let isSpeaking = isCharacterSpeaking(imageName)
-        let baseSize = getBaseCharacterSize(for: imageName)
-        let multiplier: CGFloat = isSpeaking ? 1.2 : 1.0
-        
-        return (
-            width: baseSize.width * multiplier,
-            height: baseSize.height * multiplier
-        )
-    }
-    
-    private func getBaseCharacterSize(for imageName: String) -> (width: CGFloat, height: CGFloat) {
-        let baseCharacterName = extractBaseCharacterName(from: imageName)
-        
-        switch baseCharacterName {
-        case "Alec": return (250, 650)
-        case "Cecil": return (250, 450)
-        case "Cony": return (300, 500)
-        case "Curl": return (250, 550)
-        case "Teacher": return (300, 450)
-        case "Brian": return (300, 450)
-        case "Nick": return (250, 650)
-        case "Sandra": return (250, 250)
-        default: return (250, 450)
+    private func getCharacterSize(for imageName: String) -> CGFloat { // (width: CGFloat, height: CGFloat) から CGFloat へ
+            let isSpeaking = isCharacterSpeaking(imageName)
+            let baseHeight = getBaseCharacterSize(for: imageName) // baseSize から baseHeight へ
+            let multiplier: CGFloat = isSpeaking ? 1.2 : 1.0
+
+            return baseHeight * multiplier // height だけを返す
         }
-    }
-    
+
+    private func getBaseCharacterSize(for imageName: String) -> CGFloat { // (width: CGFloat, height: CGFloat) から CGFloat へ
+            let baseCharacterName = extractBaseCharacterName(from: imageName)
+            switch baseCharacterName {
+            // 幅はコメントアウトし、高さだけを返す
+            case "Alec":    return 500 // (width: 350, height: 650)
+            case "Cecil":   return 500 // (width: 250, height: 450)
+            case "Cony":    return 500 // (width: 300, height: 500)
+            case "Curl":    return 500 // (width: 250, height: 550)
+            case "Teacher": return 500 // (width: 300, height: 450)
+            case "Brian":   return 500 // (width: 300, height: 450)
+            case "Nick":    return 500 // (width: 250, height: 650)
+            case "Sandra":  return 500 // (width: 250, height: 250)
+            default:        return 500 // (width: 250, height: 450)
+            }
+        }
+
     private func extractBaseCharacterName(from imageName: String) -> String {
         return imageName.components(separatedBy: "_").first ?? imageName
     }
