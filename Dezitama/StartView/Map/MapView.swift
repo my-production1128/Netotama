@@ -15,6 +15,7 @@ struct MapView: View {
     
     @State private var showStageSheet = false
     @State private var selectedStage: Stage?
+    @State private var showTutorial = false  // チュートリアル表示用
     
     init(path: Binding<NavigationPath>) {
         self._path = path
@@ -78,118 +79,130 @@ struct MapView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // currentMode ごとに別Viewとして扱う
-                if gameManager.currentMode == .happy {
-                    modeGroupView(geometry: geometry, mode: .happy)
-                        .transition(
-                            .opacity
-                                .animation(.easeInOut(duration: 0.6))
-                        )
-                        .id(gameManager.currentMode)
-                } else {
-                    modeGroupView(geometry: geometry, mode: .bad)
-                        .transition(
-                            .opacity
-                                .animation(.easeInOut(duration: 0.6))
-                        )
-                        .id(gameManager.currentMode)
-                }
-                //デバックボタン
-                VStack{
-                    Button("リセット") {
-                        GameManager.shared.resetProgress()
+                // メインコンテンツ
+                ZStack {
+                    // currentMode ごとに別Viewとして扱う
+                    if gameManager.currentMode == .happy {
+                        modeGroupView(geometry: geometry, mode: .happy)
+                            .transition(
+                                .opacity
+                                    .animation(.easeInOut(duration: 0.6))
+                            )
+                            .id(gameManager.currentMode)
+                    } else {
+                        modeGroupView(geometry: geometry, mode: .bad)
+                            .transition(
+                                .opacity
+                                    .animation(.easeInOut(duration: 0.6))
+                            )
+                            .id(gameManager.currentMode)
                     }
-                    .padding()
-                    .background(Color.red)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                    
-                    Button("デバック"){
-                        GameManager.shared.setDebugUnlockAll()
-                    }
-                    .padding()
-                    .background(Color.green)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-                }
-                
-                // 戻るボタン
-                VStack {
-                    HStack {
-                        Button {
-                            musicplayer.playSE(fileName: "button_SE")
-                            if !path.isEmpty{
-                                path.removeLast()
-                            }
-                        } label: {
-                            Image("back_iland")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 100, height: 100)
+                    //デバックボタン
+                    VStack{
+                        Button("リセット") {
+                            GameManager.shared.resetProgress()
                         }
-                        .padding(5)
+                        .padding()
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        
+                        Button("デバック"){
+                            GameManager.shared.setDebugUnlockAll()
+                        }
+                        .padding()
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                    }
+                    
+                    // 戻るボタン
+                    VStack {
+                        HStack {
+                            Button {
+                                musicplayer.playSE(fileName: "button_SE")
+                                if !path.isEmpty{
+                                    path.removeLast()
+                                }
+                            } label: {
+                                Image("back_iland")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 100, height: 100)
+                            }
+                            .padding(5)
+                            Spacer()
+                        }
                         Spacer()
                     }
-                    Spacer()
-                }
-                .padding(5)
-                
-                // モード切り替えボタン
-                VStack {
-                    Spacer()
-                    HStack {
+                    .padding(5)
+                    
+                    // モード切り替えボタン
+                    VStack {
                         Spacer()
-                        Button(action: {
-                            musicplayer.playSE(fileName: "button_SE")
-                            withAnimation(.easeInOut(duration: 0.6)) {
-                                gameManager.currentMode = gameManager.currentMode == .happy ? .bad : .happy
+                        HStack {
+                            Spacer()
+                            Button(action: {
+                                musicplayer.playSE(fileName: "button_SE")
+                                withAnimation(.easeInOut(duration: 0.6)) {
+                                    gameManager.currentMode = gameManager.currentMode == .happy ? .bad : .happy
+                                }
+                            }) {
+                                Image("stage_turn")
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 200, height: 100)
                             }
-                        }) {
-                            Image("stage_turn")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 200, height: 100)
+                            .padding(10)
                         }
                         .padding(10)
                     }
                     .padding(10)
-                }
-                .padding(10)
 
-                //シート
-                if showStageSheet, let stage = selectedStage {
-                    ZStack {
-                        // 背景（タップで閉じる）
-                        Color.white.opacity(0.6)
-                            .ignoresSafeArea()
-                            .contentShape(Rectangle()) // ← タップ判定を明確に
-                            .onTapGesture {
-                                musicplayer.playSE(fileName: "button_SE")
-                                withAnimation(.easeInOut(duration: 0.3)) {
+                    //シート
+                    if showStageSheet, let stage = selectedStage {
+                        ZStack {
+                            // 背景（タップで閉じる）
+                            Color.white.opacity(0.6)
+                                .ignoresSafeArea()
+                                .contentShape(Rectangle()) // ← タップ判定を明確に
+                                .onTapGesture {
+                                    musicplayer.playSE(fileName: "button_SE")
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        showStageSheet = false
+                                        selectedStage = nil
+                                    }
+                                }
+
+                            // 前面のシート（StageIntroOverlay）
+                            StageIntroOverlay(
+                                stage: stage,
+                                mode: gameManager.currentMode,
+                                onClose: {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        showStageSheet = false
+                                        selectedStage = nil
+                                    }
+                                },
+                                onStart: {
                                     showStageSheet = false
+                                    _ = gameManager.handleStageTap(stage, path: &path, mode: gameManager.currentMode)
                                     selectedStage = nil
                                 }
-                            }
-
-                        // 前面のシート（StageIntroOverlay）
-                        StageIntroOverlay(
-                            stage: stage,
-                            mode: gameManager.currentMode,
-                            onClose: {
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    showStageSheet = false
-                                    selectedStage = nil
-                                }
-                            },
-                            onStart: {
-                                showStageSheet = false
-                                _ = gameManager.handleStageTap(stage, path: &path, mode: gameManager.currentMode)
-                                selectedStage = nil
-                            }
-                        )
-                        .environmentObject(musicplayer)
-                        .transition(.scale.combined(with: .opacity))
+                            )
+                            .environmentObject(musicplayer)
+                            .transition(.scale.combined(with: .opacity))
+                        }
                     }
+                }
+                .opacity(showTutorial ? 0 : 1) // チュートリアル表示中は非表示
+                
+                // チュートリアルを全画面表示（完全に独立）
+                if showTutorial {
+                    MapTutorialView(isPresented: $showTutorial)
+                        .transition(.opacity)
+                        .zIndex(999) // 最前面に表示
+                        .ignoresSafeArea()
                 }
             }
             .animation(.easeInOut(duration: 0.8), value: gameManager.currentMode)
@@ -200,6 +213,12 @@ struct MapView: View {
             print("GameManager happyStages count: \(gameManager.happyStages.count)")
             print("GameManager badStages count: \(gameManager.badStages.count)")
             musicplayer.playBGM(fileName: "start_bgm")
+            
+            // Choiceのチュートリアルを見終わって、かつMapのチュートリアルを見ていない場合に表示
+            if TutorialManager.shared.hasSeenTutorial(for: "choice") &&
+                !TutorialManager.shared.hasSeenTutorial(for: "map") {
+                showTutorial = true
+            }
         }
     }
     
@@ -265,18 +284,18 @@ struct MapView: View {
             }
             
             // CloudView
-//            ForEach(currentStages(for: mode)) { stage in
-//                if let cloudName = gameManager.cloudImageName(for: stage.id, mode: mode),
-//                   let cloudPosition = cloudPosition(for: stage.id, in: geometry, mode: mode) {
-//                    CloudView(
-//                        id: stage.id,
-//                        imageName: cloudName,
-//                        position: cloudPosition,
-//                        geometry: geometry,
-//                        mode: mode
-//                    )
-//                }
-//            }
+            ForEach(currentStages(for: mode)) { stage in
+                if let cloudName = gameManager.cloudImageName(for: stage.id, mode: mode),
+                   let cloudPosition = cloudPosition(for: stage.id, in: geometry, mode: mode) {
+                    CloudView(
+                        id: stage.id,
+                        imageName: cloudName,
+                        position: cloudPosition,
+                        geometry: geometry,
+                        mode: mode
+                    )
+                }
+            }
             
             // スコア表示
             VStack {
