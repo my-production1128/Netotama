@@ -19,6 +19,7 @@ struct isChoiceView: View {
 
 //    選択肢のポイント用
     @EnvironmentObject private var gameManager: GameManager
+    @EnvironmentObject var musicplayer: SoundPlayer
 
     @Binding var isPopupVisible: Bool
     @Binding var allScene: Branching
@@ -33,6 +34,7 @@ struct isChoiceView: View {
                         .foregroundColor(.white)
                     //                    選択肢１のボタン
                     Button(action: {
+                        musicplayer.playSE(fileName: "button_SE")
                         handleChoice(.choice1)
                     }){
                         RubyLabelRepresentable(
@@ -53,6 +55,7 @@ struct isChoiceView: View {
 
                     //                    選択肢２のボタン
                     Button(action: {
+                        musicplayer.playSE(fileName: "button_SE")
                         handleChoice(.choice2)
                     }) {
                         RubyLabelRepresentable(
@@ -73,6 +76,7 @@ struct isChoiceView: View {
 
 //                    選択肢３のボタン
                     Button(action: {
+                        musicplayer.playSE(fileName: "button_SE")
                         handleChoice(.choice3)
                     }) {
                         RubyLabelRepresentable(

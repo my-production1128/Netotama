@@ -95,7 +95,7 @@ struct ChoiceView: View {
             }
         }
         .onAppear {
-            musicplayer.playBGM(fileName: "start_bgm")
+            musicplayer.playBGM(fileName: "island_bgm")
             
             // 初回表示時のみチュートリアルを表示
             if !TutorialManager.shared.hasSeenTutorial(for: "choice") {

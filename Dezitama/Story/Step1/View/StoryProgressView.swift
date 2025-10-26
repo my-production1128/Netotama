@@ -42,7 +42,11 @@ struct StoryProgressView: View {
         self.stageId = stageId
     }
 
-
+//    let sceneToDisplay = currentChoiceScene ?? branchingMap[currentSceneId]
+//    if let current = sceneToDisplay {
+//        musicplayer.stopAllMusic()
+//        musicplayer.playBGM(fileName: current.bgm)
+//    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -63,6 +67,11 @@ struct StoryProgressView: View {
                                 }
                             }
                         )
+                        .onAppear {
+                            if let bgm = currentDialogue.bgm, !bgm.isEmpty {
+                                musicplayer.playBGM(fileName: bgm)
+                            }
+                        }
                         .id(currentDialogue.id)
 
                     case .chat:
@@ -75,6 +84,11 @@ struct StoryProgressView: View {
                         )
                         .id(chatSessionId)
                         .environmentObject(gameManager)
+                        .onAppear {
+                            if let bgm = currentDialogue.bgm, !bgm.isEmpty {
+                                musicplayer.playBGM(fileName: bgm)
+                            }
+                        }
 
                     case .screen:
                         ZStack {
@@ -83,8 +97,17 @@ struct StoryProgressView: View {
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 100)
 
-                            Text(currentDialogue.dialogueText ?? "")
-                                .font(.custom("MPLUS1-Regular", size: 45))
+                            WideRubyLabelRepresentable(
+                                attributedText: (currentDialogue.dialogueText ?? "")
+                                    .replacingOccurrences(of: "<br>", with: "\n")
+                                    .createWideRuby(font: UIFont.customFont(ofSize: 45), color: .black),
+                                font: UIFont.customFont(ofSize: 30),
+                                textColor: .black,
+                                textAlignment: .center,
+                                targetWidth: 100 // ★ 700から500に変更 (吹き出しに合わせる)
+                            )
+//                            Text(currentDialogue.dialogueText ?? "")
+//                                .font(.custom("MPLUS1-Regular", size: 45))
                                 .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
                                 .offset(x: screenTextOffset)
                         }
@@ -93,9 +116,9 @@ struct StoryProgressView: View {
                         .contentShape(Rectangle())
                         .onAppear {
                             if let bgm = currentDialogue.bgm, !bgm.isEmpty {
-                                                            musicplayer.stopAllMusic()
-                                                            musicplayer.playBGM(fileName: bgm)
-                                                        }
+//                                musicplayer.stopAllMusic()
+                                musicplayer.playBGM(fileName: bgm)
+                            }
                             let totalDuration: TimeInterval = 3.0
                             let moveInDuration: TimeInterval = 0.8
                             let waitDuration: TimeInterval = 1.4
@@ -133,7 +156,13 @@ struct StoryProgressView: View {
                         //                        あらすじ
                     case .start:
                         startView(dialogue: currentDialogue, onNext: handleNavigation)
+                            .onAppear {
+                                if let bgm = currentDialogue.bgm, !bgm.isEmpty {
+                                    musicplayer.playBGM(fileName: bgm)
+                                }
+                            }
                     }
+                    
 
                     // StoryProgressView.swift (body)
 
@@ -233,6 +262,7 @@ struct StoryProgressView: View {
                             VStack {
                                 Spacer()
                                 Button {
+                                    musicplayer.playSE(fileName: "button_SE")
                                     print("成績ボタンが押されました。結果を表示します。")
                                     // ★ スコア計算と保存をここで行う ★
                                     if !isEndSceneReady { // まだ計算・保存してなければ
@@ -364,13 +394,11 @@ struct StoryProgressView: View {
         }
 
         if nextDialogue.isChoice == true {
-            // 画面遷移せず、ポップアップの準備をする
             self.pendingChoiceDialogue = nextDialogue
             self.isChoicePopupVisible = true
-            return // ★ここで処理を中断★
+            return
         }
 
-        // ViewType変化でリフレッシュ
         if currentDialogue?.viewType != nextDialogue.viewType {
             viewRefreshKey = UUID()
         }
@@ -385,38 +413,6 @@ struct StoryProgressView: View {
             }
         }
     }
-
-//    private func checkIfLastScene(sceneId: String) {
-//            guard let scene = branchingMap[sceneId] else { return }
-//
-//            // 最後のシーン (nextSceneId が "end") かつ、
-//            // まだ結果表示前で、成績ボタンも表示されていなければ
-//            if scene.nextSceneId.lowercased() == "end" && !isEndSceneReady && !showResultButton {
-//
-//                // talk シーンの場合はタイピング完了を待つ
-//                if scene.sceneType == "talk" {
-//                    if isTypingComplete { // タイピングが終わっていたら表示
-//                        print("最後の talk シーンのタイピング完了。成績ボタンを表示します。")
-//                        // 少しだけ遅延させて表示 (アニメーションと重ならないように)
-//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-//                             showResultButton = true
-//                        }
-//                    } else {
-//                        print("最後の talk シーンですが、タイピング中のためボタンはまだ表示しません。")
-//                    }
-//                } else { // talk 以外はそのシーンが表示されたらすぐにボタン表示
-//                    print("最後のシーン (\(scene.sceneType)) です。成績ボタンを表示します。")
-//                     // 少しだけ遅延させて表示 (シーン遷移アニメーションと重ならないように)
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-//                         showResultButton = true
-//                    }
-//                }
-//            } else if scene.nextSceneId.lowercased() != "end" && showResultButton {
-//                // もし何らかの理由でボタンが表示されたまま次のシーンに進んだら非表示にする
-//                showResultButton = false
-//            }
-//        }
-
     private var currentDialogue: Dialogue2? {
         dialogues.first(where: { $0.sceneId == currentSceneId })
     }

@@ -83,7 +83,7 @@ struct ChatMessageView: View {
             if let currentDialogue = dialogue {
                 Text(currentDialogue.groupName ?? "")
 //                    .position(x: width * 0.51, y: height * 0.15)
-                    .offset(x: 10,y: -280)
+                    .offset(x: 10,y: -270)
                     .font(.custom("MPLUS1-Medium", size: 24))
             }
             VStack {
@@ -145,8 +145,6 @@ struct ChatMessageView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        // ChatMessageView.swift (body内)
-
         .onAppear {
 //            isTapImageVisible = false
             DispatchQueue.main.async {
