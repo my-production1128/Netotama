@@ -20,7 +20,7 @@ struct ContentView: View {
 
     @State private var stages: [StageData] = [
         //グループチャット
-        StageData(id: 1, csvFileName: "bad_groupchat_story1_ver8"),
+        StageData(id: 1, csvFileName: "bad_groupchat_story1_ver10"),
         StageData(id: 2, csvFileName: "bad_groupchat_story2_ver7"),
         StageData(id: 3, csvFileName: "bad_groupchat_story3_ver5"),
         //ネトモ

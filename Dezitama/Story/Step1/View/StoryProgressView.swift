@@ -17,13 +17,16 @@ struct StoryProgressView: View {
     @State private var isChatLogVisible: Bool = false
     @State private var isBackMap: Bool = false
 
-    @State private var pendingChoiceDialogue: Dialogue2? = nil // (1) 次に表示する選択肢データを一時保持
-    @State private var isChoicePopupVisible: Bool = false      // (2) 選択肢ポップアップの表示フラグ
-    @State private var userChoiceReply: Dialogue2? = nil       // (3) ユーザーが選んだセリフを一時表示
+    @State private var pendingChoiceDialogue: Dialogue2? = nil
+    @State private var isChoicePopupVisible: Bool = false
+    @State private var userChoiceReply: Dialogue2? = nil
 
     @State private var isEndSceneReady: Bool = false
     @State private var showResultButton: Bool = false
     @State private var finalThunders: Int = 0
+
+    @State private var screenTextOffset: CGFloat = 0.0
+
     let stageId: Int
 
     @EnvironmentObject private var gameManager: GameManager
@@ -45,32 +48,22 @@ struct StoryProgressView: View {
         GeometryReader { geometry in
             if let currentDialogue = userChoiceReply ?? self.currentDialogue {
                 ZStack {
-                    // ====== メイン画面 ======
                     switch currentDialogue.viewType {
-                        //                        会話・まとめ
-                        // StoryProgressView.swift (body)
 
                     case .dialogue:
                         DialogueView(
                             dialogue: currentDialogue,
-                            // ▼▼▼ onNextクロージャを修正 ▼▼▼
                             onNext: { nextSceneId in
-                                // (A) もし一時的な返信シーンを表示中なら
                                 if self.userChoiceReply != nil {
-                                    // 返信シーンが持っている「本当の次のID」を取得
                                     let realNextId = self.userChoiceReply!.nextSceneId!
-                                    // 返信シーンをクリア
                                     self.userChoiceReply = nil
-                                    // 本当の次のシーンへ進む
                                     handleNavigation(nextSceneId: realNextId)
                                 } else {
-                                    // (B) 通常のシーンなら、そのままhandleNavigationを呼ぶ
                                     handleNavigation(nextSceneId: nextSceneId)
                                 }
                             }
                         )
-                        // ...
-                        //                        チャット画面
+
                     case .chat:
                         ChatMessageView(
                             dialogues: dialogues,
@@ -81,6 +74,55 @@ struct StoryProgressView: View {
                         )
                         .id(chatSessionId)
                         .environmentObject(gameManager)
+
+                    case .screen:
+                        ZStack {
+                            Text(currentDialogue.dialogueText ?? "")
+                                .font(.custom("MPLUS1-Regular", size: 35))
+                                .offset(x: screenTextOffset)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .clipped()
+                        .contentShape(Rectangle())
+                        .onAppear {
+                            if let bgm = currentDialogue.bgm, !bgm.isEmpty {
+                                                            musicplayer.stopAllMusic()
+                                                            musicplayer.playBGM(fileName: bgm)
+                                                        }
+                            let totalDuration: TimeInterval = 3.0
+                            let moveInDuration: TimeInterval = 0.8
+                            let waitDuration: TimeInterval = 1.4
+                            let moveOutDuration: TimeInterval = totalDuration - moveInDuration - waitDuration
+
+                            let startOffset = -geometry.size.width
+                            screenTextOffset = startOffset
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                withAnimation(.easeOut(duration: moveInDuration)) {
+                                    screenTextOffset = 0
+                                }
+                            }
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1 + moveInDuration + waitDuration) {
+                                let endOffset = geometry.size.width
+                                withAnimation(.easeIn(duration: moveOutDuration)) {
+                                    screenTextOffset = endOffset
+                                }
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + totalDuration) {
+                                guard currentDialogue.viewType == .screen else {
+                                    print("Scene changed before 3s timer. Aborting automatic 'screen' transition.")
+                                    return
+                                }
+                                guard let nextId = currentDialogue.nextSceneId, !nextId.isEmpty else {
+                                    print("🚨 Error: 'screen' scene has no valid nextSceneId.")
+                                    handleNavigation(nextSceneId: "end")
+                                    return
+                                }
+                                handleNavigation(nextSceneId: nextId)
+                            }
+                        }
+
                         //                        あらすじ
                     case .start:
                         startView(dialogue: currentDialogue, onNext: handleNavigation)
@@ -88,15 +130,12 @@ struct StoryProgressView: View {
 
                     // StoryProgressView.swift (body)
 
-                    // ====== 選択肢オーバーレイ (新) ======
+
                     if isChoicePopupVisible, let choiceDialogue = pendingChoiceDialogue {
                         BadChoiceView(
                             dialogue: choiceDialogue,
-                            isPopupVisible: $isChoicePopupVisible, // .constant(true) から $isChoicePopupVisible に変更
+                            isPopupVisible: $isChoicePopupVisible,
                             onChoiceSelected: { selectedText, nextId, percentage in
-
-                                // 1. ユーザーが選んだセリフを一時的に表示するシーンを作成
-                                // (ChatMessageViewやStoryBranchViewと同様のロジック)
                                 let replyScene = Dialogue2(
                                     storyId: choiceDialogue.storyId,
                                     sceneId: "user_reply_\(UUID())", // 一意のID
@@ -105,7 +144,6 @@ struct StoryProgressView: View {
                                     dialogueText: selectedText,
                                     nextSceneId: nextId, // タップしたら次に進むID
                                     isChoice: false,
-                                    // 背景やキャラクターは、選択肢シーンのものを引き継ぐ
                                     background: choiceDialogue.background,
                                     talkingPeople: choiceDialogue.talkingPeople,
                                     leftCharacter: choiceDialogue.leftCharacter,
@@ -114,7 +152,8 @@ struct StoryProgressView: View {
                                     oneCharacter: choiceDialogue.oneCharacter,
                                     twoCharacter: choiceDialogue.twoCharacter,
                                     onePerson: choiceDialogue.onePerson,
-                                    bgm: choiceDialogue.bgm
+                                    bgm: choiceDialogue.bgm,
+                                    groupName: choiceDialogue.groupName
                                 )
 
                                 print("履歴追加 (BadChoiceView): \(replyScene.sceneId) - \(replyScene.dialogueText ?? "")")
@@ -373,6 +412,3 @@ struct StoryProgressView: View {
         dialogues.first(where: { $0.sceneId == currentSceneId })
     }
 }
-
-
-

@@ -80,13 +80,16 @@ struct ChatMessageView: View {
     var body: some View {
         let _ = print("Hint Check: isAnimating=\(chatMessages.last?.isAnimating ?? false), isPopup=\(isPopupVisible), didShow=\(gameManager.didShowChatTapHint)")
         ZStack {
-            // チャット本文
-            VStack { //
-                // 上の Spacer は元々ないのでOK
-
-                ScrollViewReader { proxy in //
-                    ScrollView { //
-                        VStack(spacing: 0) { //
+            if let currentDialogue = dialogue {
+                Text(currentDialogue.groupName ?? "")
+//                    .position(x: width * 0.51, y: height * 0.15)
+                    .offset(x: 10,y: -300)
+                    .font(.custom("MPLUS1-Medium", size: 24))
+            }
+            VStack {
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        VStack(spacing: 0) {
                             ForEach(chatMessages) { message in //
                                 messageRow(for: message, proxy: proxy) //
                                     .id(message.id) //

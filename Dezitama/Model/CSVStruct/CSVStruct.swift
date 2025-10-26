@@ -40,6 +40,7 @@ struct Dialogue2: Identifiable {
     var twoCharacter: String? = nil
     var onePerson: String? = nil
     var bgm: String? = nil
+    var groupName: String? = nil
 }
 
 
@@ -48,6 +49,7 @@ enum ViewType: String {
 //    case choice
     case chat
     case start
+    case screen
 }
 
 //step2の分岐ありのストーリー

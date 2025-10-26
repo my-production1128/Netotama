@@ -70,6 +70,7 @@
 		8A24DE4B2EA9624C00DE6E95 /* bad_groupchat_story1_ver8.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DE4A2EA9624C00DE6E95 /* bad_groupchat_story1_ver8.csv */; };
 		8A24DE652EAAA16400DE6E95 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DE642EAAA15600DE6E95 /* StartView.swift */; };
 		8A39E2922EAD42E400273C2E /* StoryProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A39E2912EAD42E100273C2E /* StoryProgressView.swift */; };
+		8A39E2D02EAE5E6B00273C2E /* bad_groupchat_story1_ver10.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A39E2CF2EAE5E6B00273C2E /* bad_groupchat_story1_ver10.csv */; };
 		8A7AD33C2E1F6AD600BF4664 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 8A7AD33B2E1F6AD600BF4664 /* Lottie */; };
 /* End PBXBuildFile section */
 
@@ -149,6 +150,7 @@
 		8A24DE4A2EA9624C00DE6E95 /* bad_groupchat_story1_ver8.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_groupchat_story1_ver8.csv; sourceTree = "<group>"; };
 		8A24DE642EAAA15600DE6E95 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		8A39E2912EAD42E100273C2E /* StoryProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryProgressView.swift; sourceTree = "<group>"; };
+		8A39E2CF2EAE5E6B00273C2E /* bad_groupchat_story1_ver10.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_groupchat_story1_ver10.csv; sourceTree = "<group>"; };
 		8A7AD2EA2E1E929400BF4664 /* DezitamaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DezitamaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -332,6 +334,7 @@
 		8A24DCBD2EA5510800DE6E95 /* CSV */ = {
 			isa = PBXGroup;
 			children = (
+				8A39E2CF2EAE5E6B00273C2E /* bad_groupchat_story1_ver10.csv */,
 				8A24DCB42EA5510800DE6E95 /* bad_groupchat_story1_ver7.csv */,
 				8A24DE4A2EA9624C00DE6E95 /* bad_groupchat_story1_ver8.csv */,
 				8A24DCB52EA5510800DE6E95 /* bad_groupchat_story2_ver7.csv */,
@@ -572,6 +575,7 @@
 				8A24DD202EA5510900DE6E95 /* good_netomo_story1_ver5.csv in Resources */,
 				8A24DD212EA5510900DE6E95 /* good_netomo_story2_ver3.csv in Resources */,
 				8A24DD222EA5510900DE6E95 /* good_netomo_story3_ver3.csv in Resources */,
+				8A39E2D02EAE5E6B00273C2E /* bad_groupchat_story1_ver10.csv in Resources */,
 				8A24DD232EA5510900DE6E95 /* good_netomo_story3_ver4.csv in Resources */,
 				8A24DD242EA5510900DE6E95 /* Assets.xcassets in Resources */,
 			);

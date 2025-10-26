@@ -54,8 +54,6 @@ func loadCSV2(fileName: String) -> [Dialogue2] {
             let isChoiceString = getValue("isChoice")?.uppercased()
             let isChoice = (isChoiceString == "TRUE")
 
-            // --- ✅ ここから修正 ---
-
             // choice1Percentageの取得とDoubleへの変換
             let choice1PercentageString = getValue("choice1Percentage")
             let choice1PercentageValue = Double(choice1PercentageString ?? "")
@@ -88,7 +86,8 @@ func loadCSV2(fileName: String) -> [Dialogue2] {
                 oneCharacter: getValue("OneCharacter"),
                 twoCharacter: getValue("TwoCharacter"),
                 onePerson: getValue("OnePerson"),
-                bgm: getValue("bgm")
+                bgm: getValue("bgm"),
+                groupName: getValue("groupName")
             )
             result.append(dialogue)
         }
