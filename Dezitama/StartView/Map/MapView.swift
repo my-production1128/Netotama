@@ -228,8 +228,8 @@ struct MapView: View {
             print("MapView appeared: currentMode=\(gameManager.currentMode)")
             print("GameManager happyStages count: \(gameManager.happyStages.count)")
             print("GameManager badStages count: \(gameManager.badStages.count)")
-            musicplayer.playBGM(fileName: "start_bgm")
-            
+            musicplayer.playBGM(fileName: "island_bgm")
+
             // Choiceのチュートリアルを見終わって、かつMapのチュートリアルを見ていない場合に表示
             if TutorialManager.shared.hasSeenTutorial(for: "choice") &&
                 !TutorialManager.shared.hasSeenTutorial(for: "map") {

@@ -60,7 +60,6 @@ struct StoryBranchView: View {
     @Binding var allScene: Branching
 
     let StoryId: String
-    // 表示に必要なデータだけを、allBranchingsからリアルタイムで絞り込む
     private var currentStoryBranchings: [Branching] {
         return allBranchings.filter { $0.storyId == StoryId }
     }
@@ -114,24 +113,27 @@ struct StoryBranchView: View {
                             //                            あらすじ
                         case "storyline":
                             ZStack {
-                                // 1. WideRubyLabelRepresentable を設定
                                 WideRubyLabelRepresentable(
                                     attributedText: current.text
                                         .replacingOccurrences(of: "<br>", with: "\n")
-                                        .createWideRuby(font: talkFont, color: .black), //
-                                    font: talkFont, //
+                                        .createWideRuby(font: talkFont, color: .black),
+                                    font: talkFont,
                                     textColor: .black,
-                                    textAlignment: .center, // 中央揃え
-                                    targetWidth: 700 // 表示幅 (お好みで調整してください)
+                                    textAlignment: .center,
+                                    targetWidth: 700
                                 )
-                                .frame(maxWidth: 750) // ビュー自体のフレーム
-                                .padding(.bottom, 100) // 少し上に配置
+                                .frame(maxWidth: 750)
+                                .padding(.bottom, 100)
                                 .opacity(storylineOpacity)
                                 .onAppear {
+                                    let sceneToDisplay = currentChoiceScene ?? branchingMap[currentSceneId]
+                                    if let current = sceneToDisplay {
+                                        musicplayer.stopAllMusic()
+                                        musicplayer.playBGM(fileName: current.bgm)
+                                    }
                                     storylineOpacity = 0.0
                                     isStorylineInteractable = false
                                     let animationDuration = 1.0
-
                                     withAnimation(.easeIn(duration: animationDuration)) {
                                         storylineOpacity = 1.0
                                     }completion: {
@@ -148,19 +150,16 @@ struct StoryBranchView: View {
                                             isStorylineInteractable = false
                                             let animationDuration = 1.0
 
-                                            withAnimation(.easeIn(duration: animationDuration)) { //
-                                                storylineOpacity = 1.0 //
+                                            withAnimation(.easeIn(duration: animationDuration)) {
+                                                storylineOpacity = 1.0
                                             }
 
-                                            // ★アニメーション時間後にタップ可能にする
                                             DispatchQueue.main.asyncAfter(deadline: .now() + animationDuration) {
-                                                // 念のため、現在表示されているのが本当にstorylineか再確認
                                                 if branchingMap[currentSceneId]?.sceneType == "storyline" {
                                                     isStorylineInteractable = true
                                                     print("Storylineのタップが可能になりました。")
                                                 }
                                             }
-                                            // ▲▲▲ 修正ここまで ▲▲▲
                                         } else {
                                             storylineOpacity = 1.0
                                             isStorylineInteractable = true
@@ -222,7 +221,16 @@ struct StoryBranchView: View {
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 100)
 
-                                Text(current.text)
+                                WideRubyLabelRepresentable(
+                                    attributedText: current.text
+                                        .replacingOccurrences(of: "<br>", with: "\n")
+                                        .createWideRuby(font: UIFont.customFont(ofSize: 45), color: .black),
+                                    font: talkFont,
+                                    textColor: .black,
+                                    textAlignment: .center,
+                                    targetWidth: 100
+                                )
+//                                Text(current.text)
                                     .font(.custom("MPLUS1-Regular", size: 45))
                                     .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
                                     .offset(x: screenTextOffset)
@@ -314,7 +322,7 @@ struct StoryBranchView: View {
                                 isEndSceneReady: $isEndSceneReady
                             )
                             .onAppear {
-                                musicplayer.stopAllMusic()
+//                                musicplayer.stopAllMusic()
                                 musicplayer.playBGM(fileName: current.bgm)
                             }
                             .ignoresSafeArea()
@@ -642,13 +650,13 @@ struct StoryBranchView: View {
                         VStack {
                             Spacer()
                             Button {
+                                musicplayer.playSE(fileName: "button_SE")
                                 print("成績ボタンが押されました。結果を表示します。")
-                                // ★ スコア計算と保存をここで行う ★
-                                if !isEndSceneReady { // まだ計算・保存してなければ
+                                if !isEndSceneReady {
                                     let stars = gameManager.scoreToStars(score: gameManager.currentScore)
                                     self.finalStars = stars
                                     gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
-                                    isEndSceneReady = true // 結果画面表示フラグを立てる
+                                    isEndSceneReady = true
                                 }
                             } label: {
                                 Image("good_seiseki")
@@ -692,7 +700,6 @@ struct StoryBranchView: View {
                 checkIfLastScene(sceneId: newSceneId)
             }
             .onChange(of: isTypingComplete) { _, newValue in
-                // タイピングが完了した時にも最後のシーンかチェック (talk シーン用)
                 if newValue {
                     checkIfLastScene(sceneId: currentSceneId)
                 }
@@ -707,7 +714,6 @@ struct StoryBranchView: View {
                 } else {
                     print("✅ OK: branchingMap に \(branchingMap.count)件のシーンが格納されました。")
                     print("マップに含まれる全シーンID:")
-                    // sceneIdを昇順にソートして見やすく表示
                     let sortedSceneIds = branchingMap.keys.sorted()
                     print(sortedSceneIds)
                 }
@@ -758,30 +764,24 @@ struct StoryBranchView: View {
     private func checkIfLastScene(sceneId: String) {
             guard let scene = branchingMap[sceneId] else { return }
 
-            // 最後のシーン (nextSceneId が "end") かつ、
-            // まだ結果表示前で、成績ボタンも表示されていなければ
             if scene.nextSceneId.lowercased() == "end" && !isEndSceneReady && !showResultButton {
 
-                // talk シーンの場合はタイピング完了を待つ
                 if scene.sceneType == "talk" {
-                    if isTypingComplete { // タイピングが終わっていたら表示
+                    if isTypingComplete {
                         print("最後の talk シーンのタイピング完了。成績ボタンを表示します。")
-                        // 少しだけ遅延させて表示 (アニメーションと重ならないように)
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                              showResultButton = true
                         }
                     } else {
                         print("最後の talk シーンですが、タイピング中のためボタンはまだ表示しません。")
                     }
-                } else { // talk 以外はそのシーンが表示されたらすぐにボタン表示
+                } else {
                     print("最後のシーン (\(scene.sceneType)) です。成績ボタンを表示します。")
-                     // 少しだけ遅延させて表示 (シーン遷移アニメーションと重ならないように)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                          showResultButton = true
                     }
                 }
             } else if scene.nextSceneId.lowercased() != "end" && showResultButton {
-                // もし何らかの理由でボタンが表示されたまま次のシーンに進んだら非表示にする
                 showResultButton = false
             }
         }

@@ -39,14 +39,15 @@ class SoundPlayer: NSObject, ObservableObject, AVAudioPlayerDelegate {
         
         // BGMごとの音量設定
         let bgmVolumes: [String: Float] = [
-            "arasuzi_bgm": 0.5,
-            "chat_bgm": 0.5,
+            "arasuzi_bgm": 0.2,
+            "chat_bgm": 0.3,
             "classroom_bgm": 0.5,
             "matome_bgm": 0.5,
             "news_bgm": 0.5,
             "park_bgm": 0.5,
             "room_bgm": 0.5,
-            "start_bgm": 0.5
+            "start_bgm": 0.4,
+            "island_bgm": 0.5
         ]
 
         do {

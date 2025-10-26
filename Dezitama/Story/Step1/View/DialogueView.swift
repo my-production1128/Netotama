@@ -13,9 +13,6 @@ struct DialogueView: View {
     
     @State private var offsetY: CGFloat = 0.0
     @State private var animationTimer: Timer?
-
- 
-
     // 会話アニメーション準備完了フラグ
     @State private var isAnimationReady: Bool = false
 

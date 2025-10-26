@@ -11,6 +11,7 @@ struct BadChoiceView: View {
     @Binding var isPopupVisible: Bool
     var onChoiceSelected: (String, String, Double?) -> Void
     @EnvironmentObject private var gameManager: GameManager
+    @EnvironmentObject var musicplayer: SoundPlayer
 
     @State private var selectedChoice: Int? = nil
     @State private var isChoiceMade = false
@@ -30,6 +31,7 @@ struct BadChoiceView: View {
                     // 選択肢1
                     if let choice1Text = dialogue.choice1Text {
                         Button(action: {
+                            musicplayer.playSE(fileName: "button_SE")
                             if !isChoiceMade {
                                 handleChoice(1)
                             }
@@ -54,6 +56,7 @@ struct BadChoiceView: View {
                     // 選択肢2
                     if let choice2Text = dialogue.choice2Text {
                         Button(action: {
+                            musicplayer.playSE(fileName: "button_SE")
                             if !isChoiceMade {
                                 handleChoice(2)
                             }
