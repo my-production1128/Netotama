@@ -56,10 +56,10 @@ struct Gauge: View {
                         }
                     )
 
-                Image("step2_gauge_sen")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: width * 0.5, height: height * 0.25)
+//                Image("step2_gauge_sen")
+//                    .resizable()
+//                    .scaledToFit()
+//                    .frame(width: width * 0.5, height: height * 0.25)
             }
             .offset(x:22,y: 7)
         }

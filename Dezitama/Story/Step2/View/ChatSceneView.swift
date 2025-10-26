@@ -171,9 +171,6 @@ struct ChatSceneView: View {
                 }
                 let nextId = last.scene.nextSceneId
                 if nextId.lowercased() == "end" {
-//                    print("ChatSceneView: 最後のセリフをタップ。親に 'end' を通知します。")
-//                    onNextScene("end")
-//                    isEndSceneReady = true
                     return
                 }
                 guard let next = branchingMap[nextId] else {
@@ -464,12 +461,10 @@ struct ChatSceneView: View {
                                             }
                                         }
 
-                                        // 💡 修正点 2: 0.8秒後に画像を表示させる (タイピングアニメーションの代わりに遅延を入れる)
-                                        // 相手の画像メッセージの場合、この遅延の後に画像が表示される
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                                             withAnimation {
                                                 if let index = chatMessage.firstIndex(where: { $0.id == message.id }) {
-                                                    chatMessage[index].textIsVisible = true // 💡 画像を表示させる
+                                                    chatMessage[index].textIsVisible = true
                                                 }
                                             }
                                         }
@@ -528,15 +523,7 @@ struct ChatSceneView: View {
         .id(message.id)
     }
 
-    //    デバック用のスキップボタン
-//    private func skipAllChatScenes() {
-//        guard let last = chatMessage.last else { return }
-//        var nextId = last.scene.nextSceneId
-//        while let next = branchingMap[nextId], next.sceneType == "chat" {
-//            nextId = next.nextSceneId
-//        }
-//        onNextScene(nextId)
-//    }
+
 
     //自動返信の関数
     private func proceedToNextIfNeeded() {
@@ -548,8 +535,8 @@ struct ChatSceneView: View {
 
         if nextId.lowercased() == "end" {
                     print("ChatSceneView: 最後のメッセージ (\(last.scene.sceneId)) が表示完了。成績ボタン表示を依頼します。")
-                    onNextScene("showResultButton") // 親ビューに特別な合図を送る
-                    return // ★ここで処理を終了し、タップ待ちや自動進行を止める★
+                    onNextScene("showResultButton")
+                    return
                 }
 
         guard let next = branchingMap[nextId] else {

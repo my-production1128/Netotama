@@ -78,8 +78,14 @@ struct StoryProgressView: View {
 
                     case .screen:
                         ZStack {
+                            Rectangle()
+                                .fill(Color.white.opacity(0.3))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 100)
+
                             Text(currentDialogue.dialogueText ?? "")
-                                .font(.custom("MPLUS1-Regular", size: 35))
+                                .font(.custom("MPLUS1-Regular", size: 45))
+                                .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
                                 .offset(x: screenTextOffset)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -176,6 +182,7 @@ struct StoryProgressView: View {
                             // ホームボタン
                             VStack {
                                 Button(action: {
+                                    musicplayer.playSE(fileName: "button_SE")
                                     withAnimation(.easeInOut) {
                                         isBackMap = true
                                     }
@@ -238,9 +245,10 @@ struct StoryProgressView: View {
                                     Image("good_seiseki")
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 300, height: 300)
+                                        .frame(width: 250, height: 250)
                                     //                                    .padding(.trailing, 30)
                                 }
+                                .offset(x: 0, y: 40)
                             }
                         }
                     }

@@ -217,8 +217,14 @@ struct StoryBranchView: View {
 
                         case "screen":
                             ZStack {
+                                Rectangle()
+                                    .fill(Color.white.opacity(0.3))
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 100)
+
                                 Text(current.text)
-                                    .font(.custom("MPLUS1-Regular", size: 35))
+                                    .font(.custom("MPLUS1-Regular", size: 45))
+                                    .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
                                     .offset(x: screenTextOffset)
                             }
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -588,6 +594,7 @@ struct StoryBranchView: View {
                 HStack {
                     VStack {
                         Button {
+                            musicplayer.playSE(fileName: "button_SE")
                             isBackMap = true
                         }label: {
                             Image("home_good")
@@ -647,9 +654,10 @@ struct StoryBranchView: View {
                                 Image("good_seiseki")
                                     .resizable()
                                     .scaledToFit()
-                                    .frame(width: 300, height: 300)
+                                    .frame(width: 250, height: 250)
 //                                    .padding(.trailing, 30)
                             }
+                            .offset(x: 0, y: 40)
                         }
                     }
 //                    .padding(.trailing, 15)
@@ -681,10 +689,6 @@ struct StoryBranchView: View {
                 }
             }
             .onChange(of: currentSceneId) { _, newSceneId in
-                // シーンが変わったらタイピング状態をリセット
-//                isTypingComplete = false
-//                shouldSkipTyping = false
-                // 新しいシーンが最後のシーンかチェック
                 checkIfLastScene(sceneId: newSceneId)
             }
             .onChange(of: isTypingComplete) { _, newValue in

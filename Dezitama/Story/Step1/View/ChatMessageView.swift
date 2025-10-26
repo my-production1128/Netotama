@@ -83,7 +83,7 @@ struct ChatMessageView: View {
             if let currentDialogue = dialogue {
                 Text(currentDialogue.groupName ?? "")
 //                    .position(x: width * 0.51, y: height * 0.15)
-                    .offset(x: 10,y: -300)
+                    .offset(x: 10,y: -280)
                     .font(.custom("MPLUS1-Medium", size: 24))
             }
             VStack {
@@ -144,6 +144,7 @@ struct ChatMessageView: View {
                 .zIndex(100)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         // ChatMessageView.swift (body内)
 
         .onAppear {
@@ -336,9 +337,8 @@ extension ChatMessageView {
                             .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomLeading)
                             .opacity(message.textIsVisible ? 1.0 : 0.0)
                             .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
-                            .onAppear { // ★吹き出し部分表示時にトリガー★
-                                if !message.textIsVisible { // まだ表示されていなければ遅延アニメーション開始
-                                    // 0.8秒遅れて表示アニメーション開始
+                            .onAppear {
+                                if !message.textIsVisible {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                                         withAnimation {
                                             if let index = chatMessages.firstIndex(where: { $0.id == message.id }) {
@@ -375,13 +375,13 @@ extension ChatMessageView {
                                     .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomTrailing)
                                     .opacity(message.textIsVisible ? 1.0 : 0.0)
                                     .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
-                                    .onAppear { // ★typingAnimationView表示時にトリガー★
+                                    .onAppear {
                                         animationTrigger.toggle()
-                                        if !message.textIsVisible { // まだ表示されていなければ遅延アニメーション開始
+                                        if !message.textIsVisible {
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                                                 withAnimation {
                                                     if let index = chatMessages.firstIndex(where: { $0.id == message.id }) {
-                                                        chatMessages[index].textIsVisible = true // typingAnimationを表示
+                                                        chatMessages[index].textIsVisible = true
                                                     }
                                                 }
                                             }
@@ -390,8 +390,7 @@ extension ChatMessageView {
                                     .onReceive(animationTimer) { _ in
                                         animationTrigger.toggle()
                                     }
-                            } else { // isAnimating が false (タップ後)
-                                // 画像メッセージの場合
+                            } else {
                                 if message.isPicture, let text = dialogue.dialogueText {
                                     Image(text) //
                                         .resizable()
@@ -399,10 +398,7 @@ extension ChatMessageView {
                                         .frame(width: 250, height: 250)
                                         .cornerRadius(16)
                                         .padding(.bottom, 8)
-                                    //                                             .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomTrailing) // ← anchor 修正
-                                    //                                             .opacity(message.textIsVisible ? 1.0 : 0.0)
-                                    //                                             .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
-                                        .onAppear { // ★スクロールのためだけに残す★
+                                        .onAppear {
                                             DispatchQueue.main.async {
                                                 withAnimation { proxy.scrollTo(message.id, anchor: .bottom) }
                                             }
@@ -414,18 +410,15 @@ extension ChatMessageView {
                                             .createRuby(font: .customFont(ofSize: 22), color: .black),
                                         font: .customFont(ofSize: 22),
                                         textColor: .black,
-                                        textAlignment: .left, // ★ 右寄せでもテキスト自体は左揃えのまま ★
+                                        textAlignment: .left,
                                         targetWidth: 270
                                     )
-                                    .padding(13) //
-                                    .background(Color.white.opacity(1.0)) //
-                                    .cornerRadius(16) //
-                                    .frame(maxWidth: 450, alignment: .trailing) // ← alignment 修正
-                                    .padding(.bottom, 8) //
-                                    //                                        .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomTrailing) // ← anchor 修正
-                                    //                                        .opacity(message.textIsVisible ? 1.0 : 0.0) //
-                                    //                                        .animation(.easeOut(duration: 0.3), value: message.textIsVisible) //
-                                    .onAppear { // ★スクロールのためだけに残す★
+                                    .padding(13)
+                                    .background(Color.white.opacity(1.0))
+                                    .cornerRadius(16)
+                                    .frame(maxWidth: 450, alignment: .trailing)
+                                    .padding(.bottom, 8)
+                                    .onAppear {
                                         DispatchQueue.main.async {
                                             withAnimation { proxy.scrollTo(message.id, anchor: .bottom) }
                                         }
@@ -438,15 +431,15 @@ extension ChatMessageView {
                     characterIcon(for: dialogue.characterName ?? "", size: 48)
                         .scaleEffect(message.imageIsVisible ? 1.0 : 0.0, anchor: .bottom)
                         .animation(.spring(response: 0.4, dampingFraction: 0.6), value: message.imageIsVisible)
-                        .onAppear { // ★アイコン表示時にトリガー★
-                            DispatchQueue.main.async { // スクロールは即時
+                        .onAppear {
+                            DispatchQueue.main.async {
                                 withAnimation { proxy.scrollTo(message.id, anchor: .bottom) }
                             }
-                            if !message.imageIsVisible { // まだ表示されていなければアニメーション開始
+                            if !message.imageIsVisible {
                                 withAnimation {
                                     if let index = chatMessages.firstIndex(where: { $0.id == message.id }) {
                                         chatMessages[index].imageIsVisible = true
-                                        // musicplayer.playSE(fileName: "icon_SE") // コニー側はSE不要かも
+                                        musicplayer.playSE(fileName: "icon_SE")
                                     }
                                 }
                             }
