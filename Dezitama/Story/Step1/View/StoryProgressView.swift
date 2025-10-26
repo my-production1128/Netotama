@@ -21,55 +21,55 @@ struct StoryProgressView: View {
     @State private var isChoicePopupVisible: Bool = false      // (2) 選択肢ポップアップの表示フラグ
     @State private var userChoiceReply: Dialogue2? = nil       // (3) ユーザーが選んだセリフを一時表示
 
-        @State private var isEndSceneReady: Bool = false
-        @State private var finalThunders: Int = 0
-        let stageId: Int
+    @State private var isEndSceneReady: Bool = false
+    @State private var finalThunders: Int = 0
+    let stageId: Int
 
-        @EnvironmentObject private var gameManager: GameManager
-        @EnvironmentObject var musicplayer: SoundPlayer
+    @EnvironmentObject private var gameManager: GameManager
+    @EnvironmentObject var musicplayer: SoundPlayer
 
-        init(dialogues: [Dialogue2],
-             initialSceneId: String = "Scene0",
-             path: Binding<NavigationPath>,
-             stageId: Int) {
-            self.dialogues = dialogues
-            self._currentSceneId = State(initialValue: initialSceneId)
-            self._path = path
-            self.stageId = stageId
-        }
+    init(dialogues: [Dialogue2],
+         initialSceneId: String = "Scene0",
+         path: Binding<NavigationPath>,
+         stageId: Int) {
+        self.dialogues = dialogues
+        self._currentSceneId = State(initialValue: initialSceneId)
+        self._path = path
+        self.stageId = stageId
+    }
 
 
-    
+
     var body: some View {
         GeometryReader { geometry in
             if let currentDialogue = userChoiceReply ?? self.currentDialogue {
                 ZStack {
                     // ====== メイン画面 ======
                     switch currentDialogue.viewType {
-//                        会話・まとめ
+                        //                        会話・まとめ
                         // StoryProgressView.swift (body)
 
-                                            case .dialogue:
-                                                DialogueView(
-                                                    dialogue: currentDialogue,
-                                                    // ▼▼▼ onNextクロージャを修正 ▼▼▼
-                                                    onNext: { nextSceneId in
-                                                        // (A) もし一時的な返信シーンを表示中なら
-                                                        if self.userChoiceReply != nil {
-                                                            // 返信シーンが持っている「本当の次のID」を取得
-                                                            let realNextId = self.userChoiceReply!.nextSceneId!
-                                                            // 返信シーンをクリア
-                                                            self.userChoiceReply = nil
-                                                            // 本当の次のシーンへ進む
-                                                            handleNavigation(nextSceneId: realNextId)
-                                                        } else {
-                                                            // (B) 通常のシーンなら、そのままhandleNavigationを呼ぶ
-                                                            handleNavigation(nextSceneId: nextSceneId)
-                                                        }
-                                                    }
-                                                )
+                    case .dialogue:
+                        DialogueView(
+                            dialogue: currentDialogue,
+                            // ▼▼▼ onNextクロージャを修正 ▼▼▼
+                            onNext: { nextSceneId in
+                                // (A) もし一時的な返信シーンを表示中なら
+                                if self.userChoiceReply != nil {
+                                    // 返信シーンが持っている「本当の次のID」を取得
+                                    let realNextId = self.userChoiceReply!.nextSceneId!
+                                    // 返信シーンをクリア
+                                    self.userChoiceReply = nil
+                                    // 本当の次のシーンへ進む
+                                    handleNavigation(nextSceneId: realNextId)
+                                } else {
+                                    // (B) 通常のシーンなら、そのままhandleNavigationを呼ぶ
+                                    handleNavigation(nextSceneId: nextSceneId)
+                                }
+                            }
+                        )
                         // ...
-//                        チャット画面
+                        //                        チャット画面
                     case .chat:
                         ChatMessageView(
                             dialogues: dialogues,
@@ -80,60 +80,54 @@ struct StoryProgressView: View {
                         )
                         .id(chatSessionId)
                         .environmentObject(gameManager)
-//                        あらすじ
+                        //                        あらすじ
                     case .start:
                         startView(dialogue: currentDialogue, onNext: handleNavigation)
                     }
-                    
+
                     // StoryProgressView.swift (body)
 
-                                        // ====== 選択肢オーバーレイ (新) ======
-                                        if isChoicePopupVisible, let choiceDialogue = pendingChoiceDialogue {
-                                            BadChoiceView(
-                                                dialogue: choiceDialogue,
-                                                isPopupVisible: $isChoicePopupVisible, // .constant(true) から $isChoicePopupVisible に変更
-                                                onChoiceSelected: { selectedText, nextId, percentage in
+                    // ====== 選択肢オーバーレイ (新) ======
+                    if isChoicePopupVisible, let choiceDialogue = pendingChoiceDialogue {
+                        BadChoiceView(
+                            dialogue: choiceDialogue,
+                            isPopupVisible: $isChoicePopupVisible, // .constant(true) から $isChoicePopupVisible に変更
+                            onChoiceSelected: { selectedText, nextId, percentage in
 
-                                                    // 1. ユーザーが選んだセリフを一時的に表示するシーンを作成
-                                                    // (ChatMessageViewやStoryBranchViewと同様のロジック)
-                                                    let replyScene = Dialogue2(
-                                                        storyId: choiceDialogue.storyId,
-                                                        sceneId: "user_reply_\(UUID())", // 一意のID
-                                                        viewType: .dialogue,
-                                                        characterName: "コニー", // ユーザー
-                                                        dialogueText: selectedText,
-                                                        nextSceneId: nextId, // タップしたら次に進むID
-                                                        isChoice: false,
-                                                        // 背景やキャラクターは、選択肢シーンのものを引き継ぐ
-                                                        background: choiceDialogue.background,
-                                                        talkingPeople: choiceDialogue.talkingPeople,
-                                                        leftCharacter: choiceDialogue.leftCharacter,
-                                                        centerCharacter: choiceDialogue.centerCharacter,
-                                                        rightCharacter: choiceDialogue.rightCharacter,
-                                                        oneCharacter: choiceDialogue.oneCharacter,
-                                                        twoCharacter: choiceDialogue.twoCharacter,
-                                                        onePerson: choiceDialogue.onePerson,
-                                                        bgm: choiceDialogue.bgm
-                                                    )
+                                // 1. ユーザーが選んだセリフを一時的に表示するシーンを作成
+                                // (ChatMessageViewやStoryBranchViewと同様のロジック)
+                                let replyScene = Dialogue2(
+                                    storyId: choiceDialogue.storyId,
+                                    sceneId: "user_reply_\(UUID())", // 一意のID
+                                    viewType: .dialogue,
+                                    characterName: "コニー", // ユーザー
+                                    dialogueText: selectedText,
+                                    nextSceneId: nextId, // タップしたら次に進むID
+                                    isChoice: false,
+                                    // 背景やキャラクターは、選択肢シーンのものを引き継ぐ
+                                    background: choiceDialogue.background,
+                                    talkingPeople: choiceDialogue.talkingPeople,
+                                    leftCharacter: choiceDialogue.leftCharacter,
+                                    centerCharacter: choiceDialogue.centerCharacter,
+                                    rightCharacter: choiceDialogue.rightCharacter,
+                                    oneCharacter: choiceDialogue.oneCharacter,
+                                    twoCharacter: choiceDialogue.twoCharacter,
+                                    onePerson: choiceDialogue.onePerson,
+                                    bgm: choiceDialogue.bgm
+                                )
 
-                                                    // 2. Stateを更新
-                                                    self.userChoiceReply = replyScene     // 一時的な返信シーンをセット
-                                                    self.isChoicePopupVisible = false   // ポップアップを閉じる
-                                                    self.pendingChoiceDialogue = nil  // 待機中の選択肢をクリア
-                                                }
-                                            )
-                                            .transition(.opacity)
-                                            .zIndex(100) // 念のため一番上に
-                                        }
-                    // ...
-
-                    // ====== Chatログ表示 ======
-                    if isChatLogVisible {
-                        ChatLog2View(
-                            isChatLogVisible: $isChatLogVisible,
-                            conversationHistory: conversationHistory
+                                print("履歴追加 (BadChoiceView): \(replyScene.sceneId) - \(replyScene.dialogueText ?? "")")
+                                conversationHistory.append(replyScene)
+                                // 2. Stateを更新
+                                self.userChoiceReply = replyScene     // 一時的な返信シーンをセット
+                                self.isChoicePopupVisible = false   // ポップアップを閉じる
+                                self.pendingChoiceDialogue = nil  // 待機中の選択肢をクリア
+                            }
                         )
+                        .transition(.opacity)
+//                        .zIndex(100)
                     }
+                    // ...
 
                     // ====== 共通UI（ホーム・スコア・ログ） ======
                     VStack {
@@ -166,7 +160,7 @@ struct StoryProgressView: View {
                                     )
                                     .environmentObject(gameManager)
                                 }
-                                
+
                                 HStack {
                                     Spacer()
                                     Button(action: {
@@ -185,6 +179,14 @@ struct StoryProgressView: View {
                         Spacer()
                     }
 
+                    // ====== Chatログ表示 ======
+                    if isChatLogVisible {
+                        ChatLog2View(
+                            isChatLogVisible: $isChatLogVisible,
+                            conversationHistory: conversationHistory
+                        )
+                    }
+
                     // ====== HomeAlert（上に重ねる） ======
                     if isBackMap {
                         HomeAlert(path: $path, isBackMap: $isBackMap)
@@ -201,11 +203,11 @@ struct StoryProgressView: View {
                 }
                 .id(viewRefreshKey)
                 .transition(.opacity)
-                .onChange(of: currentSceneId) { oldValue, newValue in
-                    if let newDialogue = dialogues.first(where: { $0.sceneId == newValue }) {
-                        conversationHistory.append(newDialogue)
-                    }
-                }
+//                .onChange(of: currentSceneId) { oldValue, newValue in
+//                    if let newDialogue = dialogues.first(where: { $0.sceneId == newValue }) {
+//                        conversationHistory.append(newDialogue)
+//                    }
+//                }
                 .onAppear {
                     gameManager.startStory(dialogues: dialogues)
                 }
@@ -223,7 +225,7 @@ struct StoryProgressView: View {
             }
         }
     }
-    
+
     // MARK: - 次のシーン取得
     private func getNextDialogue() -> Dialogue2? {
         guard let current = currentDialogue,
@@ -232,7 +234,7 @@ struct StoryProgressView: View {
         }
         return dialogues.first(where: { $0.sceneId == nextId })
     }
-    
+
     // MARK: - シーン遷移
     private func handleNavigation(nextSceneId: String) {
         // ストーリー終了処理
@@ -268,23 +270,32 @@ struct StoryProgressView: View {
         }
 
         if nextDialogue.isChoice == true {
-                    // 画面遷移せず、ポップアップの準備をする
-                    self.pendingChoiceDialogue = nextDialogue
-                    self.isChoicePopupVisible = true
-                    return // ★ここで処理を中断★
-                }
+            // 画面遷移せず、ポップアップの準備をする
+            self.pendingChoiceDialogue = nextDialogue
+            self.isChoicePopupVisible = true
+            return // ★ここで処理を中断★
+        }
 
         // ViewType変化でリフレッシュ
         if currentDialogue?.viewType != nextDialogue.viewType {
             viewRefreshKey = UUID()
         }
-        
+
         currentSceneId = nextSceneId
+
+                if nextDialogue.viewType == .dialogue {
+                    // 履歴にまだ同じIDがなければ追加 (念のため)
+                    if !conversationHistory.contains(where: { $0.id == nextDialogue.id }) {
+                         print("履歴追加 (handleNavigation - New Scene): \(nextDialogue.sceneId) - \(nextDialogue.dialogueText ?? "テキストなし")")
+                         conversationHistory.append(nextDialogue)
+                    }
+                }
     }
-    
+
     private var currentDialogue: Dialogue2? {
         dialogues.first(where: { $0.sceneId == currentSceneId })
     }
 }
+
 
 

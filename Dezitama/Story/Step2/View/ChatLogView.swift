@@ -10,7 +10,7 @@ struct ChatLogView: View {
     @EnvironmentObject var musicplayer: SoundPlayer
     @Binding var isChatLogVisible: Bool
     let conversationHistory: [Branching]
-    
+
 
     var body: some View {
         GeometryReader { innerGeometry in
@@ -46,7 +46,7 @@ struct ChatLogView: View {
                                 ForEach(conversationHistory, id: \.id) { scene in
                                     let isRight = scene.characterName == scene.rightCharacter
                                     let characterName = CharacterName(rawValue: scene.characterName)?.displayName ?? "不明"
-                                    
+
                                     HStack(alignment: .bottom, spacing: 8) {
                                         if !isRight {
                                             Image(scene.icon)
@@ -55,12 +55,12 @@ struct ChatLogView: View {
                                                 .frame(width: 40, height: 40)
                                                 .clipShape(Circle())
                                         }
-                                        
+
                                         VStack(alignment: isRight ? .trailing : .leading, spacing: 4) {
                                             Text(characterName)
                                                 .font(.custom("MPLUS1-Regular", size: 16))
                                                 .foregroundColor(.white)
-                                            
+
                                             RubyLabelRepresentable(
                                                 attributedText: scene.text
                                                     .replacingOccurrences(of: "<br>", with: "\n")
@@ -81,7 +81,7 @@ struct ChatLogView: View {
                                             )
                                         }
                                         .frame(maxWidth: 250, alignment: isRight ? .trailing : .leading)
-                                        
+
                                         if isRight {
                                             Image(scene.icon)
                                                 .resizable()

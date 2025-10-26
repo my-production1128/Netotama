@@ -140,48 +140,96 @@ struct DialogueView: View {
     // MARK: - ダイアログコンポーネント
     @ViewBuilder
     private func dialogueComponentsGroup(geometry: GeometryProxy) -> some View {
-        VStack {
-            Spacer()
-            
+        Group {
             ZStack {
                 Image("speech_bubble_beige")
                     .resizable()
-                    .frame(width: 1000, height: 300)
-                
-                VStack(alignment: .leading, spacing: 10) {
-                    if let characterName = dialogue.characterName {
-                        Text(characterName)
-                            .font(Font(UIFont.customFont(ofSize: 30)))
-                            .foregroundColor(.black)
-                            .padding(.leading, 40)
-                            .padding(.top, 20)
-                    }
-                    
-                    if let dialogueText = dialogue.dialogueText {
-                        TypingRubyLabelRepresentable(
-                            attributedText: dialogueText
-                                .replacingOccurrences(of: "<br>", with: "\n")
-                                .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black),
-                            charInterval: 0.05,
-                            font: UIFont.customFont(ofSize: 30),
-                            targetWidth: 500
-                        )
-                        .frame(maxWidth: 700, alignment: .leading)
-                        .padding(.horizontal, 60)
-                    }
-                    Spacer()
+                    .frame(width: 950, height: 250)
+                    .offset(x:-13, y: 0)
+                    .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.8)
+
+                if let characterName = dialogue.characterName {
+                    Text(characterName)
+                        .font(.custom("MPLUS1-Regular", size: 35))
+                        .font(.title)
+                        .padding(6)
+                        .cornerRadius(8)
+                        .position(x: geometry.size.width * 0.22,y: geometry.size.height * 0.677)
                 }
-                .frame(width: 1000, height: 300)
-                
+
+                if let dialogueText = dialogue.dialogueText {
+                    TypingRubyLabelRepresentable(
+                        attributedText: dialogueText
+                            .replacingOccurrences(of: "<br>", with: "\n")
+                            .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black),
+                        charInterval: 0.05,
+                        font: UIFont.customFont(ofSize: 30),
+                        targetWidth: 500
+                    )
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: 700)
+                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+                }
+
+
+//                VStack(alignment: .leading, spacing: 10) {
+//                    if let characterName = dialogue.characterName {
+//                        Text(characterName)
+//                            .font(Font(UIFont.customFont(ofSize: 30)))
+//                            .foregroundColor(.black)
+//                            .padding(.leading, 40)
+//                            .padding(.top, 20)
+//                    }
+//                    
+//                    if let dialogueText = dialogue.dialogueText {
+//                        TypingRubyLabelRepresentable(
+//                            attributedText: dialogueText
+//                                .replacingOccurrences(of: "<br>", with: "\n")
+//                                .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black),
+//                            charInterval: 0.05,
+//                            font: UIFont.customFont(ofSize: 30),
+//                            targetWidth: 500
+//                        )
+//                        .frame(maxWidth: 700, alignment: .leading)
+//                        .padding(.horizontal, 60)
+//                    }
+//                    Spacer()
+//                }
+//                .frame(width: 1000, height: 300)
+
+                HStack {
+                    Image("next_button")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 35)
+                        .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
+                        .offset(y: offsetY)
+                        .onAppear {
+                            startLoopingAnimation()
+                        }
+                }
+
                 // アニメーションはここに独立して置く
-                AnimatedNextButton(action: handleTap)
-                    .frame(width: 1000, height: 300)
+//                AnimatedNextButton(action: handleTap)
+//                    .frame(width: 1000, height: 300)
+//                    .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
             }
-            .padding(.bottom, 150)
-        }
+//            .padding(.bottom, 150)
+        }.offset(y: 20)
     }
 
     // MARK: - ヘルパー関数
+    private func startLoopingAnimation() {
+        offsetY = 0.0
+        let animation = Animation
+            .easeInOut(duration: 0.6)
+            .repeatForever(autoreverses: true)
+
+        withAnimation(animation) {
+            offsetY = 8.0
+        }
+    }
+
     private func isCharacterSpeaking(_ imageName: String) -> Bool {
         let characterName = getCharacterNameFromImage(imageName)
         return characterName == dialogue.characterName

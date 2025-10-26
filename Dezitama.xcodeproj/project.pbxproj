@@ -29,7 +29,6 @@
 		8A24DCF72EA5510900DE6E95 /* ChatLog2View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCBF2EA5510800DE6E95 /* ChatLog2View.swift */; };
 		8A24DCF82EA5510900DE6E95 /* ChatMessageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCC02EA5510800DE6E95 /* ChatMessageView.swift */; };
 		8A24DCF92EA5510900DE6E95 /* DialogueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCC12EA5510800DE6E95 /* DialogueView.swift */; };
-		8A24DCFA2EA5510900DE6E95 /* StoryProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCC22EA5510800DE6E95 /* StoryProgressView.swift */; };
 		8A24DCFB2EA5510900DE6E95 /* ChatLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCD62EA5510800DE6E95 /* ChatLogView.swift */; };
 		8A24DCFC2EA5510900DE6E95 /* ChatSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCD72EA5510800DE6E95 /* ChatSceneView.swift */; };
 		8A24DCFD2EA5510900DE6E95 /* isChoiceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCD82EA5510800DE6E95 /* isChoiceView.swift */; };
@@ -70,6 +69,7 @@
 		8A24DD2F2EA5F24700DE6E95 /* finalThundersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DD2E2EA5F24400DE6E95 /* finalThundersView.swift */; };
 		8A24DE4B2EA9624C00DE6E95 /* bad_groupchat_story1_ver8.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DE4A2EA9624C00DE6E95 /* bad_groupchat_story1_ver8.csv */; };
 		8A24DE652EAAA16400DE6E95 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DE642EAAA15600DE6E95 /* StartView.swift */; };
+		8A39E2922EAD42E400273C2E /* StoryProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A39E2912EAD42E100273C2E /* StoryProgressView.swift */; };
 		8A7AD33C2E1F6AD600BF4664 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 8A7AD33B2E1F6AD600BF4664 /* Lottie */; };
 /* End PBXBuildFile section */
 
@@ -128,7 +128,6 @@
 		8A24DCBF2EA5510800DE6E95 /* ChatLog2View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLog2View.swift; sourceTree = "<group>"; };
 		8A24DCC02EA5510800DE6E95 /* ChatMessageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageView.swift; sourceTree = "<group>"; };
 		8A24DCC12EA5510800DE6E95 /* DialogueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DialogueView.swift; sourceTree = "<group>"; };
-		8A24DCC22EA5510800DE6E95 /* StoryProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryProgressView.swift; sourceTree = "<group>"; };
 		8A24DCCC2EA5510800DE6E95 /* good_kakusan_story1_ver3.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_kakusan_story1_ver3.csv; sourceTree = "<group>"; };
 		8A24DCCD2EA5510800DE6E95 /* good_kakusan_story2_ver3.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_kakusan_story2_ver3.csv; sourceTree = "<group>"; };
 		8A24DCCE2EA5510800DE6E95 /* good_kakusan_story3_ver5.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_kakusan_story3_ver5.csv; sourceTree = "<group>"; };
@@ -149,6 +148,7 @@
 		8A24DD2E2EA5F24400DE6E95 /* finalThundersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = finalThundersView.swift; sourceTree = "<group>"; };
 		8A24DE4A2EA9624C00DE6E95 /* bad_groupchat_story1_ver8.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_groupchat_story1_ver8.csv; sourceTree = "<group>"; };
 		8A24DE642EAAA15600DE6E95 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
+		8A39E2912EAD42E100273C2E /* StoryProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryProgressView.swift; sourceTree = "<group>"; };
 		8A7AD2EA2E1E929400BF4664 /* DezitamaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DezitamaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -354,7 +354,7 @@
 				8A24DCBF2EA5510800DE6E95 /* ChatLog2View.swift */,
 				8A24DCC02EA5510800DE6E95 /* ChatMessageView.swift */,
 				8A24DCC12EA5510800DE6E95 /* DialogueView.swift */,
-				8A24DCC22EA5510800DE6E95 /* StoryProgressView.swift */,
+				8A39E2912EAD42E100273C2E /* StoryProgressView.swift */,
 				8A24DE642EAAA15600DE6E95 /* StartView.swift */,
 			);
 			path = View;
@@ -616,9 +616,9 @@
 				8A24DCF72EA5510900DE6E95 /* ChatLog2View.swift in Sources */,
 				8A24DCF82EA5510900DE6E95 /* ChatMessageView.swift in Sources */,
 				8A24DCF92EA5510900DE6E95 /* DialogueView.swift in Sources */,
-				8A24DCFA2EA5510900DE6E95 /* StoryProgressView.swift in Sources */,
 				8A24DCFB2EA5510900DE6E95 /* ChatLogView.swift in Sources */,
 				8A24DCFC2EA5510900DE6E95 /* ChatSceneView.swift in Sources */,
+				8A39E2922EAD42E400273C2E /* StoryProgressView.swift in Sources */,
 				8A24DCFD2EA5510900DE6E95 /* isChoiceView.swift in Sources */,
 				8A24DCFE2EA5510900DE6E95 /* StoryBranchView.swift in Sources */,
 				8A24DCFF2EA5510900DE6E95 /* gauge.swift in Sources */,

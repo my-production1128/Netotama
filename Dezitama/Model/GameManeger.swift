@@ -63,6 +63,8 @@ final class GameManager: ObservableObject {
 
     @Published var didShowChatTapHint: Bool = false
 
+    @Published var lastChoicePercentage: Double? = nil
+
 
     // MARK: - Score Management Properties
     @Published var currentScore: Double = 0.0
@@ -449,6 +451,7 @@ final class GameManager: ObservableObject {
         isHappyUnlocked = false
         didShowChatTapHint = false // ← ここで false に設定
         print("★★★ resetProgress: didShowChatTapHint を false に設定しました。 ★★★") // ← ログ追加
+        lastChoicePercentage = nil
 
         recalcTotals()
         saveProgress() // ← この中で保存時のログが出るはず
@@ -462,7 +465,7 @@ final class GameManager: ObservableObject {
     func startStory(storyId: String, allBranchings: [Branching]) {
         // スコアをリセット
         currentScore = 0.0
-
+        lastChoicePercentage = nil
         // このストーリーIDに含まれる選択肢の数を数える
         let choiceCount = allBranchings.filter { $0.storyId == storyId && $0.isChoice == true }.count
 
@@ -482,6 +485,7 @@ final class GameManager: ObservableObject {
 
     /// 選択肢のパーセンテージに応じてスコアを加算する
     func addScore(percentage: Double?) {
+        self.lastChoicePercentage = percentage
         guard let percentage = percentage else {
             print("スコア加算エラー: パーセンテージがnilのため加算できませんでした。")
             return
@@ -503,7 +507,7 @@ final class GameManager: ObservableObject {
     func startStory(dialogues: [Dialogue2]) {
         // スコアをリセット
         currentScore = 0.0
-
+        lastChoicePercentage = nil
         // このストーリーに含まれる選択肢の数を数える
         // (isChoiceがtrueのものをカウント)
         let choiceCount = dialogues.filter { $0.isChoice == true }.count
