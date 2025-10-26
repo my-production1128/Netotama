@@ -228,7 +228,7 @@ struct StoryBranchView: View {
                                     font: talkFont,
                                     textColor: .black,
                                     textAlignment: .center,
-                                    targetWidth: 100
+                                    targetWidth: 700
                                 )
 //                                Text(current.text)
                                     .font(.custom("MPLUS1-Regular", size: 45))
@@ -287,6 +287,7 @@ struct StoryBranchView: View {
                             }
 
                         case "chat", "chat_picture":
+
                             ChatSceneView(
                                 branchingMap: branchingMap,
                                 initialSceneId: currentSceneId,
@@ -321,6 +322,7 @@ struct StoryBranchView: View {
                                 conversationHistory: $conversationHistory,
                                 isEndSceneReady: $isEndSceneReady
                             )
+                            .id(current.id)
                             .onAppear {
 //                                musicplayer.stopAllMusic()
                                 musicplayer.playBGM(fileName: current.bgm)
