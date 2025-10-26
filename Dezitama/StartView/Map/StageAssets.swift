@@ -46,20 +46,27 @@ struct ScoreDisplayView: View {
     private let maxScore = 27
 
     var body: some View {
-        Text(displayText)
-            .font(Font(UIFont.customFont(ofSize: 40)))
-            .foregroundColor(.black)
+        HStack(spacing: 0){
+            Text(firstStageNumber)
+                .font(.custom("MPLUS1-Medium", size: 47))
+                .foregroundColor(.black)
+            Text("/ \(maxScore)")
+                .font(.custom("MPLUS1-Medium", size: 25))
+                .offset(x: 0, y: 20)
+                .foregroundColor(.black)
+        }
+        
     }
 
     // 表示テキスト
-    private var displayText: String {
+    private var firstStageNumber: String {
         let formattedScore = String(format: "%02d", totalScore)
 
         switch mode {
         case .happy:
-            return "\(formattedScore)/\(maxScore)"
+            return "\(formattedScore)"
         case .bad:
-            return "\(formattedScore)/\(maxScore)"
+            return "\(formattedScore)"
         }
     }
 }
