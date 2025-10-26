@@ -13,7 +13,11 @@ struct DialogueView: View {
     
     @State private var offsetY: CGFloat = 0.0
     @State private var animationTimer: Timer?
-    
+
+ 
+
+    // 会話アニメーション準備完了フラグ
+    @State private var isAnimationReady: Bool = false
 
     @EnvironmentObject private var gameManager: GameManager
     
@@ -36,7 +40,25 @@ struct DialogueView: View {
             }
             .contentShape(Rectangle())
             .onTapGesture {
-                handleTap()
+                // アニメーション準備完了後のみタップを受け付ける
+                if isAnimationReady {
+                    handleTap()
+                }
+            }
+            .onAppear {
+                // ダイアログが表示されるたびにフラグをリセット
+                isAnimationReady = false
+
+                // テキストの文字数からタイピング完了時間を計算
+                if let dialogueText = dialogue.dialogueText {
+                    let textLength = dialogueText.replacingOccurrences(of: "<br>", with: "").count
+                    let typingDuration = Double(textLength) * 0.03 + 0.1 // 0.05秒/文字 + バッファ0.3秒
+
+                    // タイピング完了後にタップを有効化
+                    DispatchQueue.main.asyncAfter(deadline: .now() + typingDuration) {
+                        isAnimationReady = true
+                    }
+                }
             }
         }
     }

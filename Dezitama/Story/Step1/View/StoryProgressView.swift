@@ -63,6 +63,7 @@ struct StoryProgressView: View {
                                 }
                             }
                         )
+                        .id(currentDialogue.id)
 
                     case .chat:
                         ChatMessageView(
