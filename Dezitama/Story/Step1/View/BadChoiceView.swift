@@ -44,9 +44,8 @@ struct BadChoiceView: View {
                                 targetWidth: 500
                             )
                             .fixedSize(horizontal: false, vertical: true)
-                            .padding()
                             .frame(width: 530, height: 120)
-                            .padding(.horizontal, 20)
+                            .padding()
                         }
                         .buttonStyle(ChoiceButtonStyle(isSelected: selectedChoice == 1))
                         .disabled(isChoiceMade)
@@ -70,7 +69,7 @@ struct BadChoiceView: View {
                             )
                             .fixedSize(horizontal: false, vertical: true)
                             .frame(width: 530, height: 120)
-                            .padding(.horizontal, 20)
+                            .padding()
                         }
                         .buttonStyle(ChoiceButtonStyle(isSelected: selectedChoice == 2))
                         .disabled(isChoiceMade)
