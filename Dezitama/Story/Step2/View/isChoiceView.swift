@@ -95,7 +95,8 @@ struct isChoiceView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background {
                 Color.black.opacity(0.5)
-                    .ignoresSafeArea(.all)
+                    .frame(width: 2000, height: 1000)
+                    .edgesIgnoringSafeArea(.all)
             }
     }
 

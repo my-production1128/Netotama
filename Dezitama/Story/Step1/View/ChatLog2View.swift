@@ -19,7 +19,7 @@ struct ChatLog2View: View {
                     .edgesIgnoringSafeArea(.all)
                     .onTapGesture {
                         musicplayer.playSE(fileName: "button_SE")
-                            isChatLogVisible = false
+                        isChatLogVisible = false
                     }
                     .zIndex(0)
 
@@ -64,16 +64,24 @@ struct ChatLog2View: View {
                                                 .foregroundColor(.white)
 
                                             if let dialogueText = dialogue.dialogueText {
-                                                Text(dialogueText.replacingOccurrences(of: "<br>", with: "\n"))
-                                                    .font(.custom("MPLUS1-Regular", size: 16))
-                                                    .foregroundColor(.black)
-                                                    .padding(.horizontal, 12)
-                                                    .padding(.vertical, 8)
-                                                    .background(
-                                                        RoundedRectangle(cornerRadius: 16)
-                                                            .fill(Color.white)
-                                                    )
-                                                    .frame(maxWidth: 250, alignment: isRight ? .trailing : .leading)
+                                                RubyLabelRepresentable(
+                                                    attributedText: dialogueText
+                                                        .replacingOccurrences(of: "<br>", with: "\n")
+                                                        .createRuby(font: .customFont(ofSize: 22),
+                                                                    color: .black),
+                                                    font: .systemFont(ofSize: 20),
+                                                    textColor: .black,
+                                                    textAlignment: .left,
+                                                    targetWidth: 270
+                                                )
+                                                .padding(.horizontal, 12)
+                                                .padding(.vertical, 8)
+                                                .font(.body)
+                                                .foregroundColor(.black)
+                                                .background(
+                                                    RoundedRectangle(cornerRadius: 16)
+                                                        .fill(Color.white)
+                                                )
                                             }
                                         }
                                         .frame(maxWidth: 250, alignment: isRight ? .trailing : .leading)

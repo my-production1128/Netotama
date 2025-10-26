@@ -481,32 +481,60 @@ extension ChatMessageView {
 
     private func handleChoiceSelected(selectedText: String, nextId: String, percentage: Double?) {
 
-        // 2. 最後のメッセージを選択したテキストで置き換え（即表示）
-        if let lastMessageIndex = chatMessages.indices.last {
+            // 1. 選択肢プロンプトの情報を取得 (背景などを引き継ぐため)
+            guard let triggeringChoice = currentChoiceDialogue else {
+                print("エラー: handleChoiceSelected で currentChoiceDialogue が nil です。")
+                // ポップアップを閉じて処理中断 (エラーハンドリング)
+                isPopupVisible = false
+                return
+            }
+
+            // 2. ユーザーが選んだ返信を表す newDialogue を作成
+            // ★ StoryProgressView の replyScene と同様のデータを作成 ★
             let newDialogue = Dialogue2(
-                characterName: "コニー", // 主人公のセリフに変更
-                dialogueText: selectedText, // 選択したテキスト
-                nextSceneId: nextId,        // 次のシーンID
-                isChoice: false             // もう選択肢ではない
+                storyId: triggeringChoice.storyId,          // 元のstoryId
+                sceneId: "user_reply_\(UUID())",          // 一意のID
+                viewType: .dialogue,                     // 返信なので .dialogue タイプにする (見た目はChatだが履歴上)
+                characterName: "コニー",                   // ユーザー
+                dialogueText: selectedText,                // 選んだテキスト
+                nextSceneId: nextId,                      // 次に進むID
+                isChoice: false,
+                // --- 背景やキャラクター情報を引き継ぐ ---
+                background: triggeringChoice.background,
+                talkingPeople: triggeringChoice.talkingPeople,
+                leftCharacter: triggeringChoice.leftCharacter,
+                centerCharacter: triggeringChoice.centerCharacter,
+                rightCharacter: triggeringChoice.rightCharacter,
+                oneCharacter: triggeringChoice.oneCharacter,
+                twoCharacter: triggeringChoice.twoCharacter,
+                onePerson: triggeringChoice.onePerson,
+                bgm: triggeringChoice.bgm
             )
 
-            chatMessages[lastMessageIndex] = ChatMessage2(
-                dialogue: newDialogue,
-                isAnimating: false,    // ← アニメーションなし
-                showText: true,        // ← すぐ表示
-                imageIsVisible: true,
-                textIsVisible: true
-            )
-        }
+            // 3. 画面上の最後のメッセージ (入力待ちアニメーション) を置き換える
+            if let lastMessageIndex = chatMessages.indices.last {
+                chatMessages[lastMessageIndex] = ChatMessage2(
+                    dialogue: newDialogue, // ★ 作成した newDialogue を使う ★
+                    isAnimating: false,    // ← アニメーションなし
+                    showText: true,        // ← すぐ表示
+                    imageIsVisible: true,  // ← アイコンもすぐ表示
+                    textIsVisible: true   // ← テキストもすぐ表示
+                )
+            }
 
-        // 3. ポップアップを閉じる
-        isPopupVisible = false
+            // ★★★ ユーザーが選んだ返信を履歴に追加 ★★★
+            print("履歴追加 (ChatMessage Choice): \(newDialogue.sceneId) - \(newDialogue.dialogueText ?? "")")
+            conversationHistory.append(newDialogue)
 
-        // 4. 次のシーンへ進む（今まで通りの進行ルールを適用）
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-            proceedToNextIfNeeded()
+            // 4. ポップアップを閉じる
+            isPopupVisible = false
+            currentChoiceDialogue = nil // 念のためクリア
+
+            // 5. 次のシーンへ進む
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                proceedToNextIfNeeded()
+            }
         }
-    }
 
     // メッセージのアニメーション完了時処理
     private func updateMessageState(id: UUID) {
@@ -586,7 +614,7 @@ extension ChatMessageView {
                     textIsVisible: false     // ★吹き出しもまだ★
                 )
                 chatMessages.append(newMsg) //
-                conversationHistory.append(next) //
+//                conversationHistory.append(next) //
                 scrollToBottom() //
                 print("proceedToNextIfNeeded: コニーの入力中アニメーション用メッセージを追加。isTyping=\(isTyping)")
             }

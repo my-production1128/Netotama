@@ -21,7 +21,7 @@ struct StoryBranchView: View {
     @State private var currentCharIndex = 0
     @State private var timer: Timer? = nil
 
-    @State private var isTypingComplete: Bool = false
+    @State private var isTypingComplete: Bool = true
     @State private var shouldSkipTyping: Bool = false
 
 
@@ -37,6 +37,8 @@ struct StoryBranchView: View {
 
     @State private var finalStars: Int = 0
     @State var isBackMap: Bool = false
+
+    @State private var showResultButton: Bool = false
 
     @State private var storylineOpacity: Double = 0.0
     @State private var isStorylineInteractable: Bool = false
@@ -109,7 +111,7 @@ struct StoryBranchView: View {
                     VStack {
                         Spacer()
                         switch current.sceneType {
-//                            あらすじ
+                            //                            あらすじ
                         case "storyline":
                             ZStack {
                                 // 1. WideRubyLabelRepresentable を設定
@@ -188,12 +190,11 @@ struct StoryBranchView: View {
                                 }
                                 // 終了シーンの場合
                                 if current.nextSceneId.lowercased() == "end" {
-                                    if !isEndSceneReady {
-                                        let stars = gameManager.scoreToStars(score: gameManager.currentScore)
-                                        self.finalStars = stars
-                                        gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
-                                        isEndSceneReady = true
-                                    }
+//                                    print("物語の終点です。成績ボタンを表示します。") // ← ログ変更
+//                                    // ▼▼▼ isEndSceneReady = true 関連を削除し、以下に変更 ▼▼▼
+//                                    if !showResultButton {
+//                                        showResultButton = true
+//                                    }
                                     return
                                 }
 
@@ -276,12 +277,11 @@ struct StoryBranchView: View {
 
                                     // --- 以前 .onTapGesture にあった処理をここに移動 ---
                                     if current.nextSceneId.lowercased() == "end" {
-                                        if !isEndSceneReady {
-                                            let stars = gameManager.scoreToStars(score: gameManager.currentScore)
-                                            self.finalStars = stars
-                                            gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
-                                            isEndSceneReady = true
-                                        }
+//                                        print("物語の終点です。成績ボタンを表示します。") // ← ログ変更
+//                                        // ▼▼▼ isEndSceneReady = true 関連を削除し、以下に変更 ▼▼▼
+//                                        if !showResultButton {
+//                                            showResultButton = true
+//                                        }
                                         return
                                     }
 
@@ -307,14 +307,24 @@ struct StoryBranchView: View {
                                 branchingMap: branchingMap,
                                 initialSceneId: currentSceneId,
                                 onNextScene: { nextId in
-                                    if nextId == "end" {
-                                        if !isEndSceneReady {
-                                            let stars = gameManager.scoreToStars(score: gameManager.currentScore)
-                                            self.finalStars = stars
-                                            gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
-                                            isEndSceneReady = true
+                                    switch nextId.lowercased() {
+                                    case "end":
+                                        // 念のため、古い"end"信号が来てもボタンを表示
+                                        print("StoryBranchView received 'end' from ChatSceneView. Showing result button.")
+                                        if !showResultButton {
+                                            showResultButton = true
                                         }
-                                    } else {
+                                    case "showresultbutton": // ★ 新しい合図を処理 ★
+                                        print("StoryBranchView received 'showResultButton'. Showing result button.")
+                                        if !showResultButton {
+                                            showResultButton = true
+                                        }
+                                    default: // 通常のシーン遷移
+                                        print("StoryBranchView received next scene ID: \(nextId)")
+                                        guard branchingMap[nextId] != nil else {
+                                            print("🚨 Error: ChatSceneView requested invalid next scene ID: \(nextId)")
+                                            return
+                                        }
                                         historyStack.append(currentSceneId)
                                         currentSceneId = nextId
                                     }
@@ -341,12 +351,11 @@ struct StoryBranchView: View {
                                     .contentShape(Rectangle())
                                     .onTapGesture {
                                         guard let nextScene = branchingMap[current.nextSceneId] else {
-                                            if !isEndSceneReady {
-                                                let stars = gameManager.scoreToStars(score: gameManager.currentScore)
-                                                self.finalStars = stars
-                                                gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
-                                                isEndSceneReady = true
-                                            }
+//                                            print("物語の終点です。成績ボタンを表示します。") // ← ログ変更
+//                                            // ▼▼▼ isEndSceneReady = true 関連を削除し、以下に変更 ▼▼▼
+//                                            if !showResultButton {
+//                                                showResultButton = true
+//                                            }
                                             return
                                         }
                                         if nextScene.isChoice == true {
@@ -515,13 +524,11 @@ struct StoryBranchView: View {
 
                                     guard let nextScene = branchingMap[nextId] else {
                                         if nextId.lowercased() == "end" || nextId.isEmpty {
-                                            print("物語の終点です。終了処理を開始します。")
-                                            if !isEndSceneReady {
-                                                let stars = gameManager.scoreToStars(score: gameManager.currentScore)
-                                                self.finalStars = stars
-                                                gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
-                                                isEndSceneReady = true
-                                            }
+//                                            print("物語の終点です。成績ボタンを表示します。") // ← ログ変更
+//                                            // ▼▼▼ isEndSceneReady = true を削除し、以下に変更 ▼▼▼
+//                                            if !showResultButton { // まだボタンが表示されていなければ表示
+//                                                showResultButton = true
+//                                            }
                                         } else {
                                             print("🚨【エラー】次のシーンID「\(nextId)」がマップ内に見つかりません。CSVのIDが正しいか確認してください。")
                                         }
@@ -641,16 +648,44 @@ struct StoryBranchView: View {
                             }) {
                                 Image("chat")
                                     .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 60, height: 60)
+                                    .scaledToFit()
+                                    .frame(width: 90, height: 90)
                                     .padding(.trailing, 30)
                             }
                             .zIndex(0)
                         }
-                        .padding(.trailing, 10)
+//                        .padding(.trailing, 10)
                         Spacer()
                     }
                 }
+
+                if showResultButton {
+                    HStack {
+                        Spacer()
+                        VStack {
+                            Spacer()
+                            Button {
+                                print("成績ボタンが押されました。結果を表示します。")
+                                // ★ スコア計算と保存をここで行う ★
+                                if !isEndSceneReady { // まだ計算・保存してなければ
+                                    let stars = gameManager.scoreToStars(score: gameManager.currentScore)
+                                    self.finalStars = stars
+                                    gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: stars)
+                                    isEndSceneReady = true // 結果画面表示フラグを立てる
+                                }
+                            } label: {
+                                Image("good_seiseki")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 300, height: 300)
+//                                    .padding(.trailing, 30)
+                            }
+                        }
+                    }
+//                    .padding(.trailing, 15)
+                }
+
+                //                Image("good_seiseki")
 
                 if isChatLogVisible {
                     ChatLogView(
@@ -673,6 +708,19 @@ struct StoryBranchView: View {
                         path: $path
                     )
                     .environmentObject(musicplayer)
+                }
+            }
+            .onChange(of: currentSceneId) { _, newSceneId in
+                // シーンが変わったらタイピング状態をリセット
+//                isTypingComplete = false
+//                shouldSkipTyping = false
+                // 新しいシーンが最後のシーンかチェック
+                checkIfLastScene(sceneId: newSceneId)
+            }
+            .onChange(of: isTypingComplete) { _, newValue in
+                // タイピングが完了した時にも最後のシーンかチェック (talk シーン用)
+                if newValue {
+                    checkIfLastScene(sceneId: currentSceneId)
                 }
             }
             .onAppear {
@@ -732,6 +780,37 @@ struct StoryBranchView: View {
             }
         }
     }
+
+    private func checkIfLastScene(sceneId: String) {
+            guard let scene = branchingMap[sceneId] else { return }
+
+            // 最後のシーン (nextSceneId が "end") かつ、
+            // まだ結果表示前で、成績ボタンも表示されていなければ
+            if scene.nextSceneId.lowercased() == "end" && !isEndSceneReady && !showResultButton {
+
+                // talk シーンの場合はタイピング完了を待つ
+                if scene.sceneType == "talk" {
+                    if isTypingComplete { // タイピングが終わっていたら表示
+                        print("最後の talk シーンのタイピング完了。成績ボタンを表示します。")
+                        // 少しだけ遅延させて表示 (アニメーションと重ならないように)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                             showResultButton = true
+                        }
+                    } else {
+                        print("最後の talk シーンですが、タイピング中のためボタンはまだ表示しません。")
+                    }
+                } else { // talk 以外はそのシーンが表示されたらすぐにボタン表示
+                    print("最後のシーン (\(scene.sceneType)) です。成績ボタンを表示します。")
+                     // 少しだけ遅延させて表示 (シーン遷移アニメーションと重ならないように)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                         showResultButton = true
+                    }
+                }
+            } else if scene.nextSceneId.lowercased() != "end" && showResultButton {
+                // もし何らかの理由でボタンが表示されたまま次のシーンに進んだら非表示にする
+                showResultButton = false
+            }
+        }
 }
 
 

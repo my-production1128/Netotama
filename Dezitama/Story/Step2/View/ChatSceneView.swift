@@ -171,8 +171,9 @@ struct ChatSceneView: View {
                 }
                 let nextId = last.scene.nextSceneId
                 if nextId.lowercased() == "end" {
-                    onNextScene("end")
-                    isEndSceneReady = true
+//                    print("ChatSceneView: 最後のセリフをタップ。親に 'end' を通知します。")
+//                    onNextScene("end")
+//                    isEndSceneReady = true
                     return
                 }
                 guard let next = branchingMap[nextId] else {
@@ -544,6 +545,13 @@ struct ChatSceneView: View {
         }
 
         let nextId = last.scene.nextSceneId
+
+        if nextId.lowercased() == "end" {
+                    print("ChatSceneView: 最後のメッセージ (\(last.scene.sceneId)) が表示完了。成績ボタン表示を依頼します。")
+                    onNextScene("showResultButton") // 親ビューに特別な合図を送る
+                    return // ★ここで処理を終了し、タップ待ちや自動進行を止める★
+                }
+
         guard let next = branchingMap[nextId] else {
             if nextId.lowercased() != "end" { onNextScene(nextId) }
             return
