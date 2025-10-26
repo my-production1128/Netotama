@@ -32,10 +32,22 @@ class SoundPlayer: NSObject, ObservableObject, AVAudioPlayerDelegate {
     // MARK: - BGM再生メソッド
     func playBGM(fileName: String) {
 
-        // 💡 修正点: 同じBGMが再生中なら、二重に再生処理を実行せず、即座に終了する
+        // 同じBGMが再生中なら、二重に再生処理を実行せず、即座に終了する
         if currentBGMFileName == fileName && bgm_player?.isPlaying == true {
             return
         }
+        
+        // BGMごとの音量設定
+        let bgmVolumes: [String: Float] = [
+            "arasuzi_bgm": 0.5,
+            "chat_bgm": 0.5,
+            "classroom_bgm": 0.5,
+            "matome_bgm": 0.5,
+            "news_bgm": 0.5,
+            "park_bgm": 0.5,
+            "room_bgm": 0.5,
+            "start_bgm": 0.5
+        ]
 
         do {
             // 古いBGMがあれば停止
@@ -44,10 +56,13 @@ class SoundPlayer: NSObject, ObservableObject, AVAudioPlayerDelegate {
             bgm_player = try setupPlayer(fileName: fileName)
             bgm_player?.numberOfLoops = -1 // 無限ループ
             bgm_player?.delegate = nil
+            
+            // 音量を設定（デフォルトは0.5）
+            bgm_player?.volume = bgmVolumes[fileName] ?? 0.5
 
             bgm_player?.play()
 
-            // 💡 実行されたらファイル名を更新
+            // 実行されたらファイル名を更新
             currentBGMFileName = fileName
 
         } catch {
