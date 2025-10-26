@@ -215,80 +215,51 @@ struct StoryBranchView: View {
                                 }
                             }
 
-                            // StoryBranchView.swift の body 内
                         case "screen":
                             ZStack {
-                                // オフセットアニメーションを適用したテキスト
                                 Text(current.text)
                                     .font(.custom("MPLUS1-Regular", size: 35))
-                                    .offset(x: screenTextOffset) // ★ アニメーション用のオフセットを適用
+                                    .offset(x: screenTextOffset)
                             }
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .clipped() // ★ 画面の外にはみ出たテキストを隠します
+                            .clipped()
                             .contentShape(Rectangle())
-                            // ⚠️ .onTapGesture は削除
                             .onAppear {
-                                // 1. BGM再生 (既存の処理)
                                 if let current = sceneToDisplay {
                                     musicplayer.stopAllMusic()
                                     musicplayer.playBGM(fileName: current.bgm)
                                 }
+                                let totalDuration: TimeInterval = 3.0
+                                let moveInDuration: TimeInterval = 0.8
+                                let waitDuration: TimeInterval = 1.4
+                                let moveOutDuration: TimeInterval = totalDuration - moveInDuration - waitDuration
 
-                                // 2. テキストアニメーション (シーケンスに変更)
-
-                                // --- アニメーションの時間を定義 ---
-                                let totalDuration: TimeInterval = 3.0   // 合計時間 (この時間で次に進む)
-                                let moveInDuration: TimeInterval = 0.8  // 1. 左外 -> 中央 にかかる時間
-                                let waitDuration: TimeInterval = 1.4    // 2. 中央で停止する時間
-                                let moveOutDuration: TimeInterval = totalDuration - moveInDuration - waitDuration // 3. 中央 -> 右外 にかかる時間 (計算結果: 0.8秒)
-                                // ---
-
-                                // (A) 初期位置を画面左外（画面幅ぶん左）に設定
                                 let startOffset = -geometry.size.width
                                 screenTextOffset = startOffset
 
-                                // (B) 0.8秒かけて真ん中に移動 (アニメーション1)
-                                // ※少し(0.1秒)遅らせて、onAppear直後の描画ズレを防ぎます
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                                     withAnimation(.easeOut(duration: moveInDuration)) {
-                                        screenTextOffset = 0 // 画面中央
+                                        screenTextOffset = 0
                                     }
                                 }
 
-                                // (C) 停止時間(1.4秒)が経過した後、0.8秒かけて右外へ移動 (アニメーション2)
-                                //    (開始タイミング: 0.1 + 0.8 + 1.4 = 2.3秒後)
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1 + moveInDuration + waitDuration) {
                                     let endOffset = geometry.size.width
                                     withAnimation(.easeIn(duration: moveOutDuration)) {
                                         screenTextOffset = endOffset // 画面右外
                                     }
                                 }
-                                // --- アニメーションシーケンスここまで ---
-
-
-                                // 3. 自動進行 (合計3秒後に実行)
                                 DispatchQueue.main.asyncAfter(deadline: .now() + totalDuration) {
-
-                                    // 3秒後に、まだこの "screen" シーンにいるか確認
                                     guard branchingMap[currentSceneId]?.sceneType == "screen" else {
                                         print("Scene changed before 3s timer. Aborting automatic 'screen' transition.")
                                         return
                                     }
-
-                                    // --- 以前 .onTapGesture にあった処理をここに移動 ---
                                     if current.nextSceneId.lowercased() == "end" {
-//                                        print("物語の終点です。成績ボタンを表示します。") // ← ログ変更
-//                                        // ▼▼▼ isEndSceneReady = true 関連を削除し、以下に変更 ▼▼▼
-//                                        if !showResultButton {
-//                                            showResultButton = true
-//                                        }
                                         return
                                     }
-
                                     guard let nextScene = branchingMap[current.nextSceneId] else {
                                         return
                                     }
-
                                     if nextScene.isChoice == true {
                                         isPopupVisible = true
                                         currentChoiceScene = nextScene
@@ -298,7 +269,6 @@ struct StoryBranchView: View {
                                         }
                                         currentSceneId = nextScene.sceneId
                                     }
-                                    // --- 処理の移動ここまで ---
                                 }
                             }
 
