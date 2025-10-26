@@ -9,8 +9,8 @@ good_gurucha_story2,scene7,talk,,alec_icon,Alec_normal,Alec_normal,Cecil_fun,Con
 good_gurucha_story2,scene8,talk,,alec_icon,Alec_normal,Alec_normal,Cecil_trouble,Cony_panic,｜記録係《きろくがかり》しっかりして〜,scene10,FALSE,,,,,,,,,,classroom_bgm,classroom
 good_gurucha_story2,scene9,talk,,alec_icon,Alec_normal,Alec_normal,Cecil_trouble,Cony_panic,え？｜聞《き》こえなかった。｜何《なに》か｜言《い》った？,scene10,FALSE,,,,,,,,,,classroom_bgm,classroom
 good_gurucha_story2,scene10,talk,,cecil_icon,Cecil_trouble,Alec_normal,Cecil_trouble,Cony_smile,コニーはさカールのことどう｜思《おも》ってるの？（笑）,scene11,FALSE,,,,,,,,,,classroom_bgm,classroom
-good_gurucha_story2,scene11,talk,,cony_icon,Cony_panic,Alec_normal,Cecil_trouble,Cony_smile,,,TRUE,え？カールはばかにしてる〜,0,scene12,｜特《とく》になにも｜思《おも》ってないよ（笑）,0.3,scene12,いい｜友達《ともだち》だと｜思《おも》ってる！,1,scene12,classroom_bgm,school
-good_gurucha_story2,scene12,screen,,,,,,,コニーとサンドラのチャット,scene13,FALSE,,,,,,,,,,chat_bgm,chatBackground_03
+good_gurucha_story2,scene11,talk,,cony_icon,Cony_panic,Alec_normal,Cecil_trouble,Cony_smile,,,TRUE,え？カールはばかにしてる〜,0,scene12,｜特《とく》になにも｜思《おも》ってないよ（笑）,0.3,scene12,いい｜友達《ともだち》だと｜思《おも》ってる！,1,scene12,classroom_bgm,classroom
+good_gurucha_story2,scene12,screen,,,,,,,コニーとサンドラのチャット,scene13,FALSE,,,,,,,,,,chat_bgm,school
 good_gurucha_story2,scene13,chat,サンドラ,cony_icon,Cony,,,Cony,あのさ｜相談《そうだん》があるんだけど、、,scene14,FALSE,,,,,,,,,,chat_bgm,chatBackground_03
 good_gurucha_story2,scene14,chat,サンドラ,sandra_icon,Sandra,,,Cony,どうしたの？？,scene15,FALSE,,,,,,,,,,chat_bgm,chatBackground_03
 good_gurucha_story2,scene15,chat,サンドラ,cony_icon,Cony,,,Cony,,,TRUE,グルチャで｜悪口《わるぐち》を｜言《い》わないようにしたいんだよね...,1,scene16,アレックとセシルが｜最低《さいてい》なんだけど、どうしたらいいかな？,0,scene16,アレックとセシルが｜最近《さいきん》｜口悪《くちわる》くて｜困《こま》ってるんだよね,0.3,scene16,chat_bgm,chatBackground_03
