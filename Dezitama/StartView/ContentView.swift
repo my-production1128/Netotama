@@ -21,8 +21,8 @@ struct ContentView: View {
     @State private var stages: [StageData] = [
         //グループチャット
         StageData(id: 1, csvFileName: "bad_groupchat_story1_ver10"),
-        StageData(id: 2, csvFileName: "bad_groupchat_story2_ver7"),
-        StageData(id: 3, csvFileName: "bad_groupchat_story3_ver5"),
+        StageData(id: 2, csvFileName: "bad_groupchat_story2_ver9"),
+        StageData(id: 3, csvFileName: "bad_groupchat_story3_ver7"),
         //ネトモ
         StageData(id: 4, csvFileName: "bad_netomo_story1_ver12"),
         StageData(id: 5, csvFileName: "bad_netomo_story2_ver12"),
@@ -253,9 +253,9 @@ struct ContentView: View {
                 stages[index].loadDialogues()
             }
 //            グルチャ
-            let goodGuruchaStory1 = loadBranchingCSV(fileName: "good_gurucha_story1_ver6")
-            let goodGuruchaStory2 = loadBranchingCSV(fileName: "good_gurucha_story2_ver8")
-            let goodGuruchaStory3 = loadBranchingCSV(fileName: "good_gurucha_story3_ver7")
+            let goodGuruchaStory1 = loadBranchingCSV(fileName: "good_gurucha_story1_ver7")
+            let goodGuruchaStory2 = loadBranchingCSV(fileName: "good_gurucha_story2_ver9")
+            let goodGuruchaStory3 = loadBranchingCSV(fileName: "good_gurucha_story3_ver8")
 //            ネトモ
             let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver5")
             let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver3")
