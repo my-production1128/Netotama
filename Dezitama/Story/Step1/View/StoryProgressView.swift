@@ -22,6 +22,7 @@ struct StoryProgressView: View {
     @State private var userChoiceReply: Dialogue2? = nil       // (3) ユーザーが選んだセリフを一時表示
 
     @State private var isEndSceneReady: Bool = false
+    @State private var showResultButton: Bool = false
     @State private var finalThunders: Int = 0
     let stageId: Int
 
@@ -125,7 +126,7 @@ struct StoryProgressView: View {
                             }
                         )
                         .transition(.opacity)
-//                        .zIndex(100)
+                        //                        .zIndex(100)
                     }
                     // ...
 
@@ -179,6 +180,31 @@ struct StoryProgressView: View {
                         Spacer()
                     }
 
+                    if showResultButton {
+                        HStack {
+                            Spacer()
+                            VStack {
+                                Spacer()
+                                Button {
+                                    print("成績ボタンが押されました。結果を表示します。")
+                                    // ★ スコア計算と保存をここで行う ★
+                                    if !isEndSceneReady { // まだ計算・保存してなければ
+                                        let thunders = gameManager.scoreToStars(score: gameManager.currentScore)
+                                        self.finalThunders = thunders
+                                        gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: thunders)
+                                        isEndSceneReady = true // 結果画面表示フラグを立てる
+                                    }
+                                } label: {
+                                    Image("good_seiseki")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 300, height: 300)
+                                    //                                    .padding(.trailing, 30)
+                                }
+                            }
+                        }
+                    }
+
                     // ====== Chatログ表示 ======
                     if isChatLogVisible {
                         ChatLog2View(
@@ -203,11 +229,39 @@ struct StoryProgressView: View {
                 }
                 .id(viewRefreshKey)
                 .transition(.opacity)
-//                .onChange(of: currentSceneId) { oldValue, newValue in
-//                    if let newDialogue = dialogues.first(where: { $0.sceneId == newValue }) {
-//                        conversationHistory.append(newDialogue)
-//                    }
-//                }
+                .onChange(of: currentSceneId) { _, newSceneId in
+
+                    // ★ 最後のシーンかどうかのチェック ★
+                    guard let newDialogue = dialogues.first(where: { $0.sceneId == newSceneId }) else {
+                        return
+                    }
+
+                    // (A) もし、新しく表示するこのシーンの「次」が "end" なら
+                    if newDialogue.nextSceneId?.lowercased() == "end" {
+                        // ...そして、まだボタンが表示されていなければ
+                        if !showResultButton && !isEndSceneReady {
+                            print("最後のシーン (\(newSceneId)) に到達しました。成績ボタンを表示します。")
+
+                            // ★ 成績ボタンを表示する
+                            // (少し遅延させて、シーン切り替えのアニメーションと被らないようにします)
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                self.showResultButton = true
+//                            }
+                        }
+                    }
+                    // (B) もし、次のシーンが "end" でないなら
+                    else {
+                        // (履歴を戻った場合などを考慮し、ボタンが表示されていれば非表示に戻します)
+                        if showResultButton {
+                            self.showResultButton = false
+                        }
+                    }
+                }
+                //                .onChange(of: currentSceneId) { oldValue, newValue in
+                //                    if let newDialogue = dialogues.first(where: { $0.sceneId == newValue }) {
+                //                        conversationHistory.append(newDialogue)
+                //                    }
+                //                }
                 .onAppear {
                     gameManager.startStory(dialogues: dialogues)
                 }
@@ -239,28 +293,20 @@ struct StoryProgressView: View {
     private func handleNavigation(nextSceneId: String) {
         // ストーリー終了処理
         if nextSceneId.lowercased() == "end" {
-            print("ストーリー終了")
+            print("ストーリー終了 (handleNavigation)") // ログを分かりやすく変更
 
-            // 既に終了処理済みなら何もしない
-            if isEndSceneReady {
+            // 既に終了処理済みか、ボタン表示済みなら何もしない
+            if isEndSceneReady || showResultButton {
+                print("既に終了/ボタン表示済みです。")
                 return
             }
 
-            // 1. スコアを雷の数（0〜3）に変換
-            let thunders = gameManager.scoreToStars(score: gameManager.currentScore)
-            self.finalThunders = thunders
+            // ★「成績ボタン」を表示するフラグを立てる
+            // (主にChatMessageViewがendを返した時用)
+            showResultButton = true
+            print("成績ボタンを表示します。")
 
-            // 2. GameManager にスコアを保存
-            gameManager.completeStage(
-                stageId: self.stageId,
-                mode: self.gameManager.currentMode,
-                earnedScore: thunders
-            )
-
-            // 3. 結果画面を表示
-            isEndSceneReady = true
-
-            return
+            return // シーン遷移はここでストップ
         }
 
         // 次のシーン取得
@@ -283,14 +329,45 @@ struct StoryProgressView: View {
 
         currentSceneId = nextSceneId
 
-                if nextDialogue.viewType == .dialogue {
-                    // 履歴にまだ同じIDがなければ追加 (念のため)
-                    if !conversationHistory.contains(where: { $0.id == nextDialogue.id }) {
-                         print("履歴追加 (handleNavigation - New Scene): \(nextDialogue.sceneId) - \(nextDialogue.dialogueText ?? "テキストなし")")
-                         conversationHistory.append(nextDialogue)
-                    }
-                }
+        if nextDialogue.viewType == .dialogue {
+            // 履歴にまだ同じIDがなければ追加 (念のため)
+            if !conversationHistory.contains(where: { $0.id == nextDialogue.id }) {
+                print("履歴追加 (handleNavigation - New Scene): \(nextDialogue.sceneId) - \(nextDialogue.dialogueText ?? "テキストなし")")
+                conversationHistory.append(nextDialogue)
+            }
+        }
     }
+
+//    private func checkIfLastScene(sceneId: String) {
+//            guard let scene = branchingMap[sceneId] else { return }
+//
+//            // 最後のシーン (nextSceneId が "end") かつ、
+//            // まだ結果表示前で、成績ボタンも表示されていなければ
+//            if scene.nextSceneId.lowercased() == "end" && !isEndSceneReady && !showResultButton {
+//
+//                // talk シーンの場合はタイピング完了を待つ
+//                if scene.sceneType == "talk" {
+//                    if isTypingComplete { // タイピングが終わっていたら表示
+//                        print("最後の talk シーンのタイピング完了。成績ボタンを表示します。")
+//                        // 少しだけ遅延させて表示 (アニメーションと重ならないように)
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//                             showResultButton = true
+//                        }
+//                    } else {
+//                        print("最後の talk シーンですが、タイピング中のためボタンはまだ表示しません。")
+//                    }
+//                } else { // talk 以外はそのシーンが表示されたらすぐにボタン表示
+//                    print("最後のシーン (\(scene.sceneType)) です。成績ボタンを表示します。")
+//                     // 少しだけ遅延させて表示 (シーン遷移アニメーションと重ならないように)
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+//                         showResultButton = true
+//                    }
+//                }
+//            } else if scene.nextSceneId.lowercased() != "end" && showResultButton {
+//                // もし何らかの理由でボタンが表示されたまま次のシーンに進んだら非表示にする
+//                showResultButton = false
+//            }
+//        }
 
     private var currentDialogue: Dialogue2? {
         dialogues.first(where: { $0.sceneId == currentSceneId })

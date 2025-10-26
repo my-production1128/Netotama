@@ -578,6 +578,7 @@ extension ChatMessageView {
             if nextId.lowercased() == "end" {
                 print("proceedToNextIfNeeded: 'end' に到達しました。ユーザーのタップを待ちます。")
                 // ★ onNextScene("end") を呼ばずに、ここで進行を停止する
+                onNextScene("end")
                 return
             }
 
@@ -605,7 +606,7 @@ extension ChatMessageView {
         if next.characterName == "コニー" { //
             print("proceedToNextIfNeeded: 次はコニーの番です。入力中アニメーションを表示します。")
             isTyping = true // ★アニメーション表示中は true に設定★
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { //
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0) { //
                 let newMsg = ChatMessage2( //
                     dialogue: next,
                     isAnimating: true,       // ★アニメーション表示★
@@ -616,9 +617,16 @@ extension ChatMessageView {
                 chatMessages.append(newMsg) //
 //                conversationHistory.append(next) //
                 scrollToBottom() //
-                print("proceedToNextIfNeeded: コニーの入力中アニメーション用メッセージを追加。isTyping=\(isTyping)")
+                if next.nextSceneId?.lowercased() == "end" {
+                                    print("proceedToNextIfNeeded: コニーの最後のセリフです。親に'end'を通知します。")
+                                    // このメッセージが表示された直後に 'end' を通知する
+                                    // (タップを待たずにボタンを出すため)
+                                    onNextScene("end")
+                                }
             }
-            return // ★コニーの番はここで進行停止 (タップ待ち)★
+            if next.nextSceneId?.lowercased() != "end" {
+                             return // "end" 以外なら、これまで通りタップ待ち
+                        } // ★コニーの番はここで進行停止 (タップ待ち)★
         }
 
         // 3. (次に) 選択肢の場合 (コニー以外)
