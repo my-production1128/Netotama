@@ -4,8 +4,10 @@
 //
 //  Created by 末廣月渚 on 2025/07/19.
 //
+
 import SwiftUI
 import Foundation
+import UIKit
 
 class TutorialManager {
     static let shared = TutorialManager()
@@ -40,10 +42,39 @@ enum TutorialViewType {
 
 // チュートリアルの各ステップを定義
 struct TutorialStep {
-    let description: String
+    let description: String  // ｜漢字《よみがな》形式で記述
     let viewType: TutorialViewType
     let backgroundImageName: String
     let cony: String
+}
+
+// MARK: - チュートリアル用ルビラベル（タイピングなし版）
+struct TutorialRubyLabel: UIViewRepresentable {
+    let text: String
+    let font: UIFont
+    let textColor: UIColor
+    let textAlignment: NSTextAlignment
+    let targetWidth: CGFloat
+    
+    func makeUIView(context: Context) -> WideRubyLabel {
+        let label = WideRubyLabel()
+        label.numberOfLines = 0
+        label.textAlignment = textAlignment
+        label.font = font
+        label.textColor = textColor
+        return label
+    }
+    
+    func updateUIView(_ uiView: WideRubyLabel, context: Context) {
+        uiView.font = font
+        uiView.textColor = textColor
+        uiView.textAlignment = textAlignment
+        uiView.maxLayoutWidth = targetWidth
+        uiView.preferredMaxLayoutWidth = targetWidth
+        
+        // String.createWideRuby()を使用してルビ付きテキストに変換
+        uiView.attributedText = text.createWideRuby(font: font, color: textColor)
+    }
 }
 
 // MARK: - 1. ChoiceView用のチュートリアル
@@ -52,43 +83,43 @@ struct ChoiceTutorialView: View {
     
     let steps = [
         TutorialStep(
-            description: "初めまして！わたしはコニー！\nこれからこのゲームの遊び方を説明していくよ！",
+            description: "｜初《はじ》めまして！わたしはコニー！\nこれからこのゲームの｜遊《あそ》び｜方《かた》を｜説明《せつめい》していくよ！",
             viewType: .type1,
             backgroundImageName: "maeoki1",
             cony: "tutrial_cony02"
         ),
         TutorialStep(
-            description: "2つのモードから遊び方を選べるよ！",
+            description: "このゲームは 2つのモードから｜遊《あそ》び｜方《かた》を｜選《えら》べるよ！",
             viewType: .type1,
             backgroundImageName: "maeoki1",
             cony: "tutrial_cony02"
         ),
         TutorialStep(
-            description: "間違い探検の旅ではトラブルに巻き込まれていく\n体験ができるストーリーになってるよ！",
+            description: "｜間違《まちが》い｜探検《たんけん》の｜旅《たび》では トラブルに｜巻《ま》き｜込《こ》まれていく\n｜体験《たいけん》ができるストーリーになってるよ！",
             viewType: .type2,
             backgroundImageName: "maeoki1",
             cony: "Bad_Button"
         ),
         TutorialStep(
-            description: "ストーリーの途中に出てくる選択肢の中で、\nより間違ってる方を選んで雷ポイントを稼ごう！",
+            description: "ストーリーの｜途中《とちゅう》に｜出《で》てくる｜選択肢《せんたくし》の｜中《なか》で、\nより｜間違《まちが》ってる｜方《ほう》を｜選《えら》んで｜雷《かみなり》ポイントを｜稼《かせ》ごう！",
             viewType: .type2,
             backgroundImageName: "maeoki1",
             cony: "Bad_Button"
         ),
         TutorialStep(
-            description: "情報モラルマスターの旅では、\n自分でより良い選択肢を選んでトラブルを解決しよう！",
+            description: "｜ 情報《じょうほう》モラルマスターの｜旅《たび》では、\n｜自分《じぶん》でより｜良《よ》い｜選択肢《せんたくし》を｜選《えら》んでトラブルを｜解決《かいけつ》しよう！",
             viewType: .type2,
             backgroundImageName: "maeoki1",
             cony: "Good_Button"
         ),
         TutorialStep(
-            description: "より良い選択肢を選ぶと星ポイントが溜まるよ！",
+            description: "より｜良《よ》い｜選択肢《せんたくし》を｜選《えら》ぶと｜星《ほし》ポイントが｜溜《た》まるよ！",
             viewType: .type2,
             backgroundImageName: "maeoki1",
             cony: "Good_Button"
         ),
         TutorialStep(
-            description: "まずは間違い探検の旅に進んでみよう！",
+            description: "まずは｜間違《まちが》い｜探検《たんけん》の｜旅《たび》に｜進《すす》んでみよう！",
             viewType: .type2,
             backgroundImageName: "maeoki1",
             cony: "Bad_Button"
@@ -102,7 +133,7 @@ struct ChoiceTutorialView: View {
         TutorialContentView(steps: steps, currentIndex: $currentIndex, onComplete: {
             TutorialManager.shared.setTutorialSeen(for: "choice")
             withAnimation {
-                isPresented = false  // これでChoiceViewに戻る
+                isPresented = false
             }
         })
     }
@@ -114,27 +145,33 @@ struct MapTutorialView: View {
     
     let steps = [
         TutorialStep(
-            description: "前の島のストーリーを体験したら、\n次の島に進めるようになってるよ！",
+            description: "｜前《まえ》の｜島《しま》のストーリーを｜体験《たいけん》して｜雷《かみなり》or ｜星《ほし》を｜貯《た》めたら、\n｜次《つぎ》の｜島《しま》に｜進《すす》めるようになってるよ！",
             viewType: .type2,
             backgroundImageName: "maeoki2",
             cony: ""
         ),
         TutorialStep(
-            description: "全部の島で集めた星・雷の数は右上で確認できるよ！",
+            description: "｜全部《ぜんぶ》の｜島《しま》で｜集《あつ》めた｜星《ほし》・｜雷《かみなり》の｜数《かず》は｜右上《みぎうえ》で｜確認《かくにん》できるよ！",
             viewType: .type2,
-            backgroundImageName: "maeoki2",
+            backgroundImageName: "maeoki_mark",
             cony: ""
         ),
         TutorialStep(
-            description: "グルチャ島では、グループチャットでの悪口が\nきっかけに起きるトラブルの物語だよ！",
+            description: "ここはグルチャ｜島《とう》！",
             viewType: .type2,
-            backgroundImageName: "maeoki_groupchat",
+            backgroundImageName: "maeoki_bad_groupchat",
             cony: ""
         ),
         TutorialStep(
-            description: "早速ストーリーを始めてみよう！",
+            description: "この｜島《しま》は、グループチャットでちょっとしたトラブルが\n｜起《お》きる｜島《しま》なんだ！",
             viewType: .type2,
-            backgroundImageName: "maeoki_groupchat",
+            backgroundImageName: "maeoki_bad_groupchat",
+            cony: ""
+        ),
+        TutorialStep(
+            description: "｜早速《さっそく》ストーリーを｜始《はじ》めてみよう！",
+            viewType: .type2,
+            backgroundImageName: "maeoki_bad_groupchat",
             cony: ""
         )
     ]
@@ -145,32 +182,43 @@ struct MapTutorialView: View {
         TutorialContentView(steps: steps, currentIndex: $currentIndex, onComplete: {
             TutorialManager.shared.setTutorialSeen(for: "map")
             withAnimation {
-                isPresented = false  // これでMapViewに留まる
+                isPresented = false
             }
         })
     }
 }
 
-// MARK: - 3. ステージ開放時のチュートリアル（将来用）
+// MARK: - 3. ステージ開放時のチュートリアル
 struct StageUnlockTutorialView1: View {
     let steps: [TutorialStep] = [
-        // 後で島ごとのチュートリアルを追加
         TutorialStep(
-            description: "君の頑張りによって、ネトモ島が開放されたよ！",
+            description: "｜君《きみ》の｜頑張《がんば》りによって、\n ｜情報《じょうほう》モラルマスターの｜旅《たび》のグルチャ｜島《とう》と",
             viewType: .type2,
-            backgroundImageName: "maeoki_netomo",
+            backgroundImageName: "maeoki_good_groupchat",
             cony: ""
         ),
         TutorialStep(
-            description: "ネトモ島は、ネットで知り合った”ネトモ”とのトラブルの物語だよ！",
+            description: "｜間違《まちが》い｜探検《たんけん》の｜旅《たび》のネトモ｜島《とう》が｜開放《かいほう》されたよ！！",
             viewType: .type2,
-            backgroundImageName: "maeoki_netomo",
+            backgroundImageName: "maeoki_bad_netomo",
             cony: ""
         ),
         TutorialStep(
-            description: "ネトモ島に行ってみよう！",
+            description: "ここは、ネトモ｜島《とう》！",
             viewType: .type2,
-            backgroundImageName: "maeoki_netomo",
+            backgroundImageName: "maeoki_bad_netomo",
+            cony: ""
+        ),
+        TutorialStep(
+            description: "この｜島《しま》は、ネットで｜知《し》り｜合《あ》ったネトモとの\nトラブルが｜起《お》きる｜島《しま》なんだ！",
+            viewType: .type2,
+            backgroundImageName: "maeoki_bad_netomo",
+            cony: ""
+        ),
+        TutorialStep(
+            description: "さっそく｜開放《かいほう》されたステージをプレイしてみよう！",
+            viewType: .type2,
+            backgroundImageName: "maeoki_bad_netomo",
             cony: ""
         )
     ]
@@ -188,25 +236,37 @@ struct StageUnlockTutorialView1: View {
     }
 }
 
-// MARK: - 4. ステージ開放時のチュートリアル（将来用）
+// MARK: - 4. ステージ開放時のチュートリアル
 struct StageUnlockTutorialView2: View {
     let steps: [TutorialStep] = [
         TutorialStep(
-            description: "君の頑張りでシェア島が開放されたよ！",
+            description: "｜君《きみ》の｜頑張《がんば》りによって、\n ｜情報《じょうほう》モラルマスターの｜旅《たび》のネトモ｜島《とう》と",
             viewType: .type2,
-            backgroundImageName: "maeoki_share",
+            backgroundImageName: "maeoki_good_netomo",
             cony: ""
         ),
         TutorialStep(
-            description: "シェア島は、軽い気持ちで動画をみんなに\n共有したことから始まるトラブルの物語だよ！",
+            description: "｜間違《まちが》い｜探検《たんけん》の｜旅《たび》のシェア｜島《とう》が｜開放《かいほう》されたよ！！",
             viewType: .type2,
-            backgroundImageName: "maeoki_share",
+            backgroundImageName: "maeoki_bad_share",
             cony: ""
         ),
         TutorialStep(
-            description: "シェア島に行ってみよう！",
+            description: "ここは、シェア｜島《とう》だよ！",
             viewType: .type2,
-            backgroundImageName: "maeoki_share",
+            backgroundImageName: "maeoki_bad_share",
+            cony: ""
+        ),
+        TutorialStep(
+            description: "この｜島《しま》は、｜軽《かる》い｜気持《きも》ちで｜動画《どうが》を\n｜共有《きょうゆう》したことからトラブルが｜起《お》きる｜島《しま》なんだ！",
+            viewType: .type2,
+            backgroundImageName: "maeoki_bad_share",
+            cony: ""
+        ),
+        TutorialStep(
+            description: "さっそく｜開放《かいほう》されたステージをプレイしてみよう！",
+            viewType: .type2,
+            backgroundImageName: "maeoki_bad_share",
             cony: ""
         )
     ]
@@ -215,14 +275,15 @@ struct StageUnlockTutorialView2: View {
     @Binding var isPresented: Bool
     
     var body: some View {
-            TutorialContentView(steps: steps, currentIndex: $currentIndex, onComplete: {
-                TutorialManager.shared.setTutorialSeen(for: "stage_unlock_2")
-                withAnimation {
-                    isPresented = false
-                }
-            })
-        }
+        TutorialContentView(steps: steps, currentIndex: $currentIndex, onComplete: {
+            TutorialManager.shared.setTutorialSeen(for: "stage_unlock_2")
+            withAnimation {
+                isPresented = false
+            }
+        })
+    }
 }
+
 // MARK: - 共通のチュートリアル表示コンポーネント
 struct TutorialContentView: View {
     let steps: [TutorialStep]
@@ -247,11 +308,6 @@ struct TutorialContentView: View {
                 
                 Spacer()
                 
-                // ボタン
-                VStack(spacing: 15) {
-                    //
-                }
-                
                 Spacer()
                     .frame(height: 30)
             }
@@ -272,12 +328,12 @@ struct TutorialContentView: View {
     @ViewBuilder
     private func contentView(for step: TutorialStep) -> some View {
         switch step.viewType {
-        case .type1: //image真ん中
+        case .type1:
             SpeechBubbleView(text: step.description, bubbleColor: .white, viewType: .type1, conyImageName: step.cony)
                 .padding(.horizontal, 30)
                 .transition(.opacity)
             
-        case .type2: //コニーアイコン付き
+        case .type2:
             VStack {
                 SpeechBubbleView(text: step.description, bubbleColor: .white, viewType: .type2, conyImageName: step.cony)
                     .padding(.horizontal, 30)
@@ -300,7 +356,6 @@ struct SpeechBubbleView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            // viewTypeによって異なる吹き出し画像を表示
             switch viewType {
             case .type1:
                 ZStack {
@@ -318,11 +373,15 @@ struct SpeechBubbleView: View {
                             .scaledToFit()
                             .frame(width: geometry.size.width * 0.75)
                         
-                        Text(text)
-                            .font(.custom("MPLUS1-Bold", size: 28))
-                            .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
-                            .frame(width: geometry.size.width * 1)
-                            .multilineTextAlignment(.center)
+                        TutorialRubyLabel(
+                            text: text,
+                            font: UIFont(name: "MPLUS1-Bold", size: 28) ?? .systemFont(ofSize: 28),
+                            textColor: UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0),
+                            textAlignment: .center,
+                            targetWidth: geometry.size.width * 1
+                        )
+                        .frame(width: geometry.size.width * 1)
+                        .position(x: geometry.size.width * 0.7, y: geometry.size.height * 0.55)
                         
                         Image("next_button")
                             .resizable()
@@ -347,7 +406,6 @@ struct SpeechBubbleView: View {
                             .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.4)
                     }
                     
-                    // 吹き出し部分
                     HStack(spacing: 3) {
                         Image("maeoki_aikon")
                             .resizable()
@@ -360,11 +418,14 @@ struct SpeechBubbleView: View {
                                 .scaledToFit()
                                 .frame(width: geometry.size.width * 0.75)
                             
-                            Text(text)
-                                .font(.custom("MPLUS1-Bold", size: 28))
-                                .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
-                                .frame(width: geometry.size.width * 0.65)
-                                .multilineTextAlignment(.center)
+                            TutorialRubyLabel(
+                                text: text,
+                                font: UIFont(name: "MPLUS1-Bold", size: 28) ?? .systemFont(ofSize: 28),
+                                textColor: UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0),
+                                textAlignment: .center,
+                                targetWidth: geometry.size.width * 0.65
+                            )
+                            .frame(width: geometry.size.width * 0.65)
                             
                             Image("next_button")
                                 .resizable()
