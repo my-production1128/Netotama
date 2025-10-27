@@ -25,8 +25,6 @@ struct startView: View {
                 .ignoresSafeArea()
 
             ZStack{
-
-                // テキスト (WideRubyLabelRepresentable)
                 if let dialogueText = dialogue.dialogueText {
                     WideRubyLabelRepresentable(
                         attributedText: dialogueText
@@ -35,9 +33,9 @@ struct startView: View {
                         font: UIFont.customFont(ofSize: 30),
                         textColor: .black,
                         textAlignment: .center,
-                        targetWidth: 700 // ★ 700から500に変更 (吹き出しに合わせる)
+                        targetWidth: 700
                     )
-                    .frame(maxWidth: 750) // ★ 750から500に変更
+                    .frame(maxWidth: 750)
                     .padding(.horizontal, 20)
                     .id(dialogueText)
                     .offset(y: -150)
@@ -53,9 +51,9 @@ struct startView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 35)
-                                .offset(y: offsetY) // アニメーション用offset
+                                .offset(y: offsetY)
                                 .onAppear {
-                                    startLoopingAnimation() // アニメーション開始
+                                    startLoopingAnimation()
                                 }
                         }
                         .padding()
@@ -63,25 +61,22 @@ struct startView: View {
                     }
                 }
             }
-            .opacity(viewOpacity) // ZStack全体にフェードを適用
+            .opacity(viewOpacity)
 
         }
         .contentShape(Rectangle())
         .onTapGesture {
             handleTap()
         }
-        // ★ 修正：.onAppear はアニメーション関数を呼ぶだけにします
         .onAppear {
             runFadeInAnimation()
         }
-        // ★ 追加：dialogueTextが変更された時もアニメーション関数を呼びます
         .onChange(of: dialogue.dialogueText) {
             runFadeInAnimation()
         }
     }
 
     private func handleTap() {
-        // 1. タップガード (storyline と同じ)
         guard isInteractable else {
             print("startViewアニメーション中のためタップを無視しました。")
             return
@@ -92,14 +87,11 @@ struct startView: View {
             return
         }
 
-        // 2. "end" チェック (storyline と同じロジック)
         if nextSceneId.lowercased() == "end" {
             print("startView: 'end' を検出。親に通知します。")
             onNext("end")
             return
         }
-
-        // 3. 次のシーンへ (storyline と同じロジック)
         print("startView: 次のシーン \(nextSceneId) へ。親に通知します。")
         onNext(nextSceneId)
     }
@@ -116,19 +108,16 @@ struct startView: View {
         }
     }
 
-    // ★ 追加：フェードインアニメーションを共通関数化
     private func runFadeInAnimation() {
         print("startView: フェードインアニメーションを実行します。")
         viewOpacity = 0.0
         isInteractable = false
         let animationDuration = 1.0
 
-        // 0.0で一度描画させてからアニメーションを開始するためのDispatchQueue
         DispatchQueue.main.async {
             withAnimation(.easeIn(duration: animationDuration)) {
                 viewOpacity = 1.0
             } completion: {
-                // アニメーション完了後にタップ可能にする
                 isInteractable = true
                 print("startViewのタップが可能になりました。")
             }

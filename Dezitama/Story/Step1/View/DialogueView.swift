@@ -43,7 +43,6 @@ struct DialogueView: View {
                 }
             }
             .onAppear {
-                // ダイアログが表示されるたびにフラグをリセット
                 isAnimationReady = false
 
                 // テキストの文字数からタイピング完了時間を計算

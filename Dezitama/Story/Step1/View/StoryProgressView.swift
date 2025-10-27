@@ -42,12 +42,6 @@ struct StoryProgressView: View {
         self.stageId = stageId
     }
 
-//    let sceneToDisplay = currentChoiceScene ?? branchingMap[currentSceneId]
-//    if let current = sceneToDisplay {
-//        musicplayer.stopAllMusic()
-//        musicplayer.playBGM(fileName: current.bgm)
-//    }
-
     var body: some View {
         GeometryReader { geometry in
             if let currentDialogue = userChoiceReply ?? self.currentDialogue {
@@ -104,10 +98,8 @@ struct StoryProgressView: View {
                                 font: UIFont.customFont(ofSize: 30),
                                 textColor: .black,
                                 textAlignment: .center,
-                                targetWidth: 100 // ★ 700から500に変更 (吹き出しに合わせる)
+                                targetWidth: 100
                             )
-//                            Text(currentDialogue.dialogueText ?? "")
-//                                .font(.custom("MPLUS1-Regular", size: 45))
                                 .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
                                 .offset(x: screenTextOffset)
                         }
@@ -116,7 +108,6 @@ struct StoryProgressView: View {
                         .contentShape(Rectangle())
                         .onAppear {
                             if let bgm = currentDialogue.bgm, !bgm.isEmpty {
-//                                musicplayer.stopAllMusic()
                                 musicplayer.playBGM(fileName: bgm)
                             }
                             let totalDuration: TimeInterval = 3.0
@@ -162,9 +153,6 @@ struct StoryProgressView: View {
                                 }
                             }
                     }
-                    
-
-                    // StoryProgressView.swift (body)
 
 
                     if isChoicePopupVisible, let choiceDialogue = pendingChoiceDialogue {
@@ -174,11 +162,11 @@ struct StoryProgressView: View {
                             onChoiceSelected: { selectedText, nextId, percentage in
                                 let replyScene = Dialogue2(
                                     storyId: choiceDialogue.storyId,
-                                    sceneId: "user_reply_\(UUID())", // 一意のID
+                                    sceneId: "user_reply_\(UUID())",
                                     viewType: .dialogue,
-                                    characterName: "コニー", // ユーザー
+                                    characterName: "コニー",
                                     dialogueText: selectedText,
-                                    nextSceneId: nextId, // タップしたら次に進むID
+                                    nextSceneId: nextId,
                                     isChoice: false,
                                     background: choiceDialogue.background,
                                     talkingPeople: choiceDialogue.talkingPeople,
@@ -194,16 +182,14 @@ struct StoryProgressView: View {
 
                                 print("履歴追加 (BadChoiceView): \(replyScene.sceneId) - \(replyScene.dialogueText ?? "")")
                                 conversationHistory.append(replyScene)
-                                // 2. Stateを更新
-                                self.userChoiceReply = replyScene     // 一時的な返信シーンをセット
-                                self.isChoicePopupVisible = false   // ポップアップを閉じる
-                                self.pendingChoiceDialogue = nil  // 待機中の選択肢をクリア
+
+                                self.userChoiceReply = replyScene
+                                self.isChoicePopupVisible = false
+                                self.pendingChoiceDialogue = nil
                             }
                         )
                         .transition(.opacity)
-                        //                        .zIndex(100)
                     }
-                    // ...
 
                     // ====== 共通UI（ホーム・スコア・ログ） ======
                     VStack {
@@ -264,19 +250,17 @@ struct StoryProgressView: View {
                                 Button {
                                     musicplayer.playSE(fileName: "button_SE")
                                     print("成績ボタンが押されました。結果を表示します。")
-                                    // ★ スコア計算と保存をここで行う ★
-                                    if !isEndSceneReady { // まだ計算・保存してなければ
+                                    if !isEndSceneReady {
                                         let thunders = gameManager.scoreToStars(score: gameManager.currentScore)
                                         self.finalThunders = thunders
                                         gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: thunders)
-                                        isEndSceneReady = true // 結果画面表示フラグを立てる
+                                        isEndSceneReady = true
                                     }
                                 } label: {
                                     Image("good_seiseki")
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 250, height: 250)
-                                    //                                    .padding(.trailing, 30)
                                 }
                                 .offset(x: 0, y: 40)
                             }
@@ -309,37 +293,23 @@ struct StoryProgressView: View {
                 .transition(.opacity)
                 .onChange(of: currentSceneId) { _, newSceneId in
 
-                    // ★ 最後のシーンかどうかのチェック ★
                     guard let newDialogue = dialogues.first(where: { $0.sceneId == newSceneId }) else {
                         return
                     }
 
-                    // (A) もし、新しく表示するこのシーンの「次」が "end" なら
                     if newDialogue.nextSceneId?.lowercased() == "end" {
-                        // ...そして、まだボタンが表示されていなければ
                         if !showResultButton && !isEndSceneReady {
                             print("最後のシーン (\(newSceneId)) に到達しました。成績ボタンを表示します。")
 
-                            // ★ 成績ボタンを表示する
-                            // (少し遅延させて、シーン切り替えのアニメーションと被らないようにします)
-//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 self.showResultButton = true
-//                            }
                         }
                     }
-                    // (B) もし、次のシーンが "end" でないなら
                     else {
-                        // (履歴を戻った場合などを考慮し、ボタンが表示されていれば非表示に戻します)
                         if showResultButton {
                             self.showResultButton = false
                         }
                     }
                 }
-                //                .onChange(of: currentSceneId) { oldValue, newValue in
-                //                    if let newDialogue = dialogues.first(where: { $0.sceneId == newValue }) {
-                //                        conversationHistory.append(newDialogue)
-                //                    }
-                //                }
                 .onAppear {
                     gameManager.startStory(dialogues: dialogues)
                 }
@@ -371,23 +341,19 @@ struct StoryProgressView: View {
     private func handleNavigation(nextSceneId: String) {
         // ストーリー終了処理
         if nextSceneId.lowercased() == "end" {
-            print("ストーリー終了 (handleNavigation)") // ログを分かりやすく変更
+            print("ストーリー終了 (handleNavigation)")
 
-            // 既に終了処理済みか、ボタン表示済みなら何もしない
             if isEndSceneReady || showResultButton {
                 print("既に終了/ボタン表示済みです。")
                 return
             }
 
-            // ★「成績ボタン」を表示するフラグを立てる
-            // (主にChatMessageViewがendを返した時用)
             showResultButton = true
             print("成績ボタンを表示します。")
 
-            return // シーン遷移はここでストップ
+            return
         }
 
-        // 次のシーン取得
         guard let nextDialogue = dialogues.first(where: { $0.sceneId == nextSceneId }) else {
             print("次のシーンが見つかりません: \(nextSceneId)")
             return
@@ -406,7 +372,6 @@ struct StoryProgressView: View {
         currentSceneId = nextSceneId
 
         if nextDialogue.viewType == .dialogue {
-            // 履歴にまだ同じIDがなければ追加 (念のため)
             if !conversationHistory.contains(where: { $0.id == nextDialogue.id }) {
                 print("履歴追加 (handleNavigation - New Scene): \(nextDialogue.sceneId) - \(nextDialogue.dialogueText ?? "テキストなし")")
                 conversationHistory.append(nextDialogue)

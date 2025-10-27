@@ -69,6 +69,9 @@
 		8A24DE652EAAA16400DE6E95 /* StartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DE642EAAA15600DE6E95 /* StartView.swift */; };
 		8A39E2922EAD42E400273C2E /* StoryProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A39E2912EAD42E100273C2E /* StoryProgressView.swift */; };
 		8A39E31A2EAE852D00273C2E /* bad_groupchat_story3_ver7.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A39E3192EAE852D00273C2E /* bad_groupchat_story3_ver7.csv */; };
+		8A39E3362EAF9DE000273C2E /* TalkSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A39E3352EAF9DCD00273C2E /* TalkSceneView.swift */; };
+		8A39E3382EAFA03900273C2E /* StorylineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A39E3372EAFA03700273C2E /* StorylineView.swift */; };
+		8A39E33A2EAFA0D100273C2E /* ScreenSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A39E3392EAFA0D100273C2E /* ScreenSceneView.swift */; };
 		8A7AD33C2E1F6AD600BF4664 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 8A7AD33B2E1F6AD600BF4664 /* Lottie */; };
 /* End PBXBuildFile section */
 
@@ -147,6 +150,9 @@
 		8A24DE642EAAA15600DE6E95 /* StartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartView.swift; sourceTree = "<group>"; };
 		8A39E2912EAD42E100273C2E /* StoryProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryProgressView.swift; sourceTree = "<group>"; };
 		8A39E3192EAE852D00273C2E /* bad_groupchat_story3_ver7.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_groupchat_story3_ver7.csv; sourceTree = "<group>"; };
+		8A39E3352EAF9DCD00273C2E /* TalkSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TalkSceneView.swift; sourceTree = "<group>"; };
+		8A39E3372EAFA03700273C2E /* StorylineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorylineView.swift; sourceTree = "<group>"; };
+		8A39E3392EAFA0D100273C2E /* ScreenSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenSceneView.swift; sourceTree = "<group>"; };
 		8A7AD2EA2E1E929400BF4664 /* DezitamaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DezitamaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -401,7 +407,10 @@
 			isa = PBXGroup;
 			children = (
 				8A24DCD62EA5510800DE6E95 /* ChatLogView.swift */,
+				8A39E3392EAFA0D100273C2E /* ScreenSceneView.swift */,
+				8A39E3372EAFA03700273C2E /* StorylineView.swift */,
 				8A24DCD72EA5510800DE6E95 /* ChatSceneView.swift */,
+				8A39E3352EAF9DCD00273C2E /* TalkSceneView.swift */,
 				8A24DCD82EA5510800DE6E95 /* isChoiceView.swift */,
 				8A24DCD92EA5510800DE6E95 /* StoryBranchView.swift */,
 				8A24DD262EA5523500DE6E95 /* finalStarsView.swift */,
@@ -600,6 +609,7 @@
 				8A24DCEC2EA5510900DE6E95 /* WidthRuby.swift in Sources */,
 				8A24DCED2EA5510900DE6E95 /* WidthRubyExtention.swift in Sources */,
 				8A24DD2F2EA5F24700DE6E95 /* finalThundersView.swift in Sources */,
+				8A39E3362EAF9DE000273C2E /* TalkSceneView.swift in Sources */,
 				06D22EBA2EA7F1E100117CF6 /* CloudView.swift in Sources */,
 				8A24DCEE2EA5510900DE6E95 /* CLTypingRubyLabel.swift in Sources */,
 				8A24DCEF2EA5510900DE6E95 /* SoundPlayer.swift in Sources */,
@@ -607,10 +617,12 @@
 				8A24DCF12EA5510900DE6E95 /* StageAssets.swift in Sources */,
 				8A24DCF22EA5510900DE6E95 /* ChoiceView.swift in Sources */,
 				8A24DD272EA5523A00DE6E95 /* finalStarsView.swift in Sources */,
+				8A39E33A2EAFA0D100273C2E /* ScreenSceneView.swift in Sources */,
 				8A24DCF32EA5510900DE6E95 /* ContentView.swift in Sources */,
 				8A24DCF62EA5510900DE6E95 /* BadChoiceView.swift in Sources */,
 				8A24DCF72EA5510900DE6E95 /* ChatLog2View.swift in Sources */,
 				8A24DCF82EA5510900DE6E95 /* ChatMessageView.swift in Sources */,
+				8A39E3382EAFA03900273C2E /* StorylineView.swift in Sources */,
 				8A24DCF92EA5510900DE6E95 /* DialogueView.swift in Sources */,
 				8A24DCFB2EA5510900DE6E95 /* ChatLogView.swift in Sources */,
 				8A24DCFC2EA5510900DE6E95 /* ChatSceneView.swift in Sources */,
