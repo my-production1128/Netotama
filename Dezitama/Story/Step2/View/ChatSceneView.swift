@@ -241,8 +241,7 @@ struct ChatSceneView: View {
                                     self.proxy?.scrollTo(last.id, anchor: .bottom)
                                 }
                             }
-                        }
-                        // 最初のセリフが相手のセリフなら、自動で次のセリフを送信
+                        }s
                         proceedToNextIfNeeded()
                     }
                 }

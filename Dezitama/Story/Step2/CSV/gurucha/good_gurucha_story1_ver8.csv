@@ -2,7 +2,7 @@ storyId,sceneId,sceneType,groupName,icon,characterName,leftCharacterName,centerC
 good_gurucha_story1,scene1,storyline,,,,,,,｜最近《さいきん》｜携帯《けいたい》を｜買《か》ってもらったんだけどすごく｜楽《たの》しい！,scene2,FALSE,,,,,,,,,,arasuzi_bgm,arasuzi_background
 good_gurucha_story1,scene2,storyline,,,,,,,でも、｜携帯《けいたい》っていいことばかりなのかな？,scene3,FALSE,,,,,,,,,,arasuzi_bgm,arasuzi_background
 good_gurucha_story1,scene3,storyline,,,,,,,みんなが｜知《し》ってる｜楽《たの》しく｜使《つか》うためのコツを｜私《わたし》に｜教《おし》えて！,scene4,FALSE,,,,,,,,,,arasuzi_bgm,arasuzi_background
-good_gurucha_story1,scene4,talk,,alec_icon,Alec_normal,Alec_smile,Cecil_smile,Cony_smile,やっと｜朝《あさ》の｜会《かい》｜終《お》わったー。,scene5,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story1,scene4,talk,,alec_icon,Alec_normal,Alec_normal,Cecil_smile,Cony_smile,やっと｜朝《あさ》の｜会《かい》｜終《お》わったー。,scene5,FALSE,,,,,,,,,,classroom_bgm,classroom
 good_gurucha_story1,scene5,talk,,cecil_icon,Cecil_smile,Alec_normal,Cecil_smile,Cony_smile,またカールが｜遅刻《ちこく》してる（笑）,scene6,FALSE,,,,,,,,,,classroom_bgm,classroom
 good_gurucha_story1,scene6,talk,,cony_icon,Cony_panic,Alec_normal,Cecil_smile,Cony_smile,,,TRUE,｜遅刻《ちこく》しすぎだよね,0,scene7,｜大丈夫《だいじょうぶ》かな？,1,scene7,｜遅刻《ちこく》は｜良《よ》くないけど、どうしたのかな？,0.3,scene7,classroom_bgm,classroom
 good_gurucha_story1,scene7,talk,,alec_icon,Alec_normal,Alec_normal,Cecil_smile,Cony_panic,1｜時間目《じかんめ》の｜始《はじ》まりの｜時間《じかん》っていつもこうだよね,scene8,FALSE,,,,,,,,,,classroom_bgm,classroom

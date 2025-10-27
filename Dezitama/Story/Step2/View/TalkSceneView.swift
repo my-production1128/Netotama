@@ -83,49 +83,81 @@ struct TalkSceneView: View {
             .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.5)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
 
-            Group{
-                // 吹き出し背景
-                Image("speech_bubble_beige")
-                    .resizable()
-                    .frame(width: 950, height: 250)
-                    .offset(x:-13, y: 0)
-                    .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.8)
 
-                // キャラ名ラベル
-                let characterNameText = CharacterName(rawValue: current.characterName)?.displayName ?? current.characterName
-                Text(characterNameText)
-                    .font(.custom("MPLUS1-Regular", size: 35))
-                    .font(.title)
-                    .padding(6)
-                    .cornerRadius(8)
-                    .position(x: geometry.size.width * 0.22,y: geometry.size.height * 0.677)
+                        // MARK: 吹き出しとテキスト
+                        Group{
+                            let sceneDataForBubble: Branching? = isPopupVisible ? branchingMap[currentSceneId] : current
 
-                // テキスト（会話文）
-                TypingRubyLabelRepresentable(
-                    attributedText: current.text
-                        .replacingOccurrences(of: "<br>", with: "\n")
-                        .createWideRuby(font: talkFont, color: .black),
-                    charInterval: 0.05,
-                    font: talkFont,
-                    targetWidth: 500
-                )
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: 700)
-                .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+                            // sceneDataForBubbleがnilでない場合のみ表示
+                            if let displayData = sceneDataForBubble {
 
-                // ナビゲーション
-                HStack {
-                    Image("next_button")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 35)
-                        .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
-                        .offset(y: offsetY)
-                        .onAppear {
-                            startLoopingAnimation()
+                                // 吹き出し背景 (常に表示)
+                                Image("speech_bubble_beige")
+                                    .resizable()
+                                    .frame(width: 950, height: 250)
+                                    .offset(x:-13, y: 0)
+                                    .position(x: geometry.size.width * 0.5,y: geometry.size.height * 0.8)
+
+                                // キャラ名ラベル (表示データを参照)
+                                let characterNameText = CharacterName(rawValue: displayData.characterName)?.displayName ?? displayData.characterName
+                                Text(characterNameText)
+                                    .font(.custom("MPLUS1-Regular", size: 35))
+                                    .font(.title)
+                                    .padding(6)
+                                    .cornerRadius(8)
+                                    .position(x: geometry.size.width * 0.22,y: geometry.size.height * 0.677)
+
+                                // テキスト（会話文） (isPopupVisibleで表示方法を切り替え)
+                                if isPopupVisible {
+                                    // 🔽 isPopupVisibleがtrue: 前のシーンのテキストをアニメーションなしで表示 🔽
+                                    WideRubyLabelRepresentable(
+                                        attributedText: displayData.text // 前のシーンのテキスト
+                                            .replacingOccurrences(of: "<br>", with: "\n")
+                                            .createWideRuby(font: talkFont, color: .black),
+                                        font: talkFont,
+                                        textColor: .black,
+                                        textAlignment: .natural, // または .left
+                                        targetWidth: 500
+                                    )
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .frame(maxWidth: 700)
+                                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+
+                                } else {
+                                    // 🔽 isPopupVisibleがfalse: 現在のシーンのテキストをアニメーションありで表示 🔽
+                                    TypingRubyLabelRepresentable(
+                                        attributedText: displayData.text // 現在のシーンのテキスト
+                                            .replacingOccurrences(of: "<br>", with: "\n")
+                                            .createWideRuby(font: talkFont, color: .black),
+                                        charInterval: 0.05,
+                                        font: talkFont,
+                                        targetWidth: 500
+                                    )
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .frame(maxWidth: 700)
+                                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+                                }
+
+                                // ナビゲーション (nextボタン - 変更なし、常に表示)
+                                HStack {
+                                    Image("next_button")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 35)
+                                        .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
+                                        .offset(y: offsetY)
+                                        .onAppear {
+                                            startLoopingAnimation()
+                                        }
+                                }
+
+                            } else {
+                                // データが見つからなかった場合のフォールバック (念のため)
+                                 Text("表示エラー")
+                                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+                                    .foregroundColor(.red)
+                            }
                         }
-                }
-            }
             .offset(y: 20)
         }
         .onAppear {
