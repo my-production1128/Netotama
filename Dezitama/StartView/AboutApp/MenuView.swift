@@ -117,15 +117,22 @@ struct HowToUse : View {
 
             let imageNames = ["tutrial_01", "tutrial_02", "tutrial_03"]
 
-            ScrollView(.vertical) {
-                VStack(spacing: 0) {
-                    ForEach(imageNames, id: \.self) { name in
-                        Image(name)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: UIScreen.main.bounds.width,
-                                   height: UIScreen.main.bounds.height)
-                            .clipped()
+            VStack(spacing: 0) {
+                Image("howtouse")
+                    .resizable()
+                    .frame(width: 600, height: 100)
+                    .padding(.top, 30)
+
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack(spacing: 0) {
+                        ForEach(imageNames, id: \.self) { name in
+                            Image(name)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: UIScreen.main.bounds.width,
+                                       height: UIScreen.main.bounds.height)
+                                .clipped()
+                        }
                     }
                 }
             }
