@@ -16,8 +16,8 @@ struct StorylineView: View {
     let geometry: GeometryProxy
     let talkFont: UIFont
     let branchingMap: [String: Branching]
-    let offsetY: CGFloat // "next"ボタンのアニメーション用
-    let startLoopingAnimation: () -> Void // アニメーション開始用のクロージャ
+    let offsetY: CGFloat
+    let startLoopingAnimation: () -> Void
 
     // 親Viewと同期するState
     @Binding var currentSceneId: String
@@ -50,7 +50,6 @@ struct StorylineView: View {
             .onAppear {
                 let sceneToDisplay = currentChoiceScene ?? branchingMap[currentSceneId]
                 if let current = sceneToDisplay {
-                    musicplayer.stopAllMusic()
                     musicplayer.playBGM(fileName: current.bgm)
                 }
                 storylineOpacity = 0.0

@@ -53,7 +53,6 @@ struct ScreenSceneView: View {
         .clipped()
         .contentShape(Rectangle())
         .onAppear {
-            musicplayer.stopAllMusic()
             musicplayer.playBGM(fileName: current.bgm)
 
             let totalDuration: TimeInterval = 3.6

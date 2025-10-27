@@ -211,7 +211,6 @@ struct StoryBranchView: View {
                             }
                             .onAppear {
                                 if let current = sceneToDisplay {
-                                    musicplayer.stopAllMusic()
                                     musicplayer.playBGM(fileName: current.bgm)
                                 }
                             }

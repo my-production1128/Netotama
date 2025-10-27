@@ -11,13 +11,12 @@ struct TalkSceneView: View {
 
     // MARK: - Properties
 
-    // 親Viewからのデータ
     let current: Branching
     let geometry: GeometryProxy
     let talkFont: UIFont
     let branchingMap: [String: Branching]
-    let offsetY: CGFloat // "next"ボタンのアニメーション用
-    let startLoopingAnimation: () -> Void // アニメーション開始用のクロージャ
+    let offsetY: CGFloat
+    let startLoopingAnimation: () -> Void
 
     @State private var isAnimationReady: Bool = false
 
@@ -32,7 +31,6 @@ struct TalkSceneView: View {
     @EnvironmentObject var musicplayer: SoundPlayer
 
     // MARK: - Body
-
     var body: some View {
         ZStack {
             // MARK: キャラクター表示
@@ -133,150 +131,82 @@ struct TalkSceneView: View {
         .onAppear {
             let sceneToDisplay = currentChoiceScene ?? branchingMap[currentSceneId]
             if let current = sceneToDisplay {
-                musicplayer.stopAllMusic()
                 musicplayer.playBGM(fileName: current.bgm)
             }
             isAnimationReady = false
 
             // テキストの文字数からタイピング完了時間を計算
-                let textLength = current.text.replacingOccurrences(of: "<br>", with: "").count
-                let typingDuration = Double(textLength) * 0.03 + 0.1
+            let textLength = current.text.replacingOccurrences(of: "<br>", with: "").count
+            let typingDuration = Double(textLength) * 0.03 + 0.1
 
-                // タイピング完了後にタップを有効化
-                DispatchQueue.main.asyncAfter(deadline: .now() + typingDuration) {
-                    isAnimationReady = true
-                }
+            // タイピング完了後にタップを有効化
+            DispatchQueue.main.asyncAfter(deadline: .now() + typingDuration) {
+                isAnimationReady = true
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .contentShape(Rectangle())
         .onTapGesture {
             guard isAnimationReady else {
-            return
-        }
+                return
+            }
             if isAnimationReady {
                 handleTap()
             }
         }
-//        .onTapGesture {
-//            // ポップアップ表示中はタップを無効にする
-//            if isPopupVisible {
-//                return
-//            }
-//
-//            if let replyScene = currentChoiceScene {
-//                let nextActualId = replyScene.nextSceneId
-//                self.currentChoiceScene = nil // 一時シーンをクリア
-//                self.currentSceneId = nextActualId
-//                return
-//            }
-//
-//            print("--- 🔵 talkシーンがタップされました ---")
-//            print("文字の表示完了フラグ (isTypingComplete): \(isTypingComplete)")
-//
-//            if !isTypingComplete {
-//                shouldSkipTyping = true
-//                isTypingComplete = true
-//                print("文字表示をスキップします。")
-//            } else {
-//                guard let current = branchingMap[currentSceneId] else {
-//                    print("【エラー】現在のシーンID「\(currentSceneId)」がマップ内に見つかりません。")
-//                    return
-//                }
-//
-//                let nextId = current.nextSceneId
-//                print("次のシーンID「\(nextId)」へ進もうとしています。")
-//
-//                guard let nextScene = branchingMap[nextId] else {
-//                    if nextId.lowercased() == "end" || nextId.isEmpty {
-//                        print("成績ボタンを表示")
-//                    } else {
-//                        print("【エラー】次のシーンID「\(nextId)」がマップ内に見つかりません。CSVのIDが正しいか確認してください。")
-//                    }
-//                    return
-//                }
-//
-//                print("✅ 次のシーン「\(nextId)」が見つかりました。タイプは「\(nextScene.sceneType)」です。")
-//
-//                historyStack.append(currentSceneId)
-//                if nextScene.isChoice != true {
-//                    conversationHistory.append(nextScene)
-//                }
-//
-//                if nextScene.sceneType.lowercased() == "talk" {
-//                    print("➡️ 次も talk シーンです。")
-//                    if nextScene.isChoice == true {
-//                        print("選択肢なのでポップアップを表示します。")
-//                        isPopupVisible = true
-//                        currentChoiceScene = nextScene
-//                    } else {
-//                        print("通常のtalkシーンなので、IDを「\(nextScene.sceneId)」に更新します。")
-//                        currentSceneId = nextScene.sceneId
-//                    }
-//                } else {
-//                    print("➡️ talk 以外のシーン（\(nextScene.sceneType)）に切り替わります。")
-//                    print("IDを「\(nextScene.sceneId)」に更新します。")
-//                    currentSceneId = nextScene.sceneId
-//                }
-//            }
-//        }
     }
 
     private func handleTap() {
-            // ポップアップ表示中はタップを無効にする
-            if isPopupVisible {
-                return
-            }
-
-            if let replyScene = currentChoiceScene {
-                let nextActualId = replyScene.nextSceneId
-                self.currentChoiceScene = nil // 一時シーンをクリア
-                self.currentSceneId = nextActualId
-                return
-            }
-
-            print("--- 🔵 talkシーンがタップされました ---")
-
-                guard let current = branchingMap[currentSceneId] else {
-                    print("【エラー】現在のシーンID「\(currentSceneId)」がマップ内に見つかりません。")
-                    return
-                }
-
-                let nextId = current.nextSceneId
-                print("次のシーンID「\(nextId)」へ進もうとしています。")
-
-                guard let nextScene = branchingMap[nextId] else {
-                    if nextId.lowercased() == "end" || nextId.isEmpty {
-                        print("成績ボタンを表示")
-                    } else {
-                        print("【エラー】次のシーンID「\(nextId)」がマップ内に見つかりません。CSVのIDが正しいか確認してください。")
-                    }
-                    return
-                }
-
-                print("✅ 次のシーン「\(nextId)」が見つかりました。タイプは「\(nextScene.sceneType)」です。")
-
-                historyStack.append(currentSceneId)
-                if nextScene.isChoice != true {
-                    conversationHistory.append(nextScene)
-                }
-
-                if nextScene.sceneType.lowercased() == "talk" {
-                    print("➡️ 次も talk シーンです。")
-                    if nextScene.isChoice == true {
-                        print("選択肢なのでポップアップを表示します。")
-                        isPopupVisible = true
-                        currentChoiceScene = nextScene
-                    } else {
-                        print("通常のtalkシーンなので、IDを「\(nextScene.sceneId)」に更新します。")
-                        currentSceneId = nextScene.sceneId
-                    }
-                } else {
-                    print("➡️ talk 以外のシーン（\(nextScene.sceneType)）に切り替わります。")
-                    print("IDを「\(nextScene.sceneId)」に更新します。")
-                    currentSceneId = nextScene.sceneId
-                }
-
+        if isPopupVisible {
+            return
         }
+
+        if let replyScene = currentChoiceScene {
+            let nextActualId = replyScene.nextSceneId
+            self.currentChoiceScene = nil // 一時シーンをクリア
+            self.currentSceneId = nextActualId
+            return
+        }
+
+        print("--- 🔵 talkシーンがタップされました ---")
+        guard let current = branchingMap[currentSceneId] else {
+            print("【エラー】現在のシーンID「\(currentSceneId)」がマップ内に見つかりません。")
+            return
+        }
+        let nextId = current.nextSceneId
+        print(current.text)
+        print("次のシーンID「\(nextId)」へ進もうとしています。")
+        guard let nextScene = branchingMap[nextId] else {
+            if nextId.lowercased() == "end" || nextId.isEmpty {
+                print("成績ボタンを表示")
+            } else {
+                print("【エラー】次のシーンID「\(nextId)」がマップ内に見つかりません。CSVのIDが正しいか確認してください。")
+            }
+            return
+        }
+        print("✅ 次のシーン「\(nextId)」が見つかりました。タイプは「\(nextScene.sceneType)」です。")
+
+
+
+        historyStack.append(currentSceneId)
+        if nextScene.isChoice != true {
+            conversationHistory.append(nextScene)
+        }
+
+        if nextScene.sceneType.lowercased() == "talk" {
+            print("➡️ 次も talk シーンです。")
+            if nextScene.isChoice == true {
+                print("選択肢なのでポップアップを表示します。")
+                isPopupVisible = true
+                currentChoiceScene = nextScene
+            } else {
+                currentSceneId = nextScene.sceneId
+            }
+        } else {
+            currentSceneId = nextScene.sceneId
+        }
+
+    }
 }
 
 @ViewBuilder
