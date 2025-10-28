@@ -13,25 +13,52 @@ class TutorialManager {
     static let shared = TutorialManager()
     
     private init() {}
-    
+
+    private let allTutorialKeys = [
+            "choice",
+            "map",
+            "stage_unlock_1",
+            "stage_unlock_2"
+        ]
+
+        func hasSeenTutorial(for key: String) -> Bool {
+            return UserDefaults.standard.bool(forKey: "hasSeenTutorial_\(key)")
+        }
+
+        func setTutorialSeen(for key: String) {
+            UserDefaults.standard.set(true, forKey: "hasSeenTutorial_\(key)")
+        }
+
+        func resetTutorial(for key: String) {
+            UserDefaults.standard.removeObject(forKey: "hasSeenTutorial_\(key)")
+        }
     // チュートリアルの表示状態を管理
-    func hasSeenTutorial(for key: String) -> Bool {
-        return UserDefaults.standard.bool(forKey: "hasSeenTutorial_\(key)")
-    }
+//    func hasSeenTutorial(for key: String) -> Bool {
+//        return UserDefaults.standard.bool(forKey: "hasSeenTutorial_\(key)")
+//    }
+//    
+//    func setTutorialSeen(for key: String) {
+//        UserDefaults.standard.set(true, forKey: "hasSeenTutorial_\(key)")
+//    }
+//    
+//    func resetTutorial(for key: String) {
+//        UserDefaults.standard.removeObject(forKey: "hasSeenTutorial_\(key)")
+//    }
     
-    func setTutorialSeen(for key: String) {
-        UserDefaults.standard.set(true, forKey: "hasSeenTutorial_\(key)")
-    }
-    
-    func resetTutorial(for key: String) {
-        UserDefaults.standard.removeObject(forKey: "hasSeenTutorial_\(key)")
-    }
-    
+//    func resetAllTutorials() {
+//        UserDefaults.standard.removeObject(forKey: "hasSeenTutorial_choice")
+//        UserDefaults.standard.removeObject(forKey: "hasSeenTutorial_map")
+//        UserDefaults.standard.removeObject(forKey: "hasSeenTutorial_stage")
+//    }
     func resetAllTutorials() {
-        UserDefaults.standard.removeObject(forKey: "hasSeenTutorial_choice")
-        UserDefaults.standard.removeObject(forKey: "hasSeenTutorial_map")
-        UserDefaults.standard.removeObject(forKey: "hasSeenTutorial_stage")
-    }
+            print("--- resetAllTutorials() が呼ばれました ---")
+            // allTutorialKeys 配列を使って、定義されている全てのチュートリアル履歴を削除
+            for key in allTutorialKeys {
+                let userDefaultsKey = "hasSeenTutorial_\(key)"
+                UserDefaults.standard.removeObject(forKey: userDefaultsKey)
+                print("チュートリアル \(key) のデータを削除しました。")
+            }
+        }
 }
 
 // チュートリアルの表示タイプを定義
@@ -393,7 +420,7 @@ struct SpeechBubbleView: View {
                                 startLoopingAnimation()
                             }
                     }
-                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.9)
+                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.83)
                 }
                 
             case .type2:

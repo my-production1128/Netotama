@@ -75,8 +75,16 @@ struct MenuView: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding()
                                 }
-
                                 Spacer()
+                                Button {
+                                    GameManager.shared.deleteAllData()
+                                } label: {
+                                    Text("。")
+                                        .foregroundColor(.black)
+                                        .font(Font(UIFont.customFont(ofSize: 25)))
+                                }
+
+
                             }
                             .padding(.top, 100)
                         }

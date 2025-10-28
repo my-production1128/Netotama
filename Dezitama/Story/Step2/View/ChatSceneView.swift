@@ -241,7 +241,7 @@ struct ChatSceneView: View {
                                     self.proxy?.scrollTo(last.id, anchor: .bottom)
                                 }
                             }
-                        }s
+                        }
                         proceedToNextIfNeeded()
                     }
                 }

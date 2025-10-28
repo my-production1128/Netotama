@@ -529,6 +529,18 @@ final class GameManager: ObservableObject {
         print("1問あたりの基本点: \(pointsPerChoice) 点")
         print("--------------------")
     }
+
+    func deleteAllData() {
+            print("--- deleteAllData() が呼ばれました ---")
+
+            // 1. ゲーム進行状況をリセット (既存の関数を呼ぶ)
+            self.resetProgress()
+
+            // 2. チュートリアル表示履歴をリセット (修正した関数を呼ぶ)
+            TutorialManager.shared.resetAllTutorials()
+
+            print("--- 全データの削除が完了しました ---")
+        }
 }
 
 // MARK: - UIヘルパー（雲制御）
