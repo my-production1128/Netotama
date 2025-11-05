@@ -9,6 +9,12 @@
 /* Begin PBXBuildFile section */
 		06373E412EAE971600519FAB /* bad_groupchat_story2_ver13.csv in Resources */ = {isa = PBXBuildFile; fileRef = 06373E402EAE971600519FAB /* bad_groupchat_story2_ver13.csv */; };
 		06373E472EAE9B6200519FAB /* bad_groupchat_story1_ver14.csv in Resources */ = {isa = PBXBuildFile; fileRef = 06373E462EAE9B6200519FAB /* bad_groupchat_story1_ver14.csv */; };
+		0642A4CC2EBB30EC00BAF414 /* bad_kakusan_story1_ver10.csv in Resources */ = {isa = PBXBuildFile; fileRef = 0642A4CB2EBB30EC00BAF414 /* bad_kakusan_story1_ver10.csv */; };
+		0642A4CE2EBB30F600BAF414 /* bad_kakusan_story2_ver5.csv in Resources */ = {isa = PBXBuildFile; fileRef = 0642A4CD2EBB30F600BAF414 /* bad_kakusan_story2_ver5.csv */; };
+		0642A4D02EBB30FE00BAF414 /* bad_kakusan_story3_ver4.csv in Resources */ = {isa = PBXBuildFile; fileRef = 0642A4CF2EBB30FE00BAF414 /* bad_kakusan_story3_ver4.csv */; };
+		0642A4D22EBB310A00BAF414 /* bad_netomo_story1_ver13.csv in Resources */ = {isa = PBXBuildFile; fileRef = 0642A4D12EBB310A00BAF414 /* bad_netomo_story1_ver13.csv */; };
+		0642A4D42EBB311200BAF414 /* bad_netomo_story2_ver14.csv in Resources */ = {isa = PBXBuildFile; fileRef = 0642A4D32EBB311200BAF414 /* bad_netomo_story2_ver14.csv */; };
+		0642A4D62EBB312C00BAF414 /* good_netomo_story1_ver7.csv in Resources */ = {isa = PBXBuildFile; fileRef = 0642A4D52EBB312C00BAF414 /* good_netomo_story1_ver7.csv */; };
 		06D22EBA2EA7F1E100117CF6 /* CloudView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D22EB92EA7F1E100117CF6 /* CloudView.swift */; };
 		8A24DCE32EA5510900DE6E95 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DC8C2EA5510800DE6E95 /* LottieView.swift */; };
 		8A24DCE42EA5510900DE6E95 /* CSVReader_ver2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DC992EA5510800DE6E95 /* CSVReader_ver2.swift */; };
@@ -50,16 +56,10 @@
 		8A24DD0B2EA5510900DE6E95 /* MPLUS1-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DC952EA5510800DE6E95 /* MPLUS1-Regular.ttf */; };
 		8A24DD0C2EA5510900DE6E95 /* MPLUS1-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DC962EA5510800DE6E95 /* MPLUS1-SemiBold.ttf */; };
 		8A24DD0D2EA5510900DE6E95 /* MPLUS1-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DC972EA5510800DE6E95 /* MPLUS1-Thin.ttf */; };
-		8A24DD112EA5510900DE6E95 /* bad_kakusan_story1_ver8.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCB72EA5510800DE6E95 /* bad_kakusan_story1_ver8.csv */; };
-		8A24DD122EA5510900DE6E95 /* bad_kakusan_story2_ver2.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCB82EA5510800DE6E95 /* bad_kakusan_story2_ver2.csv */; };
-		8A24DD132EA5510900DE6E95 /* bad_kakusan_story3_ver2.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCB92EA5510800DE6E95 /* bad_kakusan_story3_ver2.csv */; };
-		8A24DD142EA5510900DE6E95 /* bad_netomo_story1_ver12.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCBA2EA5510800DE6E95 /* bad_netomo_story1_ver12.csv */; };
-		8A24DD152EA5510900DE6E95 /* bad_netomo_story2_ver12.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCBB2EA5510800DE6E95 /* bad_netomo_story2_ver12.csv */; };
 		8A24DD162EA5510900DE6E95 /* bad_netomo_story3_ver9.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCBC2EA5510800DE6E95 /* bad_netomo_story3_ver9.csv */; };
 		8A24DD1D2EA5510900DE6E95 /* good_kakusan_story1_ver3.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCCC2EA5510800DE6E95 /* good_kakusan_story1_ver3.csv */; };
 		8A24DD1E2EA5510900DE6E95 /* good_kakusan_story2_ver3.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCCD2EA5510800DE6E95 /* good_kakusan_story2_ver3.csv */; };
 		8A24DD1F2EA5510900DE6E95 /* good_kakusan_story3_ver5.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCCE2EA5510800DE6E95 /* good_kakusan_story3_ver5.csv */; };
-		8A24DD202EA5510900DE6E95 /* good_netomo_story1_ver5.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCD02EA5510800DE6E95 /* good_netomo_story1_ver5.csv */; };
 		8A24DD212EA5510900DE6E95 /* good_netomo_story2_ver3.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCD12EA5510800DE6E95 /* good_netomo_story2_ver3.csv */; };
 		8A24DD222EA5510900DE6E95 /* good_netomo_story3_ver3.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCD22EA5510800DE6E95 /* good_netomo_story3_ver3.csv */; };
 		8A24DD232EA5510900DE6E95 /* good_netomo_story3_ver4.csv in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DCD32EA5510800DE6E95 /* good_netomo_story3_ver4.csv */; };
@@ -88,6 +88,12 @@
 /* Begin PBXFileReference section */
 		06373E402EAE971600519FAB /* bad_groupchat_story2_ver13.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_groupchat_story2_ver13.csv; sourceTree = "<group>"; };
 		06373E462EAE9B6200519FAB /* bad_groupchat_story1_ver14.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_groupchat_story1_ver14.csv; sourceTree = "<group>"; };
+		0642A4CB2EBB30EC00BAF414 /* bad_kakusan_story1_ver10.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_kakusan_story1_ver10.csv; sourceTree = "<group>"; };
+		0642A4CD2EBB30F600BAF414 /* bad_kakusan_story2_ver5.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_kakusan_story2_ver5.csv; sourceTree = "<group>"; };
+		0642A4CF2EBB30FE00BAF414 /* bad_kakusan_story3_ver4.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_kakusan_story3_ver4.csv; sourceTree = "<group>"; };
+		0642A4D12EBB310A00BAF414 /* bad_netomo_story1_ver13.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_netomo_story1_ver13.csv; sourceTree = "<group>"; };
+		0642A4D32EBB311200BAF414 /* bad_netomo_story2_ver14.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_netomo_story2_ver14.csv; sourceTree = "<group>"; };
+		0642A4D52EBB312C00BAF414 /* good_netomo_story1_ver7.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_netomo_story1_ver7.csv; sourceTree = "<group>"; };
 		0661A04D2DDB941700016B1C /* Dezitama.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Dezitama.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06D22EB92EA7F1E100117CF6 /* CloudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudView.swift; sourceTree = "<group>"; };
 		8A24DC8A2EA5510800DE6E95 /* cecil_pants.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = cecil_pants.json; sourceTree = "<group>"; };
@@ -119,11 +125,6 @@
 		8A24DCAD2EA5510800DE6E95 /* StageAssets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StageAssets.swift; sourceTree = "<group>"; };
 		8A24DCAF2EA5510800DE6E95 /* ChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChoiceView.swift; sourceTree = "<group>"; };
 		8A24DCB02EA5510800DE6E95 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		8A24DCB72EA5510800DE6E95 /* bad_kakusan_story1_ver8.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_kakusan_story1_ver8.csv; sourceTree = "<group>"; };
-		8A24DCB82EA5510800DE6E95 /* bad_kakusan_story2_ver2.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_kakusan_story2_ver2.csv; sourceTree = "<group>"; };
-		8A24DCB92EA5510800DE6E95 /* bad_kakusan_story3_ver2.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_kakusan_story3_ver2.csv; sourceTree = "<group>"; };
-		8A24DCBA2EA5510800DE6E95 /* bad_netomo_story1_ver12.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_netomo_story1_ver12.csv; sourceTree = "<group>"; };
-		8A24DCBB2EA5510800DE6E95 /* bad_netomo_story2_ver12.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_netomo_story2_ver12.csv; sourceTree = "<group>"; };
 		8A24DCBC2EA5510800DE6E95 /* bad_netomo_story3_ver9.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = bad_netomo_story3_ver9.csv; sourceTree = "<group>"; };
 		8A24DCBE2EA5510800DE6E95 /* BadChoiceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadChoiceView.swift; sourceTree = "<group>"; };
 		8A24DCBF2EA5510800DE6E95 /* ChatLog2View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatLog2View.swift; sourceTree = "<group>"; };
@@ -132,7 +133,6 @@
 		8A24DCCC2EA5510800DE6E95 /* good_kakusan_story1_ver3.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_kakusan_story1_ver3.csv; sourceTree = "<group>"; };
 		8A24DCCD2EA5510800DE6E95 /* good_kakusan_story2_ver3.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_kakusan_story2_ver3.csv; sourceTree = "<group>"; };
 		8A24DCCE2EA5510800DE6E95 /* good_kakusan_story3_ver5.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_kakusan_story3_ver5.csv; sourceTree = "<group>"; };
-		8A24DCD02EA5510800DE6E95 /* good_netomo_story1_ver5.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_netomo_story1_ver5.csv; sourceTree = "<group>"; };
 		8A24DCD12EA5510800DE6E95 /* good_netomo_story2_ver3.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_netomo_story2_ver3.csv; sourceTree = "<group>"; };
 		8A24DCD22EA5510800DE6E95 /* good_netomo_story3_ver3.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_netomo_story3_ver3.csv; sourceTree = "<group>"; };
 		8A24DCD32EA5510800DE6E95 /* good_netomo_story3_ver4.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_netomo_story3_ver4.csv; sourceTree = "<group>"; };
@@ -337,11 +337,11 @@
 			isa = PBXGroup;
 			children = (
 				8A39E3192EAE852D00273C2E /* bad_groupchat_story3_ver7.csv */,
-				8A24DCB72EA5510800DE6E95 /* bad_kakusan_story1_ver8.csv */,
-				8A24DCB82EA5510800DE6E95 /* bad_kakusan_story2_ver2.csv */,
-				8A24DCB92EA5510800DE6E95 /* bad_kakusan_story3_ver2.csv */,
-				8A24DCBA2EA5510800DE6E95 /* bad_netomo_story1_ver12.csv */,
-				8A24DCBB2EA5510800DE6E95 /* bad_netomo_story2_ver12.csv */,
+				0642A4CB2EBB30EC00BAF414 /* bad_kakusan_story1_ver10.csv */,
+				0642A4CD2EBB30F600BAF414 /* bad_kakusan_story2_ver5.csv */,
+				0642A4CF2EBB30FE00BAF414 /* bad_kakusan_story3_ver4.csv */,
+				0642A4D12EBB310A00BAF414 /* bad_netomo_story1_ver13.csv */,
+				0642A4D32EBB311200BAF414 /* bad_netomo_story2_ver14.csv */,
 				8A24DCBC2EA5510800DE6E95 /* bad_netomo_story3_ver9.csv */,
 				06373E402EAE971600519FAB /* bad_groupchat_story2_ver13.csv */,
 				06373E462EAE9B6200519FAB /* bad_groupchat_story1_ver14.csv */,
@@ -385,7 +385,7 @@
 		8A24DCD42EA5510800DE6E95 /* netomo */ = {
 			isa = PBXGroup;
 			children = (
-				8A24DCD02EA5510800DE6E95 /* good_netomo_story1_ver5.csv */,
+				0642A4D52EBB312C00BAF414 /* good_netomo_story1_ver7.csv */,
 				8A24DCD12EA5510800DE6E95 /* good_netomo_story2_ver3.csv */,
 				8A24DCD22EA5510800DE6E95 /* good_netomo_story3_ver3.csv */,
 				8A24DCD32EA5510800DE6E95 /* good_netomo_story3_ver4.csv */,
@@ -552,30 +552,30 @@
 			files = (
 				8A39E31A2EAE852D00273C2E /* bad_groupchat_story3_ver7.csv in Resources */,
 				8A24DD022EA5510900DE6E95 /* cecil_pants.json in Resources */,
+				0642A4CE2EBB30F600BAF414 /* bad_kakusan_story2_ver5.csv in Resources */,
+				0642A4D62EBB312C00BAF414 /* good_netomo_story1_ver7.csv in Resources */,
 				8A24DD032EA5510900DE6E95 /* egg_start_ver5_0.json in Resources */,
 				8A24DD042EA5510900DE6E95 /* StartAnimation.json in Resources */,
 				8A24DD052EA5510900DE6E95 /* MPLUS1-Black.ttf in Resources */,
 				8A24DD062EA5510900DE6E95 /* MPLUS1-Bold.ttf in Resources */,
+				0642A4D22EBB310A00BAF414 /* bad_netomo_story1_ver13.csv in Resources */,
 				8A24DD072EA5510900DE6E95 /* MPLUS1-ExtraBold.ttf in Resources */,
 				8A24DD082EA5510900DE6E95 /* MPLUS1-ExtraLight.ttf in Resources */,
 				8A24DD092EA5510900DE6E95 /* MPLUS1-Light.ttf in Resources */,
 				8A24DD0A2EA5510900DE6E95 /* MPLUS1-Medium.ttf in Resources */,
 				8A24DD0B2EA5510900DE6E95 /* MPLUS1-Regular.ttf in Resources */,
+				0642A4D42EBB311200BAF414 /* bad_netomo_story2_ver14.csv in Resources */,
 				8A24DD0C2EA5510900DE6E95 /* MPLUS1-SemiBold.ttf in Resources */,
+				0642A4D02EBB30FE00BAF414 /* bad_kakusan_story3_ver4.csv in Resources */,
 				8A24DD0D2EA5510900DE6E95 /* MPLUS1-Thin.ttf in Resources */,
-				8A24DD112EA5510900DE6E95 /* bad_kakusan_story1_ver8.csv in Resources */,
-				8A24DD122EA5510900DE6E95 /* bad_kakusan_story2_ver2.csv in Resources */,
-				8A24DD132EA5510900DE6E95 /* bad_kakusan_story3_ver2.csv in Resources */,
-				8A24DD142EA5510900DE6E95 /* bad_netomo_story1_ver12.csv in Resources */,
 				06373E472EAE9B6200519FAB /* bad_groupchat_story1_ver14.csv in Resources */,
-				8A24DD152EA5510900DE6E95 /* bad_netomo_story2_ver12.csv in Resources */,
 				8A24DD162EA5510900DE6E95 /* bad_netomo_story3_ver9.csv in Resources */,
 				8A24DD1D2EA5510900DE6E95 /* good_kakusan_story1_ver3.csv in Resources */,
 				8A24DD1E2EA5510900DE6E95 /* good_kakusan_story2_ver3.csv in Resources */,
 				8A24DD1F2EA5510900DE6E95 /* good_kakusan_story3_ver5.csv in Resources */,
-				8A24DD202EA5510900DE6E95 /* good_netomo_story1_ver5.csv in Resources */,
 				06373E412EAE971600519FAB /* bad_groupchat_story2_ver13.csv in Resources */,
 				8A24DD212EA5510900DE6E95 /* good_netomo_story2_ver3.csv in Resources */,
+				0642A4CC2EBB30EC00BAF414 /* bad_kakusan_story1_ver10.csv in Resources */,
 				8A24DD222EA5510900DE6E95 /* good_netomo_story3_ver3.csv in Resources */,
 				8A24DD232EA5510900DE6E95 /* good_netomo_story3_ver4.csv in Resources */,
 				8A24DD242EA5510900DE6E95 /* Assets.xcassets in Resources */,
