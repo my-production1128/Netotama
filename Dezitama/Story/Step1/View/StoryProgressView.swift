@@ -51,6 +51,7 @@ struct StoryProgressView: View {
                     case .dialogue:
                         DialogueView(
                             dialogue: currentDialogue,
+                            isChoicePending: isChoicePopupVisible,
                             onNext: { nextSceneId in
                                 if self.userChoiceReply != nil {
                                     let realNextId = self.userChoiceReply!.nextSceneId!

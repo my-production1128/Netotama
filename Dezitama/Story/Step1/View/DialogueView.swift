@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DialogueView: View {
     let dialogue: Dialogue2
+    var isChoicePending: Bool
     var onNext: (String) -> Void
     
     @State private var offsetY: CGFloat = 0.0
@@ -43,18 +44,22 @@ struct DialogueView: View {
                 }
             }
             .onAppear {
-                isAnimationReady = false
+                if isChoicePending {
+                                    // 選択肢表示中は、タイマーを待たずにタップ（次へ進む動作）を許可
+                                    isAnimationReady = true
+                                } else {
+                                    // 通常時（既存のコード）
+                                    isAnimationReady = false
+                                    if let dialogueText = dialogue.dialogueText {
+                                        let textLength = dialogueText.replacingOccurrences(of: "<br>", with: "").count
+                                        let typingDuration = Double(textLength) * 0.03 + 0.1 // 0.05秒/文字 + バッファ0.3秒
 
-                // テキストの文字数からタイピング完了時間を計算
-                if let dialogueText = dialogue.dialogueText {
-                    let textLength = dialogueText.replacingOccurrences(of: "<br>", with: "").count
-                    let typingDuration = Double(textLength) * 0.03 + 0.1 // 0.05秒/文字 + バッファ0.3秒
-
-                    // タイピング完了後にタップを有効化
-                    DispatchQueue.main.asyncAfter(deadline: .now() + typingDuration) {
-                        isAnimationReady = true
-                    }
-                }
+                                        // タイピング完了後にタップを有効化
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + typingDuration) {
+                                            isAnimationReady = true
+                                        }
+                                    }
+                                }
             }
         }
     }
@@ -176,17 +181,38 @@ struct DialogueView: View {
                 }
 
                 if let dialogueText = dialogue.dialogueText {
-                    TypingRubyLabelRepresentable(
-                        attributedText: dialogueText
-                            .replacingOccurrences(of: "<br>", with: "\n")
-                            .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black),
-                        charInterval: 0.05,
-                        font: UIFont.customFont(ofSize: 30),
-                        targetWidth: 500
-                    )
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: 700)
-                    .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+                    let attributedText = dialogueText
+                                            .replacingOccurrences(of: "<br>", with: "\n")
+                                            .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black)
+
+                                        let font = UIFont.customFont(ofSize: 30)
+                                        let targetWidth: CGFloat = 500
+
+                                        if isChoicePending {
+                                            // 【選択肢表示中】アニメーションなしのテキストを表示
+                                            WideRubyLabelRepresentable(
+                                                attributedText: attributedText,
+                                                font: font,
+                                                textColor: .black,
+                                                textAlignment: .natural,
+                                                targetWidth: targetWidth
+                                            )
+                                            .fixedSize(horizontal: false, vertical: true)
+                                            .frame(maxWidth: 700)
+                                            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+
+                                        } else {
+                                            // 【通常時】タイピングアニメーションを表示 (既存のコード)
+                                            TypingRubyLabelRepresentable(
+                                                attributedText: attributedText,
+                                                charInterval: 0.05,
+                                                font: font,
+                                                targetWidth: targetWidth
+                                            )
+                                            .fixedSize(horizontal: false, vertical: true)
+                                            .frame(maxWidth: 700)
+                                            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+                                        }
                 }
 
 
