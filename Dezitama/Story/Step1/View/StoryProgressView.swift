@@ -16,6 +16,8 @@ struct StoryProgressView: View {
     @State private var viewRefreshKey: UUID = UUID()
     @State private var isChatLogVisible: Bool = false
     @State private var isBackMap: Bool = false
+    @State private var offsetY: CGFloat = 0.0
+    @State var isPopupVisible: Bool = false
 
     @State private var pendingChoiceDialogue: Dialogue2? = nil
     @State private var isChoicePopupVisible: Bool = false
@@ -69,6 +71,44 @@ struct StoryProgressView: View {
                         }
                         .id(currentDialogue.id)
 
+                    case .dialogue_AE:
+                        ZStack {
+                            // Lottieアニメーションの表示
+                            LottieView(name: currentDialogue.dialogueText!, loopMode: .playOnce)
+                                .edgesIgnoringSafeArea(.all)
+
+                            // タップ領域
+                            Color.clear
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    // ▼▼▼ 修正箇所 ▼▼▼
+                                    // 既存の handleNavigation 関数を呼ぶだけで、
+                                    // "end" の処理、選択肢の処理、次のシーンへの遷移が
+                                    // すべて自動的に処理されます。
+                                    handleNavigation(nextSceneId: currentDialogue.nextSceneId ?? "end")
+                                    // ▲▲▲ 修正ここまで ▲▲▲
+                                }
+
+                            // "next_button" の表示 (変更なし)
+                            HStack {
+                                Image("next_button")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 35)
+                                    .position(x: geometry.size.width * 0.85, y: geometry.size.height * 0.905)
+                                    .offset(y: offsetY)
+                                    .onAppear {
+                                        startLoopingAnimation()
+                                    }
+                            }
+                            .allowsHitTesting(false) // アニメーションがタップを妨げないように
+                        }
+                        .onAppear {
+                            if let bgm = currentDialogue.bgm, !bgm.isEmpty {
+                                musicplayer.playBGM(fileName: bgm)
+                            }
+                        }
+
                     case .chat:
                         ChatMessageView(
                             dialogues: dialogues,
@@ -101,8 +141,8 @@ struct StoryProgressView: View {
                                 textAlignment: .center,
                                 targetWidth: 100
                             )
-                                .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
-                                .offset(x: screenTextOffset)
+                            .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                            .offset(x: screenTextOffset)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .clipped()
@@ -302,7 +342,7 @@ struct StoryProgressView: View {
                         if !showResultButton && !isEndSceneReady {
                             print("最後のシーン (\(newSceneId)) に到達しました。成績ボタンを表示します。")
 
-                                self.showResultButton = true
+                            self.showResultButton = true
                         }
                     }
                     else {
@@ -381,5 +421,16 @@ struct StoryProgressView: View {
     }
     private var currentDialogue: Dialogue2? {
         dialogues.first(where: { $0.sceneId == currentSceneId })
+    }
+
+    private func startLoopingAnimation() {
+        offsetY = 0.0
+        let animation = Animation
+            .easeInOut(duration: 0.6)
+            .repeatForever(autoreverses: true)
+
+        withAnimation(animation) {
+            offsetY = 8.0
+        }
     }
 }
