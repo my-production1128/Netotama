@@ -9,39 +9,30 @@ import Lottie
 import SwiftUI
 
 struct StoryBranchView: View {
-    @EnvironmentObject private var gameManager: GameManager
-    @EnvironmentObject var musicplayer: SoundPlayer
-
     @State private var currentSceneId: String
     @State private var historyStack: [String] = []
     @State private var showSpecialView: Bool = false
     @State private var offsetY: CGFloat = 0.0
     @State var isPopupVisible: Bool = false
     @State var nextChat: Bool = false
-
     @State private var displayedText = ""
     @State private var currentCharIndex = 0
     @State private var timer: Timer? = nil
-
     @State private var isTypingComplete: Bool = true
     @State private var shouldSkipTyping: Bool = false
-
     @State private var currentChoiceScene: Branching? = nil
-
     @State var isChatLogVisible: Bool = false
     @State private var conversationHistory: [Branching]
-
     @State var isEndSceneReady: Bool = false
-
     @State private var finalStars: Int = 0
     @State var isBackMap: Bool = false
-
     @State private var showResultButton: Bool = false
-
     @State private var storylineOpacity: Double = 0.0
     @State private var isStorylineInteractable: Bool = false
-
     @State private var screenTextOffset: CGFloat = 0.0
+
+    @EnvironmentObject private var gameManager: GameManager
+    @EnvironmentObject var musicplayer: SoundPlayer
 
     @Binding var path: NavigationPath
     @Binding var allBranchings: [Branching]

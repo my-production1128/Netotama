@@ -98,23 +98,23 @@ struct MapView: View {
                             .id(gameManager.currentMode)
                     }
                     //デバックボタン
-//                    VStack{
-//                        Button("リセット") {
-//                            GameManager.shared.resetProgress()
-//                        }
-//                        .padding()
-//                        .background(Color.red)
-//                        .foregroundColor(.white)
-//                        .cornerRadius(8)
-//                        
-//                        Button("デバック"){
-//                            GameManager.shared.setDebugUnlockAll()
-//                        }
-//                        .padding()
-//                        .background(Color.green)
-//                        .foregroundColor(.white)
-//                        .cornerRadius(8)
-//                    }
+                    VStack{
+                        Button("リセット") {
+                            GameManager.shared.resetProgress()
+                        }
+                        .padding()
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                        
+                        Button("デバック"){
+                            GameManager.shared.setDebugUnlockAll()
+                        }
+                        .padding()
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                    }
                     
                     // 戻るボタン
                     VStack {
@@ -300,18 +300,18 @@ struct MapView: View {
             }
             
             // CloudView
-            ForEach(currentStages(for: mode)) { stage in
-                if let cloudName = gameManager.cloudImageName(for: stage.id, mode: mode),
-                   let cloudPosition = cloudPosition(for: stage.id, in: geometry, mode: mode) {
-                    CloudView(
-                        id: stage.id,
-                        imageName: cloudName,
-                        position: cloudPosition,
-                        geometry: geometry,
-                        mode: mode
-                    )
-                }
-            }
+//            ForEach(currentStages(for: mode)) { stage in
+//                if let cloudName = gameManager.cloudImageName(for: stage.id, mode: mode),
+//                   let cloudPosition = cloudPosition(for: stage.id, in: geometry, mode: mode) {
+//                    CloudView(
+//                        id: stage.id,
+//                        imageName: cloudName,
+//                        position: cloudPosition,
+//                        geometry: geometry,
+//                        mode: mode
+//                    )
+//                }
+//            }
             
             // スコア表示
             VStack {

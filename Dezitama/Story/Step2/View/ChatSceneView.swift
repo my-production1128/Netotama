@@ -27,7 +27,6 @@ struct ChatSceneView: View {
 
     @EnvironmentObject var musicplayer: SoundPlayer
 
-
     @State var isTyping = false
     @State var pendingMessage: Branching? = nil
 
