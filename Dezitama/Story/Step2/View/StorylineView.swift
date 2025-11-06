@@ -10,7 +10,6 @@ import SwiftUI
 struct StorylineView: View {
 
     // MARK: - Properties
-
     // 親Viewからのデータ
     let current: Branching
     let geometry: GeometryProxy
@@ -18,13 +17,11 @@ struct StorylineView: View {
     let branchingMap: [String: Branching]
     let offsetY: CGFloat
     let startLoopingAnimation: () -> Void
-
     // 親Viewと同期するState
     @Binding var currentSceneId: String
     @Binding var currentChoiceScene: Branching?
     @Binding var isPopupVisible: Bool
     @Binding var conversationHistory: [Branching]
-
     @Binding var storylineOpacity: Double
     @Binding var isStorylineInteractable: Bool
 

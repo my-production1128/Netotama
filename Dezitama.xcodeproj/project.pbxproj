@@ -523,11 +523,12 @@
 				};
 			};
 			buildConfigurationList = 0661A0482DDB941700016B1C /* Build configuration list for PBXProject "Dezitama" */;
-			developmentRegion = en;
+			developmentRegion = ja;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ja,
 			);
 			mainGroup = 0661A0442DDB941700016B1C;
 			minimizedProjectReferenceProxies = 1;

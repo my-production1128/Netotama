@@ -45,7 +45,7 @@ struct MenuView: View {
 
                                 Button {
                                     path.append(ViewBuilderPath.Credit)
-                                    isOpen = false
+//                                    isOpen = false
                                 } label: {
                                     Text("・クレジット")
                                         .foregroundColor(.black)
@@ -56,7 +56,7 @@ struct MenuView: View {
 
                                 Button {
                                     path.append(ViewBuilderPath.HowToUse)
-                                    isOpen = false
+//                                    isOpen = false
                                 } label: {
                                     Text("・アプリの使い方")
                                         .foregroundColor(.black)
@@ -67,7 +67,7 @@ struct MenuView: View {
                                 
                                 Button {
                                     path.append(ViewBuilderPath.ButtonExample)
-                                    isOpen = false
+//                                    isOpen = false
                                 } label: {
                                     Text("・ボタンの説明")
                                         .foregroundColor(.black)
@@ -75,6 +75,16 @@ struct MenuView: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .padding()
                                 }
+                                Button {
+                                    path.append(ViewBuilderPath.TermsOfServiceView)
+                                } label: {
+                                    Text("・利用規約")
+                                        .foregroundColor(.black)
+                                        .font(Font(UIFont.customFont(ofSize: 25)))
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .padding()
+                                }
+
                                 Spacer()
                                 Button {
                                     GameManager.shared.deleteAllData()
@@ -83,7 +93,6 @@ struct MenuView: View {
                                         .foregroundColor(.black)
                                         .font(Font(UIFont.customFont(ofSize: 25)))
                                 }
-
 
                             }
                             .padding(.top, 100)
@@ -102,14 +111,21 @@ struct MenuView: View {
 
 struct Credit : View {
     var body: some View {
-        ZStack{
-        Image("credit")
-                .resizable()
-                .scaledToFill()
-                .frame(width: UIScreen.main.bounds.width,
+            ZStack{
+                Image("credit")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: UIScreen.main.bounds.width,
                            height: UIScreen.main.bounds.height)
-                .ignoresSafeArea()
-        }
+                    .ignoresSafeArea()
+                VStack {
+                    Spacer()
+                    Text("© 2025 limura Lab., Pref. Univ. of Kumamoto")
+                        .foregroundColor(.black)
+                        .font(Font(UIFont.customFont(ofSize: 10)))
+                        .padding(.bottom, 30)
+                }
+            }
     }
 }
 
@@ -197,3 +213,4 @@ struct ButtonExample : View {
         }
     }
 }
+

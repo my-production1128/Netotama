@@ -125,9 +125,8 @@ struct ContentView: View {
     private var startButtonView: some View {
         Button {
             musicplayer.stopAllMusic()
-            musicplayer.playSE(fileName: "startbutton_SE") {
-                path.append(ViewBuilderPath.ChoiceView)
-            }
+            musicplayer.playSE(fileName: "startbutton_SE")
+            path.append(ViewBuilderPath.ChoiceView)
         } label: {
             startButtonLabel
         }
@@ -173,9 +172,8 @@ struct ContentView: View {
                 }
                 .onTapGesture {
                     musicplayer.stopAllMusic()
-                    musicplayer.playSE(fileName: "startbutton_SE") {
-                        path.append(ViewBuilderPath.ChoiceView)
-                    }
+                    musicplayer.playSE(fileName: "startbutton_SE")
+                    path.append(ViewBuilderPath.ChoiceView)
                 }
                 .onAppear {
                     loadAllBranchingData()
@@ -223,7 +221,10 @@ struct ContentView: View {
                 
             case .ButtonExample:
                 ButtonExample()
-            
+
+            case .TermsOfServiceView:
+                TermsOfServiceView()
+
             case .StoryProgressView(let stageIndex, let stageId):
                 StoryProgressView(
                     dialogues: stages[stageIndex].dialogues,

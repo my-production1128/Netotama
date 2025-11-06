@@ -12,9 +12,13 @@ struct ChoiceView: View {
     @EnvironmentObject var gameManager: GameManager
     @EnvironmentObject var musicplayer: SoundPlayer
     @State private var showTutorial = false
-    
     @State private var isMenuVisible: Bool = false // メニュー開閉制御
-    
+    @State private var animate: Bool = false
+
+    let floatingAnimation: Animation = Animation
+        .easeInOut(duration: 1.0) // 少しゆっくりめに
+        .repeatForever(autoreverses: true)
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -39,12 +43,22 @@ struct ChoiceView: View {
                             musicplayer.playSE(fileName: "button_SE")
                             gameManager.currentMode = .bad
                             path.append(ViewBuilderPath.MapViewBad)
+                            if !gameManager.didTapBadButtonOnce {
+                                gameManager.didTapBadButtonOnce = true
+                                gameManager.saveProgress() // 状態を保存
+                                // アニメーションを停止
+                                withAnimation(.easeOut(duration: 0.2)) {
+                                    animate = false
+                                }
+                            }
                         } label: {
                             Image("Bad_Button")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: geometry.size.height * 0.4)
                                 .offset(y: -10)
+                                .scaleEffect(animate ? 0.9 : 1.0) // 1.03倍〜0.97倍の範囲で変化
+                                .animation(animate ? floatingAnimation.delay(0.2) : .easeOut(duration: 0.2), value: animate)
                         }
                         
                         Button {
@@ -72,7 +86,7 @@ struct ChoiceView: View {
                             } label: {
                                 Image("imark")
                                     .resizable()
-                                    .frame(width: 50, height: 50)
+                                    .frame(width: 65, height: 65)
                             }
                             .padding(20)
                         }
@@ -96,7 +110,16 @@ struct ChoiceView: View {
         }
         .onAppear {
             musicplayer.playBGM(fileName: "island_bgm")
-            
+
+            if !gameManager.didTapBadButtonOnce {
+                DispatchQueue.main.async {
+                    self.animate = true
+                }
+            } else {
+                // 既にタップ済みの場合は、アニメーションを開始しない (animate = false のまま)
+                self.animate = false
+            }
+
             // 初回表示時のみチュートリアルを表示
             if !TutorialManager.shared.hasSeenTutorial(for: "choice") {
                         showTutorial = true

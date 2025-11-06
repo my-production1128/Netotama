@@ -35,6 +35,7 @@ private struct SaveContainer: Codable {
     var badStages: [Stage]
     var isHappyUnlocked: Bool
     var didShowChatTapHint: Bool?
+    var didTapBadButtonOnce: Bool?
 }
 
 final class GameManager: ObservableObject {
@@ -62,6 +63,7 @@ final class GameManager: ObservableObject {
     }
 
     @Published var didShowChatTapHint: Bool = false
+    @Published var didTapBadButtonOnce: Bool = false
 
     @Published var lastChoicePercentage: Double? = nil
 
@@ -96,7 +98,9 @@ final class GameManager: ObservableObject {
                 self.badStages = container.badStages
                 self.isHappyUnlocked = container.isHappyUnlocked
                 self.didShowChatTapHint = container.didShowChatTapHint ?? false
+                self.didTapBadButtonOnce = container.didTapBadButtonOnce ?? false
                 print("<<< loadProgress: didShowChatTapHint を読み込みました. 値: \(self.didShowChatTapHint)")
+                print("<<< loadProgress: didTapBadButtonOnce を読み込みました. 値: \(self.didTapBadButtonOnce)")
                 recalcTotals()
                 return
             } else {
@@ -109,14 +113,18 @@ final class GameManager: ObservableObject {
         self.badStages = defaultStages(mode: .bad)
         self.isHappyUnlocked = false
         self.didShowChatTapHint = false // デフォルトは false
+        self.didTapBadButtonOnce = false
         print("<<< loadProgress: 保存データがないため、didShowChatTapHint をデフォルト値 (false) に設定しました。")
+        print("<<< loadProgress: 保存データがないため、didTapBadButtonOnce をデフォルト値 (false) に設定しました。")
         recalcTotals()
     }
 
     func saveProgress() {
         print(">>> saveProgress: didShowChatTapHint (\(self.didShowChatTapHint)) を保存します。")
+        print(">>> saveProgress: didTapBadButtonOnce (\(self.didTapBadButtonOnce)) を保存します。")
         let container = SaveContainer(happyStages: happyStages, badStages: badStages, isHappyUnlocked: isHappyUnlocked,
-                                      didShowChatTapHint: self.didShowChatTapHint)
+                                      didShowChatTapHint: self.didShowChatTapHint,
+                                      didTapBadButtonOnce: self.didTapBadButtonOnce)
         let encoder = JSONEncoder()
         if let data = try? encoder.encode(container) {
             userDefaults.set(data, forKey: saveKey)
@@ -445,12 +453,15 @@ final class GameManager: ObservableObject {
     func resetProgress() {
         print("--- resetProgress() が呼ばれました ---")
         print("リセット前の didShowChatTapHint: \(didShowChatTapHint)")
+        print("リセット前の didTapBadButtonOnce: \(didTapBadButtonOnce)")
 
         happyStages = defaultStages(mode: .happy)
         badStages = defaultStages(mode: .bad)
         isHappyUnlocked = false
-        didShowChatTapHint = false // ← ここで false に設定
+        didShowChatTapHint = false
+        didTapBadButtonOnce = false
         print("★★★ resetProgress: didShowChatTapHint を false に設定しました。 ★★★") // ← ログ追加
+        print("★★★ resetProgress: didTapBadButtonOnce を false に設定しました。 ★★★")
         lastChoicePercentage = nil
 
         recalcTotals()
