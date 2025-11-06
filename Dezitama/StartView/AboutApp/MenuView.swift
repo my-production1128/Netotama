@@ -112,17 +112,37 @@ struct MenuView: View {
 struct Credit : View {
     var body: some View {
             ZStack{
-                Image("credit")
+                Image("credit_background")
                     .resizable()
                     .scaledToFill()
                     .frame(width: UIScreen.main.bounds.width,
                            height: UIScreen.main.bounds.height)
                     .ignoresSafeArea()
                 VStack {
+                    Image("credit_text")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 350)
+                        .padding()
+                    Image("credit_develop")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 750)
+                        .padding()
+                    Image("credit_creative")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 750)
+                        .padding()
+                    Image("credit_super")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 750)
+                        .padding()
                     Spacer()
                     Text("© 2025 limura Lab., Pref. Univ. of Kumamoto")
                         .foregroundColor(.black)
-                        .font(Font(UIFont.customFont(ofSize: 10)))
+                        .font(Font(UIFont.customFont(ofSize: 20)))
                         .padding(.bottom, 30)
                 }
             }

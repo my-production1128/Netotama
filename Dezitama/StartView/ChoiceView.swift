@@ -89,6 +89,7 @@ struct ChoiceView: View {
                                     .frame(width: 65, height: 65)
                             }
                             .padding(20)
+                            .padding(.trailing, 10)
                         }
                         Spacer()
                     }
