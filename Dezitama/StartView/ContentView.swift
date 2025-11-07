@@ -24,8 +24,8 @@ struct ContentView: View {
         StageData(id: 2, csvFileName: "bad_groupchat_story2_ver13"),
         StageData(id: 3, csvFileName: "bad_groupchat_story3_ver7"),
         //ネトモ
-        StageData(id: 4, csvFileName: "bad_netomo_story1_ver12"),
-        StageData(id: 5, csvFileName: "bad_netomo_story2_ver12"),
+        StageData(id: 4, csvFileName: "bad_netomo_story1_ver13"),
+        StageData(id: 5, csvFileName: "bad_netomo_story2_ver14"),
         StageData(id: 6, csvFileName: "bad_netomo_story3_ver9"),
         //拡散
         StageData(id: 7, csvFileName: "bad_kakusan_story1_ver8"),
