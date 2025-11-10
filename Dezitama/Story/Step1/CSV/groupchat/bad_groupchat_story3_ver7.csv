@@ -1,5 +1,5 @@
 storyId,sceneId,viewType,characterName,dialogueText,nextSceneId,isChoice,choice1Text,choice1Percentage,choice1NextSceneId,choice2Text,choice2Percentage,choice2NextSceneId,background,TalkingPeople,LeftCharacter,CenterCharacter,RightCharacter,OneCharacter,TwoCharacter,OnePerson,bgm,groupName
-bad_groupchat_story3,Scene0,start,,アレックとセシルとカールのこといじってるけど、このままいじり｜続《つ》けていいのかな？,Scene1,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,
+bad_groupchat_story3,Scene0,start,,アレックとセシルとカールのこといじってるけど、このままいじり｜続《つづ》けていいのかな？,Scene1,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,
 bad_groupchat_story3,Scene1,start,,｜最近《さいきん》はひどい｜言葉《ことば》も｜増《ふ》えてきた｜気《き》がする…,Scene2,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,
 bad_groupchat_story3,Scene2,dialogue,ブライアン,カール｜最近《さいきん》｜大丈夫《だいじょうぶ》？,Scene3,FALSE,,,,,,,classroom,Two,,,,Curl_tear,Brian_trouble,,classroom_bgm,
 bad_groupchat_story3,Scene3,dialogue,カール,え？なんのこと？,Scene4,FALSE,,,,,,,classroom,Two,,,,Curl_tear,Brian_trouble,,classroom_bgm,

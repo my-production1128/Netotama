@@ -1,7 +1,7 @@
 import SwiftUI
 
 // MARK: - Terms of Service Views
-/// 利用規約の各条項を表示するための再利用可能なView
+// 利用規約の各条項を表示するための再利用可能なView
 struct TermSectionView: View {
     let title: String
     let content: String
@@ -43,7 +43,7 @@ struct TermsOfServiceView: View {
             }
             .padding(.bottom)
 
-            VStack(alignment:.leading, spacing: 16){ // Vstackにスペーシングを追加
+            VStack(alignment:.leading, spacing: 16){
 
                 Text("本規約は、熊本県立大学総合管理学部飯村研究室（以下「本研究室」という。）が提供するスマートフォンアプリケーション「ネトたま～コニーのネット大冒険～」（以下「本アプリ」という。）の利用に関する諸規定を定めるものです。本アプリをインストールする前に本規約をご確認いただき、内容をご理解・ご同意の上で本アプリをご利用ください。")
                     .font(.body)

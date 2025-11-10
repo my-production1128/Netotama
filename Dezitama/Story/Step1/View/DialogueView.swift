@@ -215,32 +215,6 @@ struct DialogueView: View {
                                         }
                 }
 
-
-//                VStack(alignment: .leading, spacing: 10) {
-//                    if let characterName = dialogue.characterName {
-//                        Text(characterName)
-//                            .font(Font(UIFont.customFont(ofSize: 30)))
-//                            .foregroundColor(.black)
-//                            .padding(.leading, 40)
-//                            .padding(.top, 20)
-//                    }
-//                    
-//                    if let dialogueText = dialogue.dialogueText {
-//                        TypingRubyLabelRepresentable(
-//                            attributedText: dialogueText
-//                                .replacingOccurrences(of: "<br>", with: "\n")
-//                                .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black),
-//                            charInterval: 0.05,
-//                            font: UIFont.customFont(ofSize: 30),
-//                            targetWidth: 500
-//                        )
-//                        .frame(maxWidth: 700, alignment: .leading)
-//                        .padding(.horizontal, 60)
-//                    }
-//                    Spacer()
-//                }
-//                .frame(width: 1000, height: 300)
-
                 HStack {
                     Image("next_button")
                         .resizable()
@@ -252,13 +226,7 @@ struct DialogueView: View {
                             startLoopingAnimation()
                         }
                 }
-
-                // アニメーションはここに独立して置く
-//                AnimatedNextButton(action: handleTap)
-//                    .frame(width: 1000, height: 300)
-//                    .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.905)
             }
-//            .padding(.bottom, 150)
         }.offset(y: 20)
     }
 
@@ -298,7 +266,7 @@ struct DialogueView: View {
             case "Teacher": return 500 // (width: 300, height: 450)
             case "Brian":   return 500 // (width: 300, height: 450)
             case "Nick":    return 500 // (width: 250, height: 650)
-            case "Sandra":  return 500 // (width: 250, height: 250)
+            case "Sandra":  return 300 // (width: 250, height: 250)
             default:        return 500 // (width: 250, height: 450)
             }
         }

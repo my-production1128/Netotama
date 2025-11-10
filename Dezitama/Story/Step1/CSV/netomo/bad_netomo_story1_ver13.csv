@@ -4,8 +4,8 @@ bad_netomo_story1,Scene1,start,コニー,｜今日《きょう》も｜家《い
 bad_netomo_story1,Scene2,chat,コニー,ヤッホー！<br>｜昨日《きのう》のライブ｜配信《はいしん》｜観《み》てた？,Scene3,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story1,Scene3,chat,ニック,｜観《み》たよ！,Scene4,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story1,Scene4,chat,コニー,,,TRUE,ニックと｜一緒《いっしょ》に｜見《み》たいなと｜思《おも》って！,1,Scene5,｜私《わたし》もみた！,0,Scene5,chatBackground_03,,,,,,,,chat_bgm,カール
-bad_netomo_story1,Scene5,chat,ニック,まじ！ネトモと｜会《あ》ってリアタイして｜観《み》てた〜,Scene6,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
-bad_netomo_story1,Scene6,chat,コニー,,,TRUE,え！｜私《わたし》もあって｜話《はな》してみたい！,1,Scene8,ネトモと｜会《あ》ったんだ。すごいね...,0,Scene7,chatBackground_03,,,,,,,,chat_bgm,カール
+bad_netomo_story1,Scene5,chat,ニック,まじ！<br>ネトモと｜会《あ》ってリアタイして｜観《み》てた〜,Scene6,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
+bad_netomo_story1,Scene6,chat,コニー,,,TRUE,｜私《わたし》もあって｜話《はな》してみたい！,1,Scene8,ネトモと｜会《あ》ったんだ。すごいね...,0,Scene7,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story1,Scene7,chat,ニック,コニーにも｜会《あ》いたいな！,Scene8,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story1,Scene8,chat,ニック,｜次《つぎ》の｜配信《はいしん》も｜観《み》る？｜一緒《いっしょ》に｜観《み》ようよ！,Scene9,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story1,Scene9,chat,コニー,,,TRUE,ちょっと｜会《あ》うのは｜怖《こわ》いな,0,Scene10,｜見《み》たい！｜一緒《いっしょ》にみよう！,1,Scene10,chatBackground_03,,,,,,,,chat_bgm,カール
@@ -17,7 +17,7 @@ bad_netomo_story1,Scene14,chat,コニー,｜何《なに》それ！｜知《し
 bad_netomo_story1,Scene15,chat,ニック,もし｜良《よ》かったら｜限定《げんてい》グッズあげようか？,Scene16,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story1,Scene16,chat,ニック,たくさん｜余《あ》っててちょうどもらってくれる｜人《ひと》｜探《さが》してたんだ。,Scene17,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story1,Scene17,chat,コニー,,,TRUE,｜私《わたし》はいらないかな,0,Scene18,｜貰《もら》っていいの！？,1,Scene18,chatBackground_03,,,,,,,,chat_bgm,カール
-bad_netomo_story1,Scene18,chat,ニック,もらって｜欲《ほ》しいな！コニーとはこれからも｜仲良《なかよ》くしたいし！,Scene19,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
+bad_netomo_story1,Scene18,chat,ニック,もらって｜欲《ほ》しいな！<br>コニーとはこれからも｜仲良《なかよ》くしたいし！,Scene19,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story1,Scene19,chat,コニー,,,TRUE,いや、もらえないよ...,0,Scene20,やった！うれしい！,1,Scene21,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story1,Scene20,chat,ニック,いいからもらってよ！（笑）,Scene21,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story1,Scene21,chat,ニック,どうやって｜渡《わ》そうかな…,Scene22,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
