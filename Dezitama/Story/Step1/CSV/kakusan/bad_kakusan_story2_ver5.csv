@@ -1,14 +1,14 @@
 storyId,sceneId,viewType,characterName,dialogueText,nextSceneId,isChoice,choice1Text,choice1Percentage,choice1NextSceneId,choice2Text,choice2Percentage,choice2NextSceneId,background,TalkingPeople,LeftCharacter,CenterCharacter,RightCharacter,OneCharacter,TwoCharacter,OnePerson,bgm,groupName
-bad_kakusan_story2,Scene0,start,コニー,この｜前《まえ》｜取《と》れた｜動画《どうが》めっちゃ｜面白《おもしろ》かったな〜,Scene1,FALSE,,,,,,,arasuzi_background,,,,,,,,chat_bgm,
+bad_kakusan_story2,Scene0,start,コニー,この｜前《まえ》｜撮《と》れた｜動画《どうが》めっちゃ｜面白《おもしろ》かったな〜,Scene1,FALSE,,,,,,,arasuzi_background,,,,,,,,chat_bgm,
 bad_kakusan_story2,Scene1,start,コニー,｜今日《きょう》も｜面白《おもしろ》い｜動画《どうが》｜撮《と》りたいな〜,Scene2,FALSE,,,,,,,arasuzi_background,,,,,,,,chat_bgm,
 bad_kakusan_story2,Scene2,screen,,アレック・ケビン・コニーのチャット,Scene3,FALSE,,,,,,,school,,,,,,,,chat_bgm,アレック・ケビン
 bad_kakusan_story2,Scene3,chat,アレック,みてみてケビン！セシルのパンツが、｜風《かぜ》｜強《つよ》すぎて｜少《すこ》し｜見《み》えてる！,Scene4,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・ケビン
 bad_kakusan_story2,Scene4,chat,ケビン,おもしろ！この｜動画《どうが》SNSにアップしまーす（笑）,Scene5,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・ケビン
 bad_kakusan_story2,Scene5,chat,コニー,,,TRUE,SNSはさすがにやめて！なんでそんなことするの？,0,Scene6,｜冗談《じょうだん》でもあげるのやばすぎ（笑）,1,Scene7,chatBackground_04,,,,,,,,chat_bgm,アレック・ケビン
 bad_kakusan_story2,Scene6,chat,アレック,だってコニーがグルチャに｜送《おく》ってくれたじゃん。｜拡散《かくさん》していいのかなって（笑）,Scene8,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・ケビン
-bad_kakusan_story2,Scene7,chat,ケビン,いいねいいね！,Scene8,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・ケビン
+bad_kakusan_story2,Scene7,chat,アレック,いいねいいね！,Scene8,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・ケビン
 bad_kakusan_story2,Scene8,chat,コニー,,,TRUE,みんなの｜反応《はんのう》が｜楽《たの》しみだ！,0,Scene9,ダメだよ！！,0,Scene9,chatBackground_04,,,,,,,,chat_bgm,アレック・ケビン
-bad_kakusan_story2,Scene9,screen,,アレック・ケビンのチャット,Scene10,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・ケビン
+bad_kakusan_story2,Scene9,screen,,アレック・ケビンのチャット,Scene10,FALSE,,,,,,,school,,,,,,,,chat_bgm,アレック・ケビン
 bad_kakusan_story2,Scene10,chat,アレック,あのセシルの｜動画《どうが》SNSにあげた？,Scene11,FALSE,,,,,,,chatBackground_05,,,,,,,,chat_bgm,ケビン
 bad_kakusan_story2,Scene11,chat,ケビン,あげたあげた！（笑）,Scene12,FALSE,,,,,,,chatBackground_05,,,,,,,,chat_bgm,ケビン
 bad_kakusan_story2,Scene12,chat,アレック,｜最高《さいこう》！セシル｜有名人《ゆうめいじん》になったら｜俺《おれ》たちに｜感謝《かんしゃ》して｜欲《ほ》しいね,Scene13,FALSE,,,,,,,chatBackground_05,,,,,,,,chat_bgm,ケビン

@@ -82,7 +82,6 @@ struct ChatMessageView: View {
         ZStack {
             if let currentDialogue = dialogue {
                 Text(currentDialogue.groupName ?? "")
-//                    .position(x: width * 0.51, y: height * 0.15)
                     .offset(x: 10,y: -270)
                     .font(.custom("MPLUS1-Medium", size: 24))
             }
@@ -90,15 +89,15 @@ struct ChatMessageView: View {
                 ScrollViewReader { proxy in
                     ScrollView {
                         VStack(spacing: 0) {
-                            ForEach(chatMessages) { message in //
-                                messageRow(for: message, proxy: proxy) //
-                                    .id(message.id) //
+                            ForEach(chatMessages) { message in
+                                messageRow(for: message, proxy: proxy)
+                                    .id(message.id)
                             }
                         }
                     }
                     .frame(width: 420, height: 560)
-                    .offset(x: 15, y: 55) // 幅は維持するなら maxWidth
-                    .frame(maxHeight: .infinity) // 高さは利用可能な最大まで
+                    .offset(x: 15, y: 55)
+                    .frame(maxHeight: .infinity)
                     .background(Color.clear)
                     .onAppear {
                         self.proxy = proxy
@@ -113,9 +112,8 @@ struct ChatMessageView: View {
                     .frame(width: 300, height: 300)
                     .opacity(isHintBlinking ? 1.0 : 0.0)
                     .onAppear {
-                        // 点滅アニメーションを開始するだけにする
                         isHintBlinking = false
-                         DispatchQueue.main.async {
+                        DispatchQueue.main.async {
                             withAnimation(.easeInOut(duration: 0.7).repeatForever(autoreverses: true)) {
                                 isHintBlinking = true
                             }
@@ -146,22 +144,15 @@ struct ChatMessageView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear {
-//            isTapImageVisible = false
             DispatchQueue.main.async {
                 if let startDialogue = dialogue {
-
-                    // 1. 最初のメッセージを「即時表示」で作成
                     let initialMsg = ChatMessage2(dialogue: startDialogue,
                                                   isAnimating: false,
                                                   showText: true,
-                                                  imageIsVisible: true, // 即時表示
-                                                  textIsVisible: true) // 即時表示
-
+                                                  imageIsVisible: true,
+                                                  textIsVisible: true)
                     chatMessages = [initialMsg]
-
-                    // 2. ★ 不足していた履歴への追加
                     conversationHistory.append(startDialogue)
-
                     DispatchQueue.main.async {
                         if let last = chatMessages.last {
                             withAnimation {
@@ -169,8 +160,6 @@ struct ChatMessageView: View {
                             }
                         }
                     }
-
-                    // 3. ★ 1.5秒待ってから次のセリフの処理を開始
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         proceedToNextIfNeeded()
                     }
@@ -178,74 +167,53 @@ struct ChatMessageView: View {
             }
         }
         .onTapGesture {
-            // ポップアップ表示中はタップを無視
-            if isPopupVisible { //
-                print("タップ無視: ポップアップ表示中")
-                return //
-            }
-
-            // 最後のメッセージを取得
-            guard let lastMessage = chatMessages.last else {
-                print("タップ無視: メッセージが存在しない")
+            if isPopupVisible {
                 return
             }
 
-            // -------------------- 修正点 --------------------
-            // コニーのアニメーション中をタップした場合
+            guard let lastMessage = chatMessages.last else {
+                return
+            }
+
             if lastMessage.dialogue.characterName == "コニー", lastMessage.isAnimating {
-                if !gameManager.didShowChatTapHint { // まだ保存されていなければ
-                    print("### .onTapGesture: didShowChatTapHint を true に変更します！ ###")
-                            gameManager.didShowChatTapHint = true
-                            gameManager.saveProgress()
-                            print("「tap」ヒントを見てタップしました。今後は表示しません。")
-                        }
+                if !gameManager.didShowChatTapHint {
+                    gameManager.didShowChatTapHint = true
+                    gameManager.saveProgress()
+                }
 
-                // (1) もし、そのシーンが「選択肢」だったら
                 if lastMessage.dialogue.isChoice == true {
-                    print("タップ検知: コニーのアニメーション -> 選択肢ポップアップを表示します。")
-
-                    // テキストは表示せず、選択肢ポップアップを直接表示する
                     currentChoiceDialogue = lastMessage.dialogue
                     isPopupVisible = true
                 }
                 else {
-                    print("タップ検知: コニーのアニメーションをスキップします (通常のテキスト)。")
-
-                    // 従来のロジック：アニメーションを停止し、テキストを表示する
                     if let index = chatMessages.firstIndex(where: { $0.id == lastMessage.id }) {
-                        chatMessages[index].isAnimating = false // アニメーション停止
-                        chatMessages[index].showText = true     // テキスト表示フラグON
-                        chatMessages[index].textIsVisible = true  // 表示状態を即時反映
+                        chatMessages[index].isAnimating = false
+                        chatMessages[index].showText = true
+                        chatMessages[index].textIsVisible = true
 
-                        scrollToBottom() //
+                        scrollToBottom()
                         isTyping = false
 
-                        // アニメーションをスキップしたので、次の進行を促す
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             proceedToNextIfNeeded() //
                         }
                     }
                 }
-                return // ★ コニーのタップ処理が完了したのでここで終了 ★
+                return
             }    else if !lastMessage.isAnimating {
-                print("タップ検知: アニメーション中でないため、'end' チェックを行います。")
-
-                // ★ 最後のメッセージの nextSceneId が "end" かどうかをチェック
-                if lastMessage.dialogue.nextSceneId?.lowercased() == "end" {
-                    print("タップ検知: 'end' が検出されたため、終了処理を呼び出します。")
-
-                    // ★ 'end' だった場合のみ、親に通知する
+                guard let nextId = lastMessage.dialogue.nextSceneId, !nextId.isEmpty else {
+                    return
+                }
+                if nextId.lowercased() == "end" {
                     onNextScene("end")
-                } else {
-                    print("タップ検知: 'end' ではありません。 (nextId: \(lastMessage.dialogue.nextSceneId ?? "nil"))")
-                    // 'end' でなければ、タップしても何もしない
-                    // (自動進行は proceedToNextIfNeeded が担当するため)
+                    return
+                }
+                if let next = dialogueMap[nextId] {
+                    if next.viewType != .chat {
+                        onNextScene(nextId)
+                    }
                 }
             }
-            // -------------------- 修正ここまで --------------------
-
-
-            print("タップ検知: コニーのアニメーション中でないため、特別な処理なし")
         }
     }
 }
@@ -295,7 +263,6 @@ extension ChatMessageView {
                             .scaleEffect(message.imageIsVisible ? 1.0 : 0.0, anchor: .bottomLeading)
                             .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(0.05), value: message.imageIsVisible)
 
-                        // --- 画像またはテキスト ---
                         if message.isPicture, let text = dialogue.dialogueText {
                             Image(text)
                                 .resizable()
@@ -306,9 +273,8 @@ extension ChatMessageView {
                                 .scaleEffect(message.textIsVisible ? 1.0 : 0.8, anchor: .bottomLeading)
                                 .opacity(message.textIsVisible ? 1.0 : 0.0)
                                 .animation(.easeOut(duration: 0.3), value: message.textIsVisible)
-                                .onAppear { // ★吹き出し部分表示時にトリガー★
-                                    if !message.textIsVisible { // まだ表示されていなければ遅延アニメーション開始
-                                        // 0.8秒遅れて表示アニメーション開始
+                                .onAppear {
+                                    if !message.textIsVisible {
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                                             withAnimation {
                                                 if let index = chatMessages.firstIndex(where: { $0.id == message.id }) {
@@ -351,7 +317,6 @@ extension ChatMessageView {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                // 右側（コニー）
             } else if isRight {
                 HStack(alignment: .top) {
                     Spacer()
@@ -362,7 +327,6 @@ extension ChatMessageView {
                             .scaleEffect(message.imageIsVisible ? 1.0 : 0.0, anchor: .bottomTrailing)
                             .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(0.05), value: message.imageIsVisible)
 
-                        // --- コニー専用 typingAnimation → 本文 ---
                         if dialogue.characterName == "コニー" {
                             if message.isAnimating {
                                 typingAnimationView()
@@ -443,9 +407,8 @@ extension ChatMessageView {
                             }
                         }
                 }
-                .frame(maxWidth: .infinity, alignment: .trailing) // ← alignment 修正
+                .frame(maxWidth: .infinity, alignment: .trailing)
             }
-
             if !isRight { Spacer() }
         }
         .padding(.horizontal)
@@ -475,60 +438,48 @@ extension ChatMessageView {
 
     private func handleChoiceSelected(selectedText: String, nextId: String, percentage: Double?) {
 
-            // 1. 選択肢プロンプトの情報を取得 (背景などを引き継ぐため)
-            guard let triggeringChoice = currentChoiceDialogue else {
-                print("エラー: handleChoiceSelected で currentChoiceDialogue が nil です。")
-                // ポップアップを閉じて処理中断 (エラーハンドリング)
-                isPopupVisible = false
-                return
-            }
-
-            // 2. ユーザーが選んだ返信を表す newDialogue を作成
-            // ★ StoryProgressView の replyScene と同様のデータを作成 ★
-            let newDialogue = Dialogue2(
-                storyId: triggeringChoice.storyId,          // 元のstoryId
-                sceneId: "user_reply_\(UUID())",          // 一意のID
-                viewType: .dialogue,                     // 返信なので .dialogue タイプにする (見た目はChatだが履歴上)
-                characterName: "コニー",                   // ユーザー
-                dialogueText: selectedText,                // 選んだテキスト
-                nextSceneId: nextId,                      // 次に進むID
-                isChoice: false,
-                // --- 背景やキャラクター情報を引き継ぐ ---
-                background: triggeringChoice.background,
-                talkingPeople: triggeringChoice.talkingPeople,
-                leftCharacter: triggeringChoice.leftCharacter,
-                centerCharacter: triggeringChoice.centerCharacter,
-                rightCharacter: triggeringChoice.rightCharacter,
-                oneCharacter: triggeringChoice.oneCharacter,
-                twoCharacter: triggeringChoice.twoCharacter,
-                onePerson: triggeringChoice.onePerson,
-                bgm: triggeringChoice.bgm
-            )
-
-            // 3. 画面上の最後のメッセージ (入力待ちアニメーション) を置き換える
-            if let lastMessageIndex = chatMessages.indices.last {
-                chatMessages[lastMessageIndex] = ChatMessage2(
-                    dialogue: newDialogue, // ★ 作成した newDialogue を使う ★
-                    isAnimating: false,    // ← アニメーションなし
-                    showText: true,        // ← すぐ表示
-                    imageIsVisible: true,  // ← アイコンもすぐ表示
-                    textIsVisible: true   // ← テキストもすぐ表示
-                )
-            }
-
-            // ★★★ ユーザーが選んだ返信を履歴に追加 ★★★
-            print("履歴追加 (ChatMessage Choice): \(newDialogue.sceneId) - \(newDialogue.dialogueText ?? "")")
-            conversationHistory.append(newDialogue)
-
-            // 4. ポップアップを閉じる
+        guard let triggeringChoice = currentChoiceDialogue else {
             isPopupVisible = false
-            currentChoiceDialogue = nil // 念のためクリア
-
-            // 5. 次のシーンへ進む
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                proceedToNextIfNeeded()
-            }
+            return
         }
+
+        let newDialogue = Dialogue2(
+            storyId: triggeringChoice.storyId,
+            sceneId: "user_reply_\(UUID())",
+            viewType: .dialogue,
+            characterName: "コニー",
+            dialogueText: selectedText,
+            nextSceneId: nextId,
+            isChoice: false,
+            background: triggeringChoice.background,
+            talkingPeople: triggeringChoice.talkingPeople,
+            leftCharacter: triggeringChoice.leftCharacter,
+            centerCharacter: triggeringChoice.centerCharacter,
+            rightCharacter: triggeringChoice.rightCharacter,
+            oneCharacter: triggeringChoice.oneCharacter,
+            twoCharacter: triggeringChoice.twoCharacter,
+            onePerson: triggeringChoice.onePerson,
+            bgm: triggeringChoice.bgm
+        )
+
+        if let lastMessageIndex = chatMessages.indices.last {
+            chatMessages[lastMessageIndex] = ChatMessage2(
+                dialogue: newDialogue,
+                isAnimating: false,
+                showText: true,
+                imageIsVisible: true,
+                textIsVisible: true
+            )
+        }
+
+        print("履歴追加 (ChatMessage Choice): \(newDialogue.sceneId) - \(newDialogue.dialogueText ?? "")")
+        conversationHistory.append(newDialogue)
+        isPopupVisible = false
+        currentChoiceDialogue = nil
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            proceedToNextIfNeeded()
+        }
+    }
 
     // メッセージのアニメーション完了時処理
     private func updateMessageState(id: UUID) {
@@ -537,15 +488,12 @@ extension ChatMessageView {
             chatMessages[index].showText = true
             chatMessages[index].textIsVisible = true
             scrollToBottom()
-
-            // 次のメッセージへ進む
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 proceedToNextIfNeeded()
             }
         }
     }
 
-    // 最下部スクロール補助
     private func scrollToBottom() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             if let last = chatMessages.last {
@@ -556,135 +504,105 @@ extension ChatMessageView {
         }
     }
 
-    // 自動進行ロジック
 
     private func proceedToNextIfNeeded() {
-        guard let last = chatMessages.last else { //
-            print("proceedToNextIfNeeded: 最後のメッセージが見つかりません。")
+        guard let last = chatMessages.last else {
             return
         }
-        let nextId = last.dialogue.nextSceneId ?? "" //
-
+        let nextId = last.dialogue.nextSceneId ?? ""
         guard let next = dialogueMap[nextId] else {
-            // ★★★ 修正箇所（ここから） ★★★
-
-            // "end" を検出
             if nextId.lowercased() == "end" {
                 print("proceedToNextIfNeeded: 'end' に到達しました。ユーザーのタップを待ちます。")
-                // ★ onNextScene("end") を呼ばずに、ここで進行を停止する
                 onNextScene("end")
                 return
             }
-
-            // "end" 以外で nextId があり、マップにない場合 (viewTypeの変更など)
             if !nextId.isEmpty {
                 print("proceedToNextIfNeeded: 次のシーンID \(nextId) がマップにないため、親に通知します。")
                 onNextScene(nextId)
             } else {
                 print("proceedToNextIfNeeded: nextSceneIdが空です。")
             }
-            // ★★★ 修正箇所（ここまで） ★★★
             return
         }
 
-        // -------------------- 修正点 --------------------
-        // 1. (先に) chat じゃない場合は親へ
-        if next.viewType != .chat { //
+        if next.viewType != .chat {
             print("proceedToNextIfNeeded: 次はチャットではない(\(next.viewType))ため、親に通知します。")
-            onNextScene(nextId) //
-            return //
+            return
         }
-
-        // 2. (先に) 主人公 ("コニー") の場合
-        //    -> isChoice が true でも false でも、まず入力中アニメーションを表示
-        if next.characterName == "コニー" { //
+        if next.characterName == "コニー" {
             print("proceedToNextIfNeeded: 次はコニーの番です。入力中アニメーションを表示します。")
-            isTyping = true // ★アニメーション表示中は true に設定★
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0) { //
-                let newMsg = ChatMessage2( //
+            isTyping = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0) {
+                let newMsg = ChatMessage2(
                     dialogue: next,
-                    isAnimating: true,       // ★アニメーション表示★
-                    showText: false,         // ★テキストはまだ★
-                    imageIsVisible: false,   // ★アイコンもまだ★
-                    textIsVisible: false     // ★吹き出しもまだ★
+                    isAnimating: true,
+                    showText: false,
+                    imageIsVisible: false,
+                    textIsVisible: false
                 )
-                chatMessages.append(newMsg) //
-//                conversationHistory.append(next) //
-                scrollToBottom() //
+                chatMessages.append(newMsg)
+                if next.isChoice != true  {
+                    conversationHistory.append(next)
+                }
+                scrollToBottom()
                 if next.nextSceneId?.lowercased() == "end" {
-                                    print("proceedToNextIfNeeded: コニーの最後のセリフです。親に'end'を通知します。")
-                                    // このメッセージが表示された直後に 'end' を通知する
-                                    // (タップを待たずにボタンを出すため)
-                                    onNextScene("end")
-                                }
+                    print("proceedToNextIfNeeded: コニーの最後のセリフです。親に'end'を通知します。")
+                    onNextScene("end")
+                }
             }
             if next.nextSceneId?.lowercased() != "end" {
-                             return // "end" 以外なら、これまで通りタップ待ち
-                        } // ★コニーの番はここで進行停止 (タップ待ち)★
+                return
+            }
         }
 
-        // 3. (次に) 選択肢の場合 (コニー以外)
-        if next.isChoice == true { //
+        if next.isChoice == true {
             print("proceedToNextIfNeeded: 次は選択肢です。(コニー以外)")
-            // isTyping = true // 選択肢表示中は isTyping を true にする必要はないかも？
-            // 0.8秒待ってから選択肢前のメッセージ（通常は相手のメッセージのはず）を表示
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { //
-                let choiceTriggerMsg = ChatMessage2( //
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                let choiceTriggerMsg = ChatMessage2(
                     dialogue: next,
-                    isAnimating: false, // 選択肢自体はアニメーション不要
-                    showText: true,     // テキストはすぐ表示（"選択してください"など）
-                    imageIsVisible: true, // アイコンもすぐ表示
-                    textIsVisible: true   // 吹き出しもすぐ表示
+                    isAnimating: false,
+                    showText: true,
+                    imageIsVisible: true,
+                    textIsVisible: true
                 )
-                chatMessages.append(choiceTriggerMsg) //
-                conversationHistory.append(next) //
-                scrollToBottom() // すぐスクロール
-
-                // isTyping = false // 不要かも
-
-                // さらに1.0秒後にポップアップを表示
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { //
-                    currentChoiceDialogue = next //
-                    isPopupVisible = true //
+                chatMessages.append(choiceTriggerMsg)
+                conversationHistory.append(next)
+                scrollToBottom()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    currentChoiceDialogue = next
+                    isPopupVisible = true
                     print("proceedToNextIfNeeded: 選択肢ポップアップを表示しました。")
                 }
             }
-            return // ★ 選択肢表示後は進行停止 ★
+            return
         }
 
-        // 4. (最後に) 相手キャラの場合
-        else { // 相手キャラのセリフは自動表示して続行
+        else {
             print("proceedToNextIfNeeded: 次は相手(\(next.characterName ?? "不明"))の番です。")
-            // isTyping = true // 相手の表示中は isTyping true である必要はない
-            // 0.8秒待ってからメッセージ追加
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { //
-                let newMsg = ChatMessage2( //
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                let newMsg = ChatMessage2(
                     dialogue: next,
-                    isAnimating: false,      // ★アニメーションは .onAppear でトリガー★
-                    showText: true,          // ★テキスト内容は必要★
-                    imageIsVisible: false,   // ★アイコンはまだ★
-                    textIsVisible: false     // ★吹き出しはまだ★
+                    isAnimating: false,
+                    showText: true,
+                    imageIsVisible: false,
+                    textIsVisible: false
                 )
-                chatMessages.append(newMsg) //
-                conversationHistory.append(next) //
-                scrollToBottom() // 追加したらすぐスクロール
-                // isTyping = false // 不要
+                chatMessages.append(newMsg)
+                conversationHistory.append(next)
+                scrollToBottom()
                 print("proceedToNextIfNeeded: 相手のメッセージを追加。")
 
-                // ★メッセージ表示アニメーション完了を見越して、さらに遅延させて次へ★
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { // <- 1.2秒を少し長めに
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     print("proceedToNextIfNeeded: 相手のメッセージ表示後、次の進行をチェックします。")
-                    proceedToNextIfNeeded() // 再帰呼び出し
+                    proceedToNextIfNeeded()
                 }
             }
         }
-        // -------------------- 修正ここまで --------------------
     }
 }
 
 // MARK: - イベント処理
 extension ChatMessageView {
-    /// 初期化処理
     func initializeChat() {
         if let startDialogue = dialogue {
             let initialMsg = ChatMessage2(dialogue: startDialogue,
@@ -694,21 +612,17 @@ extension ChatMessageView {
                                           textIsVisible: true)
             chatMessages = [initialMsg]
             conversationHistory.append(startDialogue)
-
-            // 最初に自動進行チェック
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 proceedToNextIfNeeded()
             }
         }
     }
 
-    /// タップで次に進む
     func handleTap() {
         if isPopupVisible { return }
 
         guard let last = chatMessages.last else { return }
 
-        // ★ 選択肢のアニメーション中ならポップアップを表示
         if last.dialogue.isChoice == true && last.isAnimating {
             isPopupVisible = true
             currentChoiceDialogue = last.dialogue
@@ -746,7 +660,6 @@ extension ChatMessageView {
         }
     }
 
-    /// 送信ボタンのアニメーション
     private func startLoopingAnimation() {
         withAnimation(.easeInOut(duration: 0.7).repeatForever(autoreverses: true)) {
             isLarge = true

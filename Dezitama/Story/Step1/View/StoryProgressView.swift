@@ -28,6 +28,7 @@ struct StoryProgressView: View {
     @State private var finalThunders: Int = 0
 
     @State private var screenTextOffset: CGFloat = 0.0
+    @State private var isAnimationPlaying: Bool = false
 
     let stageId: Int
 
@@ -72,42 +73,47 @@ struct StoryProgressView: View {
                         .id(currentDialogue.id)
 
                     case .dialogue_AE:
-                        ZStack {
-                            // Lottieアニメーションの表示
-                            LottieView(name: currentDialogue.dialogueText!, loopMode: .playOnce)
-                                .edgesIgnoringSafeArea(.all)
+                                        ZStack {
+                                            // Lottieアニメーションの表示
+                                            LottieView(
+                                                name: currentDialogue.dialogueText!,
+                                                loopMode: .playOnce,
+                                                onCompletion: {
+                                                    // ◀ アニメーション完了時に呼ばれる
+                                                    print("Lottie animation finished.")
+                                                    isAnimationPlaying = false // アニメーション終了
+                                                }
+                                            )
+                                            .edgesIgnoringSafeArea(.all)
 
-                            // タップ領域
-                            Color.clear
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    // ▼▼▼ 修正箇所 ▼▼▼
-                                    // 既存の handleNavigation 関数を呼ぶだけで、
-                                    // "end" の処理、選択肢の処理、次のシーンへの遷移が
-                                    // すべて自動的に処理されます。
-                                    handleNavigation(nextSceneId: currentDialogue.nextSceneId ?? "end")
-                                    // ▲▲▲ 修正ここまで ▲▲▲
-                                }
-
-                            // "next_button" の表示 (変更なし)
-                            HStack {
-                                Image("next_button")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 35)
-                                    .position(x: geometry.size.width * 0.85, y: geometry.size.height * 0.905)
-                                    .offset(y: offsetY)
-                                    .onAppear {
-                                        startLoopingAnimation()
-                                    }
-                            }
-                            .allowsHitTesting(false) // アニメーションがタップを妨げないように
-                        }
-                        .onAppear {
-                            if let bgm = currentDialogue.bgm, !bgm.isEmpty {
-                                musicplayer.playBGM(fileName: bgm)
-                            }
-                        }
+                                            // タップ領域
+                                            Color.clear
+                                                .contentShape(Rectangle())
+                                                .onTapGesture {
+                                                    // isAnimationPlaying が false の時だけタップ可能
+                                                    handleNavigation(nextSceneId: currentDialogue.nextSceneId ?? "end")
+                                                }
+                                                .disabled(isAnimationPlaying)
+                                            HStack {
+                                                Image("next_button")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: 35)
+                                                    .position(x: geometry.size.width * 0.85, y: geometry.size.height * 0.905)
+                                                    .offset(y: offsetY)
+                                                    .onAppear {
+                                                        startLoopingAnimation()
+                                                    }
+                                            }
+                                            .allowsHitTesting(false)
+                                        }
+                                        .onAppear {
+                                            // ◀ .dialogue_AE が表示されたら
+                                            if let bgm = currentDialogue.bgm, !bgm.isEmpty {
+                                                musicplayer.playBGM(fileName: bgm)
+                                            }
+                                            isAnimationPlaying = true
+                                        }
 
                     case .chat:
                         ChatMessageView(
@@ -147,6 +153,7 @@ struct StoryProgressView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .clipped()
                         .contentShape(Rectangle())
+                        .id(currentDialogue.sceneId)
                         .onAppear {
                             if let bgm = currentDialogue.bgm, !bgm.isEmpty {
                                 musicplayer.playBGM(fileName: bgm)
@@ -330,6 +337,7 @@ struct StoryProgressView: View {
                         .environmentObject(musicplayer)
                     }
                 }
+                .id(currentDialogue.sceneId)
                 .id(viewRefreshKey)
                 .transition(.opacity)
                 .onChange(of: currentSceneId) { _, newSceneId in
@@ -382,16 +390,11 @@ struct StoryProgressView: View {
     private func handleNavigation(nextSceneId: String) {
         // ストーリー終了処理
         if nextSceneId.lowercased() == "end" {
-            print("ストーリー終了 (handleNavigation)")
-
             if isEndSceneReady || showResultButton {
-                print("既に終了/ボタン表示済みです。")
                 return
             }
 
             showResultButton = true
-            print("成績ボタンを表示します。")
-
             return
         }
 
