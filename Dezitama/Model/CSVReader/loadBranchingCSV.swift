@@ -24,13 +24,11 @@ func loadBranchingCSV(fileName: String) -> [Branching] {
             let cols = row.components(separatedBy: ",")
 
             // CSVのヘッダーを基に正しい列数を取得
-            let headers = rows[0].components(separatedBy: ",")
-            let columnCount = headers.count
-
-            guard cols.count >= columnCount else {
-                print("❌ 列が足りません line \(i): \(cols)")
-                continue
-            }
+            let requiredColumnCount = 23
+                    guard cols.count >= requiredColumnCount else {
+                        print("❌ 列が不足しています (必要: \(requiredColumnCount), 実際: \(cols.count)) line \(i): \(row)")
+                        continue
+                    }
 
             // isChoiceの読み込み（インデックス11）
             let isChoice: Bool? = {
