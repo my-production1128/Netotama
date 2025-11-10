@@ -153,6 +153,7 @@ struct StoryProgressView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .clipped()
                         .contentShape(Rectangle())
+                        .id(currentDialogue.sceneId)
                         .onAppear {
                             if let bgm = currentDialogue.bgm, !bgm.isEmpty {
                                 musicplayer.playBGM(fileName: bgm)
@@ -336,6 +337,7 @@ struct StoryProgressView: View {
                         .environmentObject(musicplayer)
                     }
                 }
+                .id(currentDialogue.sceneId)
                 .id(viewRefreshKey)
                 .transition(.opacity)
                 .onChange(of: currentSceneId) { _, newSceneId in
@@ -388,16 +390,11 @@ struct StoryProgressView: View {
     private func handleNavigation(nextSceneId: String) {
         // ストーリー終了処理
         if nextSceneId.lowercased() == "end" {
-            print("ストーリー終了 (handleNavigation)")
-
             if isEndSceneReady || showResultButton {
-                print("既に終了/ボタン表示済みです。")
                 return
             }
 
             showResultButton = true
-            print("成績ボタンを表示します。")
-
             return
         }
 
