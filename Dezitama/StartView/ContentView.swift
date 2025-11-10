@@ -176,7 +176,7 @@ struct ContentView: View {
                     path.append(ViewBuilderPath.ChoiceView)
                 }
                 .onAppear {
-                    loadAllBranchingData()
+//                    loadAllBranchingData()
                     musicplayer.stopAllMusic()
                     musicplayer.playBGM(fileName: "start_bgm")
                 }
@@ -260,11 +260,11 @@ struct ContentView: View {
 //            ネトモ
             let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver8")
             let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver7")
-            let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver8")
+            let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver9")
 //            拡散
             let goodKakusanStory1 = loadBranchingCSV(fileName: "good_kakusan_story1_ver5")
             let goodKakusanStory2 = loadBranchingCSV(fileName: "good_kakusan_story2_ver6")
-            let goodKakusanStory3 = loadBranchingCSV(fileName: "good_kakusan_story3_ver6")
+            let goodKakusanStory3 = loadBranchingCSV(fileName: "good_kakusan_story3_ver8")
 
             self.allBranchings = goodNetomoStory1 + goodNetomoStory2 + goodNetomoStory3
                 + goodGuruchaStory1 + goodGuruchaStory2 + goodGuruchaStory3
