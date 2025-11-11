@@ -47,10 +47,10 @@ struct Dialogue2: Identifiable {
 enum ViewType: String {
     case dialogue
     case dialogue_AE
-//    case choice
     case chat
     case start
     case screen
+    case chat_picture
 }
 
 //step2の分岐ありのストーリー
