@@ -10,8 +10,10 @@ import SwiftUI
 struct DialogueView: View {
     let dialogue: Dialogue2
     var isChoicePending: Bool
+    var isStoryFinished: Bool
     var onNext: (String) -> Void
-    
+
+
     @State private var offsetY: CGFloat = 0.0
     @State private var animationTimer: Timer?
     // 会話アニメーション準備完了フラグ
@@ -38,6 +40,14 @@ struct DialogueView: View {
             }
             .contentShape(Rectangle())
             .onTapGesture {
+                print("--- 🟣 DialogueView がタップされました ---") // デバッグ
+
+                                if isStoryFinished {
+                                    print("   - (ストーリー終了済みのためタップを無視)") // デバッグ
+                                    return
+                                }
+
+                                print("   - isAnimationReady: \(isAnimationReady)") // デバッグ
                 // アニメーション準備完了後のみタップを受け付ける
                 if isAnimationReady {
                     handleTap()
@@ -266,7 +276,7 @@ struct DialogueView: View {
             case "Teacher": return 500 // (width: 300, height: 450)
             case "Brian":   return 500 // (width: 300, height: 450)
             case "Nick":    return 500 // (width: 250, height: 650)
-            case "Sandra":  return 300 // (width: 250, height: 250)
+            case "Sandra":  return 250 // (width: 250, height: 250)
             default:        return 500 // (width: 250, height: 450)
             }
         }
