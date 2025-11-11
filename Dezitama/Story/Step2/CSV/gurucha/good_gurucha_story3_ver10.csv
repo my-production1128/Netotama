@@ -22,6 +22,6 @@ good_gurucha_story3,scene20,talk,,kevin_icon,Kevin_normal,Kevin_normal,,Cony_sor
 good_gurucha_story3,scene21,talk,,kevin_icon,Kevin_normal,Kevin_normal,,Cony_sorry,｜僕《ぼく》も｜行《い》くからコニーも｜行《い》くよ！,scene22,FALSE,,,,,,,,,,classroom_bgm,classroom
 good_gurucha_story3,scene22,talk,,cony_icon,Cony_sorry,Kevin_normal,,Cony_sorry,,,TRUE,｜先生《せんせい》｜絡《から》むと｜大変《たいへん》だしあのふたりに｜言《い》わせようよ,0,scene23,｜私《わたし》｜先生《せんせい》に｜言《い》えるかな…,0.3,scene23,ありがとう。｜私《わたし》｜頑張《がんば》ってみる！,1,scene24,classroom_bgm,classroom
 good_gurucha_story3,scene23,talk,,kevin_icon,Kevin_normal,Kevin_normal,,Cony_sorry,はいはい！｜行《い》くよ！,scene24,FALSE,,,,,,,,,,classroom_bgm,classroom
-good_gurucha_story3,scene24,talk,,cony_icon,Cony_smile,,Cony_smile,,みんなのおかげで｜勇気《ゆう》を｜持《も》って｜先生《せんせい》に｜話《はな》すことができた！,scene25,FALSE,,,,,,,,,,matome_bgm,matome_background
+good_gurucha_story3,scene24,talk,,cony_icon,Cony_smile,,Cony_smile,,みんなのおかげで｜勇気《ゆうき》を｜持《も》って｜先生《せんせい》に｜話《はな》すことができた！,scene25,FALSE,,,,,,,,,,matome_bgm,matome_background
 good_gurucha_story3,scene25,talk,,cony_icon,Cony_smile,,Cony_smile,,やっぱりたくさん｜怒《おこ》られたけど、スクショはケビンとサンドラの｜間《あいだ》だけで｜回《まわ》ってたみたい。,scene26,FALSE,,,,,,,,,,matome_bgm,matome_background
 good_gurucha_story3,scene26,talk,,cony_icon,Cony_smile,,Cony_smile,,これからは｜本当《ほんとう》の｜意味《いみ》で｜楽《たの》しいグルチャにしていくんだ！,end,FALSE,,,,,,,,,,matome_bgm,matome_background
