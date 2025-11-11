@@ -49,12 +49,14 @@ struct StoryProgressView: View {
         GeometryReader { geometry in
             if let currentDialogue = userChoiceReply ?? self.currentDialogue {
                 ZStack {
+//                    if !showResultButton && !isEndSceneReady {
                     switch currentDialogue.viewType {
 
                     case .dialogue:
                         DialogueView(
                             dialogue: currentDialogue,
                             isChoicePending: isChoicePopupVisible,
+                            isStoryFinished: showResultButton || isEndSceneReady,
                             onNext: { nextSceneId in
                                 if self.userChoiceReply != nil {
                                     let realNextId = self.userChoiceReply!.nextSceneId!
@@ -197,6 +199,7 @@ struct StoryProgressView: View {
                                 }
                             }
                     }
+//                }
 
 
                     if isChoicePopupVisible, let choiceDialogue = pendingChoiceDialogue {
@@ -384,18 +387,26 @@ struct StoryProgressView: View {
 
     // MARK: - シーン遷移
     private func handleNavigation(nextSceneId: String) {
+        print("--- 1. handleNavigation が呼ばれました ---")
+                print("   - 受け取ったID: \(nextSceneId)")
+                print("   - 現在のシーンID: \(currentSceneId)")
+                print("   - 終了ボタン表示中？: \(showResultButton)")
+                print("   - 終了画面表示中？: \(isEndSceneReady)")
         // ストーリー終了処理
         if nextSceneId.lowercased() == "end" {
+            print("--- 2. 'end' を検出しました ---")
             if isEndSceneReady || showResultButton {
+                print("   - (既に終了処理中のため、何もしません)")
                 return
             }
-
+            print("   - 🔴 showResultButton を true に設定します")
             showResultButton = true
             return
         }
 
         guard let nextDialogue = dialogues.first(where: { $0.sceneId == nextSceneId }) else {
             print("次のシーンが見つかりません: \(nextSceneId)")
+            print("   - ⚠️ エラー: 次のシーンが見つかりません: \(nextSceneId)")
             return
         }
 
@@ -408,6 +419,8 @@ struct StoryProgressView: View {
         if currentDialogue?.viewType != nextDialogue.viewType {
             viewRefreshKey = UUID()
         }
+        print("--- 3. シーンを次に進めます ---")
+                print("   - 🟢 currentSceneId を \(nextSceneId) に設定します")
 
         currentSceneId = nextSceneId
 
