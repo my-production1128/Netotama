@@ -73,49 +73,46 @@ struct StoryProgressView: View {
                         .id(currentDialogue.id)
 
                     case .dialogue_AE:
-                                        ZStack {
-                                            // Lottieアニメーションの表示
-                                            LottieView(
-                                                name: currentDialogue.dialogueText!,
-                                                loopMode: .playOnce,
-                                                onCompletion: {
-                                                    // ◀ アニメーション完了時に呼ばれる
-                                                    print("Lottie animation finished.")
-                                                    isAnimationPlaying = false // アニメーション終了
-                                                }
-                                            )
-                                            .edgesIgnoringSafeArea(.all)
+                        ZStack {
+                            // Lottieアニメーションの表示
+                            LottieView(
+                                name: currentDialogue.dialogueText!,
+                                loopMode: .playOnce,
+                                onCompletion: {
+                                    print("Lottie animation finished.")
+                                    isAnimationPlaying = false
+                                }
+                            )
+                            .edgesIgnoringSafeArea(.all)
 
-                                            // タップ領域
-                                            Color.clear
-                                                .contentShape(Rectangle())
-                                                .onTapGesture {
-                                                    // isAnimationPlaying が false の時だけタップ可能
-                                                    handleNavigation(nextSceneId: currentDialogue.nextSceneId ?? "end")
-                                                }
-                                                .disabled(isAnimationPlaying)
-                                            HStack {
-                                                Image("next_button")
-                                                    .resizable()
-                                                    .scaledToFit()
-                                                    .frame(width: 35)
-                                                    .position(x: geometry.size.width * 0.85, y: geometry.size.height * 0.905)
-                                                    .offset(y: offsetY)
-                                                    .onAppear {
-                                                        startLoopingAnimation()
-                                                    }
-                                            }
-                                            .allowsHitTesting(false)
-                                        }
-                                        .onAppear {
-                                            // ◀ .dialogue_AE が表示されたら
-                                            if let bgm = currentDialogue.bgm, !bgm.isEmpty {
-                                                musicplayer.playBGM(fileName: bgm)
-                                            }
-                                            isAnimationPlaying = true
-                                        }
+                            // タップ領域
+                            Color.clear
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    handleNavigation(nextSceneId: currentDialogue.nextSceneId ?? "end")
+                                }
+                                .disabled(isAnimationPlaying)
+                            HStack {
+                                Image("next_button")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 35)
+                                    .position(x: geometry.size.width * 0.85, y: geometry.size.height * 0.905)
+                                    .offset(y: offsetY)
+                                    .onAppear {
+                                        startLoopingAnimation()
+                                    }
+                            }
+                            .allowsHitTesting(false)
+                        }
+                        .onAppear {
+                            if let bgm = currentDialogue.bgm, !bgm.isEmpty {
+                                musicplayer.playBGM(fileName: bgm)
+                            }
+                            isAnimationPlaying = true
+                        }
 
-                    case .chat:
+                    case .chat, .chat_picture:
                         ChatMessageView(
                             dialogues: dialogues,
                             initialSceneId: currentSceneId,
@@ -192,7 +189,6 @@ struct StoryProgressView: View {
                             }
                         }
 
-                        //                        あらすじ
                     case .start:
                         startView(dialogue: currentDialogue, onNext: handleNavigation)
                             .onAppear {

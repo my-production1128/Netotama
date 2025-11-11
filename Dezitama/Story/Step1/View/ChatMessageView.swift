@@ -146,11 +146,16 @@ struct ChatMessageView: View {
         .onAppear {
             DispatchQueue.main.async {
                 if let startDialogue = dialogue {
-                    let initialMsg = ChatMessage2(dialogue: startDialogue,
-                                                  isAnimating: false,
-                                                  showText: true,
-                                                  imageIsVisible: true,
-                                                  textIsVisible: true)
+                    // ★ chat_picture の場合は isPicture を true に設定
+                    let isPic = (startDialogue.viewType == .chat_picture)
+                    let initialMsg = ChatMessage2(
+                        dialogue: startDialogue,
+                        isAnimating: false,
+                        showText: true,
+                        imageIsVisible: true,
+                        textIsVisible: true,
+                        isPicture: isPic
+                    )
                     chatMessages = [initialMsg]
                     conversationHistory.append(startDialogue)
                     DispatchQueue.main.async {
@@ -195,12 +200,12 @@ struct ChatMessageView: View {
                         isTyping = false
 
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            proceedToNextIfNeeded() //
+                            proceedToNextIfNeeded()
                         }
                     }
                 }
                 return
-            }    else if !lastMessage.isAnimating {
+            } else if !lastMessage.isAnimating {
                 guard let nextId = lastMessage.dialogue.nextSceneId, !nextId.isEmpty else {
                     return
                 }
@@ -209,7 +214,7 @@ struct ChatMessageView: View {
                     return
                 }
                 if let next = dialogueMap[nextId] {
-                    if next.viewType != .chat {
+                    if next.viewType != .chat && next.viewType != .chat_picture {
                         onNextScene(nextId)
                     }
                 }
@@ -242,11 +247,11 @@ extension ChatMessageView {
                     characterIcon(for: dialogue.characterName ?? "", size: 48)
                         .scaleEffect(message.imageIsVisible ? 1.0 : 0.0, anchor: .bottom)
                         .animation(.spring(response: 0.4, dampingFraction: 0.6), value: message.imageIsVisible)
-                        .onAppear { // ★アイコン表示時にトリガー★
-                            DispatchQueue.main.async { // スクロールは即時
+                        .onAppear {
+                            DispatchQueue.main.async {
                                 withAnimation { proxy.scrollTo(message.id, anchor: .bottom) }
                             }
-                            if !message.imageIsVisible { // まだ表示されていなければアニメーション開始
+                            if !message.imageIsVisible {
                                 withAnimation {
                                     if let index = chatMessages.firstIndex(where: { $0.id == message.id }) {
                                         chatMessages[index].imageIsVisible = true
@@ -263,6 +268,7 @@ extension ChatMessageView {
                             .scaleEffect(message.imageIsVisible ? 1.0 : 0.0, anchor: .bottomLeading)
                             .animation(.spring(response: 0.4, dampingFraction: 0.6).delay(0.05), value: message.imageIsVisible)
 
+                        // ★ 画像表示の場合
                         if message.isPicture, let text = dialogue.dialogueText {
                             Image(text)
                                 .resizable()
@@ -353,8 +359,9 @@ extension ChatMessageView {
                                         animationTrigger.toggle()
                                     }
                             } else {
+                                // ★ 画像メッセージの場合
                                 if message.isPicture, let text = dialogue.dialogueText {
-                                    Image(text) //
+                                    Image(text)
                                         .resizable()
                                         .scaledToFit()
                                         .frame(width: 250, height: 250)
@@ -365,9 +372,9 @@ extension ChatMessageView {
                                                 withAnimation { proxy.scrollTo(message.id, anchor: .bottom) }
                                             }
                                         }
-                                    // テキストメッセージの場合
+                                // テキストメッセージの場合
                                 } else if message.showText, let text = dialogue.dialogueText {
-                                    RubyLabelRepresentable( //
+                                    RubyLabelRepresentable(
                                         attributedText: text.replacingOccurrences(of: "<br>", with: "\n")
                                             .createRuby(font: .customFont(ofSize: 22), color: .black),
                                         font: .customFont(ofSize: 22),
@@ -468,7 +475,8 @@ extension ChatMessageView {
                 isAnimating: false,
                 showText: true,
                 imageIsVisible: true,
-                textIsVisible: true
+                textIsVisible: true,
+                isPicture: false
             )
         }
 
@@ -525,20 +533,25 @@ extension ChatMessageView {
             return
         }
 
-        if next.viewType != .chat {
+        // ★ chat と chat_picture の両方を許可
+        if next.viewType != .chat && next.viewType != .chat_picture {
             print("proceedToNextIfNeeded: 次はチャットではない(\(next.viewType))ため、親に通知します。")
             return
         }
+        
         if next.characterName == "コニー" {
             print("proceedToNextIfNeeded: 次はコニーの番です。入力中アニメーションを表示します。")
             isTyping = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0) {
+                // ★ chat_picture の場合は isPicture を true に
+                let isPic = (next.viewType == .chat_picture)
                 let newMsg = ChatMessage2(
                     dialogue: next,
                     isAnimating: true,
                     showText: false,
                     imageIsVisible: false,
-                    textIsVisible: false
+                    textIsVisible: false,
+                    isPicture: isPic
                 )
                 chatMessages.append(newMsg)
                 if next.isChoice != true  {
@@ -563,7 +576,8 @@ extension ChatMessageView {
                     isAnimating: false,
                     showText: true,
                     imageIsVisible: true,
-                    textIsVisible: true
+                    textIsVisible: true,
+                    isPicture: false
                 )
                 chatMessages.append(choiceTriggerMsg)
                 conversationHistory.append(next)
@@ -580,12 +594,15 @@ extension ChatMessageView {
         else {
             print("proceedToNextIfNeeded: 次は相手(\(next.characterName ?? "不明"))の番です。")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                // ★ chat_picture の場合は isPicture を true に
+                let isPic = (next.viewType == .chat_picture)
                 let newMsg = ChatMessage2(
                     dialogue: next,
                     isAnimating: false,
                     showText: true,
                     imageIsVisible: false,
-                    textIsVisible: false
+                    textIsVisible: false,
+                    isPicture: isPic
                 )
                 chatMessages.append(newMsg)
                 conversationHistory.append(next)
@@ -605,11 +622,15 @@ extension ChatMessageView {
 extension ChatMessageView {
     func initializeChat() {
         if let startDialogue = dialogue {
-            let initialMsg = ChatMessage2(dialogue: startDialogue,
-                                          isAnimating: false,
-                                          showText: true,
-                                          imageIsVisible: true,
-                                          textIsVisible: true)
+            let isPic = (startDialogue.viewType == .chat_picture)
+            let initialMsg = ChatMessage2(
+                dialogue: startDialogue,
+                isAnimating: false,
+                showText: true,
+                imageIsVisible: true,
+                textIsVisible: true,
+                isPicture: isPic
+            )
             chatMessages = [initialMsg]
             conversationHistory.append(startDialogue)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
