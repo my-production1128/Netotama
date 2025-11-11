@@ -1,29 +1,29 @@
 storyId,sceneId,viewType,characterName,dialogueText,nextSceneId,isChoice,choice1Text,choice1Percentage,choice1NextSceneId,choice2Text,choice2Percentage,choice2NextSceneId,background,TalkingPeople,LeftCharacter,CenterCharacter,RightCharacter,OneCharacter,TwoCharacter,OnePerson,bgm,groupName
 bad_netomo_story3,Scene0,start,コニー,ネトモのニックと｜会《あ》ったんだけど、お｜金《かね》が｜必要《ひつよう》だって…,Scene1,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,
-bad_netomo_story3,Scene1,start,コニー,やっぱりお｜金《かね》を｜払《はら》わないといけないのかな？,Scene2,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,
+bad_netomo_story3,Scene1,start,コニー,やっぱりお｜金《かね》｜払《はら》わないといけないのかな？,Scene2,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,
 bad_netomo_story3,Scene2,dialogue,ニック,それでなんだけど、これ｜一応《いちおう》｜定価《ていか》よりは｜安《やす》くしてあげたんだよね,Scene3,FALSE,,,,,,,park,Two,,,,Nick_angry,Cony_panic,,park_bgm,
-bad_netomo_story3,Scene3,dialogue,コニー,,,true,お｜金《かね》｜払《はら》わないといけないの...？,0,Scene4,｜払《はら》うね！,1,Scene5,park,Two,,,,Nick_angry,Cony_panic,,park_bgm,
+bad_netomo_story3,Scene3,dialogue,コニー,,,FALSE,お金払わないといけないの...？,0,Scene4,払うね！,1,Scene5,park,Two,,,,Nick_angry,Cony_panic,,park_bgm,
 bad_netomo_story3,Scene4,dialogue,ニック,｜無料《むりょう》であげるとは｜言《い》ってないはずだよ,Scene6,FALSE,,,,,,,park,Two,,,,Nick_angry,Cony_panic,,park_bgm,
 bad_netomo_story3,Scene5,dialogue,ニック,もしかしてお金払わなくていいと思ってたの？（笑）,Scene6,FALSE,,,,,,,park,Two,,,,Nick_angry,Cony_panic,,park_bgm,
-bad_netomo_story3,Scene6,dialogue,ニック,もちろん｜払《はら》ってくれるよね？,Scene7,FALSE,,,,,,,park,Two,,,,Nick_angry,Cony_panic,,park_bgm,
-bad_netomo_story3,Scene7,dialogue,コニー,,,TRUE,もちろん！,1,Scene8,プレゼントだと｜思《おも》ってたから｜払《はら》えない...,0,Scene9,park,Two,,,,Nick_angry,Cony_sorry,,park_bgm,
+bad_netomo_story3,Scene6,dialogue,ニック,もちろん払ってくれるよね？,Scene7,FALSE,,,,,,,park,Two,,,,Nick_angry,Cony_panic,,park_bgm,
+bad_netomo_story3,Scene7,dialogue,コニー,,,TRUE,もちろん！,1,Scene8,プレゼントだと｜思《おも》ってたから払えない...,0,Scene9,park,Two,,,,Nick_angry,Cony_sorry,,park_bgm,
 bad_netomo_story3,Scene8,dialogue,ニック,だいたい5000｜円《えん》くらいかな,Scene10,FALSE,,,,,,,park,Two,,,,Nick_angry,Cony_sorry,,park_bgm,
 bad_netomo_story3,Scene9,dialogue,ニック,まじやばすぎ（笑）,Scene10,FALSE,,,,,,,park,Two,,,,Nick_angry,Cony_sorry,,park_bgm,
 bad_netomo_story3,Scene10,dialogue,ニック,どうするの？,Scene11,FALSE,,,,,,,park,Two,,,,Nick_angry,Cony_sorry,,park_bgm,
-bad_netomo_story3,Scene11,dialogue,コニー,,,TRUE,5000｜円《えん》｜渡《わた》すに｜決《き》まってるじゃん！,1,Scene12,｜家《いえ》に｜帰《かえ》ってから、お｜母《かあ》さんに｜相談《そうだん》したい,0,Scene12,park,Two,,,,Nick_angry,Cony_sorry,,park_bgm,
-bad_netomo_story3,Scene12,screen,,その｜日《ひ》のチャット,Scene13,FALSE,,,,,,,school,,,,,,,,chat_bgm,
-bad_netomo_story3,Scene13,chat,コニー,｜今日《きょう》はありがとう,Scene14,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,ニック
+bad_netomo_story3,Scene11,dialogue,コニー,,,TRUE,5000｜円《えん》｜渡《わた》すに決まってるじゃん！,1,Scene12,家に帰ってから、お母さんに相談したい,0,Scene12,park,Two,,,,Nick_angry,Cony_sorry,,park_bgm,
+bad_netomo_story3,Scene12,screen,,その日のチャット,Scene13,FALSE,,,,,,,school,,,,,,,,chat_bgm,
+bad_netomo_story3,Scene13,chat,コニー,今日はありがとう,Scene14,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,ニック
 bad_netomo_story3,Scene14,chat,コニー,でもお｜金《かね》が｜必要《ひつよう》だったなら｜言《い》って｜欲《ほ》しかった　　,Scene15,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,ニック
 bad_netomo_story3,Scene15,chat,ニック,え？でも｜無料《むりょう》であげるなんて｜一回《いっかい》も｜言《い》ってないけど,Scene16,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,ニック
-bad_netomo_story3,Scene16,chat,コニー,,,TRUE,てっきりプレゼントだと｜思《おも》ってたからやっぱり｜払《はら》えない,0,Scene17,｜勘違《かんちが》いした｜私《わたし》のせいだから、もうお｜金《かね》はあげるね,1,Scene17,chatBackground_03,,,,,,,,chat_bgm,ニック
-bad_netomo_story3,Scene17,chat,ニック,めんどくさいな〜じゃあグッズ｜返《かえ》すの？,Scene18,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,ニック
-bad_netomo_story3,Scene18,chat,コニー,,,TRUE,｜返《かえ》したい...,0,Scene19,お｜母《かあ》さんに｜怒《おこ》られるからやっぱり｜大丈夫《だいじょうぶ》！,1,Scene19,chatBackground_03,,,,,,,,chat_bgm,ニック
+bad_netomo_story3,Scene16,chat,コニー,,,TRUE,てっきりプレゼントだと思ってたからやっぱり払えない,0,Scene17,勘違いした私のせいだから、もうお金はあげるね,1,Scene17,chatBackground_03,,,,,,,,chat_bgm,ニック
+bad_netomo_story3,Scene17,chat,ニック,めんどくさいな〜じゃあ｜グッズ返《かえ》すの？,Scene18,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,ニック
+bad_netomo_story3,Scene18,chat,コニー,,,TRUE,｜返《かえ》したい...,0,Scene19,お母さんに怒られるからやっぱり大丈夫！,1,Scene19,chatBackground_03,,,,,,,,chat_bgm,ニック
 bad_netomo_story3,Scene19,chat,ニック,あ〜もうはいはいわかったよ。,Scene20,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,ニック
 bad_netomo_story3,Scene20,chat,ニック,｜来週《らいしゅう》の｜日曜《にちよう》また｜取《と》りに｜行《い》くよ,Scene21,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,ニック
 bad_netomo_story3,Scene21,chat,コニー,わざわざ来させてごめん...,Scene22,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,ニック
 bad_netomo_story3,Scene22,screen,,その日の夜のニュース,Scene23,FALSE,,,,,,,school,,,,,,,,news_bgm,
-bad_netomo_story3,Scene23,dialogue,ニュースキャスター,｜中学生《ちゅうがくせい》にお｜金《かね》を｜払《はら》わせた｜罪《つみ》で ニック｜容疑者《ようぎしゃ》が｜逮捕《たいほ》されました。,Scene24,FALSE,,,,,,,news_character,,,,,,,,news_bgm,
-bad_netomo_story3,Scene24,dialogue,ニュースキャスター,ニック｜容疑者《ひがいしゃ》は、この｜事件《じけん》だけでなく、たくさんの｜子《こ》どもにお｜金《かね》を｜払《はら》わせていたようです。,Scene25,FALSE,,,,,,,news_character,,,,,,,,news_bgm,
+bad_netomo_story3,Scene23,dialogue,ニュースキャスター,｜中学生《ちゅうがくせい》にお｜金《かね》を払《はら》わせた｜罪《つみ》で <br> ニック｜容疑者《ようぎしゃ》が｜逮捕《たいほ》されました。,Scene24,FALSE,,,,,,,news_character,,,,,,,,news_bgm,
+bad_netomo_story3,Scene24,dialogue,ニュースキャスター,ニック容疑者は、この事件だけでなく、たくさんの子どもにお金を払わせていたようです。,Scene25,FALSE,,,,,,,news_character,,,,,,,,news_bgm,
 bad_netomo_story3,Scene25,dialogue,コニー,｜私《わたし》も｜被害者《ひがいしゃ》のひとりだった。,Scene26,FALSE,,,,,,,matome_background,One,,,,,,Cony_sorry,matome_bgm,
-bad_netomo_story3,Scene26,dialogue,コニー,また｜会《あ》っていたら、さらにお｜金《かね》を｜払《はら》わされていたかもしれない,Scene27,FALSE,,,,,,,matome_background,One,,,,,,Cony_sorry,matome_bgm,
+bad_netomo_story3,Scene26,dialogue,コニー,また会っていたら、さらにお金を払わされていたかもしれない,Scene27,FALSE,,,,,,,matome_background,One,,,,,,Cony_sorry,matome_bgm,
 bad_netomo_story3,Scene27,dialogue,コニー,なんでこんなことになってしまったんだろう...,end,FALSE,,,,,,,matome_background,One,,,,,,Cony_sorry,matome_bgm,

@@ -136,16 +136,6 @@
 		8A7AD2EA2E1E929400BF4664 /* DezitamaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DezitamaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		8A639E672EC237F00042D6D8 /* Exceptions for "netomo" folder in "ネトたま" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				bad_netomo_story3_ver11.csv,
-			);
-			target = 0661A04C2DDB941700016B1C /* ネトたま */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		06373CCB2EA92E1A00519FAB /* AboutApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -159,9 +149,6 @@
 		};
 		8A639E2C2EC1EEA60042D6D8 /* netomo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				8A639E672EC237F00042D6D8 /* Exceptions for "netomo" folder in "ネトたま" target */,
-			);
 			path = netomo;
 			sourceTree = "<group>";
 		};
