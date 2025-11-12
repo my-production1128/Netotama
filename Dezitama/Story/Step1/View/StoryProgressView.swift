@@ -47,8 +47,17 @@ struct StoryProgressView: View {
 
     var body: some View {
         GeometryReader { geometry in
+            let _ = print("--- 🔵 StoryProgressView.body が再描画されました ---")
             if let currentDialogue = userChoiceReply ?? self.currentDialogue {
+
+                if userChoiceReply != nil {
+                    let _ = print("   - 表示するのは userChoiceReply です (ID: \(currentDialogue.sceneId))")
+                                } else {
+                                    let _ = print("   - 表示するのは self.currentDialogue です (ID: \(currentDialogue.sceneId))")
+                                }
+
                 ZStack {
+                    
 //                    if !showResultButton && !isEndSceneReady {
                     switch currentDialogue.viewType {
 
@@ -207,6 +216,7 @@ struct StoryProgressView: View {
                             dialogue: choiceDialogue,
                             isPopupVisible: $isChoicePopupVisible,
                             onChoiceSelected: { selectedText, nextId, percentage in
+                                print("--- 🔵 StoryProgressView.onChoiceSelected (BadChoiceViewから受信) ---")
                                 let replyScene = Dialogue2(
                                     storyId: choiceDialogue.storyId,
                                     sceneId: "user_reply_\(UUID())",
@@ -228,9 +238,12 @@ struct StoryProgressView: View {
                                 )
 
                                 print("履歴追加 (BadChoiceView): \(replyScene.sceneId) - \(replyScene.dialogueText ?? "")")
+                                print("   - 1. 履歴に \(replyScene.sceneId) を追加")
                                 conversationHistory.append(replyScene)
 
+                                print("   - 2. userChoiceReply を設定します (State変更①)")
                                 self.userChoiceReply = replyScene
+                                print("   - 3. isChoicePopupVisible を false に設定します (State変更②)")
                                 self.isChoicePopupVisible = false
                                 self.pendingChoiceDialogue = nil
                             }

@@ -82,44 +82,69 @@ struct BadChoiceView: View {
         }
     }
     
-    private func handleChoice(_ choiceNumber: Int) {
-        guard !isChoiceMade else {
-            print("既に選択済みです")
-            return
-        }
-        
-        isChoiceMade = true
-        selectedChoice = choiceNumber
-        
-        let nextId: String?
-        let choiceText: String?
-        let percentage: Double?
+    // BadChoiceView.swift
 
-        switch choiceNumber {
-        case 1:
-            nextId = dialogue.choice1NextSceneId
-            choiceText = dialogue.choice1Text
-            percentage = dialogue.choice1Percentage
-        case 2:
-            nextId = dialogue.choice2NextSceneId
-            choiceText = dialogue.choice2Text
-            percentage = dialogue.choice2Percentage
-        default:
-            print("無効な選択肢番号: \(choiceNumber)")
-            return
-        }
-        print("🔵 選択肢を選びました！読み込んだパーセンテージ: \(percentage ?? -1.0)")
-//        print("  パーセンテージ: \(percentage ?? "nil")")
-
-        gameManager.addScore(percentage: percentage)
-        if let text = choiceText, let id = nextId {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                onChoiceSelected(text, id, percentage)
+        private func handleChoice(_ choiceNumber: Int) {
+            guard !isChoiceMade else {
+                print("既に選択済みです")
+                return
             }
-        } else {
-            print("選択肢データが不完全です")
+
+            isChoiceMade = true
+            selectedChoice = choiceNumber
+
+            let nextId: String?
+            let choiceText: String?
+            let percentage: Double?
+
+            switch choiceNumber {
+            case 1:
+                nextId = dialogue.choice1NextSceneId
+                choiceText = dialogue.choice1Text
+                percentage = dialogue.choice1Percentage
+            case 2:
+                nextId = dialogue.choice2NextSceneId
+                choiceText = dialogue.choice2Text
+                percentage = dialogue.choice2Percentage
+            default:
+                print("無効な選択肢番号: \(choiceNumber)")
+                return
+            }
+            print("🔵 選択肢を選びました！読み込んだパーセンテージ: \(percentage ?? -1.0)")
+
+            // --- ▼▼▼ ここからが変更点です ▼▼▼ ---
+
+            // 1. ゲージが増える（＝アニメーションが再生される）かどうかを判断
+            // (percentage が nil でない、かつ 0.0 より大きい場合)
+            let willGaugeIncrease = (percentage ?? 0.0) > 0.0
+
+            // 2. 条件に応じて遅延時間を設定
+            let delay: TimeInterval = willGaugeIncrease ? 2.0 : 0.7
+
+            print("   - ゲージは増加しますか？: \(willGaugeIncrease)")
+            print("   - 遅延時間を \(delay) 秒に設定します")
+
+            // --- ▲▲▲ ここまでが変更点です ▲▲▲ ---
+
+
+            print("--- 🟣 BadChoiceView.handleChoice ---")
+            print("   - 1. gameManager.addScore を呼び出します (アニメーション開始トリガー)")
+
+            gameManager.addScore(percentage: percentage)
+
+            if let text = choiceText, let id = nextId {
+                // 3. printデバッグのメッセージも修正
+                print("   - 2. \(delay)秒後に onChoiceSelected をスケジュールします")
+
+                // 4. 上で定義した 'delay' 変数を使用
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                    print("   - 3. (\(delay)秒後) onChoiceSelected を実行します (ポップアップが閉じるトリガー)")
+                    onChoiceSelected(text, id, percentage)
+                }
+            } else {
+                print("選択肢データが不完全です")
+            }
         }
-    }
 }
 
 // MARK: - 選択肢ボタンスタイル
