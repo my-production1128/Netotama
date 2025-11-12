@@ -42,7 +42,7 @@ struct StorylineView: View {
                 targetWidth: 700
             )
             .frame(maxWidth: 750)
-            .padding(.bottom, 100)
+            .padding(.bottom, 270)
             .opacity(storylineOpacity)
             .onAppear {
                 let sceneToDisplay = currentChoiceScene ?? branchingMap[currentSceneId]
