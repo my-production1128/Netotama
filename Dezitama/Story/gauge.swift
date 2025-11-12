@@ -29,7 +29,7 @@ struct Gauge: View {
 
     var body: some View {
 
-        let progress = score / 100.0
+//        let progress = score / 100.0
 
         ZStack {
             Image(gameManager.currentMode == .happy ? "step2_gauge_frame" : "step1_gauge_frame")
@@ -65,6 +65,9 @@ struct Gauge: View {
         }
         .scaleEffect(scale, anchor: .topTrailing)
         .onChange(of: score) { oldValue, newValue in // ← oldValue, newValue を受け取る
+            print("--- 🟢 Gauge.onChange が呼ばれました ---")
+                print("   - 新しいスコア: \(newValue)")
+                print("   - ゲージアニメーションを開始します")
                 let progress = newValue / 100.0
 
                 // ▼▼▼ ログ追加 ▼▼▼

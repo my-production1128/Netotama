@@ -24,6 +24,7 @@ enum CharacterName: String {
 //    お母さん
     case Mother
     case Mother_normal
+    case Mother_angry
 
 //    アレック
     case Alec
@@ -97,8 +98,9 @@ enum CharacterName: String {
         case .Curl_tear: return "カール"
 
 //            カールのお母さん
-        case .Mother: return "カールのお母さん"
-        case .Mother_normal: return "カールのお母さん"
+        case .Mother: return "お母さん"
+        case .Mother_normal: return "お母さん"
+        case .Mother_angry:  return "お母さん"
 
 //            アレック
         case .Alec: return "アレック"

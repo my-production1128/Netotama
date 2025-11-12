@@ -105,46 +105,60 @@ struct isChoiceView: View {
     }
 
 
-    private func handleChoice(_ choice: Choice) {
-        // 選択済みフラグを立てて、ボタンを即座に無効化
-        isChoiceMade = true
-        // タップしたボタンの色を即座に変更
-        selectedChoice = choice
+    // isChoiceView.swift
 
-        // 選択肢の情報を取得
-        let selectedText: String?
-        let nextId: String?
-        let percentage: Double?
+        private func handleChoice(_ choice: Choice) {
+            // 選択済みフラグを立てて、ボタンを即座に無効化
+            isChoiceMade = true
+            // タップしたボタンの色を即座に変更
+            selectedChoice = choice
 
-        switch choice {
-        case .choice1:
-            selectedText = allScene.choice1Text
-            nextId = allScene.choice1NextSceneId
-            percentage = allScene.choice1Percentage
-        case .choice2:
-            selectedText = allScene.choice2Text
-            nextId = allScene.choice2NextSceneId
-            percentage = allScene.choice2Percentage
-        case .choice3:
-            selectedText = allScene.choice3Text
-            nextId = allScene.choice3NextSceneId
-            percentage = allScene.choice3Percentage
-        }
+            // 選択肢の情報を取得
+            let selectedText: String?
+            let nextId: String?
+            let percentage: Double?
 
-        print("🔵 選択肢を選びました！読み込んだパーセンテージ: \(percentage ?? -1.0)")
+            switch choice {
+            case .choice1:
+                selectedText = allScene.choice1Text
+                nextId = allScene.choice1NextSceneId
+                percentage = allScene.choice1Percentage
+            case .choice2:
+                selectedText = allScene.choice2Text
+                nextId = allScene.choice2NextSceneId
+                percentage = allScene.choice2Percentage
+            case .choice3:
+                selectedText = allScene.choice3Text
+                nextId = allScene.choice3NextSceneId
+                percentage = allScene.choice3Percentage
+            }
 
-        if let text = selectedText, let id = nextId {
-            // スコア加算は遅延の前に行う
-            gameManager.addScore(percentage: percentage)
+            print("🔵 選択肢を選びました！読み込んだパーセンテージ: \(percentage ?? -1.0)")
 
-            // 0.5秒待ってから画面を閉じる
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                isPopupVisible = false
-                // 親ビューに選択されたテキストと次のシーンIDを渡す
-                onChoiceSelected(text, id)
+            let willGaugeIncrease = (percentage ?? 0.0) > 0.0
+
+            // 2. 条件に応じて遅延時間を設定 (BadChoiceView と同じロジック)
+            let delay: TimeInterval = willGaugeIncrease ? 2.0 : 0.7
+
+            print("   - ゲージは増加しますか？: \(willGaugeIncrease)")
+            print("   - 遅延時間を \(delay) 秒に設定します")
+
+            // --- ▲▲▲ ここまでが変更点です ▲▲▲ ---
+
+
+            if let text = selectedText, let id = nextId {
+                // スコア加算は遅延の前に行う
+                gameManager.addScore(percentage: percentage)
+
+                // 3. 上で定義した 'delay' 変数を使用
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                    print("   - (\(delay)秒後) ポップアップを閉じ、onChoiceSelected を実行します") // デバッグ
+                    isPopupVisible = false
+                    // 親ビューに選択されたテキストと次のシーンIDを渡す
+                    onChoiceSelected(text, id)
+                }
             }
         }
-    }
 
     struct CustomButtonStyle: ButtonStyle {
         var isSelected: Bool

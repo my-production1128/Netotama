@@ -20,7 +20,7 @@ struct DialogueView: View {
     @State private var isAnimationReady: Bool = false
 
     @EnvironmentObject private var gameManager: GameManager
-    
+
     var body: some View {
         GeometryReader { geometry in
             ZStack {
@@ -31,49 +31,53 @@ struct DialogueView: View {
                         .scaledToFill()
                         .ignoresSafeArea()
                 }
-                
-                // キャラクター配置
+
                 characterLayoutView(geometry: geometry)
-                
-                // ダイアログコンポーネント
+
                 dialogueComponentsGroup(geometry: geometry)
             }
             .contentShape(Rectangle())
             .onTapGesture {
                 print("--- 🟣 DialogueView がタップされました ---") // デバッグ
 
-                                if isStoryFinished {
-                                    print("   - (ストーリー終了済みのためタップを無視)") // デバッグ
-                                    return
-                                }
+                if isStoryFinished {
+                    print("   - (ストーリー終了済みのためタップを無視)") // デバッグ
+                    return
+                }
 
-                                print("   - isAnimationReady: \(isAnimationReady)") // デバッグ
+                print("   - isAnimationReady: \(isAnimationReady)") // デバッグ
                 // アニメーション準備完了後のみタップを受け付ける
                 if isAnimationReady {
                     handleTap()
                 }
             }
             .onAppear {
+                print("--- 🟣 DialogueView.onAppear が呼ばれました ---")
+                    print("   - シーンID: \(dialogue.sceneId)")
+                    print("   - テキスト: \(dialogue.dialogueText ?? "N/A")")
+                    print("   - 選択肢を待っていますか？: \(isChoicePending)")
+                    print("   - ストーリーは終了しましたか？: \(isStoryFinished)")
                 if isChoicePending {
-                                    // 選択肢表示中は、タイマーを待たずにタップ（次へ進む動作）を許可
-                                    isAnimationReady = true
-                                } else {
-                                    // 通常時（既存のコード）
-                                    isAnimationReady = false
-                                    if let dialogueText = dialogue.dialogueText {
-                                        let textLength = dialogueText.replacingOccurrences(of: "<br>", with: "").count
-                                        let typingDuration = Double(textLength) * 0.03 + 0.1 // 0.05秒/文字 + バッファ0.3秒
+                    // 選択肢表示中は、タイマーを待たずにタップ（次へ進む動作）を許可
+                    isAnimationReady = true
+                } else {
+                    // 通常時（既存のコード）
+                    isAnimationReady = false
+                    if let dialogueText = dialogue.dialogueText {
+                        let textLength = dialogueText.replacingOccurrences(of: "<br>", with: "").count
+                        let typingDuration = Double(textLength) * 0.03 + 0.1 // 0.05秒/文字 + バッファ0.3秒
 
-                                        // タイピング完了後にタップを有効化
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + typingDuration) {
-                                            isAnimationReady = true
-                                        }
-                                    }
-                                }
+                        // タイピング完了後にタップを有効化
+                        DispatchQueue.main.asyncAfter(deadline: .now() + typingDuration) {
+                            isAnimationReady = true
+                            print("   - (ストーリー終了のため、タップは無効のまま)")
+                        }
+                    }
+                }
             }
         }
     }
-    
+
     // MARK: - キャラクター配置
     @ViewBuilder
     private func characterLayoutView(geometry: GeometryProxy) -> some View {
@@ -90,7 +94,7 @@ struct DialogueView: View {
             }
         }
     }
-    
+
     // MARK: - 3人レイアウト
     private var threePersonLayout: some View {
         Group {
@@ -102,7 +106,7 @@ struct DialogueView: View {
                 )
                 .offset(x: -300)
             }
-            
+
             if let centerChar = dialogue.centerCharacter, !centerChar.isEmpty {
                 characterImage(
                     centerChar,
@@ -111,7 +115,7 @@ struct DialogueView: View {
                 )
                 .offset(x: 0)
             }
-            
+
             if let rightChar = dialogue.rightCharacter, !rightChar.isEmpty {
                 characterImage(
                     rightChar,
@@ -122,7 +126,7 @@ struct DialogueView: View {
             }
         }
     }
-    
+
     // MARK: - 2人レイアウト
     private var twoPersonLayout: some View {
         HStack(spacing: 200) {
@@ -133,7 +137,7 @@ struct DialogueView: View {
                     isSpeaking: isCharacterSpeaking(oneChar)
                 )
             }
-            
+
             if let twoChar = dialogue.twoCharacter, !twoChar.isEmpty {
                 characterImage(
                     twoChar,
@@ -143,7 +147,7 @@ struct DialogueView: View {
             }
         }
     }
-    
+
     // MARK: - 1人レイアウト
     private var onePersonLayout: some View {
         Group {
@@ -156,19 +160,19 @@ struct DialogueView: View {
             }
         }
     }
-    
+
     // MARK: - キャラクター画像
     private func characterImage(_ imageName: String, size height: CGFloat, isSpeaking: Bool) -> some View { // size: (width: CGFloat, height: CGFloat) から size height: CGFloat へ
-            Image(imageName)
-                .resizable()
-                .scaledToFit() // ← .scaledToFit() を追加
-                .frame(height: height) // ← .frame で height だけを指定
-                .saturation(isSpeaking ? 1.0 : 0.7)
-                .brightness(isSpeaking ? 0.0 : -0.2)
-                .scaleEffect(isSpeaking ? 1.0 : 0.95) // ← scaleEffect は isSpeaking 判定後に適用した方が良いかも？
-                                                     //    (ただし、元のコードの意図を尊重してこのままにします)
-                .animation(.easeInOut(duration: 0.3), value: isSpeaking)
-        }
+        Image(imageName)
+            .resizable()
+            .scaledToFit() // ← .scaledToFit() を追加
+            .frame(height: height) // ← .frame で height だけを指定
+            .saturation(isSpeaking ? 1.0 : 0.7)
+            .brightness(isSpeaking ? 0.0 : -0.2)
+            .scaleEffect(isSpeaking ? 1.0 : 0.95) // ← scaleEffect は isSpeaking 判定後に適用した方が良いかも？
+        //    (ただし、元のコードの意図を尊重してこのままにします)
+            .animation(.easeInOut(duration: 0.3), value: isSpeaking)
+    }
 
     // MARK: - ダイアログコンポーネント
     @ViewBuilder
@@ -192,37 +196,37 @@ struct DialogueView: View {
 
                 if let dialogueText = dialogue.dialogueText {
                     let attributedText = dialogueText
-                                            .replacingOccurrences(of: "<br>", with: "\n")
-                                            .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black)
+                        .replacingOccurrences(of: "<br>", with: "\n")
+                        .createWideRuby(font: UIFont.customFont(ofSize: 30), color: .black)
 
-                                        let font = UIFont.customFont(ofSize: 30)
-                                        let targetWidth: CGFloat = 500
+                    let font = UIFont.customFont(ofSize: 30)
+                    let targetWidth: CGFloat = 500
 
-                                        if isChoicePending {
-                                            // 【選択肢表示中】アニメーションなしのテキストを表示
-                                            WideRubyLabelRepresentable(
-                                                attributedText: attributedText,
-                                                font: font,
-                                                textColor: .black,
-                                                textAlignment: .natural,
-                                                targetWidth: targetWidth
-                                            )
-                                            .fixedSize(horizontal: false, vertical: true)
-                                            .frame(maxWidth: 700)
-                                            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+                    if isChoicePending {
+                        // 【選択肢表示中】アニメーションなしのテキストを表示
+                        WideRubyLabelRepresentable(
+                            attributedText: attributedText,
+                            font: font,
+                            textColor: .black,
+                            textAlignment: .natural,
+                            targetWidth: targetWidth
+                        )
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: 700)
+                        .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
 
-                                        } else {
-                                            // 【通常時】タイピングアニメーションを表示 (既存のコード)
-                                            TypingRubyLabelRepresentable(
-                                                attributedText: attributedText,
-                                                charInterval: 0.05,
-                                                font: font,
-                                                targetWidth: targetWidth
-                                            )
-                                            .fixedSize(horizontal: false, vertical: true)
-                                            .frame(maxWidth: 700)
-                                            .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
-                                        }
+                    } else {
+                        // 【通常時】タイピングアニメーションを表示 (既存のコード)
+                        TypingRubyLabelRepresentable(
+                            attributedText: attributedText,
+                            charInterval: 0.05,
+                            font: font,
+                            targetWidth: targetWidth
+                        )
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: 700)
+                        .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.825)
+                    }
                 }
 
                 HStack {
@@ -256,38 +260,39 @@ struct DialogueView: View {
         let characterName = getCharacterNameFromImage(imageName)
         return characterName == dialogue.characterName
     }
-    
-    private func getCharacterSize(for imageName: String) -> CGFloat { // (width: CGFloat, height: CGFloat) から CGFloat へ
-            let isSpeaking = isCharacterSpeaking(imageName)
-            let baseHeight = getBaseCharacterSize(for: imageName) // baseSize から baseHeight へ
-            let multiplier: CGFloat = isSpeaking ? 1.1 : 1.0
 
-            return baseHeight * multiplier // height だけを返す
-        }
+    private func getCharacterSize(for imageName: String) -> CGFloat { // (width: CGFloat, height: CGFloat) から CGFloat へ
+        let isSpeaking = isCharacterSpeaking(imageName)
+        let baseHeight = getBaseCharacterSize(for: imageName) // baseSize から baseHeight へ
+        let multiplier: CGFloat = isSpeaking ? 1.1 : 1.0
+
+        return baseHeight * multiplier // height だけを返す
+    }
 
     private func getBaseCharacterSize(for imageName: String) -> CGFloat { // (width: CGFloat, height: CGFloat) から CGFloat へ
-            let baseCharacterName = extractBaseCharacterName(from: imageName)
-            switch baseCharacterName {
+        let baseCharacterName = extractBaseCharacterName(from: imageName)
+        switch baseCharacterName {
             // 幅はコメントアウトし、高さだけを返す
-            case "Alec":    return 500 // (width: 350, height: 650)
-            case "Cecil":   return 500 // (width: 250, height: 450)
-            case "Cony":    return 500 // (width: 300, height: 500)
-            case "Curl":    return 500 // (width: 250, height: 550)
-            case "Teacher": return 500 // (width: 300, height: 450)
-            case "Brian":   return 500 // (width: 300, height: 450)
-            case "Nick":    return 500 // (width: 250, height: 650)
-            case "Sandra":  return 250 // (width: 250, height: 250)
-            default:        return 500 // (width: 250, height: 450)
-            }
+        case "Alec":    return 500 // (width: 350, height: 650)
+        case "Cecil":   return 500 // (width: 250, height: 450)
+        case "Cony":    return 500 // (width: 300, height: 500)
+        case "Curl":    return 500 // (width: 250, height: 550)
+        case "Teacher": return 500 // (width: 300, height: 450)
+        case "Brian":   return 500 // (width: 300, height: 450)
+        case "Nick":    return 500 // (width: 250, height: 650)
+        case "Sandra":  return 250 // (width: 250, height: 250)
+        case "Robbie": return 500
+        default:        return 500 // (width: 250, height: 450)
         }
+    }
 
     private func extractBaseCharacterName(from imageName: String) -> String {
         return imageName.components(separatedBy: "_").first ?? imageName
     }
-    
+
     private func getCharacterNameFromImage(_ imageName: String) -> String {
         let baseName = extractBaseCharacterName(from: imageName)
-        
+
         switch baseName {
         case "Alec": return "アレック"
         case "Cecil": return "セシル"
@@ -297,10 +302,11 @@ struct DialogueView: View {
         case "Nick": return "ニック"
         case "Sandra": return "サンドラ"
         case "Brian": return "ブライアン"
+        case "Robbie": return "ロビー"
         default: return ""
         }
     }
-    
+
     // MARK: - イベント処理
     private func handleTap() {
         // 通常の進行
@@ -315,7 +321,7 @@ struct DialogueView: View {
 struct AnimatedNextButton: View {
     var action: () -> Void
     @State private var offsetY: CGFloat = 0.0
-    
+
     var body: some View {
         VStack {
             Spacer()
