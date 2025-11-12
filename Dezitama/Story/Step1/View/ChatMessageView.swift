@@ -191,6 +191,8 @@ struct ChatMessageView: View {
                     isPopupVisible = true
                 }
                 else {
+                    print("--- 🔵 onTapGesture: 「コニー」の入力中バブルがタップされました (ID: \(lastMessage.id)) ---")
+                                        print("   - 状態変更: isAnimating=false, showText=true にします")
                     if let index = chatMessages.firstIndex(where: { $0.id == lastMessage.id }) {
                         chatMessages[index].isAnimating = false
                         chatMessages[index].showText = true
@@ -200,6 +202,7 @@ struct ChatMessageView: View {
                         isTyping = false
 
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            print("   - 0.1秒後: proceedToNextIfNeeded() を呼び出します")
                             proceedToNextIfNeeded()
                         }
                     }
@@ -228,6 +231,11 @@ extension ChatMessageView {
 
     @ViewBuilder
     func messageRow(for message: ChatMessage2, proxy: ScrollViewProxy) -> some View {
+        let _ = print("--- 🎨 messageRow: 描画します (ID: \(message.id)) ---")
+                let _ = print("   - Character: \(message.dialogue.characterName ?? "N/A")")
+                let _ = print("   - Text: \(message.dialogue.dialogueText ?? "N/A")")
+                let _ = print("   - isAnimating: \(message.isAnimating)")
+                let _ = print("   - showText: \(message.showText)")
         normalMessageView(for: message, proxy: proxy)
     }
 
@@ -444,6 +452,8 @@ extension ChatMessageView {
     }
 
     private func handleChoiceSelected(selectedText: String, nextId: String, percentage: Double?) {
+        print("--- 🔵 handleChoiceSelected: 選択肢が選ばれました (ID: \(currentChoiceDialogue?.sceneId ?? "N/A")) ---")
+                print("   - 最後のメッセージを「\(selectedText)」に置き換えます")
 
         guard let triggeringChoice = currentChoiceDialogue else {
             isPopupVisible = false
@@ -485,6 +495,7 @@ extension ChatMessageView {
         isPopupVisible = false
         currentChoiceDialogue = nil
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            print("   - 0.8秒後: proceedToNextIfNeeded() を呼び出します")
             proceedToNextIfNeeded()
         }
     }
@@ -514,6 +525,7 @@ extension ChatMessageView {
 
 
     private func proceedToNextIfNeeded() {
+        print("--- 🔄 proceedToNextIfNeeded: 自動進行チェック開始 ---")
         guard let last = chatMessages.last else {
             return
         }
@@ -541,6 +553,7 @@ extension ChatMessageView {
         
         if next.characterName == "コニー" {
             print("proceedToNextIfNeeded: 次はコニーの番です。入力中アニメーションを表示します。")
+            print("   - ➡️ 追加（コニー）: isAnimating=true (ID: \(next.sceneId))")
             isTyping = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0) {
                 // ★ chat_picture の場合は isPicture を true に
@@ -563,12 +576,14 @@ extension ChatMessageView {
                     onNextScene("end")
                 }
             }
-            if next.nextSceneId?.lowercased() != "end" {
-                return
-            }
+//            if next.nextSceneId?.lowercased() != "end" {
+//                return
+//            }
+            return
         }
 
         if next.isChoice == true {
+            print("   - ➡️ 追加（相手の選択肢）: showText=true (ID: \(next.sceneId))")
             print("proceedToNextIfNeeded: 次は選択肢です。(コニー以外)")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                 let choiceTriggerMsg = ChatMessage2(
@@ -593,6 +608,7 @@ extension ChatMessageView {
 
         else {
             print("proceedToNextIfNeeded: 次は相手(\(next.characterName ?? "不明"))の番です。")
+            print("   - ➡️ 追加（相手のセリフ）: showText=true (ID: \(next.sceneId))")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                 // ★ chat_picture の場合は isPicture を true に
                 let isPic = (next.viewType == .chat_picture)
