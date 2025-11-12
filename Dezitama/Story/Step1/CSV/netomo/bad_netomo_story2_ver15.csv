@@ -1,7 +1,7 @@
 storyId,sceneId,viewType,characterName,dialogueText,nextSceneId,isChoice,choice1Text,choice1Percentage,choice1NextSceneId,choice2Text,choice2Percentage,choice2NextSceneId,background,TalkingPeople,LeftCharacter,CenterCharacter,RightCharacter,OneCharacter,TwoCharacter,OnePerson,bgm,groupName
-bad_netomo_story2,Scene0,start,コニー,ニックに｜住所《じゅうしょ》｜聞《き》かれたけど、<br>｜仲良《なかよ》いし｜教《おし》えていいかな、、？,Scene1,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,カール
-bad_netomo_story2,Scene1,start,コニー,でも｜個人情報《こじんじょうほう》は｜教《おし》えたらいけないって｜先生《せんせい》｜言《い》ってたな,Scene2,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,カール
-bad_netomo_story2,Scene2,chat,ニック,どうやって｜渡《わた》そうかな…,Scene3,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
+bad_netomo_story2,Scene0,start,コニー,ニックに｜住所《じゅうしょ》｜聞《き》かれたけど｜仲良《なかよ》しだし｜教《おし》えていいかな、、？,Scene1,FALSE,,,,,,,arasuzi_background,,,,,,,,chat_bgm,カール
+bad_netomo_story2,Scene1,start,コニー,でも｜個人情報《こじんじょうほう》は｜教《おし》えたらいけないって｜先生《せんせい》｜言《い》ってたな,Scene2,FALSE,,,,,,,arasuzi_background,,,,,,,,chat_bgm,カール
+bad_netomo_story2,Scene2,chat,ニック,どうやって｜渡《わ》そうかな…,Scene3,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story2,Scene3,chat,ニック,そうだ！グッズ｜送《おく》ってあげるよ！｜住所《じゅうしょ》｜教《おし》えてー！,Scene4,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story2,Scene4,chat,コニー,,,TRUE,わかった！｜教《おし》える！,1,Scene5,｜住所《じゅうしょ》は｜教《おし》えたくないな（笑）,0,Scene6,chatBackground_03,,,,,,,,chat_bgm,カール
 bad_netomo_story2,Scene5,chat,ニック,｜他《ほか》の｜人《ひと》に｜教《お》えたりしないから！,Scene7,FALSE,,,,,,,chatBackground_03,,,,,,,,chat_bgm,カール
