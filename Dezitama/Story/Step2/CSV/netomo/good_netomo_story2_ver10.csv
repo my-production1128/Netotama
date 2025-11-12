@@ -1,0 +1,25 @@
+storyId,sceneId,sceneType,groupName,icon,characterName,leftCharacter,centerCharacter,rightCharacter,text,nextSceneId,isChoice,choice1Text,choice1Percentage,choice1NextSceneId,choice2Text,choice2Percentage,choice2NextSceneId,choice3Text,choice3Percentage,choice3NextSceneId,bgm,background
+good_netomo_story2,scene1,storyline,,,,,,,ニックに｜住所《じゅうしょ》を｜教《おし》えたら、｜近《ちか》くに｜住《す》んでたから<br>｜会《あ》うことになっちゃった！,scene2,false ,,,,,,,,,,arasuzi_bgm,arasuzi_background
+good_netomo_story2,scene2,storyline,,,,,,,お｜母《かあ》さんに｜相談《そうだん》した｜方《ほう》がいいよね...？,scene3,false ,,,,,,,,,,arasuzi_bgm,arasuzi_background
+good_netomo_story2,scene3,talk,,,Cony_smile,Mother_normal,,Cony_smile,お｜母《かあ》さん。｜今度《こんど》のネトモのニックを｜会《あ》うことになったんだけど、いいかな？,scene4,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene4,talk,,,Mother_normal,Mother_normal,,Cony_smile,え？それだれ？,scene5,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene5,talk,,,Cony_smile,Mother_angry,,Cony_smile,｜同《おな》じ｜配信者《はいしんしゃ》が｜好《す》きなネットの｜友達《ともだち》！,scene6,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene6,talk,,,Cony_smile,Mother_angry,,Cony_panic,,,true ,｜友達《ともだち》だしいいよね？,0,scene7,｜会《あ》ったことない｜友達《ともだち》だけど｜大丈夫《だいじょうぶ》かな？（笑）,0.3,scene7,｜不安《ふあん》だからお｜母《かあ》さんにもついてきて｜欲《ほ》しいんだ。,1,scene8,room_bgm,my_room
+good_netomo_story2,scene7,talk,,,Mother_angry,Mother_angry,,Cony_panic,ネットの｜友達《ともだち》は、｜本当《ほんとう》の｜友達《ともだち》じゃないかもよ？,scene8,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene8,talk,,,Mother_angry,Mother_angry,,Cony_panic,もちろんよ！｜相談《そうだん》してくれてありがとう！,scene9,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene9,talk,,,Mother_angry,Mother_angry,,Cony_smile,ちなみに、その｜人《ひと》の｜年齢《ねんれい》｜知《し》ってるの？,scene10,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene10,talk,,,Cony_smile,Mother_angry,,Cony_smile,,,true ,｜多分《たぶん》｜同《おな》い｜年《どし》な｜気《き》がする！,0.3,scene11,｜友達《ともだち》なのにわからない...,1,scene11,｜知《し》らないけど｜大丈夫《だいじょうぶ》でしょ（笑）,0,scene11,room_bgm,my_room
+good_netomo_story2,scene11,talk,,,Mother_angry,Mother_angry,,Cony_smile,じゃあ｜今《いま》まで｜会《あ》ってもいいかなって｜思《おも》ってたのは<br>なんで？？,scene12,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene12,talk,,,Cony_sorry,Mother_angry,,Cony_sorry,,,true ,｜心《こころ》のどこかで｜大丈夫《だいじょうぶ》でしょなんて｜思《おも》ってた...,1,scene13,そんなに｜責《せ》めないでよ。ニックは｜本当《ほんとう》の｜友達《ともだち》だもん！,0,scene14,｜別《べつ》に｜大丈夫《だいじょうぶ》かなって｜思《おも》ってた（笑）,0.3,scene15,room_bgm,my_room
+good_netomo_story2,scene13,talk,,,Mother_angry,Mother_angry,,Cony_sorry,｜素直《すなお》に｜話《はな》してくれてありがとう,scene16,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene14,talk,,,Mother_angry,Mother_angry,,Cony_sorry,｜別《べつ》に｜責《せ》めてるわけじゃないよ。｜一緒《いっしょ》に｜対処《たいしょ》していこうね,scene16,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene15,talk,,,Mother_angry,Mother_angry,,Cony_sorry,その｜油断《ゆだん》が｜被害《ひがい》につながるかもしれないよ！,scene16,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene16,talk,,,Mother_angry,Mother_angry,,Cony_sorry,これからコニーはどうすればいいと｜思《おも》う？,scene17,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene17,talk,,,Cony_sorry,Mother_angry,,Cony_sorry,,,true ,わからないからお｜母《かあ》さんが決めて,0,scene18,ニックと｜会《あ》わないようにしたい...,1,scene20,｜話《はな》さないのがベストなのかな...？,0.3,scene20,room_bgm,my_room
+good_netomo_story2,scene18,talk,,,Mother_angry,Mother_angry,,Cony_sorry,お｜母《かあ》さんが｜決《き》めるのは｜違《ちが》うよ。<br>ちゃんと｜考《かんが》えてみて！,scene19,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene19,talk,,,Cony_sorry,Mother_angry,,Cony_sorry,ニックと｜会《あ》わないようにしたい....,scene20,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene20,talk,,,Mother_angry,Mother_angry,,Cony_sorry,じゃあそのためにはどうしたらいいと｜思《おも》う？,scene21,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene21,talk,,,Cony_sorry,Mother_angry,,Cony_sorry,,,true ,もうわからないから｜何《なに》もしない,0,scene22,｜謝《あやま》らないといけないと｜思《おも》うけど、<br>できるかな...,0.3,scene23,ちゃんとニックに｜会《あ》えないことを｜伝《つた》える！,1,scene24,room_bgm,my_room
+good_netomo_story2,scene22,talk,,,Mother_angry,Mother_angry,,Cony_sorry,それじゃ｜何《なに》も｜解決《かいけつ》しないままよ！,scene23,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene23,talk,,,Mother_angry,Mother_angry,,Cony_sorry,｜大丈夫《だいじょうぶ》よ！,scene24,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene24,talk,,,Mother_angry,Mother_angry,,Cony_sorry,じゃあ｜一緒《いっしょ》に｜解決《かいけつ》していこう！,end,false ,,,,,,,,,,room_bgm,my_room
