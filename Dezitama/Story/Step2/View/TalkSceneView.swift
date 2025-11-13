@@ -220,6 +220,7 @@ struct TalkSceneView: View {
 
 
 
+        musicplayer.playSE(fileName: "button_SE_2")
         historyStack.append(currentSceneId)
         if nextScene.isChoice != true {
             conversationHistory.append(nextScene)

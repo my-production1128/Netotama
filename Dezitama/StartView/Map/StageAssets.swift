@@ -99,7 +99,7 @@ struct StageIntroOverlay: View {
                 
                 // スタートボタン
                 Button(action: {
-                    musicplayer.playSE(fileName: "button_SE")
+                    musicplayer.playSE(fileName: "startbutton_SE")
                     onStart()
                 }) {
                     Image("sheet_start")
@@ -108,7 +108,7 @@ struct StageIntroOverlay: View {
                         .frame(width: geometry.size.width * 0.3)
                 }
                 .position(x: geometry.size.width * 0.5, y: geometry.size.height * 0.9)
-            }
+            }.offset(y: -20)
         }
     }
     

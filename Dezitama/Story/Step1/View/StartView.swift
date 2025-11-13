@@ -16,6 +16,7 @@ struct startView: View {
     @State private var isInteractable: Bool = false
     @State private var offsetY: CGFloat = 0.0
 
+    @EnvironmentObject var musicplayer: SoundPlayer
     var body: some View {
         ZStack {
             // 背景
@@ -55,6 +56,7 @@ struct startView: View {
                                 .onAppear {
                                     startLoopingAnimation()
                                 }
+                                .padding(80)
                         }
                         .padding()
                         .offset(y: -90)
@@ -92,6 +94,8 @@ struct startView: View {
             onNext("end")
             return
         }
+
+        musicplayer.playSE(fileName: "button_SE_2")
         print("startView: 次のシーン \(nextSceneId) へ。親に通知します。")
         onNext(nextSceneId)
     }

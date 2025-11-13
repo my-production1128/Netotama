@@ -111,6 +111,7 @@ struct StorylineView: View {
                 return
             }
 
+            musicplayer.playSE(fileName: "button_SE_2")
             if nextScene.isChoice == true {
                 isPopupVisible = true
                 currentChoiceScene = nextScene

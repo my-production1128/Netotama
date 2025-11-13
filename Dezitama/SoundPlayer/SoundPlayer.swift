@@ -9,19 +9,13 @@ import AVFoundation
 import Combine
 
 class SoundPlayer: NSObject, ObservableObject, AVAudioPlayerDelegate {
-
-    // 💡 BGMの状態をViewから監視できるように @Published を付けて追加
     @Published var currentBGMFileName: String?
-
-    // 💡 修正点1: BGM専用のプレイヤー
     var bgm_player: AVAudioPlayer?
-
-    // 💡 修正点2: SE専用のプレイヤー（画面遷移待ち用）
     var se_player: AVAudioPlayer?
 
-    var completionHandler: (() -> Void)? // SE再生完了用
+    var completionHandler: (() -> Void)?
+    var seVolumeMultiplier: Float = 1.0
 
-    // 汎用的なオーディオプレイヤー初期化ヘルパー (変更なし)
     private func setupPlayer(fileName: String) throws -> AVAudioPlayer {
         guard let musicData = NSDataAsset(name: fileName)?.data else {
             throw NSError(domain: "SoundPlayerError", code: 1, userInfo: [NSLocalizedDescriptionKey: "音源 '\(fileName)'が見つかりません。"])
@@ -31,8 +25,6 @@ class SoundPlayer: NSObject, ObservableObject, AVAudioPlayerDelegate {
 
     // MARK: - BGM再生メソッド
     func playBGM(fileName: String) {
-
-        // 同じBGMが再生中なら、二重に再生処理を実行せず、即座に終了する
         if currentBGMFileName == fileName && bgm_player?.isPlaying == true {
             return
         }
@@ -41,7 +33,7 @@ class SoundPlayer: NSObject, ObservableObject, AVAudioPlayerDelegate {
         let bgmVolumes: [String: Float] = [
             "arasuzi_bgm": 0.2,
             "chat_bgm": 0.3,
-            "classroom_bgm": 0.5,
+            "classroom_bgm": 0.4,
             "matome_bgm": 0.5,
             "news_bgm": 0.5,
             "park_bgm": 0.5,
@@ -74,22 +66,37 @@ class SoundPlayer: NSObject, ObservableObject, AVAudioPlayerDelegate {
 
     // MARK: - 効果音再生メソッド (BGMを停止させない)
     func playSE(fileName: String, completion: (() -> Void)? = nil) {
-        // 💡 修正点4: se_playerを使用し、BGMプレイヤーには触らない
-        se_player?.stop() // 古いSEがあれば停止
 
-        do {
-            se_player = try setupPlayer(fileName: fileName)
-            se_player?.numberOfLoops = 0 // ループさせない
+            let SEVolumes: [String: Float] = [
+                "button_SE_2": 0.18,
+                "button_SE": 0.3,
+                "gauge_0.3_SE": 0.5,
+                "gauge_1.0_SE": 0.5,
+                "icon_SE": 0.5,
+                "startbutton_SE": 0.5
+            ]
+            se_player?.stop()
+            do {
+                se_player = try setupPlayer(fileName: fileName)
+                se_player?.numberOfLoops = 0
 
-            se_player?.delegate = self // 完了通知を受け取るためデリゲートを設定
-            self.completionHandler = completion
+                se_player?.delegate = self
+                self.completionHandler = completion
+                let baseVolume: Float = SEVolumes[fileName] ?? 0.5
 
-            se_player?.play()
-        } catch {
-            print("SE再生エラー: \(error.localizedDescription)")
-            completion?()
+                // (2) 基本音量に、上で定義した「SE全体の音量倍率」を掛け合わせる
+                let finalVolume = baseVolume * self.seVolumeMultiplier
+
+                se_player?.volume = finalVolume
+
+                // --- ▲▲▲ 変更ここまで ▲▲▲ ---
+
+                se_player?.play()
+            } catch {
+                print("SE再生エラー: \(error.localizedDescription)")
+                completion?()
+            }
         }
-    }
 
     /// 全ての音楽を停止
     func stopAllMusic() {
