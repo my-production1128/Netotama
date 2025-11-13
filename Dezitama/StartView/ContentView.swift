@@ -262,9 +262,9 @@ struct ContentView: View {
             let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver10")
             let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver12")
 //            拡散
-            let goodKakusanStory1 = loadBranchingCSV(fileName: "good_kakusan_story1_ver8")
-            let goodKakusanStory2 = loadBranchingCSV(fileName: "good_kakusan_story2_ver6")
-            let goodKakusanStory3 = loadBranchingCSV(fileName: "good_kakusan_story3_ver6")
+            let goodKakusanStory1 = loadBranchingCSV(fileName: "good_kakusan_story1_ver11")
+            let goodKakusanStory2 = loadBranchingCSV(fileName: "good_kakusan_story2_ver12")
+            let goodKakusanStory3 = loadBranchingCSV(fileName: "good_kakusan_story3_ver10")
 
             self.allBranchings = goodNetomoStory1 + goodNetomoStory2 + goodNetomoStory3
                 + goodGuruchaStory1 + goodGuruchaStory2 + goodGuruchaStory3

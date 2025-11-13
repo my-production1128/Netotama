@@ -1,0 +1,27 @@
+storyId,sceneId,sceneType,groupName,icon,characterName,leftCharacterName,centerCharacterName,rightCharacterName,text,nextSceneId,isChoice,choice1Text,choice1Percentage,choice1NextSceneId,choice2Text,choice2Percentage,choice2NextSceneId,choice3Text,choice3Percentage,choice3NextSceneId,bgm,background
+good_kakusan_story2,scene1,storyline,,,,,,,｜送信《そうしん》｜取《と》り｜消《け》ししたからもう｜大丈夫《だいじょうぶ》なはず！,scene2,false ,,,,,,,,,,arasuzi_bgm,arasuzi_background
+good_kakusan_story2,scene2,storyline,,,,,,,みんなもそう｜思《おも》うよね…？,scene3,false ,,,,,,,,,,arasuzi_bgm,arasuzi_background
+good_kakusan_story2,scene3,screen,,,,,,,アレック・ケビン・カール・コニーのチャット,scene4,false ,,,,,,,,,,chat_bgm,school
+good_kakusan_story2,scene4,chat,アレック･ケビン･カール･コニー,alec_icon,Alec,,,Cony,みてこれ！,scene5,false ,,,,,,,,,,chat_bgm,chatBackground_02
+good_kakusan_story2,scene5,chat_picture,アレック･ケビン･カール･コニー,alec_icon,Alec,,,Cony,どうがのスクリーンショット,scene6,false ,,,,,,,,,,chat_bgm,chatBackground_02
+good_kakusan_story2,scene6,chat,アレック･ケビン･カール･コニー,kevin_icon,Kevin,,,Cony,この｜動画《どうが》｜本当《ほんとう》にやばいね（笑）,scene7,false ,,,,,,,,,,chat_bgm,chatBackground_02
+good_kakusan_story2,scene7,chat,アレック･ケビン･カール･コニー,cony_icon,Cony,,,Cony,え、なんでこの｜動画《どうが》｜持《も》ってるの？,scene8,false ,,,,,,,,,,chat_bgm,chatBackground_02
+good_kakusan_story2,scene8,chat,アレック･ケビン･カール･コニー,curl_icon,Curl,,,Cony,この｜動画《どうが》｜大丈夫《だいじょうぶ》？,scene9,false ,,,,,,,,,,chat_bgm,chatBackground_02
+good_kakusan_story2,scene9,chat,アレック･ケビン･カール･コニー,cony_icon,Cony,,,Cony,,,true ,｜大丈夫《だいじょうぶ》じゃない！<br>｜送信《そうしん》｜取《と》り｜消《け》ししたのに...,1,scene10,みんなに｜広《ひろ》まらないならいいかも？,0.3,scene11,これめっちゃ｜面白《おもしろ》いよね（笑）,0,scene11,chat_bgm,chatBackground_02
+good_kakusan_story2,scene10,chat,アレック･ケビン･カール･コニー,alec_icon,Alec,,,Cony,｜動画《どうが》を｜送《おく》ったのはコニーじゃん（笑）,scene11,false ,,,,,,,,,,chat_bgm,chatBackground_02
+good_kakusan_story2,scene11,chat,アレック･ケビン･カール･コニー,curl_icon,Curl,,,Cony,いやいやこれはセシル｜悲《かな》しむよ？,scene12,false ,,,,,,,,,,chat_bgm,chatBackground_02
+good_kakusan_story2,scene12,chat,アレック･ケビン･カール･コニー,cony_icon,Cony,,,Cony,そうだよね...,scene13,false ,,,,,,,,,,chat_bgm,chatBackground_02
+good_kakusan_story2,scene13,chat,アレック･ケビン･カール･コニー,cony_icon,Cony,,,Cony,,,true ,｜怒《おこ》られるかな〜？,0.3,scene14,まあでもこのグループだけならいっか（笑）,0,scene14,アレック｜動画《どうが》｜消《け》してよ,1,scene14,chat_bgm,chatBackground_02
+good_kakusan_story2,scene14,chat,アレック･ケビン･カール･コニー,kevin_icon,Kevin,,,Cony,この｜動画《どうが》｜保存《ほぞん》しとこー（笑）,scene15,false ,,,,,,,,,,chat_bgm,chatBackground_02
+good_kakusan_story2,scene15,chat,アレック･ケビン･カール･コニー,cony_icon,Cony,,,Cony,,,true ,｜保存《ほぞん》するだけだからね？（笑）,0,scene16,え？やめてよ,1,scene16,もう｜怒《おこ》られるからやめて〜（笑）,0.3,scene16,chat_bgm,chatBackground_02
+good_kakusan_story2,scene16,chat,アレック･ケビン･カール･コニー,alec_icon,Alec,,,Cony,｜動画《どうが》さSNSにアップしちゃおうよ！,scene17,false ,,,,,,,,,,chat_bgm,chatBackground_02
+good_kakusan_story2,scene17,chat,アレック･ケビン･カール･コニー,cony_icon,Cony,,,Cony,,,true ,クラスのグループチャット<br>くらいならいいかも（笑）,0,scene18,だからやめて！<br>よくないよ！,1,scene18,さすがにSNSはどうかな...？,0.3,scene18,chat_bgm,chatBackground_02
+good_kakusan_story2,scene18,chat,アレック･ケビン･カール･コニー,curl_icon,Curl,,,Cony,みんな｜落《お》ち｜着《つ》いて｜考《かんが》えて！セシルが｜悲《かな》しむよ！,scene19,false ,,,,,,,,,,chat_bgm,chatBackground_02
+good_kakusan_story2,scene19,screen,,,,,,,カール・コニーのチャット,scene20,false ,,,,,,,,,,chat_bgm,school
+good_kakusan_story2,scene20,chat,カール,curl_icon,Curl,,,Cony,コニー、あの｜動画《どうが》が｜広《ひろ》まる｜前《まえ》に｜行動《こうどう》しなきゃ！！,scene21,false ,,,,,,,,,,chat_bgm,chatBackground_03
+good_kakusan_story2,scene21,chat,カール,cony_icon,Cony,,,Cony,,,true ,そうだよね なにができるかな？,1,scene23,｜私《わたし》にできるかな？,0.3,scene22,｜自信《じしん》ないからカールがどうにかして,0,scene22,chat_bgm,chatBackground_03
+good_kakusan_story2,scene22,chat,カール,curl_icon,Curl,,,Cony,｜一緒《いっしょ》にどうにかしよう！｜大丈夫《だいじょうぶ》！,scene23,false ,,,,,,,,,,chat_bgm,chatBackground_03
+good_kakusan_story2,scene23,chat,カール,curl_icon,Curl,,,Cony,｜信頼《しんらい》できる｜大人《おとな》に｜相談《そうだん》しよう！,scene24,false ,,,,,,,,,,chat_bgm,chatBackground_03
+good_kakusan_story2,scene24,chat,カール,cony_icon,Cony,,,Cony,お｜母《かあ》さんとか、｜先生《せんせい》とか？,scene25,false ,,,,,,,,,,chat_bgm,chatBackground_03
+good_kakusan_story2,scene25,chat,カール,curl_icon,Curl,,,Cony,うん！｜勇気《ゆうき》を｜持《も》って｜行動《こうどう》してみよう！,scene26,false ,,,,,,,,,,chat_bgm,chatBackground_03
+good_kakusan_story2,scene26,chat,カール,cony_icon,Cony,,,Cony,うん。｜分《わ》かった…！,end,false ,,,,,,,,,,chat_bgm,chatBackground_03
