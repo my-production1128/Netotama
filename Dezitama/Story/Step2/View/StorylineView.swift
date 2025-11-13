@@ -42,7 +42,7 @@ struct StorylineView: View {
                 targetWidth: 700
             )
             .frame(maxWidth: 750)
-            .padding(.bottom, 100)
+            .padding(.bottom, 270)
             .opacity(storylineOpacity)
             .onAppear {
                 let sceneToDisplay = currentChoiceScene ?? branchingMap[currentSceneId]
@@ -111,6 +111,7 @@ struct StorylineView: View {
                 return
             }
 
+            musicplayer.playSE(fileName: "button_SE_2")
             if nextScene.isChoice == true {
                 isPopupVisible = true
                 currentChoiceScene = nextScene

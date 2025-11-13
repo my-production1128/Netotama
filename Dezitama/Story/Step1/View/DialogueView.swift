@@ -20,6 +20,7 @@ struct DialogueView: View {
     @State private var isAnimationReady: Bool = false
 
     @EnvironmentObject private var gameManager: GameManager
+    @EnvironmentObject var musicplayer: SoundPlayer
 
     var body: some View {
         GeometryReader { geometry in
@@ -311,6 +312,7 @@ struct DialogueView: View {
     private func handleTap() {
         // 通常の進行
         if let nextSceneId = dialogue.nextSceneId {
+            musicplayer.playSE(fileName: "button_SE_2")
             onNext(nextSceneId)
         }
     }

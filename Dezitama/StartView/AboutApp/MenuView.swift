@@ -11,6 +11,8 @@ struct MenuView: View {
     @Binding var path: NavigationPath
     private let maxWidth = UIScreen.main.bounds.width
 
+    @EnvironmentObject var musicplayer: SoundPlayer
+
     var body: some View {
         ZStack {
             // 背景のタップ領域（白の透過）
@@ -18,6 +20,7 @@ struct MenuView: View {
                 .opacity(isOpen ? 0.7 : 0)
                 .onTapGesture {
                     withAnimation(.easeInOut(duration: 0.3)) {
+                        musicplayer.playSE(fileName: "button_SE")
                         isOpen = false
                     }
                 }
@@ -44,6 +47,7 @@ struct MenuView: View {
                                     .padding()
 
                                 Button {
+                                    musicplayer.playSE(fileName: "button_SE")
                                     path.append(ViewBuilderPath.Credit)
 //                                    isOpen = false
                                 } label: {
@@ -55,6 +59,7 @@ struct MenuView: View {
                                 }
 
                                 Button {
+                                    musicplayer.playSE(fileName: "button_SE")
                                     path.append(ViewBuilderPath.HowToUse)
 //                                    isOpen = false
                                 } label: {
@@ -66,6 +71,7 @@ struct MenuView: View {
                                 }
                                 
                                 Button {
+                                    musicplayer.playSE(fileName: "button_SE")
                                     path.append(ViewBuilderPath.ButtonExample)
 //                                    isOpen = false
                                 } label: {
@@ -76,6 +82,7 @@ struct MenuView: View {
                                         .padding()
                                 }
                                 Button {
+                                    musicplayer.playSE(fileName: "button_SE")
                                     path.append(ViewBuilderPath.TermsOfServiceView)
                                 } label: {
                                     Text("・利用規約")
@@ -86,6 +93,7 @@ struct MenuView: View {
                                 }
 
                                 Spacer()
+//                                デバック用
                                 Button {
                                     GameManager.shared.deleteAllData()
                                 } label: {
