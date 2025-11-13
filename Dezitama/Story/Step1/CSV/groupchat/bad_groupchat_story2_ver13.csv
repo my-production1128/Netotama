@@ -25,5 +25,5 @@ bad_groupchat_story2,Scene22,chat,セシル,｜今《いま》まで｜思《お
 bad_groupchat_story2,Scene23,chat,コニー,うそうそ！｜流石《さすが》に｜冗談《じょうだん》だよ！,Scene24,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
 bad_groupchat_story2,Scene24,chat,コニー,,,TRUE,カールってまじうざい！,1,Scene25,（なにも｜言《い》わない）,0,Scene26,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
 bad_groupchat_story2,Scene25,chat,アレック,やば！それも｜言《い》い｜過《す》ぎ！（笑）,Scene26,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
-bad_groupchat_story2,Scene26,chat,セシル,てか｜話《はなし》｜戻《もど》るけど、｜明日《あした》｜誰《だれ》かカールゾーン｜踏《ふ》み｜込《こ》むかな？,Scene27,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
+bad_groupchat_story2,Scene26,chat,セシル,てか｜話《はなし》｜戻《もど》るけど、｜明日《あした》｜誰《だれ》かカールゾーンに｜踏《ふ》み｜込《こ》むかな？,Scene27,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
 bad_groupchat_story3,Scene27,chat,コニー,,,TRUE,どうかな...,0,end,まじカールゾーンってやばすぎ（笑）,1,end,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
