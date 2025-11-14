@@ -254,17 +254,17 @@ struct ContentView: View {
                 stages[index].loadDialogues()
             }
 //            グルチャ
-            let goodGuruchaStory1 = loadBranchingCSV(fileName: "good_gurucha_story1_ver8")
-            let goodGuruchaStory2 = loadBranchingCSV(fileName: "good_gurucha_story2_ver11")
-            let goodGuruchaStory3 = loadBranchingCSV(fileName: "good_gurucha_story3_ver11")
+            let goodGuruchaStory1 = loadBranchingCSV(fileName: "good_gurucha_story1_ver9")
+            let goodGuruchaStory2 = loadBranchingCSV(fileName: "good_gurucha_story2_ver12")
+            let goodGuruchaStory3 = loadBranchingCSV(fileName: "good_gurucha_story3_ver12")
 //            ネトモ
-            let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver11")
-            let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver10")
-            let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver12")
+            let goodNetomoStory1 = loadBranchingCSV(fileName: "good_netomo_story1_ver12")
+            let goodNetomoStory2 = loadBranchingCSV(fileName: "good_netomo_story2_ver11")
+            let goodNetomoStory3 = loadBranchingCSV(fileName: "good_netomo_story3_ver13")
 //            拡散
-            let goodKakusanStory1 = loadBranchingCSV(fileName: "good_kakusan_story1_ver11")
+            let goodKakusanStory1 = loadBranchingCSV(fileName: "good_kakusan_story1_ver12")
             let goodKakusanStory2 = loadBranchingCSV(fileName: "good_kakusan_story2_ver12")
-            let goodKakusanStory3 = loadBranchingCSV(fileName: "good_kakusan_story3_ver10")
+            let goodKakusanStory3 = loadBranchingCSV(fileName: "good_kakusan_story3_ver11")
 
             self.allBranchings = goodNetomoStory1 + goodNetomoStory2 + goodNetomoStory3
                 + goodGuruchaStory1 + goodGuruchaStory2 + goodGuruchaStory3

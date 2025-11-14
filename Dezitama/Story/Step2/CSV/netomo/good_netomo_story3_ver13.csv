@@ -1,6 +1,6 @@
 storyId,sceneId,sceneType,groupName,icon,characterName,leftCharacter,centerCharacter,rightCharacter,text,nextSceneId,isChoice,choice1Text,choice1Percentage,choice1NextSceneId,choice2Text,choice2Percentage,choice2NextSceneId,choice3Text,choice3Percentage,choice3NextSceneId,bgm,background
 good_netomo_story3,scene1,storyline,,,,,,,ちゃんとお｜母《かあ》さんに｜相談《そうだん》したことで<br>｜不安《ふあん》な｜気持《きも》ちがなくなった！,scene2,FALSE,,,,,,,,,,arasuzi_bgm,arasuzi_background
-good_netomo_story3,scene2,storyline,,,,,,,ちゃんとニックに｜会《あえ》えないことを｜伝《つた》えようと｜思《おも》う！,scene3,FALSE,,,,,,,,,,arasuzi_bgm,arasuzi_background
+good_netomo_story3,scene2,storyline,,,,,,,ちゃんとニックに｜会《あ》えないことを｜伝《つた》えようと｜思《おも》う！,scene3,FALSE,,,,,,,,,,arasuzi_bgm,arasuzi_background
 good_netomo_story3,scene3,chat,ニック,nick_icon,Nick,,,Cony,もうすぐ｜日曜日《にちようび》だね！<br>｜楽《たの》しみ！,scene4,FALSE,,,,,,,,,,chat_bgm,chatBackground_01
 good_netomo_story3,scene4,chat,ニック,cony_icon,Cony,,,Cony,そのことなんだけどさ<br>お｜母《かあ》さんに｜話《はな》して<br>みたんだよね,scene5,FALSE,,,,,,,,,,chat_bgm,chatBackground_01
 good_netomo_story3,scene5,chat,ニック,cony_icon,Cony,,,Cony,｜話《はな》してみて、まだ｜会《あ》わない｜方《ほう》がいいかなって｜思《おも》った...,scene6,FALSE,,,,,,,,,,chat_bgm,chatBackground_01
@@ -26,4 +26,4 @@ good_netomo_story3,scene24,chat,ニック,nick_icon,Nick,,,Cony,もちろん！,
 good_netomo_story3,scene25,chat,ニック,nick_icon,Nick,,,Cony,｜会《あ》えるの｜楽《たの》しみにしてるね！,scene26,FALSE,,,,,,,,,,chat_bgm,chatBackground_01
 good_netomo_story3,scene26,talk,,,Cony_smile,,Cony_smile,,お｜母《かあ》さんに｜早《はや》く｜相談《そうだん》したことで、ニックとも｜安全《あんぜん》に｜会《あ》うことができた！！,scene27,FALSE,,,,,,,,,,matome_bgm,matome_background
 good_netomo_story3,scene27,talk,,,Cony_smile,,Cony_smile,,｜共通《きょうつう》の｜趣味《しゅみ》があるネトモにはついつい｜色々《いろいろ》｜話《はな》してしまうよね...,scene28,FALSE,,,,,,,,,,matome_bgm,matome_background
-good_netomo_story3,scene28,talk,,,Cony_smile,,Cony_smile,,｜楽《たの》しいからこそ、｜注意《ちゅうい》を｜払《はら》わなければいけないよね！,end,FALSE,,,,,,,,,,matome_bgm,matome_background
+good_netomo_story4,scene28,talk,,,Cony_smile,,Cony_smile,,｜楽《たの》しいからこそ、｜注意《ちゅうい》を｜払《はら》わなければいけないよね！,end,FALSE,,,,,,,,,,matome_bgm,matome_background
