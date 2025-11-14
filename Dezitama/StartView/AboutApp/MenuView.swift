@@ -13,6 +13,14 @@ struct MenuView: View {
 
     @EnvironmentObject var musicplayer: SoundPlayer
 
+
+    private var menuWidth: CGFloat {
+        maxWidth * 0.25
+    }
+    private var buttonContentWidth: CGFloat {
+        menuWidth - 32
+    }
+
     var body: some View {
         ZStack {
             // 背景のタップ領域（白の透過）
@@ -49,51 +57,73 @@ struct MenuView: View {
                                 Button {
                                     musicplayer.playSE(fileName: "button_SE")
                                     path.append(ViewBuilderPath.Credit)
-//                                    isOpen = false
                                 } label: {
                                     Text("・クレジット")
                                         .foregroundColor(.black)
                                         .font(Font(UIFont.customFont(ofSize: 25)))
                                         .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding()
+                                        .padding(3)
                                 }
+                                .padding(.leading,10)
 
                                 Button {
                                     musicplayer.playSE(fileName: "button_SE")
                                     path.append(ViewBuilderPath.HowToUse)
-//                                    isOpen = false
                                 } label: {
-                                    Text("・アプリの使い方")
-                                        .foregroundColor(.black)
-                                        .font(Font(UIFont.customFont(ofSize: 25)))
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding()
+                                    let buttonFont = UIFont.customFont(ofSize: 25)
+                                    let buttonText = "・アプリの｜使《つか》い｜方《かた》"
+
+                                    RubyLabelRepresentable(
+                                        attributedText: buttonText.createRuby(font: buttonFont, color: .black),
+                                        font: buttonFont,
+                                        textColor: .black,
+                                        textAlignment: .left,
+                                        targetWidth: buttonContentWidth
+                                    )
+                                    .padding(.leading,10)
+                                    .padding(3)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                
+
                                 Button {
                                     musicplayer.playSE(fileName: "button_SE")
                                     path.append(ViewBuilderPath.ButtonExample)
-//                                    isOpen = false
                                 } label: {
-                                    Text("・ボタンの説明")
-                                        .foregroundColor(.black)
-                                        .font(Font(UIFont.customFont(ofSize: 25)))
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding()
+                                    let buttonFont = UIFont.customFont(ofSize: 25)
+                                    let buttonText = "・ボタンの｜説明《せつめい》"
+
+                                    RubyLabelRepresentable(
+                                        attributedText: buttonText.createRuby(font: buttonFont, color: .black),
+                                        font: buttonFont,
+                                        textColor: .black,
+                                        textAlignment: .left,
+                                        targetWidth: buttonContentWidth
+                                    )
+                                    .padding(.leading,10)
+                                    .padding(3)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 }
                                 Button {
                                     musicplayer.playSE(fileName: "button_SE")
                                     path.append(ViewBuilderPath.TermsOfServiceView)
                                 } label: {
-                                    Text("・利用規約")
-                                        .foregroundColor(.black)
-                                        .font(Font(UIFont.customFont(ofSize: 25)))
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .padding()
+                                    let buttonFont = UIFont.customFont(ofSize: 25)
+                                    let buttonText = "・｜利用《りよう》｜規約《きやく》"
+
+                                    RubyLabelRepresentable(
+                                        attributedText: buttonText.createRuby(font: buttonFont, color: .black),
+                                        font: buttonFont,
+                                        textColor: .black,
+                                        textAlignment: .left,
+                                        targetWidth: buttonContentWidth
+                                    )
+                                    .padding(.leading,10)
+                                    .padding(3)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                 }
 
                                 Spacer()
-//                                デバック用
+                                //                                デバック用
                                 Button {
                                     GameManager.shared.deleteAllData()
                                 } label: {
@@ -119,41 +149,41 @@ struct MenuView: View {
 
 struct Credit : View {
     var body: some View {
-            ZStack{
-                Image("credit_background")
+        ZStack{
+            Image("credit_background")
+                .resizable()
+                .scaledToFill()
+                .frame(width: UIScreen.main.bounds.width,
+                       height: UIScreen.main.bounds.height)
+                .ignoresSafeArea()
+            VStack {
+                Image("credit_text")
                     .resizable()
-                    .scaledToFill()
-                    .frame(width: UIScreen.main.bounds.width,
-                           height: UIScreen.main.bounds.height)
-                    .ignoresSafeArea()
-                VStack {
-                    Image("credit_text")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 350)
-                        .padding()
-                    Image("credit_develop")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 750)
-                        .padding()
-                    Image("credit_creative")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 750)
-                        .padding()
-                    Image("credit_super")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 750)
-                        .padding()
-                    Spacer()
-                    Text("© 2025 limura Lab., Pref. Univ. of Kumamoto")
-                        .foregroundColor(.black)
-                        .font(Font(UIFont.customFont(ofSize: 20)))
-                        .padding(.bottom, 30)
-                }
+                    .scaledToFit()
+                    .frame(width: 350)
+                    .padding()
+                Image("credit_develop")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 750)
+                    .padding()
+                Image("credit_creative")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 750)
+                    .padding()
+                Image("credit_super")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 750)
+                    .padding()
+                Spacer()
+                Text("© 2025 limura Lab., Pref. Univ. of Kumamoto")
+                    .foregroundColor(.black)
+                    .font(Font(UIFont.customFont(ofSize: 20)))
+                    .padding(.bottom, 30)
             }
+        }
     }
 }
 
@@ -164,7 +194,7 @@ struct HowToUse : View {
                 .resizable()
                 .scaledToFill()
                 .frame(width: UIScreen.main.bounds.width,
-                           height: UIScreen.main.bounds.height)
+                       height: UIScreen.main.bounds.height)
                 .ignoresSafeArea()
 
             let imageNames = ["tutrial_01", "tutrial_02", "tutrial_03"]
@@ -195,48 +225,48 @@ struct HowToUse : View {
 
 struct ButtonExample : View {
     var body: some View {
-        
+
         ZStack{
             Image("button_background")
                 .resizable()
                 .scaledToFill()
                 .ignoresSafeArea()
-            
-                VStack(spacing:5){
-                    Image("button_title")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 500, height: 100)
-                    
-                    Image("button_imark")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 700, height: 100)
-                    
-                    Image("button_iland")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 700, height: 100)
-                    
-                    Image("button_talk")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 700, height: 100)
-                    
-                    Image("button_home")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 700, height: 100)
-                    
-                    Image("button_badend")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 700, height: 100)
-                    
-                    Image("button_master")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 700, height: 100)
+
+            VStack(spacing:5){
+                Image("button_title")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 500, height: 100)
+
+                Image("button_imark")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 700, height: 100)
+
+                Image("button_iland")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 700, height: 100)
+
+                Image("button_talk")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 700, height: 100)
+
+                Image("button_home")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 700, height: 100)
+
+                Image("button_badend")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 700, height: 100)
+
+                Image("button_master")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 700, height: 100)
             }
         }
     }

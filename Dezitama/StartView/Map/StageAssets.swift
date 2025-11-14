@@ -23,7 +23,7 @@ struct StageButton: View {
     }
 
     private var buttonImageName: String {
-        var imageName = "" // 表示する画像名を入れる変数
+        var imageName = "" 
         if !stage.isUnlocked {
             imageName = "botann_unlocked_\(stage.id)"
         } else {
