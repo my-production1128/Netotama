@@ -1,11 +1,11 @@
 storyId,sceneId,sceneType,groupName,icon,characterName,leftCharacter,centerCharacter,rightCharacter,text,nextSceneId,isChoice,choice1Text,choice1Percentage,choice1NextSceneId,choice2Text,choice2Percentage,choice2NextSceneId,choice3Text,choice3Percentage,choice3NextSceneId,bgm,background
 good_netomo_story2,scene1,storyline,,,,,,,ニックに｜住所《じゅうしょ》を｜教《おし》えたら、｜近《ちか》くに｜住《す》んでたから<br>｜会《あ》うことになっちゃった！,scene2,false ,,,,,,,,,,arasuzi_bgm,arasuzi_background
 good_netomo_story2,scene2,storyline,,,,,,,お｜母《かあ》さんに｜相談《そうだん》した｜方《ほう》がいいよね...？,scene3,false ,,,,,,,,,,arasuzi_bgm,arasuzi_background
-good_netomo_story2,scene3,talk,,,Cony_smile,Mother_normal,,Cony_smile,お｜母《かあ》さん。｜今度《こんど》のネトモのニックを｜会《あ》うことになったんだけど、いいかな？,scene4,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene3,talk,,,Cony_smile,Mother_normal,,Cony_smile,お｜母《かあ》さん。｜今度《こんど》のネトモのニックと｜会《あ》うことになったんだけど、いいかな？,scene4,false ,,,,,,,,,,room_bgm,my_room
 good_netomo_story2,scene4,talk,,,Mother_normal,Mother_normal,,Cony_smile,え？それだれ？,scene5,false ,,,,,,,,,,room_bgm,my_room
 good_netomo_story2,scene5,talk,,,Cony_smile,Mother_angry,,Cony_smile,｜同《おな》じ｜配信者《はいしんしゃ》が｜好《す》きなネットの｜友達《ともだち》！,scene6,false ,,,,,,,,,,room_bgm,my_room
 good_netomo_story2,scene6,talk,,,Cony_smile,Mother_angry,,Cony_panic,,,true ,｜友達《ともだち》だしいいよね？,0,scene7,｜会《あ》ったことない｜友達《ともだち》だけど｜大丈夫《だいじょうぶ》かな？（笑）,0.3,scene7,｜不安《ふあん》だからお｜母《かあ》さんにもついてきて｜欲《ほ》しいんだ。,1,scene8,room_bgm,my_room
-good_netomo_story2,scene7,talk,,,Mother_angry,Mother_angry,,Cony_panic,ネットの｜友達《ともだち》は、｜本当《ほんとう》の｜友達《ともだち》じゃないかもよ？,scene8,false ,,,,,,,,,,room_bgm,my_room
+good_netomo_story2,scene7,talk,,,Mother_angry,Mother_angry,,Cony_panic,ネットの｜友達《ともだち》は、｜本当《ほんとう》の｜友達《ともだち》じゃないかもよ？,scene9,false ,,,,,,,,,,room_bgm,my_room
 good_netomo_story2,scene8,talk,,,Mother_angry,Mother_angry,,Cony_panic,もちろんよ！｜相談《そうだん》してくれてありがとう！,scene9,false ,,,,,,,,,,room_bgm,my_room
 good_netomo_story2,scene9,talk,,,Mother_angry,Mother_angry,,Cony_smile,ちなみに、その｜人《ひと》の｜年齢《ねんれい》｜知《し》ってるの？,scene10,false ,,,,,,,,,,room_bgm,my_room
 good_netomo_story2,scene10,talk,,,Cony_smile,Mother_angry,,Cony_smile,,,true ,｜多分《たぶん》｜同《おな》い｜年《どし》な｜気《き》がする！,0.3,scene11,｜友達《ともだち》なのにわからない...,1,scene11,｜知《し》らないけど｜大丈夫《だいじょうぶ》でしょ（笑）,0,scene11,room_bgm,my_room

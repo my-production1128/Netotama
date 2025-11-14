@@ -24,6 +24,6 @@ good_netomo_story3,scene22,chat,ニック,cony_icon,Cony,,,Cony,,,TRUE,お｜母
 good_netomo_story3,scene23,chat,ニック,nick_icon,Nick,,,Cony,｜怒《おこ》られるぞ（笑）ちゃんと｜言《い》ってね！,scene24,FALSE,,,,,,,,,,chat_bgm,chatBackground_01
 good_netomo_story3,scene24,chat,ニック,nick_icon,Nick,,,Cony,もちろん！,scene25,FALSE,,,,,,,,,,chat_bgm,chatBackground_01
 good_netomo_story3,scene25,chat,ニック,nick_icon,Nick,,,Cony,｜会《あ》えるの｜楽《たの》しみにしてるね！,scene26,FALSE,,,,,,,,,,chat_bgm,chatBackground_01
-good_netomo_story3,scene26,talk,,,Cony_smile,,Cony_smile,,お｜母《かあ》さんに｜早《はや》く｜相談《そうだん》したことで、ニックとも｜安全《あんぜん》に｜会《あ》うことができた！！,scene27,FALSE,,,,,,,,,,matome_bgm,matome_background
-good_netomo_story3,scene27,talk,,,Cony_smile,,Cony_smile,,｜共通《きょうつう》の｜趣味《しゅみ》があるネトモにはついつい｜色々《いろいろ》｜話《はな》してしまうよね...,scene28,FALSE,,,,,,,,,,matome_bgm,matome_background
-good_netomo_story4,scene28,talk,,,Cony_smile,,Cony_smile,,｜楽《たの》しいからこそ、｜注意《ちゅうい》を｜払《はら》わなければいけないよね！,end,FALSE,,,,,,,,,,matome_bgm,matome_background
+good_netomo_story3,scene26,talk,,cony_icon,Cony_smile,,Cony_smile,,お｜母《かあ》さんに｜早《はや》く｜相談《そうだん》したことで、ニックとも｜安全《あんぜん》に｜会《あ》うことができた！！,scene27,FALSE,,,,,,,,,,matome_bgm,matome_background
+good_netomo_story3,scene27,talk,,cony_icon,Cony_smile,,Cony_smile,,｜共通《きょうつう》の｜趣味《しゅみ》があるネトモにはついつい｜色々《いろいろ》｜話《はな》してしまうよね...,scene28,FALSE,,,,,,,,,,matome_bgm,matome_background
+good_netomo_story3,scene28,talk,,cony_icon,Cony_smile,,Cony_smile,,｜楽《たの》しいからこそ、｜注意《ちゅうい》を｜払《はら》わなければいけないよね！,end,FALSE,,,,,,,,,,matome_bgm,matome_background
