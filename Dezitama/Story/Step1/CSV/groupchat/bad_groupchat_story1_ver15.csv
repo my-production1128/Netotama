@@ -1,10 +1,10 @@
 storyId,sceneId,viewType,characterName,dialogueText,nextSceneId,isChoice,choice1Text,choice1Percentage,choice1NextSceneId,choice2Text,choice2Percentage,choice2NextSceneId,background,TalkingPeople,LeftCharacter,CenterCharacter,RightCharacter,OneCharacter,TwoCharacter,OnePerson,bgm,groupName
-bad_grucya_story1,Scene0,start,,｜最近《さいきん》お｜母《かあ》さんに｜携帯《けいたい》を｜買《か》ってもらったから<br>｜仲良《なかよ》しの｜友達《ともだち》と｜連絡《れんらく》が｜取《と》れるようになってすごく｜楽《たの》しい！,Scene1,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,
+bad_grucya_story1,Scene0,start,,｜最近《さいきん》｜携帯《けいたい》を｜買《か》ってもらったから<br>｜友達《ともだち》と｜連絡《れんらく》が｜取《と》れるようになってすごく｜楽《たの》しい！,Scene1,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,
 bad_grucya_story1,Scene1,start,,｜今日《きょう》もいつものメンバーとたくさん｜話《はな》したい！,Scene2,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,
 bad_grucya_story1,Scene2,dialogue,コニー,やっと｜朝《あさ》の｜会《かい》｜終《お》わったー。,Scene3,FALSE,,,,,,,classroom,Three,Alec_normal,Cecil_smile,Cony_smile,,,,classroom_bgm,
 bad_grucya_story1,Scene3,dialogue,アレック,またカールが｜遅刻《ちこく》してる（笑）,Scene4,FALSE,,,,,,,classroom,Three,Alec_normal,Cecil_smile,Cony_smile,,,,classroom_bgm,
 bad_grucya_story1,Scene4,dialogue,コニー,,,TRUE,｜遅刻《ちこく》しすぎだよね,1,Scene5,｜大丈夫《だいじょうぶ》なのかな？,0,Scene5,classroom,Three,Alec_normal,Cecil_smile,Cony_smile,,,,classroom_bgm,
-bad_grucya_story1,Scene5,dialogue,セシル,｜1時間目《じかんめ》の｜始《はじ》まりの｜時間《じかん》っていつもこうだよね,Scene6,FALSE,,,,,,,classroom,Three,Alec_smile,Cecil_smile,Cony_smile,,,,classroom_bgm,
+bad_grucya_story1,Scene5,dialogue,セシル,1｜時間目《じかんめ》の｜始《はじ》まりの｜時間《じかん》っていつもこうだよね,Scene6,FALSE,,,,,,,classroom,Three,Alec_smile,Cecil_smile,Cony_smile,,,,classroom_bgm,
 bad_grucya_story1,Scene6,dialogue,アレック,これさ、カールタイムって｜名前《なまえ》つけようよ！,Scene7,FALSE,,,,,,,classroom,Three,Alec_smile,Cecil_smile,Cony_smile,,,,classroom_bgm,
 bad_grucya_story1,Scene7,dialogue,セシル,これは｜私《わたし》たちだけの｜秘密《ひみつ》の｜呼《よ》び｜方《かた》にしよ（笑）,Scene8,FALSE,,,,,,,classroom,Three,Alec_smile,Cecil_smile,Cony_smile,,,,classroom_bgm,
 bad_grucya_story1,Scene8,dialogue,コニー,,,TRUE,もうふたりともふざけすぎだよ〜,0,Scene9,｜秘密《ひみつ》の｜話《はなし》ができるグルチャ｜欲《ほ》しい！,1,Scene9,classroom,Three,Alec_smile,Cecil_smile,Cony_smile,,,,classroom_bgm,
@@ -12,7 +12,7 @@ bad_grucya_story1,Scene9,dialogue,セシル,グルチャ｜作《つく》るわ
 bad_grucya_story1,Scene10,screen,,アレックとセシルとコニーのチャット,Scene11,FALSE,,,,,,,school,,,,,,,,chat_bgm,
 bad_grucya_story1,Scene11,chat,アレック,｜仲良《なかよ》しグル｜作《つく》ったよ！,Scene12,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
 bad_grucya_story1,Scene12,chat,コニー,,,TRUE,｜悪口《わるぐち》は｜言《い》わないようにしようね！,0,Scene13,このグルチャなら｜何《なに》を｜送《おく》ってもバレないよね！,1,Scene15,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
-bad_grucya_story1,Scene13,chat,アレック,コニー真面目すぎ（笑）,Scene14,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
+bad_grucya_story1,Scene13,chat,アレック,コニー｜真面目《まじめ》すぎ（笑）,Scene14,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
 bad_grucya_story1,Scene14,chat,セシル,それな（笑）,Scene15,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
 bad_grucya_story1,Scene15,chat,アレック,｜学校《がっこう》じゃ｜話《はな》せないこともあるよね,Scene16,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
 bad_grucya_story1,Scene16,chat,セシル,｜私《わたし》たちしか｜見《み》れないから｜秘密《ひみつ》も｜話《はな》せるね！,Scene17,FALSE,,,,,,,chatBackground_04,,,,,,,,chat_bgm,アレック・セシル・コニー
