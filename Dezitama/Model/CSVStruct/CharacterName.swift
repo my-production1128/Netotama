@@ -75,6 +75,8 @@ enum CharacterName: String {
 //    ロビー
     case Robbie
     case Robbie_irritaion
+    case Robbie_angry
+    case Robbie_normal
 
     case Kevin
     case Kevin_sorry
@@ -150,6 +152,8 @@ enum CharacterName: String {
 //            ロビー
         case .Robbie: return "ロビー"
         case .Robbie_irritaion: return "ロビー"
+        case .Robbie_angry: return "ロビー"
+        case .Robbie_normal: return "ロビー"
 
         case .Kevin: return "ケビン"
         case .Kevin_sorry: return "ケビン"

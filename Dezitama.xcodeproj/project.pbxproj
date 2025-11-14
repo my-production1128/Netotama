@@ -42,7 +42,7 @@
 		8A24DCFF2EA5510900DE6E95 /* gauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCDC2EA5510800DE6E95 /* gauge.swift */; };
 		8A24DD002EA5510900DE6E95 /* HomeAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCDD2EA5510800DE6E95 /* HomeAlert.swift */; };
 		8A24DD012EA5510900DE6E95 /* DezitamaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A24DCE02EA5510800DE6E95 /* DezitamaApp.swift */; };
-		8A24DD022EA5510900DE6E95 /* cecil_pants.json in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DC8A2EA5510800DE6E95 /* cecil_pants.json */; };
+		8A24DD022EA5510900DE6E95 /* セシルのどうが.json in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DC8A2EA5510800DE6E95 /* セシルのどうが.json */; };
 		8A24DD032EA5510900DE6E95 /* egg_start_ver5_0.json in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DC8B2EA5510800DE6E95 /* egg_start_ver5_0.json */; };
 		8A24DD042EA5510900DE6E95 /* StartAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DC8D2EA5510800DE6E95 /* StartAnimation.json */; };
 		8A24DD052EA5510900DE6E95 /* MPLUS1-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8A24DC8F2EA5510800DE6E95 /* MPLUS1-Black.ttf */; };
@@ -84,7 +84,7 @@
 		0642A7F22EC60DDE00BAF414 /* good_netomo_story3_ver13.csv */ = {isa = PBXFileReference; lastKnownFileType = text; path = good_netomo_story3_ver13.csv; sourceTree = "<group>"; };
 		0661A04D2DDB941700016B1C /* ネトたま.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ネトたま.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		06D22EB92EA7F1E100117CF6 /* CloudView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudView.swift; sourceTree = "<group>"; };
-		8A24DC8A2EA5510800DE6E95 /* cecil_pants.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = cecil_pants.json; sourceTree = "<group>"; };
+		8A24DC8A2EA5510800DE6E95 /* セシルのどうが.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "セシルのどうが.json"; sourceTree = "<group>"; };
 		8A24DC8B2EA5510800DE6E95 /* egg_start_ver5_0.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = egg_start_ver5_0.json; sourceTree = "<group>"; };
 		8A24DC8C2EA5510800DE6E95 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		8A24DC8D2EA5510800DE6E95 /* StartAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = StartAnimation.json; sourceTree = "<group>"; };
@@ -217,7 +217,7 @@
 		8A24DC8E2EA5510800DE6E95 /* Animation */ = {
 			isa = PBXGroup;
 			children = (
-				8A24DC8A2EA5510800DE6E95 /* cecil_pants.json */,
+				8A24DC8A2EA5510800DE6E95 /* セシルのどうが.json */,
 				8A24DC8B2EA5510800DE6E95 /* egg_start_ver5_0.json */,
 				8A24DC8C2EA5510800DE6E95 /* LottieView.swift */,
 				8A24DC8D2EA5510800DE6E95 /* StartAnimation.json */,
@@ -542,7 +542,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A24DD022EA5510900DE6E95 /* cecil_pants.json in Resources */,
+				8A24DD022EA5510900DE6E95 /* セシルのどうが.json in Resources */,
 				0642A7E32EC6098800BAF414 /* good_kakusan_story3_ver11.csv in Resources */,
 				8A24DD032EA5510900DE6E95 /* egg_start_ver5_0.json in Resources */,
 				0642A72D2EC55CEC00BAF414 /* good_kakusan_story2_ver12.csv in Resources */,

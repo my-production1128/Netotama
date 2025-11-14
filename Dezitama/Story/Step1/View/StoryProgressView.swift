@@ -208,7 +208,6 @@ struct StoryProgressView: View {
                                 }
                             }
                     }
-//                }
 
 
                     if isChoicePopupVisible, let choiceDialogue = pendingChoiceDialogue {
