@@ -18,13 +18,8 @@ struct startView: View {
 
     @EnvironmentObject var musicplayer: SoundPlayer
     var body: some View {
-        ZStack {
-            // 背景
-            Image("arasuzi_background")
-                .resizable()
-                .scaledToFill()
-                .ignoresSafeArea()
-
+        GeometryReader { geometry in
+            
             ZStack{
                 if let dialogueText = dialogue.dialogueText {
                     WideRubyLabelRepresentable(
@@ -37,12 +32,11 @@ struct startView: View {
                         targetWidth: 700
                     )
                     .frame(maxWidth: 750)
-                    .padding(.horizontal, 20)
+                    .padding(.bottom, 270)
                     .id(dialogueText)
-                    .offset(y: -150)
                 }
-
-
+                
+                
                 HStack {
                     Spacer()
                     VStack {
@@ -52,32 +46,31 @@ struct startView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 35)
+                                .position(x: geometry.size.width * 0.85,y: geometry.size.height * 0.95)
                                 .offset(y: offsetY)
                                 .onAppear {
-                                    startLoopingAnimation()
+                                    startLoopingAnimation() //
                                 }
-                                .padding(80)
                         }
                         .padding()
                         .offset(y: -90)
                     }
                 }
             }
-            .opacity(viewOpacity)
-
-        }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            handleTap()
-        }
-        .onAppear {
-            runFadeInAnimation()
-        }
-        .onChange(of: dialogue.dialogueText) {
-            runFadeInAnimation()
+            .opacity(viewOpacity)    // ← アニメーションここに残す
+            .contentShape(Rectangle())
+            .onTapGesture {
+                handleTap()
+            }
+            .onAppear {
+                runFadeInAnimation()
+            }
+            .onChange(of: dialogue.dialogueText) {
+                runFadeInAnimation()
+            }
         }
     }
-
+    
     private func handleTap() {
         guard isInteractable else {
             print("startViewアニメーション中のためタップを無視しました。")

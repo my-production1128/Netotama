@@ -28,9 +28,9 @@ struct ContentView: View {
         StageData(id: 5, csvFileName: "bad_netomo_story2_ver15"),
         StageData(id: 6, csvFileName: "bad_netomo_story3_ver14"),
         //拡散
-        StageData(id: 7, csvFileName: "bad_kakusan_story1_ver15"),
+        StageData(id: 7, csvFileName: "bad_kakusan_story1_ver16"),
         StageData(id: 8, csvFileName: "bad_kakusan_story2_ver10"),
-        StageData(id: 9, csvFileName: "bad_kakusan_story3_ver6")
+        StageData(id: 9, csvFileName: "bad_kakusan_story3_ver7")
     ]
     
     // 全てのシナリオデータを保持する一つの配列

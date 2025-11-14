@@ -79,6 +79,7 @@ struct TermsOfServiceView: View {
                 .foregroundColor(.secondary)
                 .padding(.top)
             }
+            .padding(.horizontal, 50)
             .padding(.bottom, 40)
         }
     }
