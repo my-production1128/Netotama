@@ -29,9 +29,16 @@ struct isChoiceView: View {
     var body: some View {
             ZStack {
                 VStack(spacing: 30) {
-                    Text("いい選択肢を選ぼう！")
-                        .font(.custom("MPLUS1-Bold", size: 40))
-                        .foregroundColor(.white)
+                    let titleText = "いい｜選択肢《せんたくし》を｜選《えら》ぼう！"
+                                        let titleFont = UIFont(name: "MPLUS1-Bold", size: 40) ?? UIFont.boldSystemFont(ofSize: 40)
+
+                                        RubyLabelRepresentable(
+                                            attributedText: titleText.createRuby(font: titleFont, color: .white),
+                                            font: titleFont,
+                                            textColor: .white,
+                                            textAlignment: .center,
+                                            targetWidth: 500 // ボタンの幅と合わせる
+                                        )
                     //                    選択肢１のボタン
                     Button(action: {
                         musicplayer.playSE(fileName: "button_SE")
