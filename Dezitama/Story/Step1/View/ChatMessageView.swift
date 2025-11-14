@@ -82,7 +82,7 @@ struct ChatMessageView: View {
         ZStack {
             if let currentDialogue = dialogue {
                 Text(currentDialogue.groupName ?? "")
-                    .offset(x: 10,y: -270)
+                    .offset(x: 10,y: -265)
                     .font(.custom("MPLUS1-Medium", size: 24))
             }
             VStack {

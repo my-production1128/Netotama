@@ -25,13 +25,6 @@ struct DialogueView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // 背景
-//                if let background = dialogue.background, !background.isEmpty {
-//                    Image(background)
-//                        .resizable()
-//                        .scaledToFill()
-//                        .ignoresSafeArea()
-//                }
 
                 characterLayoutView(geometry: geometry)
 

@@ -190,20 +190,26 @@ struct Credit : View {
 struct HowToUse : View {
     var body: some View {
         ZStack{
-            Image("note_background")
+            let imageNames = ["tutrial_01", "tutrial_02", "tutrial_03"]
+            
+            Image("note_background1")
                 .resizable()
                 .scaledToFill()
                 .frame(width: UIScreen.main.bounds.width,
                        height: UIScreen.main.bounds.height)
                 .ignoresSafeArea()
+             
 
-            let imageNames = ["tutrial_01", "tutrial_02", "tutrial_03"]
+            
 
             VStack(spacing: 0) {
                 Image("howtouse")
                     .resizable()
                     .frame(width: 600, height: 100)
                     .padding(.top, 30)
+
+                
+                 
 
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack(spacing: 0) {
@@ -215,8 +221,28 @@ struct HowToUse : View {
                                        height: UIScreen.main.bounds.height)
                                 .clipped()
                         }
+//                        Image("tutrial_01")
+//                            .resizable()
+//                            .scaledToFill()
+//                            .frame(width: UIScreen.main.bounds.width,
+//                                   height: UIScreen.main.bounds.height)
+//                            .clipped()
+//                        Image("tutrial_01")
+//                            .resizable()
+//                            .scaledToFill()
+//                            .frame(width: UIScreen.main.bounds.width,
+//                                   height: UIScreen.main.bounds.height)
+//                            .clipped()
+//                        Image("tutrial_01")
+//                            .resizable()
+//                            .scaledToFill()
+//                            .frame(width: UIScreen.main.bounds.width,
+//                                   height: UIScreen.main.bounds.height)
+//                            .clipped()
                     }
                 }
+                
+                
             }
         }
     }
@@ -227,9 +253,10 @@ struct ButtonExample : View {
     var body: some View {
 
         ZStack{
-            Image("button_background")
-                .resizable()
-                .scaledToFill()
+//            Image("button_background")
+            Color(red: 255, green: 214/255, blue: 116/255)
+//                .resizable()
+//                .scaledToFill()
                 .ignoresSafeArea()
 
             VStack(spacing:5){
