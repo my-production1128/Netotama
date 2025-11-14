@@ -124,13 +124,13 @@ struct MenuView: View {
 
                                 Spacer()
                                 //                                デバック用
-                                Button {
-                                    GameManager.shared.deleteAllData()
-                                } label: {
-                                    Text("。")
-                                        .foregroundColor(.black)
-                                        .font(Font(UIFont.customFont(ofSize: 25)))
-                                }
+//                                Button {
+//                                    GameManager.shared.deleteAllData()
+//                                } label: {
+//                                    Text("。")
+//                                        .foregroundColor(.black)
+//                                        .font(Font(UIFont.customFont(ofSize: 25)))
+//                                }
 
                             }
                             .padding(.top, 100)
