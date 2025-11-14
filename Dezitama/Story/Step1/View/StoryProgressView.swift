@@ -1,0 +1,460 @@
+//
+//  StoryProgressView.swift
+//  Dezitama
+//
+//  Created by 末廣月渚 on 2025/10/01.
+//
+
+import SwiftUI
+
+struct StoryProgressView: View {
+    let dialogues: [Dialogue2]
+    @State private var currentSceneId: String
+    @Binding var path: NavigationPath
+    @State private var conversationHistory: [Dialogue2] = []
+    @State private var chatSessionId: UUID = UUID()
+    @State private var viewRefreshKey: UUID = UUID()
+    @State private var isChatLogVisible: Bool = false
+    @State private var isBackMap: Bool = false
+    @State private var offsetY: CGFloat = 0.0
+    @State var isPopupVisible: Bool = false
+
+    @State private var pendingChoiceDialogue: Dialogue2? = nil
+    @State private var isChoicePopupVisible: Bool = false
+    @State private var userChoiceReply: Dialogue2? = nil
+
+    @State private var isEndSceneReady: Bool = false
+    @State private var showResultButton: Bool = false
+    @State private var finalThunders: Int = 0
+
+    @State private var screenTextOffset: CGFloat = 0.0
+    @State private var isAnimationPlaying: Bool = false
+
+    let stageId: Int
+
+    @EnvironmentObject private var gameManager: GameManager
+    @EnvironmentObject var musicplayer: SoundPlayer
+
+    init(dialogues: [Dialogue2],
+         initialSceneId: String = "Scene0",
+         path: Binding<NavigationPath>,
+         stageId: Int) {
+        self.dialogues = dialogues
+        self._currentSceneId = State(initialValue: initialSceneId)
+        self._path = path
+        self.stageId = stageId
+    }
+
+    var body: some View {
+        GeometryReader { geometry in
+            let _ = print("--- 🔵 StoryProgressView.body が再描画されました ---")
+            if let currentDialogue = userChoiceReply ?? self.currentDialogue {
+
+                if userChoiceReply != nil {
+                    let _ = print("   - 表示するのは userChoiceReply です (ID: \(currentDialogue.sceneId))")
+                                } else {
+                                    let _ = print("   - 表示するのは self.currentDialogue です (ID: \(currentDialogue.sceneId))")
+                                }
+
+                ZStack {
+                    
+//                    if !showResultButton && !isEndSceneReady {
+                    switch currentDialogue.viewType {
+
+                    case .dialogue:
+                        DialogueView(
+                            dialogue: currentDialogue,
+                            isChoicePending: isChoicePopupVisible,
+                            isStoryFinished: showResultButton || isEndSceneReady,
+                            onNext: { nextSceneId in
+                                if self.userChoiceReply != nil {
+                                    let realNextId = self.userChoiceReply!.nextSceneId!
+                                    self.userChoiceReply = nil
+                                    handleNavigation(nextSceneId: realNextId)
+                                } else {
+                                    handleNavigation(nextSceneId: nextSceneId)
+                                }
+                            }
+                        )
+                        .onAppear {
+                            if let bgm = currentDialogue.bgm, !bgm.isEmpty {
+                                musicplayer.playBGM(fileName: bgm)
+                            }
+                        }
+                        .id(currentDialogue.id)
+
+                    case .dialogue_AE:
+                        ZStack {
+                            // Lottieアニメーションの表示
+                            LottieView(
+                                name: currentDialogue.dialogueText!,
+                                loopMode: .playOnce,
+                                onCompletion: {
+                                    print("Lottie animation finished.")
+                                    isAnimationPlaying = false
+                                }
+                            )
+                            .edgesIgnoringSafeArea(.all)
+
+                            // タップ領域
+                            Color.clear
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    handleNavigation(nextSceneId: currentDialogue.nextSceneId ?? "end")
+                                }
+                                .disabled(isAnimationPlaying)
+                            HStack {
+                                Image("next_button")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 35)
+                                    .position(x: geometry.size.width * 0.85, y: geometry.size.height * 0.905)
+                                    .offset(y: offsetY)
+                                    .onAppear {
+                                        startLoopingAnimation()
+                                    }
+                            }
+                            .allowsHitTesting(false)
+                        }
+                        .onAppear {
+                            if let bgm = currentDialogue.bgm, !bgm.isEmpty {
+                                musicplayer.playBGM(fileName: bgm)
+                            }
+                            isAnimationPlaying = true
+                        }
+
+                    case .chat, .chat_picture:
+                        ChatMessageView(
+                            dialogues: dialogues,
+                            initialSceneId: currentSceneId,
+                            onNextScene: handleNavigation,
+                            path: $path,
+                            conversationHistory: $conversationHistory
+                        )
+                        .id(chatSessionId)
+                        .environmentObject(gameManager)
+                        .onAppear {
+                            if let bgm = currentDialogue.bgm, !bgm.isEmpty {
+                                musicplayer.playBGM(fileName: bgm)
+                            }
+                        }
+
+                    case .screen:
+                        ZStack {
+                            Rectangle()
+                                .fill(Color.white.opacity(0.3))
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 100)
+
+                            WideRubyLabelRepresentable(
+                                attributedText: (currentDialogue.dialogueText ?? "")
+                                    .replacingOccurrences(of: "<br>", with: "\n")
+                                    .createWideRuby(font: UIFont.customFont(ofSize: 45), color: .black),
+                                font: UIFont.customFont(ofSize: 30),
+                                textColor: .black,
+                                textAlignment: .center,
+                                targetWidth: 100
+                            )
+                            .foregroundColor(Color(red: 0.2, green: 0.2, blue: 0.2))
+                            .offset(x: screenTextOffset)
+                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .clipped()
+                        .contentShape(Rectangle())
+                        .id(currentDialogue.sceneId)
+                        .onAppear {
+                            if let bgm = currentDialogue.bgm, !bgm.isEmpty {
+                                musicplayer.playBGM(fileName: bgm)
+                            }
+                            let totalDuration: TimeInterval = 3.0
+                            let moveInDuration: TimeInterval = 0.8
+                            let waitDuration: TimeInterval = 1.4
+                            let moveOutDuration: TimeInterval = totalDuration - moveInDuration - waitDuration
+
+                            let startOffset = -geometry.size.width
+                            screenTextOffset = startOffset
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                withAnimation(.easeOut(duration: moveInDuration)) {
+                                    screenTextOffset = 0
+                                }
+                            }
+
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1 + moveInDuration + waitDuration) {
+                                let endOffset = geometry.size.width
+                                withAnimation(.easeIn(duration: moveOutDuration)) {
+                                    screenTextOffset = endOffset
+                                }
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + totalDuration) {
+                                guard currentDialogue.viewType == .screen else {
+                                    print("Scene changed before 3s timer. Aborting automatic 'screen' transition.")
+                                    return
+                                }
+                                guard let nextId = currentDialogue.nextSceneId, !nextId.isEmpty else {
+                                    print("🚨 Error: 'screen' scene has no valid nextSceneId.")
+                                    handleNavigation(nextSceneId: "end")
+                                    return
+                                }
+                                handleNavigation(nextSceneId: nextId)
+                            }
+                        }
+
+                    case .start:
+                        startView(dialogue: currentDialogue, onNext: handleNavigation)
+                            .onAppear {
+                                if let bgm = currentDialogue.bgm, !bgm.isEmpty {
+                                    musicplayer.playBGM(fileName: bgm)
+                                }
+                            }
+                    }
+
+
+                    if isChoicePopupVisible, let choiceDialogue = pendingChoiceDialogue {
+                        BadChoiceView(
+                            dialogue: choiceDialogue,
+                            isPopupVisible: $isChoicePopupVisible,
+                            onChoiceSelected: { selectedText, nextId, percentage in
+                                print("--- 🔵 StoryProgressView.onChoiceSelected (BadChoiceViewから受信) ---")
+                                let replyScene = Dialogue2(
+                                    storyId: choiceDialogue.storyId,
+                                    sceneId: "user_reply_\(UUID())",
+                                    viewType: .dialogue,
+                                    characterName: "コニー",
+                                    dialogueText: selectedText,
+                                    nextSceneId: nextId,
+                                    isChoice: false,
+                                    background: choiceDialogue.background,
+                                    talkingPeople: choiceDialogue.talkingPeople,
+                                    leftCharacter: choiceDialogue.leftCharacter,
+                                    centerCharacter: choiceDialogue.centerCharacter,
+                                    rightCharacter: choiceDialogue.rightCharacter,
+                                    oneCharacter: choiceDialogue.oneCharacter,
+                                    twoCharacter: choiceDialogue.twoCharacter,
+                                    onePerson: choiceDialogue.onePerson,
+                                    bgm: choiceDialogue.bgm,
+                                    groupName: choiceDialogue.groupName
+                                )
+
+                                print("履歴追加 (BadChoiceView): \(replyScene.sceneId) - \(replyScene.dialogueText ?? "")")
+                                print("   - 1. 履歴に \(replyScene.sceneId) を追加")
+                                conversationHistory.append(replyScene)
+
+                                print("   - 2. userChoiceReply を設定します (State変更①)")
+                                self.userChoiceReply = replyScene
+                                print("   - 3. isChoicePopupVisible を false に設定します (State変更②)")
+                                self.isChoicePopupVisible = false
+                                self.pendingChoiceDialogue = nil
+                            }
+                        )
+                        .transition(.opacity)
+                    }
+
+                    // ====== 共通UI（ホーム・スコア・ログ） ======
+                    VStack {
+                        HStack {
+                            // ホームボタン
+                            VStack {
+                                Button(action: {
+                                    musicplayer.playSE(fileName: "button_SE")
+                                    withAnimation(.easeInOut) {
+                                        isBackMap = true
+                                    }
+                                }) {
+                                    Image("home_bad")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 200, height: 200)
+                                }
+                                Spacer()
+                            }
+
+                            Spacer()
+
+                            // スコアゲージと会話ログ
+                            VStack {
+                                HStack {
+                                    Spacer()
+                                    Gauge(
+                                        width: geometry.size.width * 0.3,
+                                        height: 100,
+                                        score: gameManager.currentScore
+                                    )
+                                    .environmentObject(gameManager)
+                                }
+
+                                HStack {
+                                    Spacer()
+                                    Button(action: {
+                                        isChatLogVisible.toggle()
+                                    }) {
+                                        Image("chat")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 80, height: 80)
+                                            .padding(20)
+                                    }
+                                }
+                                Spacer()
+                            }
+                        }
+                        Spacer()
+                    }
+
+                    if showResultButton {
+                        HStack {
+                            Spacer()
+                            VStack {
+                                Spacer()
+                                Button {
+                                    musicplayer.playSE(fileName: "button_SE")
+                                    print("成績ボタンが押されました。結果を表示します。")
+                                    if !isEndSceneReady {
+                                        let thunders = gameManager.scoreToStars(score: gameManager.currentScore)
+                                        self.finalThunders = thunders
+                                        gameManager.completeStage(stageId: self.stageId, mode: gameManager.currentMode, earnedScore: thunders)
+                                        isEndSceneReady = true
+                                    }
+                                } label: {
+                                    Image("good_seiseki")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 250, height: 250)
+                                }
+                                .offset(x: 0, y: 40)
+                            }
+                        }
+                    }
+
+                    // ====== Chatログ表示 ======
+                    if isChatLogVisible {
+                        ChatLog2View(
+                            isChatLogVisible: $isChatLogVisible,
+                            conversationHistory: conversationHistory
+                        )
+                    }
+
+                    // ====== HomeAlert（上に重ねる） ======
+                    if isBackMap {
+                        HomeAlert(path: $path, isBackMap: $isBackMap)
+                            .transition(.opacity)
+                    }
+
+                    if isEndSceneReady {
+                        finalThundersView(
+                            finalThunders: self.finalThunders,
+                            path: $path
+                        )
+                        .environmentObject(musicplayer)
+                    }
+                }
+                .id(currentDialogue.sceneId)
+                .id(viewRefreshKey)
+                .transition(.opacity)
+                .onChange(of: currentSceneId) { _, newSceneId in
+
+                    guard let newDialogue = dialogues.first(where: { $0.sceneId == newSceneId }) else {
+                        return
+                    }
+
+                    if newDialogue.nextSceneId?.lowercased() == "end" {
+                        if !showResultButton && !isEndSceneReady {
+                            print("最後のシーン (\(newSceneId)) に到達しました。成績ボタンを表示します。")
+
+                            self.showResultButton = true
+                        }
+                    }
+                    else {
+                        if showResultButton {
+                            self.showResultButton = false
+                        }
+                    }
+                }
+                .onAppear {
+                    gameManager.startStory(dialogues: dialogues)
+                }
+            } else {
+                Text("シーンが見つかりません: \(currentSceneId)")
+                    .foregroundColor(.red)
+            }
+        }
+        .background {
+            if let currentDialogue = currentDialogue{
+                Image(currentDialogue.background ?? "背景が設定されていません")
+                    .resizable()
+                    .scaledToFill()
+                    .edgesIgnoringSafeArea(.all)
+            }
+        }
+    }
+
+    // MARK: - 次のシーン取得
+    private func getNextDialogue() -> Dialogue2? {
+        guard let current = currentDialogue,
+              let nextId = current.nextSceneId else {
+            return nil
+        }
+        return dialogues.first(where: { $0.sceneId == nextId })
+    }
+
+    // MARK: - シーン遷移
+    private func handleNavigation(nextSceneId: String) {
+        print("--- 1. handleNavigation が呼ばれました ---")
+                print("   - 受け取ったID: \(nextSceneId)")
+                print("   - 現在のシーンID: \(currentSceneId)")
+                print("   - 終了ボタン表示中？: \(showResultButton)")
+                print("   - 終了画面表示中？: \(isEndSceneReady)")
+        // ストーリー終了処理
+        if nextSceneId.lowercased() == "end" {
+            print("--- 2. 'end' を検出しました ---")
+            if isEndSceneReady || showResultButton {
+                print("   - (既に終了処理中のため、何もしません)")
+                return
+            }
+            print("   - 🔴 showResultButton を true に設定します")
+            showResultButton = true
+            return
+        }
+
+        guard let nextDialogue = dialogues.first(where: { $0.sceneId == nextSceneId }) else {
+            print("次のシーンが見つかりません: \(nextSceneId)")
+            print("   - ⚠️ エラー: 次のシーンが見つかりません: \(nextSceneId)")
+            return
+        }
+
+        if nextDialogue.isChoice == true {
+            self.pendingChoiceDialogue = nextDialogue
+            self.isChoicePopupVisible = true
+            return
+        }
+
+        if currentDialogue?.viewType != nextDialogue.viewType {
+            viewRefreshKey = UUID()
+        }
+        print("--- 3. シーンを次に進めます ---")
+                print("   - 🟢 currentSceneId を \(nextSceneId) に設定します")
+
+        currentSceneId = nextSceneId
+
+        if nextDialogue.viewType == .dialogue {
+            if !conversationHistory.contains(where: { $0.id == nextDialogue.id }) {
+                print("履歴追加 (handleNavigation - New Scene): \(nextDialogue.sceneId) - \(nextDialogue.dialogueText ?? "テキストなし")")
+                conversationHistory.append(nextDialogue)
+            }
+        }
+    }
+    private var currentDialogue: Dialogue2? {
+        dialogues.first(where: { $0.sceneId == currentSceneId })
+    }
+
+    private func startLoopingAnimation() {
+        offsetY = 0.0
+        let animation = Animation
+            .easeInOut(duration: 0.6)
+            .repeatForever(autoreverses: true)
+
+        withAnimation(animation) {
+            offsetY = 8.0
+        }
+    }
+}

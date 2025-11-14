@@ -1,0 +1,26 @@
+storyId,sceneId,sceneType,groupName,icon,characterName,leftCharacterName,centerCharacterName,rightCharacterName,text,nextSceneId,isChoice,choice1Text,choice1Percentage,choice1NextSceneId,choice2Text,choice2Percentage,choice2NextSceneId,choice3Text,choice3Percentage,choice3NextSceneId,bgm,background
+good_gurucha_story3,scene1,storyline,,,,,,,カールが｜許《ゆる》してくれて｜本当《ほんとう》によかった。,scene2,FALSE,,,,,,,,,,arasuzi_bgm,arasuzi_background
+good_gurucha_story3,scene2,storyline,,,,,,,でも……これで｜本当《ほんとう》に｜終《お》わったのかな。,scene3,FALSE,,,,,,,,,,arasuzi_bgm,arasuzi_background
+good_gurucha_story3,scene3,screen,,,,,,,｜次《つぎ》の｜日《ひ》｜学校《がっこう》で,scene4,FALSE,,,,,,,,,,classroom_bgm,school
+good_gurucha_story3,scene4,talk,,kevin_icon,Kevin_sorry,Kevin_sorry,,Cony_sorry,｜知《し》ってる？ アレックとセシルが、カールのこと｜悪《わる》く｜言《い》ってるって,scene5,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene5,talk,,cony_icon,Cony_sorry,Kevin_sorry,,Cony_sorry,,,TRUE,そうなんだよ！,0,scene6,え...？,0.3,scene6,なんで｜知《し》ってるの？,1,scene6,classroom_bgm,classroom
+good_gurucha_story3,scene6,talk,,kevin_icon,Kevin_sorry,Kevin_sorry,,Cony_sorry,｜実《じつ》はスクショ｜見《み》たんだよね。,scene7,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene7,talk,,cony_icon,Cony_sorry,Kevin_sorry,,Cony_sorry,,,TRUE,どう｜思《おも》った...？,0.3,scene8,ふたり｜最低《さいてい》だよね...,0,scene8,｜誰《だれ》からスクショもらったの？,1,scene9,classroom_bgm,classroom
+good_gurucha_story3,scene8,talk,,kevin_icon,Kevin_sorry,Kevin_sorry,,Cony_sorry,カールに｜謝《あやま》るべきだと｜思《おも》う,scene10,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene9,talk,,kevin_icon,Kevin_sorry,Kevin_sorry,,Cony_sorry,サンドラからもらった！,scene10,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene10,talk,,cony_icon,Cony_anixiety,Kevin_sorry,,Cony_anixiety,てかこれふたりが｜悪口《わるぐち》｜言《い》ってるところだけ｜切《き》り｜取《と》られてる…。,scene11,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene11,talk,,kevin_icon,Kevin_sorry,Kevin_sorry,,Cony_anixiety,え？そうなの？やばいじゃん,scene12,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene12,talk,,cony_icon,Cony_anixiety,Kevin_sorry,,Cony_anixiety,,,TRUE,｜全部《ぜんぶ》サンドラのせいだ,0,scene15,｜先生《せんせい》に｜相談《そうだん》してみようかな,1,scene13,でももう｜広《ひろ》がるのは｜止《と》まらないよね…,0.3,scene14,classroom_bgm,classroom
+good_gurucha_story3,scene13,talk,,kevin_icon,Kevin_sorry,Kevin_sorry,,Cony_anixiety,うんうんそうしてみよ！,scene16,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene14,talk,,kevin_icon,Kevin_sorry,Kevin_sorry,,Cony_anixiety,｜何《なに》かできることないかな？,scene16,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene15,talk,,kevin_icon,Kevin_sorry,Kevin_sorry,,Cony_anixiety,それでもどうにかしないとだめだよ！,scene16,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene16,talk,,kevin_icon,Kevin_normal,Kevin_normal,,Cony_anixiety,｜先生《せんせい》に｜相談《そうだん》してみようよ！,scene17,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene17,talk,,cony_icon,Cony_sorry,Kevin_normal,,Cony_anixiety,,,TRUE,そうする！！,1,scene18,｜相談《そうだん》できるかな？,0.3,scene19,｜怒《おこ》られるから｜怖《こわ》いな...,0,scene19,classroom_bgm,classroom
+good_gurucha_story3,scene18,talk,,kevin_icon,Kevin_normal,Kevin_normal,,Cony_sorry,カールが｜傷《きず》つかないために｜僕《ぼく》が｜手伝《てつだ》えることがあったら｜言《い》って！,scene19,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene19,talk,,kevin_icon,Kevin_normal,Kevin_normal,,Cony_sorry,コニーなら｜大丈夫《だいじょうぶ》！,scene20,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene20,talk,,kevin_icon,Kevin_normal,Kevin_normal,,Cony_sorry,｜僕《ぼく》も｜行《い》くからコニーも｜行《い》くよ！,scene21,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene21,talk,,cony_icon,Cony_sorry,Kevin_normal,,Cony_sorry,,,TRUE,｜先生《せんせい》｜絡《から》むと｜大変《たいへん》だしサンドラに｜言《い》わせようよ,0,scene22,｜私《わたし》｜先生《せんせい》に｜言《い》えるかな…,0.3,scene22,ありがとう。｜私《わたし》｜頑張《がんば》ってみる！,1,scene23,classroom_bgm,classroom
+good_gurucha_story3,scene22,talk,,kevin_icon,Kevin_normal,Kevin_normal,,Cony_sorry,はいはい！｜行《い》くよ！,scene23,FALSE,,,,,,,,,,classroom_bgm,classroom
+good_gurucha_story3,scene23,talk,,cony_icon,Cony_smile,,Cony_smile,,みんなのおかげで｜勇気《ゆうき》を｜持《も》って｜先生《せんせい》に｜話《はな》すことができた！,scene24,FALSE,,,,,,,,,,matome_bgm,matome_background
+good_gurucha_story3,scene24,talk,,cony_icon,Cony_smile,,Cony_smile,,やっぱりたくさん｜怒《おこ》られたけど、スクショはケビンとサンドラの｜間《あいだ》だけで｜回《まわ》ってたみたい。,scene25,FALSE,,,,,,,,,,matome_bgm,matome_background
+good_gurucha_story3,scene25,talk,,cony_icon,Cony_smile,,Cony_smile,,これからは｜本当《ほんとう》の｜意味《いみ》で｜楽《たの》しいグルチャにしていくんだ！,end,FALSE,,,,,,,,,,matome_bgm,matome_background

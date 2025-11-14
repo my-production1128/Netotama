@@ -1,0 +1,44 @@
+name: 追加機能報告（feature）
+description: 新機能を追加する
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        以下の情報を記入してください。
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 新機能の概要
+      description: 機能の内容を詳しく説明してください
+      placeholder: できるだけ具体的に記述してください
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 関連する問題
+      description: この機能リクエストに関連する問題を説明してください
+      placeholder: 例）〜の操作が面倒です
+    validations:
+      required: true
+
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待する動作
+      description: 本来期待される動作を記述してください
+    validations:
+      required: true
+      
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 補助資料（ログ・スクリーンショットなど）
+      description: エラー内容や画像などがあれば記載してください。
+      placeholder: スクリーンショットやログ出力など
+      render: shell

@@ -1,0 +1,4 @@
+*.xcuserstate
+*.xcuserdata/
+Dezitama.xcodeproj/project.xcworkspace/xcuserdata/
+.DS_Store
