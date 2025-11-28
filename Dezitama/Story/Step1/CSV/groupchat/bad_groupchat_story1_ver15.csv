@@ -1,5 +1,5 @@
 storyId,sceneId,viewType,characterName,dialogueText,nextSceneId,isChoice,choice1Text,choice1Percentage,choice1NextSceneId,choice2Text,choice2Percentage,choice2NextSceneId,background,TalkingPeople,LeftCharacter,CenterCharacter,RightCharacter,OneCharacter,TwoCharacter,OnePerson,bgm,groupName
-bad_grucya_story1,Scene0,start,,｜最近《さいきん》｜携帯《けいたい》を｜買《か》ってもらったから<br>｜友達《ともだち》と｜連絡《れんらく》が｜取《と》れるようになってすごく｜楽《たの》しい！,Scene1,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,
+bad_grucya_story1,Scene0,start,,｜最近《さいきん》スマホを｜買《か》ってもらったから<br>｜友達《ともだち》と｜連絡《れんらく》が｜取《と》れるようになってすごく｜楽《たの》しい！,Scene1,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,
 bad_grucya_story1,Scene1,start,,｜今日《きょう》もいつものメンバーとたくさん｜話《はな》したい！,Scene2,FALSE,,,,,,,arasuzi_background,,,,,,,,arasuzi_bgm,
 bad_grucya_story1,Scene2,dialogue,コニー,やっと｜朝《あさ》の｜会《かい》｜終《お》わったー。,Scene3,FALSE,,,,,,,classroom,Three,Alec_normal,Cecil_smile,Cony_smile,,,,classroom_bgm,
 bad_grucya_story1,Scene3,dialogue,アレック,またカールが｜遅刻《ちこく》してる（笑）,Scene4,FALSE,,,,,,,classroom,Three,Alec_normal,Cecil_smile,Cony_smile,,,,classroom_bgm,
